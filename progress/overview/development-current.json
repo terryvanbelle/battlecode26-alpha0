@@ -1,8 +1,8 @@
 {
   "checkpoint_sha256": "898d5f869fcc4aee2fe789fa921f09969dd6df5a17e21e80e8a176bbdcca3e8d",
   "source": "progress/development-v4/v8-terminal_head",
-  "completed": 156,
-  "unresolved_errors": 2,
+  "completed": 158,
+  "unresolved_errors": 0,
   "expected": 256,
   "cells": [
     {
@@ -213,7 +213,9 @@
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "wallsofparadis"
+      "map": "wallsofparadis",
+      "L": 1,
+      "W": 1
     },
     {
       "opponent": "abcdezyxwv_bestsofar",

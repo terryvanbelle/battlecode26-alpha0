@@ -220,12 +220,12 @@
     },
     {
       "overall": {
-        "wins": 76,
-        "losses": 80,
+        "wins": 77,
+        "losses": 81,
         "draws": 0,
-        "valid": 156,
+        "valid": 158,
         "expected": 256,
-        "errors": 2,
+        "errors": 0,
         "excluded_crashes": 0,
         "complete": false,
         "win_rate": null
@@ -279,12 +279,12 @@
           "win_rate": 0.125
         },
         "HugoIngelsson_YokoOno": {
-          "wins": 14,
-          "losses": 14,
+          "wins": 15,
+          "losses": 15,
           "draws": 0,
-          "valid": 28,
+          "valid": 30,
           "expected": 32,
-          "errors": 2,
+          "errors": 0,
           "complete": false,
           "excluded_crashes": 0,
           "win_rate": null
@@ -324,7 +324,7 @@
         }
       },
       "source": "progress/development-v4/v8-terminal_head/evaluations.jsonl",
-      "source_sha256": "7779f7b93192889f1daa272d8e632655579790c65f1d975651d3d7775b86874c"
+      "source_sha256": "43391ad84b31503633d914a5cd3e24bcd2375f070302bd13600927e31d5d6d94"
     }
   ]
 }

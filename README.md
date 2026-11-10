@@ -7,7 +7,7 @@
 <!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
-**156/256 valid games; 2 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `898d5f869fcc`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v4/v8-terminal_head/evaluations.jsonl).
+**158/256 valid games; 0 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `898d5f869fcc`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v4/v8-terminal_head/evaluations.jsonl).
 
 ![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
 

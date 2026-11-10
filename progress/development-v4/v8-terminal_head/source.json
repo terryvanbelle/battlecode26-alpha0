@@ -630,8 +630,16 @@
       "sha256": "1220d4652a70c2acbd08e2f4cecb958f320861505cd7bc69602812abeb48762a"
     },
     {
+      "path": "progress/terminal-target-head-v8/benchmarks/cells/91e1ee62b35fa5a0dca8afd7e0073122062548f84d270192996f5c8207da1348/attempt-002.json",
+      "sha256": "5220c4d7e3d1ddfc96ad87383fb23b7ef6f91862cdca7c59fdf4c652af7fce47"
+    },
+    {
       "path": "progress/terminal-target-head-v8/benchmarks/cells/e09e59c8554986ffe6066da364fcfcab3c9f57ec24e34427b7af8033ed7289d4/attempt-001.json",
       "sha256": "6b4365bb4c629baf44362966af11725236660b7ff6664dec63288dcb059e8d36"
+    },
+    {
+      "path": "progress/terminal-target-head-v8/benchmarks/cells/e09e59c8554986ffe6066da364fcfcab3c9f57ec24e34427b7af8033ed7289d4/attempt-002.json",
+      "sha256": "c2596376467f494657d6e68aace335f8eb6933790b8e0ce2c9791e89c8641b10"
     }
   ],
   "automatic_promotion": false,

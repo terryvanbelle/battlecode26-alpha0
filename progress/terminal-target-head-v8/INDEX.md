@@ -1,6 +1,8 @@
 # Follow V8 progress
 
-**Current review (2026-11-10):** the first cycle paused at its three-hour deadline with 412 valid benchmark games. Two in-flight games are being recovered after independently verified supervisor SIGTERM interruptions. [Exact recovery review](reviews/deadline-recovery-20261110.json). The raw attempt records remain unchanged; no scored game is rerun. The dashboard may be ahead of the earlier snapshot below.
+**Current review (2026-11-10 22:25 UTC):** **414/768 valid benchmark games**, with both deadline-interrupted cells recovered on their second and final permitted attempts. Original error journals remain unchanged. The verified recovery archive has been published and a second bounded cycle has resumed. [Recovery proof](recovery.json) · [Interruption review](reviews/deadline-recovery-20261110.json).
+
+Current panels: cp2 control **82 W / 174 L / 0 D (256/256)**; terminal candidate **77 W / 81 L / 0 D (158/256)**; PUCT pending. No unresolved errors in this snapshot. Partial candidate results are not a full-suite strength estimate. The original baseline remains 83/256 wins.
 
 - Collection: all 1,508 selection continuations valid, zero unresolved errors.
 - Fitting: both fixed 2,048-update heads match all 32 training targets. The terminal head changes 14 training actions; the matched PUCT head changes none.
