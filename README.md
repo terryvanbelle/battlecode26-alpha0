@@ -10,6 +10,9 @@ The active v2 experiment uses an **87,973-parameter dual-scale policy/value netw
 
 The goal is one frozen learned checkpoint that beats **each** of the twelve opponents: at least 60% score per opponent over 192 development games, followed by 384 games on reserved maps, with both seats covered and no unresolved errors. A smoke win, a scripted controller result, or falling training loss does not satisfy this gate. Results from different model/action versions are kept separate.
 
+![V2 benchmark progress and completion counts](progress/campaign-v2/evaluation.png)
+![V2 value fitting, replay diversity and search coverage](progress/campaign-v2/learning-health.png)
+
 ```bash
 bash scripts/bootstrap.sh
 bash scripts/run_campaign.sh --hours 3
@@ -17,7 +20,7 @@ bash scripts/run_campaign.sh --hours 3
 touch runs/campaign/STOP
 ```
 
-The campaign resumes model, optimizer, RNG, complete-game replay and evaluation cells. Each cycle has a time budget and a review boundary. GitHub release assets provide checkpoint recovery; `nohup` alone cannot survive a cloud environment being reclaimed. See the [operating instructions](docs/autonomy.md) for current continuation setup and persistence limits.
+The campaign resumes model, optimizer, RNG, complete-game replay and evaluation cells. Each cycle has a time budget and a review boundary. Verified archives provide recovery through GitHub release assets or the separate `campaign-checkpoints` branch; the current credentials require the Git fallback. `nohup` alone cannot survive a cloud environment being reclaimed. See the [operating instructions](docs/autonomy.md) for current continuation setup and persistence limits.
 
 ## Initial v1 measurements
 
@@ -25,11 +28,7 @@ Initial run: **6 self-play games, 43,779 retained positions, 3 training iteratio
 
 [Initial experiment report](docs/initial-results.md) · [Latest results and sample counts](progress/README.md) · [Benchmark provenance](docs/benchmarks.md) · [Model and experiment design](DESIGN.md) · [Engine changes](docs/engine.md)
 
-![Learning losses, data volume and throughput](progress/training.png)
-![Benchmark score and evaluation completeness](progress/evaluation.png)
-![Results against each frozen opponent](progress/opponents.png)
-
-Every point comes from the committed JSONL data in `progress/`. Evaluation uses the greedy network without search because legacy Java bots contain live threads that cannot be snapshotted. Search remains active in self-play. Graphs refresh locally after each iteration and opponent; GitHub updates when those files are pushed.
+The original graphs remain in [the initial progress report](progress/README.md). Every point comes from committed JSONL measurements; v2 has its own series. Evaluation uses the greedy network without search because legacy Java bots contain live threads that cannot be snapshotted. Search remains active in self-play. Graphs refresh after each iteration and evaluation stage; GitHub updates when those files are pushed.
 
 ## Run locally
 

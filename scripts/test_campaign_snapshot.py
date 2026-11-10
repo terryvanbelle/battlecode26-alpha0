@@ -4,6 +4,8 @@ import hashlib
 import importlib.util
 import io
 import json
+import shutil
+import subprocess
 from pathlib import Path
 import tarfile
 import tempfile
@@ -59,6 +61,41 @@ def malicious_archive(directory, member):
     snapshot.atomic_json(Path(str(target)+".manifest.json"),{"format_version":1,"archive":target.name,
                          "sha256":digest,"size":target.stat().st_size})
     return target
+
+
+def evaluation_row(number, attempt=1, status="ok"):
+    identity={"artifact_version":2,"map":"tiny","seed":number,"side":"A","opponent":"bot",
+              "evaluation_config":{"policy_schema":{"action_version":"macro_v2"}}}
+    cell=hashlib.sha256(snapshot.canonical(identity).encode()).hexdigest()
+    row={"artifact_version":2,"evaluation_cell_id":cell,"identity":identity,"attempt":attempt,
+         "status":status,"score":1 if status=="ok" else None,"iteration":0,"checkpoint":"checkpoint-0000.pt",
+         "opponent":"bot","map":"tiny","seed":number,"side":"A","rounds":9,"winner":0,
+         "terminal":{"terminal":True,"valid_game":True,"benchmark_failures":[],"round":9,
+                     "map":"tiny","seed":number,"action_version":"macro_v2","winner":0}}
+    if status=="error": row.update(error="original full error\nwith details",error_kind="worker_process_error")
+    return row
+
+
+def write_evidence(progress, rows, training, completed):
+    progress.mkdir(parents=True,exist_ok=True)
+    all_cells=[evaluation_row(i)["evaluation_cell_id"] for i in range(2)]
+    for row in rows:
+        cell=progress/"evaluation_cells"/row["evaluation_cell_id"]
+        cell.mkdir(parents=True,exist_ok=True)
+        (cell/"request.json").write_text(json.dumps({"evaluation_cell_id":row["evaluation_cell_id"],"identity":row["identity"]}))
+        (cell/f"attempt-{row['attempt']:04d}.json").write_text(json.dumps(row))
+    snapshot.write_jsonl(progress/"evaluations.jsonl",[r for r in rows if r["status"]=="ok"])
+    snapshot.write_jsonl(progress/"evaluation_errors.jsonl",[r for r in rows if r["status"]=="error"])
+    snapshot.write_jsonl(progress/"training.jsonl",training)
+    report={"checkpoint_sha256":"checkpoint", "evaluation_config_sha256":"config", "benchmark_suite_id":"panel",
+            "suite":"smoke","stage":"smoke","iteration":0,"expected":2,"expected_cell_ids":all_cells,
+            "completed":completed,"pending_cell_ids":all_cells[completed:],"complete":completed==2,
+            "full_panel_complete":completed==2,
+            "opponents":{"bot":{"completed":completed,"wins":completed,"draws":0,"losses":0}}}
+    (progress/"evaluation_reports").mkdir(exist_ok=True)
+    (progress/"evaluation_reports/report.json").write_text(json.dumps(report))
+    (progress/"status.json").write_text(json.dumps({"historical_completed":completed}))
+    return report
 
 
 class SnapshotTests(unittest.TestCase):
@@ -118,6 +155,103 @@ class SnapshotTests(unittest.TestCase):
             self.assertEqual(updated["identity"],bound["identity"])
             self.assertEqual(updated["config"],bound["config"])
             self.assertEqual(updated["checkpoint_path"],str(target/"movable"))
+
+    def test_git_and_release_progress_union_in_both_age_orders(self):
+        for archive_newer in (True,False):
+            with self.subTest(archive_newer=archive_newer), tempfile.TemporaryDirectory() as directory:
+                base=Path(directory); source=base/"source"; target=base/"target"
+                fixture(source); target.mkdir()
+                old_rows=[evaluation_row(0)]
+                new_rows=[evaluation_row(0),evaluation_row(1,attempt=1,status="error"),evaluation_row(1,attempt=2)]
+                old_train=[{"iteration":0,"loss":0.9}]
+                new_train=[*old_train,{"iteration":1,"loss":0.8}]
+                write_evidence(source/snapshot.PROGRESS,new_rows if archive_newer else old_rows,
+                               new_train if archive_newer else old_train,2 if archive_newer else 1)
+                write_evidence(target/snapshot.PROGRESS,old_rows if archive_newer else new_rows,
+                               old_train if archive_newer else new_train,1 if archive_newer else 2)
+                (target/"runs/campaign").mkdir(parents=True)
+                (target/snapshot.STATUS).write_text('{"phase":"different historical process"}')
+                archive=create(source)["archive"]
+                restored=snapshot.restore_snapshot(target,archive)
+                progress=target/snapshot.PROGRESS
+                self.assertEqual(snapshot.read_jsonl(progress/"training.jsonl"),new_train)
+                evaluations=snapshot.read_jsonl(progress/"evaluations.jsonl")
+                self.assertEqual(len(evaluations),2)
+                self.assertTrue(all(row["status"]=="ok" for row in evaluations))
+                errors=snapshot.read_jsonl(progress/"evaluation_errors.jsonl")
+                self.assertEqual(len(errors),1)
+                self.assertEqual(errors[0]["error"],"original full error\nwith details")
+                self.assertEqual(len(list((progress/"evaluation_cells").glob("*/attempt-*.json"))),3)
+                report=json.loads((progress/"evaluation_reports/report.json").read_text())
+                self.assertEqual(report["completed"],2)
+                self.assertTrue(report["complete"])
+                self.assertTrue(restored["progress_ahead_of_checkpoint"])
+                self.assertTrue(restored["review_required"])
+                self.assertTrue((target/"runs/campaign/STOP").is_file())
+                self.assertEqual(json.loads((target/snapshot.STATUS).read_text())["state"],"checkpoint_boundary")
+
+    def test_conflicting_training_or_raw_attempt_never_overwrites(self):
+        for conflict in ("training","attempt"):
+            with self.subTest(conflict=conflict), tempfile.TemporaryDirectory() as directory:
+                base=Path(directory); source=base/"source"; target=base/"target"
+                fixture(source); target.mkdir()
+                rows=[evaluation_row(0)]
+                training=[{"iteration":0,"loss":0.9}]
+                write_evidence(source/snapshot.PROGRESS,rows,training,1)
+                write_evidence(target/snapshot.PROGRESS,rows,training,1)
+                if conflict=="training":
+                    path=target/snapshot.PROGRESS/"training.jsonl"
+                    snapshot.write_jsonl(path,[{"iteration":0,"loss":0.1}])
+                else:
+                    path=target/snapshot.PROGRESS/"evaluation_cells"/rows[0]["evaluation_cell_id"]/"attempt-0001.json"
+                    altered=dict(rows[0]); altered["score"]=0
+                    path.write_text(json.dumps(altered))
+                original=path.read_bytes()
+                with self.assertRaisesRegex(ValueError,"conflicting"):
+                    snapshot.restore_snapshot(target,create(source)["archive"])
+                self.assertEqual(path.read_bytes(),original)
+                self.assertFalse((target/snapshot.RUN).exists())
+
+    def test_git_fallback_exact_commit_roundtrip_and_append_only_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory); source=base/"source"; remote=base/"remote.git"
+            fixture(source)
+            subprocess.run(["git","init","--bare","--quiet",str(remote)],check=True)
+            original_checkpoint=(source/snapshot.RUN/"latest.pt").read_bytes()
+            archive=Path(create(source)["archive"])
+            sidecar=json.loads(Path(str(archive)+".manifest.json").read_text())
+            with patch.object(snapshot,"remote_url",return_value=str(remote)):
+                first=snapshot.publish_git_snapshot(source,archive,sidecar,"owner/repo",snapshot.TAG,"test auth failure")
+                (source/snapshot.STATUS).write_text('{"state":"later boundary"}')
+                second_archive=Path(create(source)["archive"])
+                second_sidecar=json.loads(Path(str(second_archive)+".manifest.json").read_text())
+                second=snapshot.publish_git_snapshot(source,second_archive,second_sidecar,"owner/repo",snapshot.TAG,"test auth failure")
+                subprocess.run(["git","--git-dir",str(remote),"merge-base","--is-ancestor",first["commit"],second["commit"]],check=True)
+                downloads=base/"downloads"; downloads.mkdir()
+                downloaded=snapshot.download_git_snapshot(downloads,first)
+                self.assertEqual(snapshot.sha256(downloaded["archive"]),sidecar["sha256"])
+                latest=snapshot.git_latest_pointer("owner/repo")
+                self.assertEqual(latest["archive"],second_archive.name)
+            self.assertFalse((source/".git").exists())
+            self.assertEqual((source/snapshot.RUN/"latest.pt").read_bytes(),original_checkpoint)
+            self.assertEqual(json.loads((source/snapshot.POINTER).read_text())["storage"],"git")
+
+    def test_only_upload_auth_failure_activates_git_fallback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source=Path(directory); fixture(source); archive=create(source)["archive"]
+            def fake_gh(*args,**kwargs):
+                if args[:2]==("release","upload"):
+                    raise subprocess.CalledProcessError(1,["gh"],stderr="HTTP 401: Bad credentials (https://uploads.github.com/...)" )
+                raise AssertionError(args)
+            with patch.object(snapshot,"release_info",return_value={"assets":[]}), patch.object(snapshot,"gh",side_effect=fake_gh), \
+                 patch.object(snapshot,"publish_git_snapshot",return_value={"storage":"git"}) as fallback:
+                self.assertEqual(snapshot.publish_snapshot(source,archive),{"storage":"git"})
+                self.assertEqual(fallback.call_count,1)
+            with patch.object(snapshot,"release_info",return_value={"assets":[]}), \
+                 patch.object(snapshot,"gh",side_effect=subprocess.CalledProcessError(1,["gh"],stderr="connection reset")), \
+                 patch.object(snapshot,"publish_git_snapshot") as fallback:
+                with self.assertRaises(subprocess.CalledProcessError): snapshot.publish_snapshot(source,archive)
+                fallback.assert_not_called()
 
     def test_newer_gate_ledger_prevents_any_run_restore(self):
         with tempfile.TemporaryDirectory() as directory:

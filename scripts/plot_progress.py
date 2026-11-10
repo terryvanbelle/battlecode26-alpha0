@@ -14,6 +14,7 @@ import json
 import math
 import os
 import random
+import shlex
 from pathlib import Path
 import tempfile
 
@@ -357,7 +358,8 @@ def generate(progress: Path, manifest_path: Path) -> dict:
                 score_ax.plot(x, y, "o" if group["full_panel"] else "D", ms=7,
                               color=colors["blue"] if group["full_panel"] else colors["orange"])
                 score_ax.annotate(f"n={group['completed']} · {group['observed_opponents']}/{group['panel_size']} bots",
-                                  (x, y), xytext=(0, 10), textcoords="offset points", ha="center", fontsize=8)
+                                  (x, y), xytext=(5 if x == 0 else 0, 10), textcoords="offset points",
+                                  ha="left" if x == 0 else "center", fontsize=8)
         xs = [g["iteration"] for g in summaries]
         for ax in (score_ax, count_ax):
             iteration_axis(ax, xs)
@@ -411,8 +413,15 @@ def generate(progress: Path, manifest_path: Path) -> dict:
     finish(fig, "opponents.png")
 
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    regeneration = ["python", "scripts/plot_progress.py"]
+    for flag, path, default in (("--progress-dir", progress, ROOT / "progress"),
+                                ("--manifest", manifest_path, ROOT / "configs/benchmarks.json")):
+        resolved = path.resolve()
+        if resolved != default:
+            shown = resolved.relative_to(ROOT) if resolved.is_relative_to(ROOT) else resolved
+            regeneration.extend((flag, str(shown)))
     lines = ["# Training progress", "", f"Generated from repository JSONL measurements at `{now}`.", "",
-             "Run `python scripts/plot_progress.py` to regenerate these figures and this report.", "",
+             f"Run `{shlex.join(regeneration)}` from the repository root to regenerate these figures and this report.", "",
              "## Latest training measurements", ""]
     if train:
         latest = train[-1]

@@ -23,6 +23,8 @@ import tempfile
 
 REPO = "terryvanbelle/battlecode26-alpha0"
 TAG = "campaign-state"
+GIT_BRANCH = "campaign-checkpoints"
+MAX_GIT_ASSET_BYTES = 90 * 1024**2
 RUN = "runs/campaign/v2"
 PROGRESS = "progress/campaign-v2"
 STATUS = "runs/campaign/status.json"
@@ -239,6 +241,127 @@ def validate_sidecar(archive, sidecar):
         raise ValueError("snapshot archive checksum/size/identity does not match its manifest")
 
 
+def git_command(directory, *args, check=True, stdout=None):
+    return subprocess.run(["git", *map(str, args)], cwd=directory, check=check, text=stdout is None,
+                          stdout=subprocess.PIPE if stdout is None else stdout, stderr=subprocess.PIPE)
+
+
+def remote_url(repo):
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+        raise ValueError("Git snapshot storage requires an owner/repository name")
+    return f"https://github.com/{repo}.git"
+
+
+@contextmanager
+def isolated_git(repo, commit=None):
+    with tempfile.TemporaryDirectory(prefix="bc26-state-git-") as temporary:
+        directory = Path(temporary)
+        git_command(directory, "init", "-q")
+        git_command(directory, "remote", "add", "origin", remote_url(repo))
+        if commit:
+            git_command(directory, "fetch", "--quiet", "--filter=blob:none", "--depth=1", "--no-tags", "origin", commit)
+        yield directory
+
+
+def git_latest_pointer(repo):
+    with isolated_git(repo) as directory:
+        result = git_command(directory, "ls-remote", "--heads", "origin", f"refs/heads/{GIT_BRANCH}")
+        if not result.stdout.strip():
+            return None
+        commit = result.stdout.split()[0]
+        git_command(directory, "fetch", "--quiet", "--filter=blob:none", "--depth=1", "--no-tags", "origin", commit)
+        pointer = json.loads(git_command(directory, "show", f"{commit}:latest.json").stdout)
+        if pointer.get("storage") != "git" or pointer.get("branch") != GIT_BRANCH:
+            raise ValueError("invalid Git snapshot latest pointer")
+        return {**pointer, "commit": commit}
+
+
+def publish_git_snapshot(root, archive, sidecar, repo, tag, auth_error):
+    """Fast-forward-only isolated Git fallback for unavailable release upload auth."""
+    if archive.stat().st_size > MAX_GIT_ASSET_BYTES:
+        raise RuntimeError("Release upload authentication failed and archive exceeds the 90 MiB Git fallback limit; "
+                           "durability requires chunked storage or corrected release-upload credentials")
+    with isolated_git(repo) as directory:
+        heads = git_command(directory, "ls-remote", "--heads", "origin", f"refs/heads/{GIT_BRANCH}").stdout.strip()
+        previous = None
+        git_command(directory, "symbolic-ref", "HEAD", f"refs/heads/{GIT_BRANCH}")
+        if heads:
+            parent = heads.split()[0]
+            git_command(directory, "fetch", "--quiet", "--filter=blob:none", "--depth=1", "--no-tags", "origin", parent)
+            git_command(directory, "update-ref", f"refs/heads/{GIT_BRANCH}", parent)
+            git_command(directory, "read-tree", parent)
+            previous = json.loads(git_command(directory, "show", f"{parent}:latest.json").stdout)
+        archive_path = f"snapshots/{archive.name}"
+        manifest_path = archive_path + ".manifest.json"
+        changed = []
+        for source, relative in ((archive, archive_path), (Path(str(archive)+".manifest.json"), manifest_path)):
+            destination = directory/relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            existing = git_command(directory, "cat-file", "-e", f"HEAD:{relative}", check=False) if heads else None
+            if existing is not None and existing.returncode == 0:
+                with destination.open("wb") as stream:
+                    git_command(directory, "show", f"HEAD:{relative}", stdout=stream)
+                if sha256(destination) != sha256(source):
+                    raise ValueError(f"immutable Git snapshot asset differs: {relative}")
+            else:
+                shutil.copyfile(source, destination)
+                git_command(directory, "add", "--", relative)
+                changed.append(relative)
+        pointer = {**sidecar, "repository": repo, "release": tag, "storage": "git", "branch": GIT_BRANCH,
+                   "path": archive_path, "manifest_path": manifest_path,
+                   "published_at": datetime.now(timezone.utc).isoformat(),
+                   "release_upload_auth_error": auth_error}
+        # Republishing an older snapshot must not move latest backwards.
+        if previous and previous["created_at"] > pointer["created_at"]:
+            pointer = previous
+        atomic_json(directory/"latest.json", pointer)
+        git_command(directory, "add", "--", "latest.json")
+        tree_changed = not heads or git_command(directory, "diff", "--cached", "--quiet", check=False).returncode != 0
+        if tree_changed:
+            git_command(directory, "-c", "user.name=Battlecode Alpha0", "-c", "user.email=alpha0@users.noreply.github.com",
+                        "commit", "--quiet", "-m", f"Preserve campaign snapshot {sidecar['sha256'][:12]}")
+            # No force flag: concurrent publication fails rather than rewriting history.
+            git_command(directory, "push", "--quiet", "origin", f"HEAD:refs/heads/{GIT_BRANCH}")
+        commit = git_command(directory, "rev-parse", "HEAD").stdout.strip()
+        pointer = {**pointer, "commit": commit,
+                   "branch_url": f"https://github.com/{repo}/tree/{GIT_BRANCH}"}
+        atomic_json(Path(root)/POINTER, pointer)
+        return pointer
+
+
+def download_git_snapshot(output, pointer):
+    repo, commit = pointer["repository"], pointer["commit"]
+    name = pointer["archive"]
+    if (not re.fullmatch(r"[0-9a-f]{40}", commit) or not ASSET_RE.fullmatch(name)
+            or pointer.get("branch") != GIT_BRANCH or pointer.get("path") != f"snapshots/{name}"
+            or pointer.get("manifest_path") != f"snapshots/{name}.manifest.json"):
+        raise ValueError("invalid exact Git snapshot reference")
+    with isolated_git(repo, commit) as directory:
+        for field, filename in (("manifest_path", name+".manifest.json"), ("path", name)):
+            with (directory/filename).open("wb") as stream:
+                git_command(directory, "show", f"{commit}:{pointer[field]}", stdout=stream)
+        sidecar = json.loads((directory/(name+".manifest.json")).read_text())
+        validate_sidecar(directory/name, sidecar)
+        if sidecar["sha256"] != pointer["sha256"]:
+            raise ValueError("Git snapshot differs from its committed pointer")
+        for filename in (name, name+".manifest.json"):
+            destination = output/filename
+            if destination.exists():
+                if sha256(destination) != sha256(directory/filename):
+                    raise ValueError("existing local Git download differs; refusing to overwrite")
+            else:
+                # Different temp filesystem locations may not support rename.
+                fd, temporary = tempfile.mkstemp(prefix=".git-download-", dir=output)
+                os.close(fd)
+                try:
+                    shutil.copyfile(directory/filename, temporary)
+                    os.replace(temporary, destination)
+                finally:
+                    Path(temporary).unlink(missing_ok=True)
+    return {**pointer, "archive": str(output/name), "archive_name": name,
+            "manifest": str(output/(name+".manifest.json"))}
+
+
 def publish_snapshot(root, archive, repo=REPO, tag=TAG):
     root, archive = Path(root).resolve(), Path(archive).resolve()
     sidecar_path = archive.with_name(archive.name + ".manifest.json")
@@ -264,12 +387,20 @@ def publish_snapshot(root, archive, repo=REPO, tag=TAG):
                 if sha256(Path(directory)/path.name) != sha256(path):
                     raise ValueError(f"immutable remote asset differs: {path.name}")
         else:
-            gh("release", "upload", tag, path, "--repo", repo)
+            try:
+                gh("release", "upload", tag, path, "--repo", repo)
+            except subprocess.CalledProcessError as error:
+                details = error.stderr or ""
+                if not re.search(r"HTTP (?:401|403)|Bad credentials|Resource not accessible by integration", details, re.I):
+                    raise
+                # This fallback changes storage, never credentials or the source branch.
+                return publish_git_snapshot(root, archive, sidecar, repo, tag,
+                                            "GitHub release upload rejected configured credentials")
     verified = release_info(repo, tag)
     names = {asset["name"] for asset in verified["assets"] if asset.get("state") == "uploaded"}
     if not {archive.name, sidecar_path.name}.issubset(names):
         raise RuntimeError("release upload did not publish the complete snapshot pair")
-    pointer = {**sidecar, "repository": repo, "release": tag,
+    pointer = {**sidecar, "repository": repo, "release": tag, "storage": "release",
                "release_url": verified["html_url"], "published_at": datetime.now(timezone.utc).isoformat()}
     atomic_json(root / POINTER, pointer)
     return pointer
@@ -284,14 +415,26 @@ def download_snapshot(root, output_dir=None, repo=REPO, tag=TAG, latest=False):
         expected = json.loads(pointer.read_text())
         if expected.get("repository") != repo or expected.get("release") != tag:
             raise ValueError("committed snapshot pointer selects another repository/release")
+        if expected.get("storage") == "git":
+            return download_git_snapshot(output, expected)
         name = expected["archive"]
         if not ASSET_RE.fullmatch(name):
             raise ValueError("invalid archive name in snapshot pointer")
     else:
-        assets = {a["name"] for a in release_info(repo, tag)["assets"] if a.get("state") == "uploaded"}
+        try:
+            release = release_info(repo, tag)
+            assets = {a["name"] for a in release["assets"] if a.get("state") == "uploaded"}
+        except subprocess.CalledProcessError as error:
+            if "404" not in (error.stderr or ""):
+                raise
+            assets = set()
         complete = sorted(name for name in assets if ASSET_RE.fullmatch(name) and name + ".manifest.json" in assets)
+        git_pointer = git_latest_pointer(repo)
+        # Archive timestamps share one UTC lexicographic format across storage backends.
+        if git_pointer and (not complete or git_pointer["archive"] > complete[-1]):
+            return download_git_snapshot(output, git_pointer)
         if not complete:
-            raise ValueError("no complete published snapshot pair exists")
+            raise ValueError("no complete published release or Git snapshot exists")
         name, expected = complete[-1], None
     with tempfile.TemporaryDirectory(prefix=".download-", dir=output) as temporary:
         directory = Path(temporary)
@@ -313,7 +456,7 @@ def download_snapshot(root, output_dir=None, repo=REPO, tag=TAG, latest=False):
 
 
 _PATH_KEYS = {"checkpoint", "opponent", "output", "stop_file", "checkpoint_path",
-              "maps_dir", "opponent_checkpoint"}
+              "maps_dir", "opponent_checkpoint", "cell_artifact_dir", "holdout_ledger"}
 _PROTECTED_KEYS = {"identity", "config", "evaluation_config", "runtime", "network_config"}
 
 
@@ -337,6 +480,198 @@ def rebase_json(value, old_root, new_root):
                 result[key] = rebase_json(item, old_root, new_root)
         return result
     return value
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
+
+
+def read_jsonl(path):
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
+
+
+def write_jsonl(path, rows):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("".join(canonical(row) + "\n" for row in rows))
+
+
+def merge_training(existing, incoming):
+    by_iteration = {}
+    for row in [*existing, *incoming]:
+        iteration = row.get("iteration")
+        if type(iteration) is not int or iteration < 0:
+            raise ValueError("training evidence has no valid iteration")
+        if iteration in by_iteration and by_iteration[iteration] != row:
+            raise ValueError(f"conflicting training evidence for iteration {iteration}")
+        by_iteration[iteration] = row
+    return [by_iteration[key] for key in sorted(by_iteration)]
+
+
+def merge_report(existing, incoming):
+    """Choose a same-identity report only when its completed-cell set dominates."""
+    if existing == incoming:
+        return existing
+    identity_keys = ("checkpoint_sha256", "evaluation_config_sha256", "benchmark_suite_id",
+                     "suite", "stage", "iteration", "expected", "expected_cell_ids")
+    if any(key not in existing or key not in incoming or existing[key] != incoming[key] for key in identity_keys):
+        raise ValueError("conflicting evaluation report identities/schedules")
+    expected = set(existing["expected_cell_ids"])
+    def completed(report):
+        pending = set(report["pending_cell_ids"])
+        if (not pending <= expected or report["completed"] != len(expected - pending)
+                or report["expected"] != len(expected)):
+            raise ValueError("evaluation report completion counts are inconsistent")
+        return expected - pending
+    before, after = completed(existing), completed(incoming)
+    if not (before <= after or after <= before):
+        raise ValueError("evaluation reports have incomparable completion sets")
+    older, newer = (existing, incoming) if before <= after else (incoming, existing)
+    for opponent, stats in older.get("opponents", {}).items():
+        later = newer.get("opponents", {}).get(opponent)
+        if later is None:
+            raise ValueError("evaluation report lost an opponent")
+        for key in ("completed", "wins", "draws", "losses"):
+            if key in stats and (key not in later or later[key] < stats[key]):
+                raise ValueError("evaluation report changed previously completed outcomes")
+        if before == after and ({k: v for k, v in stats.items() if k != "errors"}
+                                    != {k: v for k, v in later.items() if k != "errors"}):
+            raise ValueError("evaluation reports disagree on the same completed cells")
+    if before == after:
+        for key in ("complete", "full_panel_complete", "passed", "victory_gate_passed", "standard_stage_passed"):
+            if older.get(key) != newer.get(key):
+                raise ValueError("evaluation reports disagree on completion/pass result")
+    return newer
+
+
+def merge_evaluation_rows(progress, source_rows, destination_progress):
+    """Rebuild summary ledgers from all known immutable attempts and summaries."""
+    # Reuse the evaluator's result-selection semantics without scheduling games.
+    import sys
+    code_root = str(Path(__file__).resolve().parents[1])
+    if code_root not in sys.path:
+        sys.path.insert(0, code_root)
+    from alpha0.evaluate import selected_result
+
+    attempts, legacy = {}, {}
+    def add(row):
+        cell = row.get("evaluation_cell_id")
+        if cell is None:
+            legacy[canonical(row)] = row
+            return
+        identity, attempt = row.get("identity"), row.get("attempt")
+        if (not isinstance(identity, dict) or type(attempt) is not int or attempt < 1
+                or hashlib.sha256(canonical(identity).encode()).hexdigest() != cell):
+            raise ValueError("evaluation evidence has an invalid cell identity/attempt")
+        key = cell, attempt
+        row = dict(row)
+        row.pop("cell_artifact_dir", None)  # Derived location, not game evidence.
+        previous = attempts.get(key)
+        if previous is not None and previous != row:
+            a, b = dict(previous), dict(row)
+            error_a, error_b = a.pop("error", None), b.pop("error", None)
+            # evaluations.jsonl deliberately truncates error summaries; preserve
+            # the original full error from evaluation_errors/cell artifacts.
+            errors_agree = error_a == error_b or (isinstance(error_a, str) and isinstance(error_b, str) and
+                (error_a == error_b.splitlines()[0][:600] or error_b == error_a.splitlines()[0][:600]))
+            if a != b or not errors_agree:
+                raise ValueError(f"conflicting evaluation evidence for cell {cell}, attempt {attempt}")
+            if len(str(error_a or "")) > len(str(error_b or "")):
+                row = previous
+        attempts[key] = row
+    for row in source_rows:
+        add(row)
+    requests = {}
+    for request_path in sorted((progress/"evaluation_cells").glob("*/request.json")):
+        request = json.loads(request_path.read_text())
+        cell = request.get("evaluation_cell_id")
+        if cell != request_path.parent.name or hashlib.sha256(canonical(request["identity"]).encode()).hexdigest() != cell:
+            raise ValueError("evaluation request path disagrees with its immutable identity")
+        requests[cell] = request
+    for attempt_path in sorted((progress/"evaluation_cells").glob("*/attempt-*.json")):
+        row = json.loads(attempt_path.read_text())
+        if (row.get("evaluation_cell_id") != attempt_path.parent.name or
+                attempt_path.name != f"attempt-{int(row.get('attempt', 0)):04d}.json"):
+            raise ValueError("evaluation attempt path disagrees with its immutable identity")
+        if row["evaluation_cell_id"] in requests and row.get("identity") != requests[row["evaluation_cell_id"]]["identity"]:
+            raise ValueError("evaluation attempt differs from its request identity")
+        add(row)
+    groups = {}
+    for (cell, _), row in sorted(attempts.items()):
+        groups.setdefault(cell, []).append(row)
+    rows = list(legacy.values())
+    for cell, candidates in sorted(groups.items()):
+        chosen = selected_result({"evaluation_cell_id": cell, "identity": candidates[0]["identity"]}, candidates)
+        row = dict(chosen)
+        if (progress/"evaluation_cells"/cell).exists():
+            row["cell_artifact_dir"] = str(destination_progress/"evaluation_cells"/cell)
+        if row.get("error"):
+            row["error"] = row["error"].splitlines()[0][:600]
+        rows.append(row)
+    write_jsonl(progress/"evaluations.jsonl", rows)
+    write_jsonl(progress/"evaluation_errors.jsonl", [row for _, row in sorted(attempts.items()) if row.get("status") == "error"])
+    return len(attempts)
+
+
+def reconcile_progress(root, staging, old_root):
+    """Merge Git and snapshot evidence in staging before modifying the checkout."""
+    existing_dir, merged_dir = root/PROGRESS, staging/PROGRESS
+    merged_dir.mkdir(parents=True, exist_ok=True)
+    eval_names = {"evaluations.jsonl", "evaluation_errors.jsonl"}
+    eval_rows = []
+    for name in eval_names:
+        eval_rows.extend(read_jsonl(merged_dir/name))
+    changed, existing_files = [], []
+    if existing_dir.exists():
+        for path in sorted(existing_dir.rglob("*")):
+            if path.is_symlink():
+                raise ValueError("existing progress contains a symlink")
+            if not path.is_file() or not allowed_path(path.relative_to(root).as_posix()):
+                continue
+            existing_files.append(path)
+            relative = path.relative_to(existing_dir)
+            destination = merged_dir/relative
+            old = None
+            if path.suffix == ".json":
+                old = rebase_json(json.loads(path.read_text()), old_root, str(root))
+            elif path.suffix == ".jsonl":
+                old = rebase_json(read_jsonl(path), old_root, str(root))
+            if relative.as_posix() in eval_names:
+                eval_rows.extend(old)
+                continue
+            if not destination.exists():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                if old is None:
+                    shutil.copyfile(path, destination)
+                elif path.suffix == ".jsonl":
+                    write_jsonl(destination, old)
+                else:
+                    destination.write_text(json.dumps(old, sort_keys=True, indent=2, allow_nan=False)+"\n")
+                changed.append(str(relative))
+                continue
+            cosmetic = (len(relative.parts) == 1 and (relative.name in ("README.md", "status.json")
+                        or relative.name.startswith("latest-") and path.suffix == ".json")) or path.suffix in (".png", ".svg")
+            if cosmetic:
+                continue  # Historical presentation may use archive version; raw evidence is merged below.
+            if relative.as_posix() == "training.jsonl":
+                write_jsonl(destination, merge_training(old, read_jsonl(destination)))
+                changed.append(str(relative))
+            elif relative.parts[0] == "evaluation_reports" and path.suffix == ".json":
+                merged = merge_report(old, json.loads(destination.read_text()))
+                destination.write_text(json.dumps(merged, sort_keys=True, indent=2, allow_nan=False)+"\n")
+                changed.append(str(relative))
+            elif old is not None:
+                incoming = json.loads(destination.read_text()) if path.suffix == ".json" else read_jsonl(destination)
+                if old != incoming:
+                    raise ValueError(f"conflicting immutable progress evidence: {relative}")
+            elif path.read_bytes() != destination.read_bytes():
+                raise ValueError(f"conflicting progress evidence: {relative}")
+    # Normalize/validate even a training ledger that only existed on one side.
+    training = merged_dir/"training.jsonl"
+    if training.exists():
+        write_jsonl(training, merge_training([], read_jsonl(training)))
+    attempt_count = merge_evaluation_rows(merged_dir, eval_rows, root/PROGRESS)
+    return {"merged_paths": changed, "evaluation_attempts": attempt_count,
+            "max_training_iteration": max((row["iteration"] for row in read_jsonl(training)), default=-1)}
 
 
 def restore_snapshot(root, archive):
@@ -402,30 +737,57 @@ def restore_snapshot(root, archive):
                         if updated != original:
                             path.write_text("".join(json.dumps(row, sort_keys=True, allow_nan=False)+"\n" for row in updated))
                             rebased.append(name)
-            # Validate every destination before publishing anything. Existing
-            # progress/gate ledgers may be equal but are never overwritten.
-            for name in expected:
+            reconciliation = reconcile_progress(root, staging, old_root)
+            # Progress is reconciled, presentation/status is historical, and gate
+            # ledgers remain strict. Capture every destination's current hash so
+            # a concurrent writer cannot be silently overwritten during publish.
+            publish_paths = sorted(p for p in staging.rglob("*") if p.is_file())
+            observed = {}
+            for source_path in publish_paths:
+                name = source_path.relative_to(staging).as_posix()
                 destination = root/name
                 assert_no_symlink(root, destination)
-                if destination.exists() and (not destination.is_file() or sha256(destination) != sha256(staging/name)):
-                    raise ValueError(f"existing artifact differs; refusing to overwrite: {name}")
-            # Publish evidence first. If interrupted, identical files are reusable
-            # on retry. Publish the complete run directory in one rename last.
-            for name in expected:
+                if destination.exists() and not destination.is_file():
+                    raise ValueError(f"existing artifact is not a regular file: {name}")
+                observed[name] = sha256(destination) if destination.exists() else None
+                if name.startswith("runs/gate-ledgers/") and destination.exists():
+                    if json.loads(destination.read_text()) != json.loads(source_path.read_text()):
+                        raise ValueError(f"existing artifact differs; refusing to overwrite: {name}")
+            # Publish merged evidence first. An interruption leaves a reusable
+            # union; the complete run directory is published in one rename last.
+            for source_path in publish_paths:
+                name = source_path.relative_to(staging).as_posix()
                 if name.startswith(RUN + "/"):
                     continue
                 destination = root/name
                 destination.parent.mkdir(parents=True, exist_ok=True)
-                try:
-                    os.link(staging/name, destination)  # O_EXCL semantics: never overwrite a concurrent writer.
-                except FileExistsError:
-                    if sha256(destination) != sha256(staging/name):
-                        raise RuntimeError("destination changed during restore")
+                actual = sha256(destination) if destination.exists() else None
+                if actual != observed[name]:
+                    raise RuntimeError(f"destination changed during restore: {name}")
+                if actual == sha256(source_path):
+                    continue
+                if actual is None:
+                    os.link(source_path, destination)  # Fail rather than overwrite a new concurrent file.
+                else:
+                    os.replace(source_path, destination)
             run.parent.mkdir(parents=True, exist_ok=True)
             os.rename(staging/RUN, run)
+            progress_ahead = reconciliation["max_training_iteration"] > resume["iteration"]
+            if progress_ahead:
+                stop_path = root/"runs/campaign/STOP"
+                try:
+                    with stop_path.open("x") as stream:
+                        stream.write("Recovery review required: training metrics are newer than restored model weights. "
+                                     "Do not resume the same iteration history until this discrepancy is resolved.\n")
+                except FileExistsError:
+                    pass  # Preserve any previous user stop request.
             report = {"status": "restored", "archive": archive.name, "sha256": sidecar["sha256"],
                       "source_commit": manifest["git"]["commit"], "restored_at": datetime.now(timezone.utc).isoformat(),
                       "files": len(expected), "rebased_json_files": rebased,
+                      "progress_reconciliation": reconciliation,
+                      "checkpoint_iteration": resume["iteration"],
+                      "progress_ahead_of_checkpoint": progress_ahead, "review_required": progress_ahead,
+                      "review_reason": "training metrics newer than restored weights; STOP created/preserved" if progress_ahead else None,
                       "note": "Restored process status is historical; no process was started."}
             atomic_json(root/"runs/campaign/restore.json", report)
             return report

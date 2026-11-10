@@ -132,6 +132,8 @@ class ProgressTest(unittest.TestCase):
             text = (path / 'README.md').read_text()
             self.assertIn('training-batch diagnostics, not held-out calibration', text)
             self.assertIn('](learning-health.png)', text)
+            self.assertIn(f'--progress-dir {path}', text)
+            self.assertIn(f'--manifest {manifest}', text)
 
 
 if __name__ == '__main__':

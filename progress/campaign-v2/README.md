@@ -1,29 +1,47 @@
 # Training progress
 
-Generated from repository JSONL measurements at `2026-11-10T03:00:29+00:00`.
+Generated from repository JSONL measurements at `2026-11-10T03:21:28+00:00`.
 
-Run `python scripts/plot_progress.py` to regenerate these figures and this report.
+Run `python scripts/plot_progress.py --progress-dir progress/campaign-v2` from the repository root to regenerate these figures and this report.
 
 ## Latest training measurements
 
-No training measurements have been recorded. Empty axes are intentional; no synthetic baseline is plotted.
+| Measurement | Observed value |
+|---|---:|
+| `iteration` | 2 |
+| `games_total` | 16 |
+| `positions_total` | 7588 |
+| `policy_loss` | 2.94981 |
+| `value_loss` | 0.657401 |
+| `total_loss` | 3.60721 |
+| `entropy` | 2.94692 |
+| `games_per_hour` | 73.5348 |
+| `wall_seconds` | 785.606 |
 
 ![Training loss, entropy, data volume and throughput](training.png)
 
+## Learning health
+
+These are **training-batch diagnostics, not held-out calibration**. Value BCE fits win logits; value MSE and mean use predictions on the −1 to +1 scale. Saturation is the fraction with |value| > 0.95.
+
+Replay counts describe the current buffer, not cumulative data. Searched positions and actual decisions describe each training iteration; their ratio shows search coverage. Missing measurements remain gaps and are not filled with zero.
+
+![Training-batch value diagnostics, replay size and search coverage](learning-health.png)
+
 ## Latest benchmark checkpoint
 
-Iteration **0**, checkpoint `checkpoint-0000.pt [936b66b3/macro_v2/greedy/ef6f893e]`.
+Iteration **1**, checkpoint `checkpoint-0001.pt [37f98979/macro_v2/greedy/ef6f893e]`.
 
 **24 completed games; 0 errors; 12/12 panel opponents represented.**
 
-Equal-weight mean game score: **12.5%** across all frozen panel opponents. This is not an Elo estimate.
+Equal-weight mean game score: **16.7%** across all frozen panel opponents. This is not an Elo estimate.
 
 Paired-map bootstrap interval unavailable: 1 shared map–seed cells have both sides completed against every panel opponent; at least 4 are required. A small smoke suite is insufficient for a strength claim.
 
 | Opponent | Completed | W–D–L | Mean score | Descriptive 95% Wilson interval | Errors | Sides A/B |
 |---|---:|---:|---:|---:|---:|---:|
 | `Krak9n_robot` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
-| `seru9_TOTAL_AGGRO` | 2 | 1–0–1 | 50.0% | 9.5%–90.5% | 0 | 1/1 |
+| `seru9_TOTAL_AGGRO` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
 | `Camleaf_mk1` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
 | `CS50Crab_rapierV1` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
 | `spsquared_TSPAARK_QUALS` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |

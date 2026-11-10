@@ -55,3 +55,33 @@ replay game diversity, game lengths and search coverage. If neutral sparse-searc
 training remains weak, test the explicitly labeled own-teacher warmstart and
 larger useful search budgets; do not repeat a failed recipe indefinitely or
 consume reserved confirmation maps merely to inspect progress.
+
+### First v2 iteration and recovery verification
+
+Eight complete self-play games generated **42,230 decisions**, including **6,927
+searched decisions**; the reservoir retained **4,096 positions** across all eight
+games. Training and game generation took 394 seconds. After 48 updates, mean
+training-batch value BCE was **0.69254**, MSE **0.99879**, predicted value **-0.01933**
+and saturation fraction **0%**. The value head is close to the uninformed baseline;
+it has not demonstrated useful held-out calibration, but has not repeated the
+initial run's saturation failure at this checkpoint.
+
+Checkpoint 1 completed **24/24** smoke cells: **4 wins**, versus 3 for its neutral
+baseline, with no errors. That one-game difference on a single map/seed is not a
+strength claim. The campaign continued to its next self-play iteration.
+
+The separately labeled all-teacher warmstart completed six own-controller games,
+256 distillation updates, and all 24 benchmark cells: **12 wins, zero errors**.
+This is prior initialization, not search-guided improvement. It remains weaker
+than the fixed assault diagnostic and has not replaced the neutral v2 experiment.
+
+GitHub release creation succeeded, but the asset-upload endpoint returned HTTP
+401 with the current credentials. The recovery helper now uses an append-only
+`campaign-checkpoints` branch as an authentication-specific fallback. A clean
+remote download and isolated restore of the **trained checkpoint 1** successfully
+loaded its optimizer/RNG state, eight replay games, 4,096 positions and all 48
+baseline/checkpoint evaluation rows. Checkpoint SHA-256:
+`37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90`.
+The active training checkout was untouched. Ordinary Git progress can be ahead
+or behind the archive: recovery merges evidence safely and requests review if
+training metrics refer to a later checkpoint than the available model.
