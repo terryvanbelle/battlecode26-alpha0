@@ -1,0 +1,54 @@
+{
+  "benchmark_data_used": false,
+  "cell_timeout_seconds": 180,
+  "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "experiment_id": "terminal-root-ranking-v4",
+  "gradient_updates": 0,
+  "max_decisions": 100000,
+  "max_error_attempts": 2,
+  "max_worker_restarts": 4,
+  "required_legal_action": 37,
+  "response_timeout_seconds": 10,
+  "root_roles": [
+    "BABY_RAT",
+    "RAT_KING"
+  ],
+  "schema_version": 1,
+  "search": {
+    "cpuct": 1.5,
+    "dirichlet_alpha": 0.3,
+    "exploration_fraction": 0.25,
+    "max_depth": 12,
+    "root_noise": true,
+    "root_seed_base": 20261114,
+    "simulations": 32
+  },
+  "selection_seeds": [
+    103003,
+    103013
+  ],
+  "source_games": [
+    "iter-0001-game-004",
+    "iter-0001-game-005",
+    "iter-0001-game-006",
+    "iter-0001-game-007"
+  ],
+  "source_run": "runs/warmstart-v3",
+  "task_timeout_seconds": 600,
+  "temperature": 0.35,
+  "thresholds": {
+    "improved_roots_min": 2,
+    "mean_delta_min": 0.1,
+    "worst_root_delta_min": -0.25
+  },
+  "torch_threads": 1,
+  "validation_seeds": [
+    103021,
+    103043,
+    103067,
+    103091
+  ],
+  "wall_budget_seconds": 7200,
+  "workers": 1
+}

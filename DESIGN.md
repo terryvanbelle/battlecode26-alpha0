@@ -159,6 +159,8 @@ The public GitHub repository was created by the owner after the integration toke
 
 The warmstart plateau review is recorded in [the measured search diagnosis](docs/warmstart-plateau.md). Two MCTS iterations retained the prior's 20/24 smoke score while scarcely changing greedy decisions. The next approved mechanism test is `terminal-root-ranking-v4`: compare complete terminal rollouts of all legal root actions with the current PUCT choice, using separate selection and validation seeds. This changes no model, engine or production checkpoint. Its predeclared research decision rule must pass before a separately reviewed rollout-guided training pilot; these diagnostic outcomes never count toward the benchmark victory gate.
 
+The [implemented experiment](docs/root-ranking-v4.md) uses eight state-hashed roots from four other own-self-play games, every legal action with two selection seeds, and four independent paired validation seeds. A maximum-mean selector breaks ties by the frozen policy prior and then action ID. PUCT uses 32 simulations and depth 12; both selectors are frozen before their validation continuations. Shared action choices share physical validation cells. A separate supervisor owns the neutral, warmstart and diagnostic locks, enforces STOP and a two-hour hard deadline, and preserves immutable per-cell recovery records. Final decisions require both the precommitted score rule and a quiescent input/runtime integrity check. There are no gradients in this experiment.
+
 ## Decisions to revisit after measurement
 
 1. Evaluate whether v2 learns beyond its untrained macro-controller baseline; separate heuristic/controller gains from optimizer gains.

@@ -1,0 +1,122 @@
+{
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "config": {
+    "benchmark_data_used": false,
+    "cell_timeout_seconds": 180,
+    "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "experiment_id": "terminal-root-ranking-v4",
+    "gradient_updates": 0,
+    "max_decisions": 100000,
+    "max_error_attempts": 2,
+    "max_worker_restarts": 4,
+    "required_legal_action": 37,
+    "response_timeout_seconds": 10,
+    "root_roles": [
+      "BABY_RAT",
+      "RAT_KING"
+    ],
+    "schema_version": 1,
+    "search": {
+      "cpuct": 1.5,
+      "dirichlet_alpha": 0.3,
+      "exploration_fraction": 0.25,
+      "max_depth": 12,
+      "root_noise": true,
+      "root_seed_base": 20261114,
+      "simulations": 32
+    },
+    "selection_seeds": [
+      103003,
+      103013
+    ],
+    "source_games": [
+      "iter-0001-game-004",
+      "iter-0001-game-005",
+      "iter-0001-game-006",
+      "iter-0001-game-007"
+    ],
+    "source_run": "runs/warmstart-v3",
+    "task_timeout_seconds": 600,
+    "temperature": 0.35,
+    "thresholds": {
+      "improved_roots_min": 2,
+      "mean_delta_min": 0.1,
+      "worst_root_delta_min": -0.25
+    },
+    "torch_threads": 1,
+    "validation_seeds": [
+      103021,
+      103043,
+      103067,
+      103091
+    ],
+    "wall_budget_seconds": 7200,
+    "workers": 1
+  },
+  "config_file_sha256": "f3c1b3d2242c518f78b05c0d05d1ef9f5468d3bbdb477a3e00104965eef1ba24",
+  "config_sha256": "e1f68e1c732c949de3106d192b3f375747f9ac7a56c1867367e37828c87437c5",
+  "maps": {
+    "maps/DefaultSmall.map26": "664653d43fd633497ac0e0acd874384fe5ebc644de2e6d0036f863b9ff74a68f",
+    "maps/closeup.map26": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680",
+    "maps/knifefight.map26": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5",
+    "maps/tiny.map26": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e"
+  },
+  "reserved_confirmation_seeds": [
+    90101,
+    90107,
+    90121,
+    90133
+  ],
+  "runner_source_sha256": "b99c98b97577bede53fa3fc04ac9e1c40ae3a761b1323632bd98bfd1dda02b38",
+  "runtime": {
+    "compiled_classes": {
+      "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+      "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+      "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+      "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+      "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+      "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+      "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+      "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+      "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+      "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+      "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+      "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+      "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+      "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+      "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+      "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+      "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+      "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+      "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+      "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+    },
+    "files": {
+      "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+      "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+      "alpha0/learn_v2.py": "81e0dc77edb64dbc037781f284e0b41ffdf9be14dbc7b6b661a83f630e4efa31",
+      "alpha0/mcts.py": "e37c7b595ff6be844b3c8f83818eb8b32224698a692ebf2c9a3023c55c382271",
+      "alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747",
+      "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+      "alpha0/replay_v2.py": "f6087c10d239e4b2f8d411ce5bb3fc36fd8b6cb541b66695f8041dee59eb4ada",
+      "java/alpha0/EngineBridge.java": "24dbeb34e552e49fee1cb23a614d1d1ab37508a5522fc038ba5b00186abe17b5",
+      "java/alpha0/MacroV2.java": "2e419be54d7ea24c43223d0a060b47896854af958d50a9cda077b2c453a18cd4",
+      "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+      "java/alpha0/StateCopier.java": "fef9a83096398738fe174fb08d001948b6398fd881ead5832b186979bf1255ea",
+      "patches/local-research.patch": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+      "vendor/engine/battlecode26-java-1.2.6.jar": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec"
+    },
+    "identity_version": 2,
+    "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+    "numpy_version": "2.3.5",
+    "torch_version": "2.15.0+cpu"
+  },
+  "schema_version": 1,
+  "source_games": {
+    "runs/warmstart-v3/games/iter-0001-game-004.json": "2b48a4acf3b2f54c564206f8b2238ae8834f6b2223d1aaa9003d6ab3cf8ec21b",
+    "runs/warmstart-v3/games/iter-0001-game-005.json": "bb65c16f74fa020b0a6cc04493c7d9640147424bde6b34c5decc4fa356efb1ca",
+    "runs/warmstart-v3/games/iter-0001-game-006.json": "58ec289dd77296fd046d0f8e875dfc6dabd2279bbe41cd7d7f0d464e59a1b6c2",
+    "runs/warmstart-v3/games/iter-0001-game-007.json": "2c6a734648215fe8efd5bcd2cc88158665a05c6788b15b87c737381b994424dc"
+  }
+}
