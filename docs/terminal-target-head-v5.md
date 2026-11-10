@@ -190,6 +190,23 @@ game uniformly, team uniformly, then an anchor uniformly within that stratum;
 this preserves equal game/team weight even if integer storage quotas differ.
 Compute KL only on legal actions, treating zero-probability terms as zero.
 These anchor positions use cp2 probabilities, not winning labels.
+
+The implementation pins the previously unspecified integer storage convention
+before source generation. Each completed training source uses an independent
+Algorithm-R reservoir of at most 16 positions per team. Its NumPy PCG64 seed is
+the integer value of the first 16 hexadecimal characters of SHA-256 of compact,
+sorted-key JSON `{"anchor_seed":203151,"source_id":ID,"player":TEAM}`.
+After all initial and required reserve games are known, order strata by source
+ID, then team 0/1. Give each `floor(512 / number_of_strata)` positions and give
+one extra to each of the first remainder strata. In this fixed order, use one
+separate `numpy.random.default_rng(203151)` stream to select each quota without
+replacement from that stratum's chronologically sorted reservoir. This nested
+uniform sampling preserves equal selection within each source/team. A stratum
+shorter than its quota is an explicit coverage failure, not permission to
+duplicate positions or redistribute its weight. Record all quotas, reservoir
+seeds and chosen decision indices. All retained source inputs use lossless
+float32 storage; cached head features are also float32.
+
 The loss is mean target cross-entropy plus mean anchor forward KL, each with
 coefficient 1. Precompute and freeze the sampled target/anchor batch indices;
 use the same anchors and minibatches in both arms. Do not tune hyperparameters,
