@@ -1,0 +1,14 @@
+{
+  "cpu_scope": "waited Python workers plus their reaped Java descendants; interrupted/unreaped descendants may be omitted",
+  "ended_at": "2026-11-10T07:53:19.975564+00:00",
+  "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+  "interruption_or_error": null,
+  "jobs_completed": 8,
+  "jobs_scheduled": 8,
+  "phase": "discover_validation",
+  "reaped_descendant_cpu_seconds": 228.62782900000002,
+  "started_at": "2026-11-10T07:52:08.747599+00:00",
+  "supervisor_cpu_seconds": 0.39906792499999977,
+  "wall_seconds": 71.2279896459986,
+  "workers_limit": 3
+}

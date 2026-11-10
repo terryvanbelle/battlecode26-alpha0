@@ -346,3 +346,31 @@ cwd is unreadable; its 17 offline tests pass, including a PermissionError
 regression. No learner, collector, inference, engine or pinned runtime changed.
 The operator instructions require command/lock inspection and the corrected
 external scan; future supervisors should adopt that behavior.
+
+
+### V6 completed and independently audited; fitting diagnostic selected
+
+[Terminal-target-head-v6](terminal-v6-results.md) completed in 77.02 minutes with
+28 source games, 32 training roots, 512 anchors, 16 input-disjoint validation roots,
+1,458 valid target continuations,64 physically shared validation continuations
+and 72 complete fresh benchmark games. Both heads received 128 matched AdamW
+updates; only 5,160 policy parameters changed. No error, retry or incomplete
+attempt occurred. The independent final audit exactly reproduced both model
+and optimizer states and verified all terminal evidence, hashes and chronology.
+Its SHA is `ab8f824a645432916417e8142d61c7cd13ec5e69561b96869115ff95288dd564`.
+
+All three policies won 20/24 with the same four losses to bestsofar/basic51.
+All 16 validation actions were identical; mean paired advantage and number of
+improved roots were both 0. The research expansion rule FAILED; no model was
+promoted and neither all-map victory stage passed. Terminal labels differed
+from PUCT on 9/32 training roots, but neither head changed a root greedy action.
+
+[Training-only diagnosis](v6-training-underfit.md) found increased target
+probabilities without argmax crossings, full row rank of the 32-root feature
+matrix, and strong gradient opposition among labels and from anchor KL. The
+selected next experiment is [cached-head-constraint-v7](cached-head-constraint-v7.md):
+two fresh-cp2, fixed-data head fits, KL 1 versus 0, a shared deterministic 2,048-update
+stream and fixed 128/512/2,048 snapshots. The 128-step KL=1 result must exactly
+reproduce v6 before interpretation. It is a 15-minute, training-only mechanism
+diagnostic: no new games, held validation or benchmark tuning, and no automatic
+promotion. All v6 artifacts remain preserved in their separate recovery export.

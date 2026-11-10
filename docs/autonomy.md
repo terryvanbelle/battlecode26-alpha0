@@ -99,42 +99,41 @@ Durable snapshots and recovery commands are documented in [campaign-snapshots.md
 
 ## Current policy-transfer research boundary
 
-V4 completed and passed its small mechanism rule; do not repeat it as new evidence.
-[V5](terminal-target-head-v5.md) correctly stopped with 24/32 roots before SGD;
-its separate [verified archive](../artifacts/terminal-target-head-v5/README.md)
-preserves the coverage failure. The next [v6](terminal-target-head-v6.md) uses
-symmetric source temperature 1.0, unchanged continuation temperature .35, and
-the complete same seed inventory with newly generated data.
+V4 completed its small mechanism rule; V5 stopped before SGD with a coverage
+shortfall. [V6 is complete](terminal-v6-results.md): all 1,458 selection cells,
+64 shared validation games and 72 smoke games were valid. Both fitted heads
+and fresh cp2 remained 20/24; zero validation advantage means the expansion rule
+failed. Preserve its [verified archive](../artifacts/terminal-target-head-v6/README.md),
+audits and all prior runs. Do not repeat completed v6 work as new evidence.
 
-Inspect processes, status and all locks before a bounded invocation:
+The selected next experiment is the training-only
+[cached-head-constraint-v7 diagnostic](cached-head-constraint-v7.md). It compares
+fixed 2,048-update fits with anchor coefficients 1 and 0 on the unchanged v6
+training data. It uses no new games, validation or benchmark outcomes, and
+promotes no policy. The 128-update KL=1 control must reproduce v6 exactly.
+
+After inspecting actual commands, status, all five locks and corresponding STOPs:
 
 ```bash
-.venv/bin/python -u -m alpha0.terminal_v6 --seconds 10800
+.venv/bin/python -u -m alpha0.constraint_v7 --preflight
+.venv/bin/python -u -m alpha0.constraint_v7
 ```
 
-This supervisor owns campaign, warmstart, v5 and v6 exclusion locks and honors
-all four corresponding STOP files. Its own paths are
-`runs/terminal-target-head-v6` and `progress/terminal-target-head-v6`. Never
-edit its recorded runtime while active. A coverage/budget failure requires
-research review, not a smaller fitting set. Completed immutable work is reused
-after a deadline; a completed or failed research decision is reviewed before
-any new experiment. Use `scripts/export_terminal_v6.py` for its separate
-verified export; do not restore over existing/newer work. None of these subset
-pilots satisfies the all-map victory gate.
+The supervisor holds campaign, warmstart, v5, v6 and v7 locks, runs one numerical
+worker with one Torch thread, and enforces **900 total wall seconds across
+resumptions**. An unclosed invocation conservatively consumes its remaining
+reservation. Never reset that ledger or rerun a completed diagnostic. Review its
+complete fixed snapshots and classification before selecting later research.
 
+Its own state is in `runs/cached-head-constraint-v7` and
+`progress/cached-head-constraint-v7`. Preserve all six diagnostic snapshots,
+optimizer/RNG/batch state and intermediate recovery generations in its separate
+verified export. A fresh validation protocol is required for any later learning
+experiment. None of these subset pilots satisfies the all-map victory gate.
 
 On the managed host, `/proc/PID/cwd` can be unreadable across sandbox namespaces
-even when the command line is readable. The frozen v6 runner's internal actor
-scan can therefore return an empty list while real actors are running. Do not
-interpret that as quiescence: inspect actual command lines and flock ownership
-as required above. The separate v6 exporter now conservatively blocks matching
-actor/EngineBridge commands with unreadable working directories. Its read-only
-scan can be used before any manual launch:
-
-```bash
-.venv/bin/python -c 'from pathlib import Path; from scripts.export_terminal_v6 import active_actor_pids; print(active_actor_pids(Path.cwd()))'
-```
-
-Any returned PID requires process inspection before proceeding. Existing actor
-code remains frozen; the four exclusion locks still prevent overlapping normal
-launches. The next versioned supervisor should adopt the conservative scan.
+even when the command line is readable. The frozen v6 internal scan can falsely
+return no actors. Use actual command lines and flock ownership; v7 and the
+separate v6 exporter conservatively block matching actors whose cwd is unreadable.
+Do not edit pinned runtime/config/protocol files while an actor is active. Never
+restore historical source or progress over current main or newer local work.

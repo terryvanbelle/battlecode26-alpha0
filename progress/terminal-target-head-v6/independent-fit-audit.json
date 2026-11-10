@@ -1,0 +1,616 @@
+{
+  "arms": {
+    "puct_head": {
+      "allowed_policy_parameters": 5160,
+      "anchor_choices_sha256": "08436a114c11fc0aee93da86d459743b3f3903e4f4112dd5f82c4cc912ad250f",
+      "changed_parameter_values": 5160,
+      "changed_tensor_keys": [
+        "policy.weight",
+        "policy.bias"
+      ],
+      "checkpoint_sha256": "805af399e61044da899d409b6a5ba8521aaccdc53ab79c2d9fa5eaf59960cc38",
+      "frozen_critic_outputs_equal_544_inputs": true,
+      "frozen_tensor_bytes_equal": true,
+      "full_cached_metrics": {
+        "anchor_action_changed_fraction": 0.001953125,
+        "anchor_kl": 0.015039490535855293,
+        "loss": 0.4515880346298218,
+        "root_action_changed_fraction": 0.0,
+        "root_target_agreement": 1.0,
+        "target_ce": 0.43654853105545044
+      },
+      "initial_batch_objective_matches": true,
+      "optimizer_round_trip_exact": true,
+      "optimizer_updates": 128,
+      "policy_delta_l2": 0.4500367343425751,
+      "rng_recovery_exact": true,
+      "root_choices": [
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        20,
+        26,
+        20,
+        26,
+        20,
+        26,
+        20,
+        26
+      ],
+      "shared_batches_reconstructed": true
+    },
+    "terminal_head": {
+      "allowed_policy_parameters": 5160,
+      "anchor_choices_sha256": "ec58a2b3013301df88acbffcbba3834288e2cd07af3fbb6f01553aefe2f8cfb3",
+      "changed_parameter_values": 5160,
+      "changed_tensor_keys": [
+        "policy.weight",
+        "policy.bias"
+      ],
+      "checkpoint_sha256": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718",
+      "frozen_critic_outputs_equal_544_inputs": true,
+      "frozen_tensor_bytes_equal": true,
+      "full_cached_metrics": {
+        "anchor_action_changed_fraction": 0.005859375,
+        "anchor_kl": 0.05066864937543869,
+        "loss": 0.9660977721214294,
+        "root_action_changed_fraction": 0.0,
+        "root_target_agreement": 0.71875,
+        "target_ce": 0.9154291152954102
+      },
+      "initial_batch_objective_matches": true,
+      "optimizer_round_trip_exact": true,
+      "optimizer_updates": 128,
+      "policy_delta_l2": 0.7135600447654724,
+      "rng_recovery_exact": true,
+      "root_choices": [
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        27,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        21,
+        20,
+        26,
+        20,
+        26,
+        20,
+        26,
+        20,
+        26
+      ],
+      "shared_batches_reconstructed": true
+    }
+  },
+  "audit_kind": "independent-post-fit-head-tensors-and-recovery",
+  "audit_source_sha256": "4c6f290dcfbeeec0c28b6364aa53983d3800ea158cf9cbb738175586940ebbee",
+  "batch_sha256": "5fb87535e655b6776ab05fef1f95f1c36d90c0719c3c887bc12cee488778c998",
+  "dataset_metadata_sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b",
+  "dataset_sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26",
+  "experiment_id": "terminal-target-head-v6",
+  "experiment_identity_file_sha256": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c",
+  "experiment_identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+  "fit_identity_sha256": "424b7a7588ffb0e1bfc923853d045194ba89c3e9b8fd708daadf9705880a1fb2",
+  "fit_manifest_sha256": "30bd103c5f74e3d2cdf1f83749e7a93e14f914f37b8a3ed98db54d133486b43e",
+  "format_version": 1,
+  "frozen_state_sha256": "3dfdc987563fe3d0b8a1e247d56bff20847f2f537ded5320f236e8805880dbd3",
+  "gradient_input_overlap": {
+    "checked": true,
+    "gradient_input_count": 544,
+    "intersection_count": 0,
+    "set_sha256": "51cbdb299672293c65afdfe12dd41cf007cb32b04dbccb353dc8cf5b40cd6f9c",
+    "validation_input_count": 16
+  },
+  "no_benchmark_data_used": true,
+  "no_engine_runs": true,
+  "no_gradient_updates": true,
+  "numerical_versions": {
+    "numpy": "2.3.5",
+    "torch": "2.15.0+cpu"
+  },
+  "parent_checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "passed": true,
+  "scope_limitations": [
+    "Reads completed tensors/cached features only; does not independently regenerate feature inputs from game prefixes.",
+    "Checks metadata input-overlap sets; the separate evidence audit verifies their reconstruction and chronology.",
+    "Does not independently replay all 128 gradient updates; verifies saved update counts, optimizer state, batch reconstruction and objective values.",
+    "Training-root/anchor metrics are in-sample; no generalization or benchmark-strength claim follows."
+  ],
+  "target_comparison": {
+    "candidate_anchor_greedy_agreement": 0.9921875,
+    "candidate_root_greedy_agreement": 1.0,
+    "different_selected_targets": 9,
+    "head_pair_l2_difference": 0.6868587732315063,
+    "root_count": 32,
+    "rows": [
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-000",
+        "stratum": [
+          0,
+          0,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 27,
+        "puct_head_greedy": 27,
+        "puct_target": 27,
+        "root_id": "training-001",
+        "stratum": [
+          0,
+          1,
+          1
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 27,
+        "terminal_target": 24
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-002",
+        "stratum": [
+          0,
+          0,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 27,
+        "puct_head_greedy": 27,
+        "puct_target": 27,
+        "root_id": "training-003",
+        "stratum": [
+          0,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 27,
+        "terminal_target": 27
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-004",
+        "stratum": [
+          0,
+          0,
+          0
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 21,
+        "terminal_target": 32
+      },
+      {
+        "cp2_greedy": 27,
+        "puct_head_greedy": 27,
+        "puct_target": 27,
+        "root_id": "training-005",
+        "stratum": [
+          0,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 27,
+        "terminal_target": 27
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-006",
+        "stratum": [
+          0,
+          0,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 27,
+        "puct_head_greedy": 27,
+        "puct_target": 27,
+        "root_id": "training-007",
+        "stratum": [
+          0,
+          1,
+          0
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 27,
+        "terminal_target": 29
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-008",
+        "stratum": [
+          1,
+          0,
+          0
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 21,
+        "terminal_target": 4
+      },
+      {
+        "cp2_greedy": 27,
+        "puct_head_greedy": 27,
+        "puct_target": 27,
+        "root_id": "training-009",
+        "stratum": [
+          1,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 27,
+        "terminal_target": 27
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-010",
+        "stratum": [
+          1,
+          0,
+          1
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 21,
+        "terminal_target": 6
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-011",
+        "stratum": [
+          1,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-012",
+        "stratum": [
+          1,
+          0,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-013",
+        "stratum": [
+          1,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-014",
+        "stratum": [
+          1,
+          0,
+          1
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 21,
+        "terminal_target": 31
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-015",
+        "stratum": [
+          1,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-016",
+        "stratum": [
+          2,
+          0,
+          0
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 21,
+        "terminal_target": 28
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-017",
+        "stratum": [
+          2,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-018",
+        "stratum": [
+          2,
+          0,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-019",
+        "stratum": [
+          2,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-020",
+        "stratum": [
+          2,
+          0,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-021",
+        "stratum": [
+          2,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-022",
+        "stratum": [
+          2,
+          0,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 21,
+        "puct_head_greedy": 21,
+        "puct_target": 21,
+        "root_id": "training-023",
+        "stratum": [
+          2,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 21,
+        "terminal_target": 21
+      },
+      {
+        "cp2_greedy": 20,
+        "puct_head_greedy": 20,
+        "puct_target": 20,
+        "root_id": "training-024",
+        "stratum": [
+          3,
+          0,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 20,
+        "terminal_target": 20
+      },
+      {
+        "cp2_greedy": 26,
+        "puct_head_greedy": 26,
+        "puct_target": 26,
+        "root_id": "training-025",
+        "stratum": [
+          3,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 26,
+        "terminal_target": 26
+      },
+      {
+        "cp2_greedy": 20,
+        "puct_head_greedy": 20,
+        "puct_target": 20,
+        "root_id": "training-026",
+        "stratum": [
+          3,
+          0,
+          1
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 20,
+        "terminal_target": 6
+      },
+      {
+        "cp2_greedy": 26,
+        "puct_head_greedy": 26,
+        "puct_target": 26,
+        "root_id": "training-027",
+        "stratum": [
+          3,
+          1,
+          0
+        ],
+        "targets_equal": false,
+        "terminal_head_greedy": 26,
+        "terminal_target": 12
+      },
+      {
+        "cp2_greedy": 20,
+        "puct_head_greedy": 20,
+        "puct_target": 20,
+        "root_id": "training-028",
+        "stratum": [
+          3,
+          0,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 20,
+        "terminal_target": 20
+      },
+      {
+        "cp2_greedy": 26,
+        "puct_head_greedy": 26,
+        "puct_target": 26,
+        "root_id": "training-029",
+        "stratum": [
+          3,
+          1,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 26,
+        "terminal_target": 26
+      },
+      {
+        "cp2_greedy": 20,
+        "puct_head_greedy": 20,
+        "puct_target": 20,
+        "root_id": "training-030",
+        "stratum": [
+          3,
+          0,
+          1
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 20,
+        "terminal_target": 20
+      },
+      {
+        "cp2_greedy": 26,
+        "puct_head_greedy": 26,
+        "puct_target": 26,
+        "root_id": "training-031",
+        "stratum": [
+          3,
+          1,
+          0
+        ],
+        "targets_equal": true,
+        "terminal_head_greedy": 26,
+        "terminal_target": 26
+      }
+    ],
+    "same_selected_targets": 23
+  }
+}

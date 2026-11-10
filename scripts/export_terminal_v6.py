@@ -329,6 +329,11 @@ def verify_recorded_files(root, paths):
                 name, expected = value.get(key), value.get(hash_key)
                 if not isinstance(name, str) or not isinstance(expected, str):
                     continue
+                if (path.relative_to(root).as_posix() == PROGRESS + "/source-coverage-comparison.json" and
+                    name.startswith("runs/terminal-target-head-v5/")):
+                    # This descriptive cross-version report retains old hashes;
+                    # prior-version source games stay in their separate v5 export.
+                    continue
                 raw = Path(name)
                 if raw.is_absolute():
                     if not raw.is_relative_to(root):
@@ -367,6 +372,11 @@ def verify_recorded_files(root, paths):
             verify_npz(path)
         elif path.suffix in {".json", ".jsonl"}:
             for row in _read_json_rows(path):
+                if name.startswith(PROGRESS + "/source/"):
+                    # Historical prerequisite/source snapshots retain their exact
+                    # bytes and hashes, but their external v5 data references are
+                    # not v6 gradient inputs or v6 recovery dependencies.
+                    continue
                 if name.startswith((RUN + "/dataset/", RUN + "/sources/", RUN + "/fit/")) and _contains_benchmark(row):
                     raise ValueError(f"Benchmark evidence is mixed into gradient data: {name}")
                 if isinstance(row, dict) and row.get("status") == "ok":

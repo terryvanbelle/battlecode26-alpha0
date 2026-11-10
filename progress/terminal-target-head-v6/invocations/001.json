@@ -1,0 +1,22 @@
+{
+  "active_jobs": [],
+  "budget_seconds": 10800.0,
+  "decision": {
+    "all_map_victory": false,
+    "automatic_promotion": false,
+    "complete": true,
+    "criteria_pass": false,
+    "integrity_verified": true,
+    "review_for_expansion": false,
+    "scope": "Precommitted research review rule; no model promotion or all-map victory claim."
+  },
+  "elapsed_seconds": 4620.986017141,
+  "ended_at": "2026-11-10T09:05:20.442847+00:00",
+  "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+  "phase": "complete_review_required",
+  "pid": 59402,
+  "plot_error": null,
+  "reason": null,
+  "runtime_and_checkpoint_unchanged": true,
+  "started_at": "2026-11-10T07:48:19.457008+00:00"
+}

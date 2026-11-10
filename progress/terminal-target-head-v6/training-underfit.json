@@ -1,0 +1,2061 @@
+{
+  "anchor_count": 512,
+  "anchor_weighting": {
+    "game_team_strata": 38,
+    "max_weight": 0.0020242914979757085,
+    "method": "uniform game, uniform team, uniform anchor within game/team",
+    "min_weight": 0.0018796992481203006,
+    "source_games": 19,
+    "storage_counts": [
+      {
+        "anchors": 14,
+        "game_index": 0,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 0,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 1,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 1,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 2,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 2,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 3,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 3,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 4,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 4,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 5,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 5,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 6,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 6,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 7,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 7,
+        "team": 1
+      },
+      {
+        "anchors": 14,
+        "game_index": 8,
+        "team": 0
+      },
+      {
+        "anchors": 14,
+        "game_index": 8,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 9,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 9,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 10,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 10,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 11,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 11,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 12,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 12,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 13,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 13,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 14,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 14,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 15,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 15,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 16,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 16,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 17,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 17,
+        "team": 1
+      },
+      {
+        "anchors": 13,
+        "game_index": 18,
+        "team": 0
+      },
+      {
+        "anchors": 13,
+        "game_index": 18,
+        "team": 1
+      }
+    ]
+  },
+  "changed_greedy_actions": {
+    "cp2": {
+      "anchors": 0,
+      "roots": 0
+    },
+    "puct_head": {
+      "anchors": 1,
+      "roots": 0
+    },
+    "terminal_head": {
+      "anchors": 3,
+      "roots": 0
+    }
+  },
+  "discordant_roots": [
+    {
+      "cp2": {
+        "cp2_action_probability": 0.7928358912467957,
+        "greedy_action": 27,
+        "hard_selected_nll": 4.791672229766846,
+        "mixed_target_ce": 3.866518497467041,
+        "mixed_target_excess_ce": 3.0457167625427246,
+        "selected_minus_best_other_logit_margin": -4.55953311920166,
+        "selected_minus_cp2_logit_margin": -4.55953311920166,
+        "selected_probability": 0.008298568427562714
+      },
+      "cp2_action": 27,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 71,
+            "cosine": 0.992410886087745,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.010610048659145832,
+            "euclidean_distance": 6.3682412981638015,
+            "input_hash": "e9e5a42a6dfcf2da10c471b7c5538425a1dfd09302fd1dcf0705b198fd033dd7",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j3"
+          },
+          {
+            "anchor_index": 23,
+            "cosine": 0.9844430108303347,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.018934044986963272,
+            "euclidean_distance": 9.532870150499342,
+            "input_hash": "a14974fbf3fce7a6baf67816fe35b551327872b972715c291357f79ca45bd600",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j1"
+          },
+          {
+            "anchor_index": 47,
+            "cosine": 0.9825610017179037,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.008940248750150204,
+            "euclidean_distance": 9.719713404454094,
+            "input_hash": "3408a245aca05aff2a77b2f2313a9bea68293794182ca3638cd98c35ba588223",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j2"
+          },
+          {
+            "anchor_index": 76,
+            "cosine": 0.9678081305759905,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.02300003170967102,
+            "euclidean_distance": 13.030365987914045,
+            "input_hash": "3bfe36a828a871f35ba59b0803bebbe765729fe39980ec73d664f874ac1f133a",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j3"
+          },
+          {
+            "anchor_index": 86,
+            "cosine": 0.9673888003083845,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.01030100230127573,
+            "euclidean_distance": 13.14554572572951,
+            "input_hash": "b9387b2585325d3bc2d1142de741faab9481e32147c811d142ff79465c01586f",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j4"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9922150333061943,
+          "cp2_action": 27,
+          "euclidean_distance": 6.449094360571553,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-005",
+          "root_index": 5,
+          "stratum": [
+            0,
+            1,
+            1
+          ],
+          "terminal_action": 27,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9922150333061943,
+          "cp2_action": 27,
+          "euclidean_distance": 6.449094360571553,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-005",
+          "root_index": 5,
+          "stratum": [
+            0,
+            1,
+            1
+          ],
+          "terminal_action": 27,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 51.76854140961956
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.36134161755399274,
+            "per_unit_parameter_norm_margin_derivative": -20.457092700453543,
+            "raw_negative_gradient_margin_derivative": -38.06340789794922
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": -0.12159887026505486,
+            "per_unit_parameter_norm_margin_derivative": -21.72574074248009,
+            "raw_negative_gradient_margin_derivative": -45.773258209228516
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": -0.5503201324559577,
+            "per_unit_parameter_norm_margin_derivative": -49.688673267066505,
+            "raw_negative_gradient_margin_derivative": -83.836669921875
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": 0.07220187038183212,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.013916539350203375,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.7002731847045741,
+          "root_id": "training-013",
+          "root_index": 13,
+          "stratum": [
+            1,
+            1,
+            1
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 35.02043914794922
+      },
+      "initial_logit_deficit_fraction_closed": 0.7765024418444862,
+      "margin_improvement": 3.540488600730896,
+      "probability_gain_factor": 22.65601738170163,
+      "puct_head": {
+        "cp2_action_probability": 0.9211238026618958,
+        "greedy_action": 27,
+        "hard_selected_nll": 6.41348934173584,
+        "mixed_target_ce": 5.107418060302734,
+        "mixed_target_excess_ce": 4.286616325378418,
+        "selected_minus_best_other_logit_margin": -6.331328392028809,
+        "selected_minus_cp2_logit_margin": -6.331328392028809,
+        "selected_probability": 0.0016392944380640984
+      },
+      "root_id": "training-001",
+      "root_index": 1,
+      "selected_action": 24,
+      "stratum": [
+        0,
+        1,
+        1
+      ],
+      "terminal_action": 24,
+      "terminal_head": {
+        "cp2_action_probability": 0.520897388458252,
+        "greedy_action": 27,
+        "hard_selected_nll": 1.6712467670440674,
+        "mixed_target_ce": 1.6014856100082397,
+        "mixed_target_excess_ce": 0.7806839942932129,
+        "selected_minus_best_other_logit_margin": -1.0190445184707642,
+        "selected_minus_cp2_logit_margin": -1.0190445184707642,
+        "selected_probability": 0.1880125105381012
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.7798433899879456,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.313709259033203,
+        "mixed_target_ce": 3.52020263671875,
+        "mixed_target_excess_ce": 2.6944098472595215,
+        "selected_minus_best_other_logit_margin": -4.065047264099121,
+        "selected_minus_cp2_logit_margin": -4.065047264099121,
+        "selected_probability": 0.013383813202381134
+      },
+      "cp2_action": 21,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 2,
+            "cosine": 0.9910148738412025,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.01090191025286913,
+            "euclidean_distance": 9.616735134238413,
+            "input_hash": "82933aa02c7c6d3b4f683040b0d893cdf8db5eaa920b76ba3b71bf5f98a9298a",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j1"
+          },
+          {
+            "anchor_index": 30,
+            "cosine": 0.9895470504530551,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.010802483186125755,
+            "euclidean_distance": 8.609274831319013,
+            "input_hash": "07fe1f9ca0a31d2f4fcb1fb3cc6aab3298a6b6c665e191221ee911b7cd248931",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j2"
+          },
+          {
+            "anchor_index": 29,
+            "cosine": 0.9878339843053889,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.011184447444975376,
+            "euclidean_distance": 9.580670013978814,
+            "input_hash": "906f4a29c05f2a1cb920d61ce0c13200984e183ec8b82df4236beab2f935b5e7",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j2"
+          },
+          {
+            "anchor_index": 88,
+            "cosine": 0.986940576345842,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.013702350668609142,
+            "euclidean_distance": 9.587663069915969,
+            "input_hash": "883ef444e57dd5e85808afeb9e8d0e75abc6c1f06720f5f160d5756e52471509",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j4"
+          },
+          {
+            "anchor_index": 31,
+            "cosine": 0.9859967462573666,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.01133443508297205,
+            "euclidean_distance": 10.350397061607655,
+            "input_hash": "5bb393e3858b0a83c243cef592ad873e57ef70722b2f4b0e10b39938219194a0",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j2"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9585061737075412,
+          "cp2_action": 21,
+          "euclidean_distance": 17.00804491440678,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-000",
+          "root_index": 0,
+          "stratum": [
+            0,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9585061737075412,
+          "cp2_action": 21,
+          "euclidean_distance": 17.00804491440678,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-000",
+          "root_index": 0,
+          "stratum": [
+            0,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 59.43236445055304
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.42952230716847173,
+            "per_unit_parameter_norm_margin_derivative": -37.34903445169632,
+            "raw_negative_gradient_margin_derivative": -69.49333190917969
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.5513202702560411,
+            "per_unit_parameter_norm_margin_derivative": 48.46690882705509,
+            "raw_negative_gradient_margin_derivative": 102.11335754394531
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": 0.21477088072886466,
+            "per_unit_parameter_norm_margin_derivative": 19.33337294637748,
+            "raw_negative_gradient_margin_derivative": 32.62002182006836
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": 0.019260164350271225,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.013677816890702701,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.7192948961331119,
+          "root_id": "training-000",
+          "root_index": 0,
+          "stratum": [
+            0,
+            0,
+            0
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 41.612953186035156
+      },
+      "initial_logit_deficit_fraction_closed": 0.717153603826477,
+      "margin_improvement": 2.915263295173645,
+      "probability_gain_factor": 14.542144187224615,
+      "puct_head": {
+        "cp2_action_probability": 0.8612999320030212,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.6831278800964355,
+        "mixed_target_ce": 3.8035390377044678,
+        "mixed_target_excess_ce": 2.9777462482452393,
+        "selected_minus_best_other_logit_margin": -4.533815383911133,
+        "selected_minus_cp2_logit_margin": -4.533815383911133,
+        "selected_probability": 0.009250035509467125
+      },
+      "root_id": "training-004",
+      "root_index": 4,
+      "selected_action": 32,
+      "stratum": [
+        0,
+        0,
+        0
+      ],
+      "terminal_action": 32,
+      "terminal_head": {
+        "cp2_action_probability": 0.6145442724227905,
+        "greedy_action": 21,
+        "hard_selected_nll": 1.6366583108901978,
+        "mixed_target_ce": 1.5580706596374512,
+        "mixed_target_excess_ce": 0.7322779297828674,
+        "selected_minus_best_other_logit_margin": -1.149783968925476,
+        "selected_minus_cp2_logit_margin": -1.149783968925476,
+        "selected_probability": 0.19462934136390686
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.7431533336639404,
+        "greedy_action": 27,
+        "hard_selected_nll": 4.538204193115234,
+        "mixed_target_ce": 3.725649356842041,
+        "mixed_target_excess_ce": 2.8590636253356934,
+        "selected_minus_best_other_logit_margin": -4.241351127624512,
+        "selected_minus_cp2_logit_margin": -4.241351127624512,
+        "selected_probability": 0.010692590847611427
+      },
+      "cp2_action": 27,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 33,
+            "cosine": 0.990232813882548,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 8.456863152770588,
+            "input_hash": "772488ef075fdb5a786e1df7b50eb0c36b56d807942123d1485534e708ea13ac",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m0-j2"
+          },
+          {
+            "anchor_index": 35,
+            "cosine": 0.9881105387243725,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 9.632668127111504,
+            "input_hash": "ac12a5e2c8575324a2ec3aca15e7042ac029819b8e009254c067867c6b11ac78",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m0-j2"
+          },
+          {
+            "anchor_index": 8,
+            "cosine": 0.9841929108242472,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.0067756385542452335,
+            "euclidean_distance": 11.144225516268834,
+            "input_hash": "ea40d02b13cfba3c428433bbe62f8f83a9000f05d4bdd0f5f85086f17dc1778d",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j1"
+          },
+          {
+            "anchor_index": 11,
+            "cosine": 0.9795455445708627,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.007422268856316805,
+            "euclidean_distance": 12.499905555205327,
+            "input_hash": "be1e34121d4b01e109896fbfb0544555b724131f7ec20e030512628e572ef7ed",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m0-j1"
+          },
+          {
+            "anchor_index": 396,
+            "cosine": 0.9737989999876778,
+            "cp2_greedy_action": 27,
+            "cp2_selected_action_probability": 0.009444141760468483,
+            "euclidean_distance": 14.166021758765943,
+            "input_hash": "d909f6046592ba19ec387797c16fc9d8fffc467a42b41cd14ac89e5dec7a30b4",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j8"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9985836626897983,
+          "cp2_action": 27,
+          "euclidean_distance": 3.2262232783009117,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-003",
+          "root_index": 3,
+          "stratum": [
+            0,
+            1,
+            0
+          ],
+          "terminal_action": 27,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9985836626897983,
+          "cp2_action": 27,
+          "euclidean_distance": 3.2262232783009117,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-003",
+          "root_index": 3,
+          "stratum": [
+            0,
+            1,
+            0
+          ],
+          "terminal_action": 27,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 60.63782595257039
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.17422625885491783,
+            "per_unit_parameter_norm_margin_derivative": -12.062497797636247,
+            "raw_negative_gradient_margin_derivative": -22.44403839111328
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": -0.11327349391117816,
+            "per_unit_parameter_norm_margin_derivative": -21.772275008167508,
+            "raw_negative_gradient_margin_derivative": -45.871299743652344
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": -0.33357790982917157,
+            "per_unit_parameter_norm_margin_derivative": -40.48942448299502,
+            "raw_negative_gradient_margin_derivative": -68.31533813476562
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": 0.04983918368816376,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.01129861494298936,
+        "most_opposing_other_root": {
+          "cp2_action": 27,
+          "gradient_cosine": -0.7426047429998345,
+          "root_id": "training-003",
+          "root_index": 3,
+          "stratum": [
+            0,
+            1,
+            0
+          ],
+          "terminal_action": 27
+        },
+        "own_root_ce_norm": 40.24148941040039
+      },
+      "initial_logit_deficit_fraction_closed": 0.7715250235026068,
+      "margin_improvement": 3.2723085284233093,
+      "probability_gain_factor": 18.61207018641623,
+      "puct_head": {
+        "cp2_action_probability": 0.9135473370552063,
+        "greedy_action": 27,
+        "hard_selected_nll": 6.296720504760742,
+        "mixed_target_ce": 5.0820159912109375,
+        "mixed_target_excess_ce": 4.21543025970459,
+        "selected_minus_best_other_logit_margin": -6.206300258636475,
+        "selected_minus_cp2_logit_margin": -6.206300258636475,
+        "selected_probability": 0.0018423368455842137
+      },
+      "root_id": "training-007",
+      "root_index": 7,
+      "selected_action": 29,
+      "stratum": [
+        0,
+        1,
+        0
+      ],
+      "terminal_action": 29,
+      "terminal_head": {
+        "cp2_action_probability": 0.5244781970977783,
+        "greedy_action": 27,
+        "hard_selected_nll": 1.614393949508667,
+        "mixed_target_ce": 1.6123982667922974,
+        "mixed_target_excess_ce": 0.7458126544952393,
+        "selected_minus_best_other_logit_margin": -0.9690425992012024,
+        "selected_minus_cp2_logit_margin": -0.9690425992012024,
+        "selected_probability": 0.19901125133037567
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.7558208703994751,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.233625411987305,
+        "mixed_target_ce": 3.496598720550537,
+        "mixed_target_excess_ce": 2.6358463764190674,
+        "selected_minus_best_other_logit_margin": -3.953674793243408,
+        "selected_minus_cp2_logit_margin": -3.953674793243408,
+        "selected_probability": 0.014499727636575699
+      },
+      "cp2_action": 21,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 202,
+            "cosine": 0.9811156488359104,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.014164013788104057,
+            "euclidean_distance": 11.125637134757211,
+            "input_hash": "78ae584413c9c909444442f27d1b3049cb1258f948a651964d5135e37e6f55f7",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j4"
+          },
+          {
+            "anchor_index": 181,
+            "cosine": 0.9786728874870271,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.011428387835621834,
+            "euclidean_distance": 10.360125125978149,
+            "input_hash": "38946c3761e3379ac64aba82060a042b9ffcf113c8fd20575777964cc2f625f4",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j3"
+          },
+          {
+            "anchor_index": 115,
+            "cosine": 0.9780807978561975,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.012906565330922604,
+            "euclidean_distance": 11.509990996521859,
+            "input_hash": "495f8d61af446471fd0d3823439728260b8619d446f03ab278215611f2122a1a",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j1"
+          },
+          {
+            "anchor_index": 154,
+            "cosine": 0.9778008438167687,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.012893376871943474,
+            "euclidean_distance": 10.59053493660722,
+            "input_hash": "6dc6c3ae717807d3b6f0c8bc01c1c7655c45626e2c79fe98da5b50684e7f0a58",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j2"
+          },
+          {
+            "anchor_index": 331,
+            "cosine": 0.9770747862829681,
+            "cp2_greedy_action": 18,
+            "cp2_selected_action_probability": 0.0029851566068828106,
+            "euclidean_distance": 11.77119055164363,
+            "input_hash": "45bece81cfcee84ee6348648933dee9af5534a54b8841b31b66c8b70a3c843f6",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j5"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9789440607074926,
+          "cp2_action": 21,
+          "euclidean_distance": 10.591199300227911,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-022",
+          "root_index": 22,
+          "stratum": [
+            2,
+            0,
+            1
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9789440607074926,
+          "cp2_action": 21,
+          "euclidean_distance": 10.591199300227911,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-022",
+          "root_index": 22,
+          "stratum": [
+            2,
+            0,
+            1
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 50.00538500905225
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.21403047521268087,
+            "per_unit_parameter_norm_margin_derivative": -22.110759772248358,
+            "raw_negative_gradient_margin_derivative": -41.140296936035156
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.4175123585994013,
+            "per_unit_parameter_norm_margin_derivative": 36.947906395983274,
+            "raw_negative_gradient_margin_derivative": 77.84434509277344
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": 0.2853230975385162,
+            "per_unit_parameter_norm_margin_derivative": 21.753911005033565,
+            "raw_negative_gradient_margin_derivative": 36.70404815673828
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": 0.020705752074718475,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.02441264490550253,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.6381833548676703,
+          "root_id": "training-022",
+          "root_index": 22,
+          "stratum": [
+            2,
+            0,
+            1
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 38.037193298339844
+      },
+      "initial_logit_deficit_fraction_closed": 0.5632504033971352,
+      "margin_improvement": 2.2269089221954346,
+      "probability_gain_factor": 6.9894639103796505,
+      "puct_head": {
+        "cp2_action_probability": 0.8628903031349182,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.842175483703613,
+        "mixed_target_ce": 3.9635443687438965,
+        "mixed_target_excess_ce": 3.1027920246124268,
+        "selected_minus_best_other_logit_margin": -4.694707870483398,
+        "selected_minus_cp2_logit_margin": -4.694707870483398,
+        "selected_probability": 0.00788987148553133
+      },
+      "root_id": "training-008",
+      "root_index": 8,
+      "selected_action": 4,
+      "stratum": [
+        1,
+        0,
+        0
+      ],
+      "terminal_action": 4,
+      "terminal_head": {
+        "cp2_action_probability": 0.5698080658912659,
+        "greedy_action": 21,
+        "hard_selected_nll": 2.2892215251922607,
+        "mixed_target_ce": 2.0785205364227295,
+        "mixed_target_excess_ce": 1.2177681922912598,
+        "selected_minus_best_other_logit_margin": -1.7267658710479736,
+        "selected_minus_cp2_logit_margin": -1.7267658710479736,
+        "selected_probability": 0.10134532302618027
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.6536531448364258,
+        "greedy_action": 21,
+        "hard_selected_nll": 3.9915499687194824,
+        "mixed_target_ce": 3.4121246337890625,
+        "mixed_target_excess_ce": 2.4594643115997314,
+        "selected_minus_best_other_logit_margin": -3.566371440887451,
+        "selected_minus_cp2_logit_margin": -3.566371440887451,
+        "selected_probability": 0.018471062183380127
+      },
+      "cp2_action": 21,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 128,
+            "cosine": 0.9834149172546621,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.016806375235319138,
+            "euclidean_distance": 8.497785283137631,
+            "input_hash": "910100cd5c3102fd1ed9d0eea8e5d5d5c1348a9b85e87de3e6a590661fa4f156",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j1"
+          },
+          {
+            "anchor_index": 147,
+            "cosine": 0.9827384444293411,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.016496583819389343,
+            "euclidean_distance": 9.417141213952075,
+            "input_hash": "c23c6c3512fdcb2a4c23da52cba25b12046b8fd7057c822ef52ed03a21bf2cfa",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j2"
+          },
+          {
+            "anchor_index": 151,
+            "cosine": 0.9817916630205074,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.020197443664073944,
+            "euclidean_distance": 9.39793479193351,
+            "input_hash": "0801db216dc0620b00093cc5aa5eed33dfbf52152a6f4c4aed41ab9c32fed0f9",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j2"
+          },
+          {
+            "anchor_index": 167,
+            "cosine": 0.9804215363454732,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.013401285745203495,
+            "euclidean_distance": 10.210484764717638,
+            "input_hash": "6cd0c0f99196a0c6e57911aa2de47a04613e9675aef274a91c0ea8af081cd96f",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j2"
+          },
+          {
+            "anchor_index": 135,
+            "cosine": 0.9791543681248706,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.013109899125993252,
+            "euclidean_distance": 8.995449530124043,
+            "input_hash": "28b09edad045047b11ec04355b489209793669439699cf876549fd33b499bdbe",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j1"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9769186238996792,
+          "cp2_action": 21,
+          "euclidean_distance": 10.432079774541968,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-012",
+          "root_index": 12,
+          "stratum": [
+            1,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9769186238996792,
+          "cp2_action": 21,
+          "euclidean_distance": 10.432079774541968,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-012",
+          "root_index": 12,
+          "stratum": [
+            1,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": {
+          "cosine": 0.7820548710463809,
+          "cp2_action": 20,
+          "euclidean_distance": 35.61734535474362,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-026",
+          "root_index": 26,
+          "stratum": [
+            3,
+            0,
+            1
+          ],
+          "terminal_action": 6,
+          "this_selected_action_legal_there": true
+        },
+        "norm": 44.26004821909245
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.6193909631097892,
+            "per_unit_parameter_norm_margin_derivative": -39.19378430481868,
+            "raw_negative_gradient_margin_derivative": -72.9257583618164
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.43271468173437855,
+            "per_unit_parameter_norm_margin_derivative": 34.09005682232897,
+            "raw_negative_gradient_margin_derivative": 71.82323455810547
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": -0.14271524361226964,
+            "per_unit_parameter_norm_margin_derivative": -0.6534496166943404,
+            "raw_negative_gradient_margin_derivative": -1.1025257110595703
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": -0.00043051561806350946,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.03188536893279009,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.5279413090481855,
+          "root_id": "training-011",
+          "root_index": 11,
+          "stratum": [
+            1,
+            1,
+            0
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 34.12666702270508
+      },
+      "initial_logit_deficit_fraction_closed": 0.44023904622178,
+      "margin_improvement": 1.5700559616088867,
+      "probability_gain_factor": 3.6688756280393555,
+      "puct_head": {
+        "cp2_action_probability": 0.7449199557304382,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.259861469268799,
+        "mixed_target_ce": 3.618882179260254,
+        "mixed_target_excess_ce": 2.666221857070923,
+        "selected_minus_best_other_logit_margin": -3.9653828144073486,
+        "selected_minus_cp2_logit_margin": -3.9653828144073486,
+        "selected_probability": 0.014124259352684021
+      },
+      "root_id": "training-010",
+      "root_index": 10,
+      "selected_action": 6,
+      "stratum": [
+        1,
+        0,
+        1
+      ],
+      "terminal_action": 6,
+      "terminal_head": {
+        "cp2_action_probability": 0.49890023469924927,
+        "greedy_action": 21,
+        "hard_selected_nll": 2.691664695739746,
+        "mixed_target_ce": 2.4642133712768555,
+        "mixed_target_excess_ce": 1.5115530490875244,
+        "selected_minus_best_other_logit_margin": -1.9963154792785645,
+        "selected_minus_cp2_logit_margin": -1.9963154792785645,
+        "selected_probability": 0.06776802986860275
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.7954065799713135,
+        "greedy_action": 21,
+        "hard_selected_nll": 5.052262306213379,
+        "mixed_target_ce": 4.0601725578308105,
+        "mixed_target_excess_ce": 3.238295555114746,
+        "selected_minus_best_other_logit_margin": -4.823360443115234,
+        "selected_minus_cp2_logit_margin": -4.823360443115234,
+        "selected_probability": 0.006394850090146065
+      },
+      "cp2_action": 21,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 135,
+            "cosine": 0.9806752439920967,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 12.29111221269328,
+            "input_hash": "28b09edad045047b11ec04355b489209793669439699cf876549fd33b499bdbe",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": false,
+            "source_id": "training-m1-j1"
+          },
+          {
+            "anchor_index": 167,
+            "cosine": 0.9782600860401979,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 10.68973515247007,
+            "input_hash": "6cd0c0f99196a0c6e57911aa2de47a04613e9675aef274a91c0ea8af081cd96f",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": false,
+            "source_id": "training-m1-j2"
+          },
+          {
+            "anchor_index": 190,
+            "cosine": 0.9781938298896171,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 10.788792425324086,
+            "input_hash": "ebaa3f23a37f0d3c54419ac24d3213f2a00b1e5dac00d360e4b7be2759302c93",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": false,
+            "source_id": "training-m1-j3"
+          },
+          {
+            "anchor_index": 365,
+            "cosine": 0.977211548374743,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 14.068928753356845,
+            "input_hash": "ce670b677bdbc523aeb2b3d3dfcbbb4e1cec909c34486c62ee49721566b0fd4f",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m2-j6"
+          },
+          {
+            "anchor_index": 157,
+            "cosine": 0.9763796884182252,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.009421324357390404,
+            "euclidean_distance": 12.626030641547827,
+            "input_hash": "5106755844ec800ceebeb278b59b7e423d00130fa31edf5815c2a734865e42c5",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m1-j2"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9757296552410354,
+          "cp2_action": 21,
+          "euclidean_distance": 12.543925156401562,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-010",
+          "root_index": 10,
+          "stratum": [
+            1,
+            0,
+            1
+          ],
+          "terminal_action": 6,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9757296552410354,
+          "cp2_action": 21,
+          "euclidean_distance": 12.543925156401562,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-010",
+          "root_index": 10,
+          "stratum": [
+            1,
+            0,
+            1
+          ],
+          "terminal_action": 6,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 51.14920167138038
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.3169586467796302,
+            "per_unit_parameter_norm_margin_derivative": -27.47383194635138,
+            "raw_negative_gradient_margin_derivative": -51.119075775146484
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.4990354171967083,
+            "per_unit_parameter_norm_margin_derivative": 41.01678755637053,
+            "raw_negative_gradient_margin_derivative": 86.41693878173828
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": 0.273614855077302,
+            "per_unit_parameter_norm_margin_derivative": 20.920487223486173,
+            "raw_negative_gradient_margin_derivative": 35.2978630065918
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": -0.02966398559510708,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.02311905424241344,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.5806456620904736,
+          "root_id": "training-012",
+          "root_index": 12,
+          "stratum": [
+            1,
+            0,
+            0
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 38.941951751708984
+      },
+      "initial_logit_deficit_fraction_closed": 0.6532174958379963,
+      "margin_improvement": 3.1507034301757812,
+      "probability_gain_factor": 17.826344973463602,
+      "puct_head": {
+        "cp2_action_probability": 0.8667299747467041,
+        "greedy_action": 21,
+        "hard_selected_nll": 5.790196418762207,
+        "mixed_target_ce": 4.618781089782715,
+        "mixed_target_excess_ce": 3.7969040870666504,
+        "selected_minus_best_other_logit_margin": -5.6471686363220215,
+        "selected_minus_cp2_logit_margin": -5.6471686363220215,
+        "selected_probability": 0.0030573816038668156
+      },
+      "root_id": "training-014",
+      "root_index": 14,
+      "selected_action": 31,
+      "stratum": [
+        1,
+        0,
+        1
+      ],
+      "terminal_action": 31,
+      "terminal_head": {
+        "cp2_action_probability": 0.6071813106536865,
+        "greedy_action": 21,
+        "hard_selected_nll": 2.1715848445892334,
+        "mixed_target_ce": 1.9421255588531494,
+        "mixed_target_excess_ce": 1.1202486753463745,
+        "selected_minus_best_other_logit_margin": -1.6726570129394531,
+        "selected_minus_cp2_logit_margin": -1.6726570129394531,
+        "selected_probability": 0.11399680376052856
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.8284024596214294,
+        "greedy_action": 21,
+        "hard_selected_nll": 4.709919452667236,
+        "mixed_target_ce": 3.776190757751465,
+        "mixed_target_excess_ce": 2.98543643951416,
+        "selected_minus_best_other_logit_margin": -4.521663188934326,
+        "selected_minus_cp2_logit_margin": -4.521663188934326,
+        "selected_probability": 0.009005502797663212
+      },
+      "cp2_action": 21,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 279,
+            "cosine": 0.9931244987262915,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.01098160445690155,
+            "euclidean_distance": 7.509383089512119,
+            "input_hash": "1f08bbed50cdad6740d2e7270a747c2a2c375ec918b2590ebabe28a7a326c545",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j3"
+          },
+          {
+            "anchor_index": 224,
+            "cosine": 0.992758960752852,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.009420046582818031,
+            "euclidean_distance": 5.758693899188047,
+            "input_hash": "67c127085b8dc0b03ae013351f52de178d2c5320ef69abfee16f2604abd8c2bb",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j1"
+          },
+          {
+            "anchor_index": 281,
+            "cosine": 0.9917489393386424,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.00965020153671503,
+            "euclidean_distance": 7.129609887624031,
+            "input_hash": "e5e1ae785051fce154133fd63f00d8e27d72d2ff8526ab331a026b30ab12e4ab",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j3"
+          },
+          {
+            "anchor_index": 305,
+            "cosine": 0.99080813165208,
+            "cp2_greedy_action": 21,
+            "cp2_selected_action_probability": 0.010259519331157207,
+            "euclidean_distance": 8.249136031094565,
+            "input_hash": "b3f9012672b36bb1f508db880c5f09c786db2c78277456494e0acfc3fb364091",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j4"
+          },
+          {
+            "anchor_index": 331,
+            "cosine": 0.9891681178056216,
+            "cp2_greedy_action": 18,
+            "cp2_selected_action_probability": 0.002650384558364749,
+            "euclidean_distance": 7.890235517012261,
+            "input_hash": "45bece81cfcee84ee6348648933dee9af5534a54b8841b31b66c8b70a3c843f6",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m2-j5"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9876760431293593,
+          "cp2_action": 21,
+          "euclidean_distance": 8.02992001265692,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-020",
+          "root_index": 20,
+          "stratum": [
+            2,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9876760431293593,
+          "cp2_action": 21,
+          "euclidean_distance": 8.02992001265692,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-020",
+          "root_index": 20,
+          "stratum": [
+            2,
+            0,
+            0
+          ],
+          "terminal_action": 21,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 47.92808607939431
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.29760062537449217,
+            "per_unit_parameter_norm_margin_derivative": -22.97507507257389,
+            "raw_negative_gradient_margin_derivative": -42.74848175048828
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.4491078840569645,
+            "per_unit_parameter_norm_margin_derivative": 33.689830632953424,
+            "raw_negative_gradient_margin_derivative": 70.98001098632812
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": 0.232617580666622,
+            "per_unit_parameter_norm_margin_derivative": 16.732385931566323,
+            "raw_negative_gradient_margin_derivative": 28.231534957885742
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": -0.01232893392443657,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.034037492973549036,
+        "most_opposing_other_root": {
+          "cp2_action": 21,
+          "gradient_cosine": -0.797022743809933,
+          "root_id": "training-019",
+          "root_index": 19,
+          "stratum": [
+            2,
+            1,
+            0
+          ],
+          "terminal_action": 21
+        },
+        "own_root_ce_norm": 41.08698654174805
+      },
+      "initial_logit_deficit_fraction_closed": 0.48966081613563345,
+      "margin_improvement": 2.214081287384033,
+      "probability_gain_factor": 8.02626379518873,
+      "puct_head": {
+        "cp2_action_probability": 0.8879271149635315,
+        "greedy_action": 21,
+        "hard_selected_nll": 5.314014911651611,
+        "mixed_target_ce": 4.233541011810303,
+        "mixed_target_excess_ce": 3.442786693572998,
+        "selected_minus_best_other_logit_margin": -5.1951494216918945,
+        "selected_minus_cp2_logit_margin": -5.1951494216918945,
+        "selected_probability": 0.004922125022858381
+      },
+      "root_id": "training-016",
+      "root_index": 16,
+      "selected_action": 28,
+      "stratum": [
+        2,
+        0,
+        0
+      ],
+      "terminal_action": 28,
+      "terminal_head": {
+        "cp2_action_probability": 0.7264261841773987,
+        "greedy_action": 21,
+        "hard_selected_nll": 2.6272003650665283,
+        "mixed_target_ce": 2.2354111671447754,
+        "mixed_target_excess_ce": 1.4446568489074707,
+        "selected_minus_best_other_logit_margin": -2.307581901550293,
+        "selected_minus_cp2_logit_margin": -2.307581901550293,
+        "selected_probability": 0.07228054106235504
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.9011973142623901,
+        "greedy_action": 20,
+        "hard_selected_nll": 4.660048007965088,
+        "mixed_target_ce": 3.6473593711853027,
+        "mixed_target_excess_ce": 2.9486987590789795,
+        "selected_minus_best_other_logit_margin": -4.55601692199707,
+        "selected_minus_cp2_logit_margin": -4.55601692199707,
+        "selected_probability": 0.00946600828319788
+      },
+      "cp2_action": 20,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 499,
+            "cosine": 0.9957961655551527,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.010052111931145191,
+            "euclidean_distance": 5.3407995580535745,
+            "input_hash": "17b2ce9ed16026a022621ea400583d0df106564dd63ec92df6feb6bc19f028cd",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j4"
+          },
+          {
+            "anchor_index": 510,
+            "cosine": 0.9906760768973193,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.010109391994774342,
+            "euclidean_distance": 7.791078901282952,
+            "input_hash": "5013411cd4ebd8b7b562f47ea0d5db99af00d03ce7791858748dad28b60f9ddf",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j4"
+          },
+          {
+            "anchor_index": 509,
+            "cosine": 0.9870298931708906,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.008864199742674828,
+            "euclidean_distance": 9.435299851910058,
+            "input_hash": "fea50a13ed7d3b67b672ae7a43a3d27b6cba87702c491f5e59d702476b5cf6b5",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j4"
+          },
+          {
+            "anchor_index": 447,
+            "cosine": 0.9869521160677153,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.010869238525629044,
+            "euclidean_distance": 10.006451510125169,
+            "input_hash": "1f8ab4eef091356d6800951468c458b28ab91dcbc9ea772922fb8ac004283a52",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j2"
+          },
+          {
+            "anchor_index": 500,
+            "cosine": 0.98603257475234,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.006994808092713356,
+            "euclidean_distance": 9.688814325666044,
+            "input_hash": "0097117aa042f74b9914d956c5a11dc7594976a030959f646d2aa6b54d9fc08a",
+            "old_action_legal": true,
+            "player": 1,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j4"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9652815644736433,
+          "cp2_action": 20,
+          "euclidean_distance": 17.55793266569491,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-030",
+          "root_index": 30,
+          "stratum": [
+            3,
+            0,
+            1
+          ],
+          "terminal_action": 20,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9652815644736433,
+          "cp2_action": 20,
+          "euclidean_distance": 17.55793266569491,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-030",
+          "root_index": 30,
+          "stratum": [
+            3,
+            0,
+            1
+          ],
+          "terminal_action": 20,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": {
+          "cosine": 0.7820548710463809,
+          "cp2_action": 21,
+          "euclidean_distance": 35.61734535474362,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-010",
+          "root_index": 10,
+          "stratum": [
+            1,
+            0,
+            1
+          ],
+          "terminal_action": 6,
+          "this_selected_action_legal_there": true
+        },
+        "norm": 57.147264151171335
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.7267732588067743,
+            "per_unit_parameter_norm_margin_derivative": -58.18940392344295,
+            "raw_negative_gradient_margin_derivative": -108.26988220214844
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.3439860047468504,
+            "per_unit_parameter_norm_margin_derivative": 27.047878524038506,
+            "raw_negative_gradient_margin_derivative": 56.986297607421875
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": -0.37193015902225374,
+            "per_unit_parameter_norm_margin_derivative": -30.394970264428373,
+            "raw_negative_gradient_margin_derivative": -51.2835807800293
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": -0.03386053815484047,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.012232164473501025,
+        "most_opposing_other_root": {
+          "cp2_action": 20,
+          "gradient_cosine": -0.9530391652770345,
+          "root_id": "training-030",
+          "root_index": 30,
+          "stratum": [
+            3,
+            0,
+            1
+          ],
+          "terminal_action": 20
+        },
+        "own_root_ce_norm": 38.23476028442383
+      },
+      "initial_logit_deficit_fraction_closed": 0.7829824399821658,
+      "margin_improvement": 3.5672812461853027,
+      "probability_gain_factor": 26.04886458142813,
+      "puct_head": {
+        "cp2_action_probability": 0.9268812537193298,
+        "greedy_action": 20,
+        "hard_selected_nll": 4.9302077293396,
+        "mixed_target_ce": 3.8511388301849365,
+        "mixed_target_excess_ce": 3.1524782180786133,
+        "selected_minus_best_other_logit_margin": -4.854278087615967,
+        "selected_minus_cp2_logit_margin": -4.854278087615967,
+        "selected_probability": 0.007225002162158489
+      },
+      "root_id": "training-026",
+      "root_index": 26,
+      "selected_action": 6,
+      "stratum": [
+        3,
+        0,
+        1
+      ],
+      "terminal_action": 6,
+      "terminal_head": {
+        "cp2_action_probability": 0.6627628803253174,
+        "greedy_action": 20,
+        "hard_selected_nll": 1.400073766708374,
+        "mixed_target_ce": 1.2645431756973267,
+        "mixed_target_excess_ce": 0.5658825635910034,
+        "selected_minus_best_other_logit_margin": -0.9887356758117676,
+        "selected_minus_cp2_logit_margin": -0.9887356758117676,
+        "selected_probability": 0.24657876789569855
+      }
+    },
+    {
+      "cp2": {
+        "cp2_action_probability": 0.85649174451828,
+        "greedy_action": 26,
+        "hard_selected_nll": 6.263899326324463,
+        "mixed_target_ce": 4.914734840393066,
+        "mixed_target_excess_ce": 4.139569282531738,
+        "selected_minus_best_other_logit_margin": -6.1089887619018555,
+        "selected_minus_cp2_logit_margin": -6.1089887619018555,
+        "selected_probability": 0.001903807744383812
+      },
+      "cp2_action": 26,
+      "features": {
+        "nearest_anchors": [
+          {
+            "anchor_index": 493,
+            "cosine": 0.9839695971768782,
+            "cp2_greedy_action": 26,
+            "cp2_selected_action_probability": 0.0020061368122696877,
+            "euclidean_distance": 11.888351908283768,
+            "input_hash": "ca9a8cc1c362aad0be5a76eaed25675561ee211978aee6d312f2173b618a0f7f",
+            "old_action_legal": true,
+            "player": 0,
+            "selected_action_legal": true,
+            "source_id": "training-m3-j4"
+          },
+          {
+            "anchor_index": 486,
+            "cosine": 0.9780150026076441,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 15.672725644086183,
+            "input_hash": "35894795d4060474ec7c903f05c6d8a7c63a4fcc5b5250349cdcf9721b253187",
+            "old_action_legal": false,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m3-j4"
+          },
+          {
+            "anchor_index": 465,
+            "cosine": 0.9712095434502429,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 15.729040133600112,
+            "input_hash": "830b1641f5ec8f6f724b29347434b2ea40ab087c9b7105b8785d830cf101d60e",
+            "old_action_legal": false,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m3-j3"
+          },
+          {
+            "anchor_index": 462,
+            "cosine": 0.9703613270108611,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 15.752106190833445,
+            "input_hash": "c112791de62a73042d525e6dd398e8a93f4c25384341ff82d635ca0054d8e7d0",
+            "old_action_legal": false,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m3-j3"
+          },
+          {
+            "anchor_index": 436,
+            "cosine": 0.9702782070553442,
+            "cp2_greedy_action": 20,
+            "cp2_selected_action_probability": 0.0,
+            "euclidean_distance": 15.78732517447735,
+            "input_hash": "615e7abcb72185482582edde9761a6b282d06592a2dc094bb853250079d25016",
+            "old_action_legal": false,
+            "player": 0,
+            "selected_action_legal": false,
+            "source_id": "training-m3-j2"
+          }
+        ],
+        "nearest_conflicting_target_root": {
+          "cosine": 0.9841618174912049,
+          "cp2_action": 26,
+          "euclidean_distance": 11.655301552014059,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-031",
+          "root_index": 31,
+          "stratum": [
+            3,
+            1,
+            0
+          ],
+          "terminal_action": 26,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_mutually_legal_conflicting_target_root": {
+          "cosine": 0.9841618174912049,
+          "cp2_action": 26,
+          "euclidean_distance": 11.655301552014059,
+          "neighbor_selected_action_legal_here": true,
+          "root_id": "training-031",
+          "root_index": 31,
+          "stratum": [
+            3,
+            1,
+            0
+          ],
+          "terminal_action": 26,
+          "this_selected_action_legal_there": true
+        },
+        "nearest_same_target_root": null,
+        "norm": 65.12864505650438
+      },
+      "final_gradient": {
+        "directions": {
+          "anchor_kl": {
+            "own_root_ce_gradient_cosine": -0.03261956282600765,
+            "per_unit_parameter_norm_margin_derivative": -5.669364431456994,
+            "raw_negative_gradient_margin_derivative": -10.548680305480957
+          },
+          "ce": {
+            "own_root_ce_gradient_cosine": 0.17208329135728545,
+            "per_unit_parameter_norm_margin_derivative": 17.161129602506236,
+            "raw_negative_gradient_margin_derivative": 36.156227111816406
+          },
+          "total": {
+            "own_root_ce_gradient_cosine": 0.17890956843642067,
+            "per_unit_parameter_norm_margin_derivative": 15.177192325874707,
+            "raw_negative_gradient_margin_derivative": 25.60755157470703
+          }
+        },
+        "hypothetical_expected_gradient_adam_step129_margin_change": 0.0672311931848526,
+        "minimum_parameter_l2_for_pairwise_tie_with_cp2_action_root_alone": 0.007290171190923377,
+        "most_opposing_other_root": {
+          "cp2_action": 26,
+          "gradient_cosine": -0.9506622191089549,
+          "root_id": "training-029",
+          "root_index": 29,
+          "stratum": [
+            3,
+            1,
+            1
+          ],
+          "terminal_action": 26
+        },
+        "own_root_ce_norm": 38.28156280517578
+      },
+      "initial_logit_deficit_fraction_closed": 0.8900724217767848,
+      "margin_improvement": 5.437442421913147,
+      "probability_gain_factor": 159.44041428472192,
+      "puct_head": {
+        "cp2_action_probability": 0.9598320722579956,
+        "greedy_action": 26,
+        "hard_selected_nll": 7.485170364379883,
+        "mixed_target_ce": 5.853241443634033,
+        "mixed_target_excess_ce": 5.078075885772705,
+        "selected_minus_best_other_logit_margin": -7.444173336029053,
+        "selected_minus_cp2_logit_margin": -7.444173336029053,
+        "selected_probability": 0.0005613475223071873
+      },
+      "root_id": "training-027",
+      "root_index": 27,
+      "selected_action": 12,
+      "stratum": [
+        3,
+        1,
+        0
+      ],
+      "terminal_action": 12,
+      "terminal_head": {
+        "cp2_action_probability": 0.5941148400306702,
+        "greedy_action": 26,
+        "hard_selected_nll": 1.1922290325164795,
+        "mixed_target_ce": 1.2108614444732666,
+        "mixed_target_excess_ce": 0.4356958866119385,
+        "selected_minus_best_other_logit_margin": -0.6715463399887085,
+        "selected_minus_cp2_logit_margin": -0.6715463399887085,
+        "selected_probability": 0.30354389548301697
+      }
+    }
+  ],
+  "discordant_selected_targets": 9,
+  "expected_objective_gradients": {
+    "cp2": {
+      "anchor_kl_game_team_balanced": 5.670146130398734e-09,
+      "anchor_kl_uniform_storage": 5.698893801309168e-09,
+      "balanced_kl_gradient_norm": 1.994480243183716e-07,
+      "cancellation_fraction": 0.0,
+      "ce_gradient_norm": 4.257812976837158,
+      "ce_kl_gradient_cosine": 0.23627653384965577,
+      "ce_total_gradient_cosine": 1.0,
+      "changed9_ce_contribution_gradient_norm": 6.660864353179932,
+      "changed9_target_ce_mean": 3.824394702911377,
+      "changed_vs_unchanged_ce_gradient_cosine": -0.7705400089344442,
+      "expected_objective": 1.498359203338623,
+      "expected_vs_fixed128batch_gradient_cosine": 0.9894940541091455,
+      "fixed128batch_frequency_ce": 1.4807395935058594,
+      "fixed128batch_frequency_kl": 6.631580617977306e-09,
+      "fixed128batch_frequency_total_gradient_norm": 4.061249256134033,
+      "mean_target_entropy": 0.5444964170455933,
+      "relative_kl_norm": 4.68428318356473e-08,
+      "terminal_target_ce": 1.498359203338623,
+      "terminal_target_excess_ce": 0.9538627862930298,
+      "total_gradient_norm": 4.257812976837158,
+      "unchanged23_ce_contribution_gradient_norm": 5.454959392547607,
+      "unchanged23_target_ce_mean": 0.5881713628768921
+    },
+    "puct_head": {
+      "anchor_kl_game_team_balanced": 0.014957893639802933,
+      "anchor_kl_uniform_storage": 0.015039490535855293,
+      "balanced_kl_gradient_norm": 1.8195395469665527,
+      "cancellation_fraction": 0.06244391202926636,
+      "ce_gradient_norm": 6.219552040100098,
+      "ce_kl_gradient_cosine": 0.6545327150294924,
+      "ce_total_gradient_cosine": 0.9832033269143885,
+      "changed9_ce_contribution_gradient_norm": 7.289905071258545,
+      "changed9_target_ce_mean": 4.459122657775879,
+      "changed_vs_unchanged_ce_gradient_cosine": -0.7661833234101372,
+      "expected_objective": 1.5969510078430176,
+      "expected_vs_fixed128batch_gradient_cosine": 0.9961063648918511,
+      "fixed128batch_frequency_ce": 1.555609941482544,
+      "fixed128batch_frequency_kl": 0.014850958250463009,
+      "fixed128batch_frequency_total_gradient_norm": 7.6220598220825195,
+      "mean_target_entropy": 0.5444964170455933,
+      "relative_kl_norm": 0.29255154728889465,
+      "terminal_target_ce": 1.5819931030273438,
+      "terminal_target_excess_ce": 1.0374966859817505,
+      "total_gradient_norm": 7.5370988845825195,
+      "unchanged23_ce_contribution_gradient_norm": 1.494335651397705,
+      "unchanged23_target_ce_mean": 0.4561599791049957
+    },
+    "terminal_head": {
+      "anchor_kl_game_team_balanced": 0.050725534558296204,
+      "anchor_kl_uniform_storage": 0.05066864937543869,
+      "balanced_kl_gradient_norm": 1.8606460094451904,
+      "cancellation_fraction": 0.5747364163398743,
+      "ce_gradient_norm": 2.106867551803589,
+      "ce_kl_gradient_cosine": -0.6446360674645427,
+      "ce_total_gradient_cosine": 0.5378184795343915,
+      "changed9_ce_contribution_gradient_norm": 4.922780990600586,
+      "changed9_target_ce_mean": 1.7741811275482178,
+      "changed_vs_unchanged_ce_gradient_cosine": -0.911723722988103,
+      "expected_objective": 0.9661546349525452,
+      "expected_vs_fixed128batch_gradient_cosine": 0.9629088724853218,
+      "fixed128batch_frequency_ce": 0.923143744468689,
+      "fixed128batch_frequency_kl": 0.05007950961589813,
+      "fixed128batch_frequency_total_gradient_norm": 1.714036464691162,
+      "mean_target_entropy": 0.5444964170455933,
+      "relative_kl_norm": 0.8831338286399841,
+      "terminal_target_ce": 0.9154291152954102,
+      "terminal_target_excess_ce": 0.3709326982498169,
+      "total_gradient_norm": 1.6872390508651733,
+      "unchanged23_ce_contribution_gradient_norm": 3.897284507751465,
+      "unchanged23_target_ce_mean": 0.5793957710266113
+    }
+  },
+  "experiment_id": "terminal-target-head-v6",
+  "feature_geometry": {
+    "anchor_hidden_norm_max": 71.5182514719063,
+    "anchor_hidden_norm_median": 48.31208479180934,
+    "anchor_hidden_norm_min": 35.277170159840004,
+    "augmented_root_condition_number": 235.42209591508998,
+    "augmented_root_rank_rtol_1e_6": 32,
+    "augmented_root_rank_rtol_1e_9": 32,
+    "augmented_root_relative_singular_values": [
+      1.0,
+      0.3251859015877266,
+      0.1543291050129569,
+      0.12260908726337987,
+      0.08566077576332663,
+      0.0631584658641313,
+      0.053304625919858725,
+      0.04472497533060044,
+      0.04450110671680349,
+      0.042626829794390114,
+      0.03832015788905855,
+      0.034277455567512376,
+      0.032799214769389025,
+      0.030419672404009855,
+      0.026771769011703892,
+      0.02522430182915941,
+      0.024591267317566,
+      0.02236080866523584,
+      0.021629069448279737,
+      0.01951676327024452,
+      0.018700793527398004,
+      0.01797734618399722,
+      0.01652063675176437,
+      0.015744401872258586,
+      0.015348236430880836,
+      0.01253129228393431,
+      0.011825817244915774,
+      0.010363341404309253,
+      0.010195661393958336,
+      0.00842534499448544,
+      0.00755385086858253,
+      0.004247689649151163
+    ],
+    "augmented_root_singular_values": [
+      289.58241779633033,
+      94.1681196150534,
+      44.690995365995825,
+      35.50543593353079,
+      24.805854555853422,
+      18.28958124924214,
+      15.436082453601628,
+      12.951566492116505,
+      12.88673807766447,
+      12.34398043485214,
+      11.096843971850696,
+      9.926148459146518,
+      9.498075914740781,
+      8.809002283325482,
+      7.752633599094086,
+      7.30451431091238,
+      7.121198646496642,
+      6.4752970371601295,
+      6.263398225517587,
+      5.651711495356023,
+      5.415421004373879,
+      5.2059233735235475,
+      4.7840859341108395,
+      4.559301960925712,
+      4.444579414564192,
+      3.6288419176941957,
+      3.424548750200248,
+      3.0010414603086906,
+      2.9524842774951585,
+      2.439831774271303,
+      2.187462398197039,
+      1.2300562386496399
+    ],
+    "exact_duplicate_hidden_pairs": [],
+    "root_hidden_norm_max": 67.079492702999,
+    "root_hidden_norm_median": 54.0060991007598,
+    "root_hidden_norm_min": 44.26004821909245,
+    "row_normalized_augmented_root_condition_number": 256.14914812956204,
+    "row_normalized_augmented_root_singular_values": [
+      5.2446763757208394,
+      1.60054591600992,
+      0.8065816052369043,
+      0.6692553891976605,
+      0.4445183520112472,
+      0.3140055037806952,
+      0.2903519627234325,
+      0.25035220643705697,
+      0.23771887643251888,
+      0.22629588511202173,
+      0.20760424955799764,
+      0.17812866010000653,
+      0.17176104954852447,
+      0.15835703768465148,
+      0.1442867603740149,
+      0.1383015983963114,
+      0.13487708921192434,
+      0.11927304043040506,
+      0.11259257072912346,
+      0.1012558203463259,
+      0.09453676946955847,
+      0.0936781977750883,
+      0.08531570637682469,
+      0.08360588584734166,
+      0.07447303033626622,
+      0.0694877339535513,
+      0.06458822375240762,
+      0.05933908991064967,
+      0.05658570154010349,
+      0.04606642895261415,
+      0.0418927156757599,
+      0.020475088104013703
+    ]
+  },
+  "format_version": 1,
+  "gradient_objective_definition": "All three models, including puct_head, are diagnosed against q=.75 terminal-selected one-hot + .25 legal-normalized cp2 prior; this is not the PUCT arm own fitted objective.",
+  "hypothetical_expected_gradient_adam_step129": {
+    "caveat": "Algebraic projection from actual saved moments using full expected gradient instead of a stochastic minibatch; not a forecast of the actual next step.",
+    "not_applied": true,
+    "parameter_delta_l2": 0.00579324085265398
+  },
+  "input_files": {
+    "cp2": {
+      "path": "runs/warmstart-v3/checkpoint-0002.pt",
+      "sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c"
+    },
+    "dataset": {
+      "path": "runs/terminal-target-head-v6/dataset/training.npz",
+      "sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26"
+    },
+    "fit_manifest": {
+      "path": "runs/terminal-target-head-v6/fit/manifest.json",
+      "sha256": "30bd103c5f74e3d2cdf1f83749e7a93e14f914f37b8a3ed98db54d133486b43e"
+    },
+    "puct_head": {
+      "path": "runs/terminal-target-head-v6/fit/puct_head.pt",
+      "sha256": "805af399e61044da899d409b6a5ba8521aaccdc53ab79c2d9fa5eaf59960cc38"
+    },
+    "terminal_head": {
+      "path": "runs/terminal-target-head-v6/fit/terminal_head.pt",
+      "sha256": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718"
+    },
+    "training_metadata": {
+      "path": "runs/terminal-target-head-v6/dataset/training.json",
+      "sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b"
+    }
+  },
+  "limitations": [
+    "Selected target probabilities, CE and gradient diagnoses are in-sample, not generalization measurements.",
+    "A gradient direction is infinitesimal and uses Euclidean parameter geometry; AdamW preconditioning and finite updates can differ.",
+    "Hidden cosine similarity alone does not establish incompatible labels or a linear-capacity limit.",
+    "The root feature rank does not measure the regularized optimum or costs imposed by the anchor distribution.",
+    "Training metadata includes validation hash guard strings; no validation feature arrays, actions, or outcomes were accessed."
+  ],
+  "no_benchmark_inputs_or_outcomes_read": true,
+  "no_engine_runs": true,
+  "no_parameter_updates": true,
+  "no_validation_inputs_or_outcomes_read": true,
+  "root_count": 32,
+  "scope": "training roots and training anchors only; gradient directions evaluated without updates",
+  "source_sha256": "e1bbb7fa4fea518b8086447e21d3e95660b2a3c49ca089d9e25a289584b5561e",
+  "terminal_head_parameter_delta_l2": 0.7135600447654724,
+  "torch_threads": 1
+}

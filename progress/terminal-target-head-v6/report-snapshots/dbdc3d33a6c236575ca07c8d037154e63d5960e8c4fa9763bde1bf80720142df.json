@@ -1,0 +1,858 @@
+{
+  "anchors": {
+    "complete": true,
+    "completed": 512,
+    "planned": 512,
+    "unique_gradient_inputs": 544
+  },
+  "benchmark_data_used_for_training": false,
+  "benchmarks": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed": 0,
+    "expected": 72,
+    "historical_cp2_score": {
+      "fresh": false,
+      "games": 24,
+      "wins": 20
+    },
+    "identity_verified": false,
+    "opponent_comparisons": {},
+    "panels": {},
+    "per_opponent_nonregression": false,
+    "unresolved_errors": 0
+  },
+  "collection": {
+    "training": {
+      "attempt_errors_or_interruptions": 0,
+      "attempted_source_games": 19,
+      "completed_source_games": 19,
+      "frozen_roots": 32,
+      "manifest_complete": true,
+      "planned_roots": 32,
+      "reserve_assignments": [
+        {
+          "filled": [
+            "RAT_KING:1"
+          ],
+          "map_index": 2,
+          "slot_group_j": 1,
+          "source_id": "training-m2-j5",
+          "source_j": 5
+        },
+        {
+          "filled": [],
+          "map_index": 2,
+          "slot_group_j": 4,
+          "source_id": "training-m2-j6",
+          "source_j": 6
+        },
+        {
+          "filled": [
+            "RAT_KING:0"
+          ],
+          "map_index": 2,
+          "slot_group_j": 4,
+          "source_id": "training-m2-j8",
+          "source_j": 8
+        }
+      ],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 19,
+      "source_games_represented_by_roots": 18,
+      "start_only_attempts": 0,
+      "task_elapsed_seconds_sum": 460.4301714469948,
+      "unavailable_slots": [],
+      "unresolved_source_games": 0,
+      "worker_cpu_seconds": 250.55147836700002
+    },
+    "validation": {
+      "attempt_errors_or_interruptions": 0,
+      "attempted_source_games": 9,
+      "completed_source_games": 9,
+      "frozen_roots": 16,
+      "manifest_complete": true,
+      "planned_roots": 16,
+      "reserve_assignments": [
+        {
+          "filled": [
+            "RAT_KING:0"
+          ],
+          "map_index": 2,
+          "slot_group_j": 2,
+          "source_id": "validation-m2-j4",
+          "source_j": 4
+        }
+      ],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 9,
+      "source_games_represented_by_roots": 9,
+      "start_only_attempts": 0,
+      "task_elapsed_seconds_sum": 209.20444244900136,
+      "unavailable_slots": [],
+      "unresolved_source_games": 0,
+      "worker_cpu_seconds": 111.826415656
+    }
+  },
+  "complete": false,
+  "created_at": "2026-11-10T07:58:47.074302+00:00",
+  "decision": {
+    "all_map_victory": false,
+    "automatic_promotion": false,
+    "complete": false,
+    "criteria_pass": false,
+    "integrity_verified": false,
+    "review_for_expansion": false,
+    "scope": "Precommitted research review rule; no model promotion or all-map victory claim."
+  },
+  "experiment_id": "terminal-target-head-v6",
+  "fit": {
+    "checkpoints": {},
+    "complete": false,
+    "reason": "Both completed fixed candidate heads are not yet published"
+  },
+  "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+  "sampling": {
+    "continuation_temperature": 0.35,
+    "seed_inventory": "paired_v5_same_seeds_fresh_generation",
+    "source_policy": "frozen_cp2_both_teams",
+    "source_temperature": 1.0,
+    "v5_data_reused": false
+  },
+  "schema_version": 1,
+  "selection": {
+    "attempt_errors": 0,
+    "cell_ceiling": 1600,
+    "complete": false,
+    "completed_cells": 206,
+    "completed_roots": 3,
+    "expected_cells": 1458,
+    "frozen_roots": 32,
+    "planned_roots": 32,
+    "roots": [
+      {
+        "complete": true,
+        "completed": 36,
+        "expected": 36,
+        "root_id": "training-000",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": true,
+        "completed": 58,
+        "expected": 58,
+        "root_id": "training-001",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": true,
+        "completed": 44,
+        "expected": 44,
+        "root_id": "training-002",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 26,
+        "expected": 62,
+        "root_id": "training-003",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 36,
+        "expected": 38,
+        "root_id": "training-004",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 6,
+        "expected": 60,
+        "root_id": "training-005",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 36,
+        "root_id": "training-006",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-007",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-008",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-009",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 46,
+        "root_id": "training-010",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 36,
+        "root_id": "training-011",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-012",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 36,
+        "root_id": "training-013",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-014",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 38,
+        "root_id": "training-015",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-016",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-017",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 46,
+        "root_id": "training-018",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 38,
+        "root_id": "training-019",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-020",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 38,
+        "root_id": "training-021",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-022",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-023",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-024",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-025",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-026",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 54,
+        "root_id": "training-027",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 42,
+        "root_id": "training-028",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-029",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 36,
+        "root_id": "training-030",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 56,
+        "root_id": "training-031",
+        "unresolved_errors": 0
+      }
+    ],
+    "unresolved_errors": 0,
+    "within_collection_ceiling": true
+  },
+  "validation": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed_roots": 0,
+    "completed_unique_cells": 0,
+    "criteria_pass": false,
+    "distinct_source_games_represented": 9,
+    "distinct_validation_inputs": 16,
+    "expected_roots": 16,
+    "expected_unique_cells": null,
+    "frozen_roots": 16,
+    "groups": {
+      "map": {
+        "DefaultSmall": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 4
+        },
+        "closeup": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 4
+        },
+        "knifefight": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 4
+        },
+        "tiny": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 4
+        }
+      },
+      "role": {
+        "BABY_RAT": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 8
+        },
+        "RAT_KING": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 8
+        }
+      },
+      "team": {
+        "0": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 8
+        },
+        "1": {
+          "complete": false,
+          "completed_roots": 0,
+          "mean_delta_vs_cp2": null,
+          "mean_delta_vs_puct": null,
+          "roots": 8
+        }
+      }
+    },
+    "improved_roots": null,
+    "maximum_unique_cells": 192,
+    "mean_delta_vs_cp2": null,
+    "mean_delta_vs_puct": null,
+    "roots": [
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "6f587fc559b6c8ca9ff6d1120452274423bbcf39f211af5d35e9b834da06740c",
+        "map": "tiny",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "BABY_RAT",
+        "root_id": "validation-000",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "b30fc3b0fea4575894657033d84666724a159d5b11a864135695f31d661f79e3",
+        "map": "tiny",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "RAT_KING",
+        "root_id": "validation-001",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "0493cc9de1343f9c09e194baf69bb84314a68ae7b225d2786c88dd17777add65",
+        "map": "tiny",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "BABY_RAT",
+        "root_id": "validation-002",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "f861d1a2f2191014eecc808b8af76a3fc4a31fd7d7c6e01c92e73c0705ee9077",
+        "map": "tiny",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "RAT_KING",
+        "root_id": "validation-003",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "a5f2175ec1854139e5c60243ba3a25676c61722ac1611eba2e206752e5a6486b",
+        "map": "DefaultSmall",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "BABY_RAT",
+        "root_id": "validation-004",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "4645d222ca6ea13e4e72153fda1c55ef4a20d82d210c224ff7752ffaf46f00b0",
+        "map": "DefaultSmall",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "RAT_KING",
+        "root_id": "validation-005",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "03a78c1f0ee8ecb7f72937182a06db92dbcbb722529e7db75e612762b5b3a1ff",
+        "map": "DefaultSmall",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "BABY_RAT",
+        "root_id": "validation-006",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "83734537665b9f0013718f4a63935d957a14db8102fc333c7ab6fb340f56bebd",
+        "map": "DefaultSmall",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "RAT_KING",
+        "root_id": "validation-007",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "b83622411a8f4637019cd95767ddd3204bfb58014fec58279edeb9b8f37472e8",
+        "map": "closeup",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "BABY_RAT",
+        "root_id": "validation-008",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "1a5a7f197dcdd07cb228cb8dc0e2eb195bb47defed91605bf855876a0f82513f",
+        "map": "closeup",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "RAT_KING",
+        "root_id": "validation-009",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "33b8e905b711fecbdfc2785f14e0397ed4c306b138fdede7532ebb1341bbdf03",
+        "map": "closeup",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "BABY_RAT",
+        "root_id": "validation-010",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "e547aa849e6986094ecf766cfb2edb691371f4c3c6042594b66c71b4caad1c34",
+        "map": "closeup",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "RAT_KING",
+        "root_id": "validation-011",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j4.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "76ec8befea5f30fb8ecdb6606bcc2bc9d88125e0aa85caba63f4e3528853cd90",
+        "map": "knifefight",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "BABY_RAT",
+        "root_id": "validation-012",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "6c2660a37e7c928fa4f3aab77759a864ee4c2e8c4874ba199ca1cbbb6c9267d5",
+        "map": "knifefight",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "RAT_KING",
+        "root_id": "validation-013",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j1.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "5ce2245df3dcf4bea0c963c963a5dbc87fd5fd7dc2e2c1594c9ce9f35741e0ba",
+        "map": "knifefight",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 1,
+        "role": "BABY_RAT",
+        "root_id": "validation-014",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j2.json"
+      },
+      {
+        "actions": null,
+        "complete": false,
+        "completed_unique_cells": 0,
+        "delta_vs_cp2": null,
+        "delta_vs_puct": null,
+        "errors": 0,
+        "expected_unique_cells": null,
+        "input_hash": "ea91482fe66a3d684ca029ad65f588f8c99f0d229b1b45a3a9d1398e3c8b793f",
+        "map": "knifefight",
+        "means": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "player": 0,
+        "role": "RAT_KING",
+        "root_id": "validation-015",
+        "scores": {
+          "cp2": null,
+          "puct_head": null,
+          "terminal_head": null
+        },
+        "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j2.json"
+      }
+    ],
+    "scope": "One candidate first action followed by frozen cp2 on both teams; not full-policy deployment.",
+    "seeds": [
+      203021,
+      203043,
+      203067,
+      203091
+    ],
+    "thresholds": {
+      "improved_roots_min": 2,
+      "mean_delta_vs_cp2_min": 0.0,
+      "mean_delta_vs_puct_min": 0.1,
+      "worst_root_delta_vs_puct_min": -0.25
+    },
+    "unresolved_errors": 0,
+    "worst_root_delta_vs_puct": null
+  }
+}

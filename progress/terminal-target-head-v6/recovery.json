@@ -1,0 +1,60 @@
+{
+  "archive": "artifacts/terminal-target-head-v6/recovery-20261110T092723489573Z-b5f724bb879e.tar.gz",
+  "archive_sha256": "b5f724bb879e9a36b816c29c2ac306070d1657b418f2fd25960f2478c2fe3c38",
+  "archive_size": 15496496,
+  "coverage": {
+    "anchors": 512,
+    "completed_candidate_count": 2,
+    "completed_training_sources": 19,
+    "completed_validation_sources": 9,
+    "frozen_training_roots": 32,
+    "frozen_validation_roots": 16,
+    "successful_benchmark_games": 72,
+    "successful_selection_cells": 1458,
+    "successful_validation_cells": 64,
+    "updates_per_candidate": 128
+  },
+  "decision": {
+    "all_map_victory": false,
+    "automatic_promotion": false,
+    "complete": true,
+    "criteria_pass": false,
+    "integrity_verified": true,
+    "review_for_expansion": false,
+    "scope": "Precommitted research review rule; no model promotion or all-map victory claim."
+  },
+  "experiment_id": "terminal-target-head-v6",
+  "identity_file_sha256": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c",
+  "identity_path": "progress/terminal-target-head-v6/identity.json",
+  "manifest": "artifacts/terminal-target-head-v6/recovery-20261110T092723489573Z-b5f724bb879e.tar.gz.manifest.json",
+  "phase": "complete_review_required",
+  "publication": "Repository artifact; commit and publication managed separately. This pointer does not claim a remote upload.",
+  "raw_journals": {
+    "all_attempts_retained": true,
+    "git_ignored": true,
+    "included_in_archive": true,
+    "path": "progress/terminal-target-head-v6/cells/"
+  },
+  "restore_command": ".venv/bin/python scripts/export_terminal_v6.py restore --archive artifacts/terminal-target-head-v6/recovery-20261110T092723489573Z-b5f724bb879e.tar.gz --root /workspace/battlecode26-alpha0",
+  "restore_policy": "Require an absent v6 run; preserve current source/config/protocol and all existing evidence. Existing progress must be byte-identical. Relocation or missing/different pinned dependencies creates STOP. No automatic promotion or additional training.",
+  "schema": "terminal-target-head-v6-recovery-pointer-v1",
+  "source_git_commit": "c2208816534a7c62a0526f8e44d4661a3c45d72a",
+  "source_root": "/workspace/battlecode26-alpha0",
+  "verification": {
+    "all_checkpoint_payloads_verified": 21,
+    "all_raw_journal_paths_and_hashes_verified": true,
+    "audit_sha256": "ab8f824a645432916417e8142d61c7cd13ec5e69561b96869115ff95288dd564",
+    "manifest_files": 3987,
+    "raw_journal_bytes": 125646460,
+    "raw_journal_files": 3044,
+    "relocation_stop_verified": true,
+    "restored_payload_files_byte_verified": 3985,
+    "successful_continuation_cells": {
+      "selection": 1458,
+      "validation": 64
+    },
+    "training_underfit_sha256": "4ff88c4f8fe68b623d35941415a92ac3741907d840da4e7aea405bf9b0f4da68",
+    "unique_successful_benchmark_games": 72
+  },
+  "verification_report": "artifacts/terminal-target-head-v6/recovery-20261110T092723489573Z-b5f724bb879e.tar.gz.verification.json"
+}

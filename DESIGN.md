@@ -174,6 +174,21 @@ in separate v6 paths, with no v5 trajectory reuse. The paired seed design
 is explicit and does not constitute an independent replication. The full
 coverage and input-exclusion guards must still pass before fitting.
 
+The [completed v6 comparison](docs/terminal-v6-results.md) produced no measured
+playing gain: both learned heads and fresh cp2 scored 20/24, and all 16 validation
+actions were identical. All 1,458 target games, 64 shared validation games and 72
+benchmark games were valid. Exact head/optimizer replay confirmed a correct
+fit, but none of the 9 changed terminal labels became a training-root greedy
+action. The failed expansion rule preserves both heads without promotion.
+
+[Training-only gradient and feature analysis](docs/v6-training-underfit.md)
+found full row rank but substantial root-label and anchor-gradient conflict.
+The next [cached-head-constraint-v7](docs/cached-head-constraint-v7.md) separates
+update budget from anchoring using the same fixed 32/512 inputs, two KL settings
+and fixed snapshots, with no validation/benchmark tuning or automatic model
+selection. It changes no architecture or engine and provides no playing-strength
+claim on its own.
+
 ## Decisions to revisit after measurement
 
 1. Evaluate whether v2 learns beyond its untrained macro-controller baseline; separate heuristic/controller gains from optimizer gains.

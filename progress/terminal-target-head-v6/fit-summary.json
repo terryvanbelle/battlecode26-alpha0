@@ -1,0 +1,120 @@
+{
+  "batch_schedule": {
+    "anchor_shape": [
+      128,
+      32
+    ],
+    "path": "runs/terminal-target-head-v6/fit/batches.npz",
+    "root_shape": [
+      128,
+      32
+    ],
+    "seed": 203101,
+    "sha256": "609a31a83326b44c5cf642a5d1804ad0d643e45ac860c3aea4b42ad6924cbd6a"
+  },
+  "checkpoints": {
+    "puct_head": {
+      "fit_identity_sha256": "424b7a7588ffb0e1bfc923853d045194ba89c3e9b8fd708daadf9705880a1fb2",
+      "frozen_tensors_equal": true,
+      "metrics": {
+        "anchor_action_changed_fraction": 0.001953125,
+        "anchor_kl": 0.015039490535855293,
+        "loss": 0.4515880346298218,
+        "root_action_changed_fraction": 0.0,
+        "root_target_agreement": 1.0,
+        "target_ce": 0.43654853105545044
+      },
+      "path": "runs/terminal-target-head-v6/fit/puct_head.pt",
+      "sha256": "805af399e61044da899d409b6a5ba8521aaccdc53ab79c2d9fa5eaf59960cc38",
+      "trainable_parameters": 5160,
+      "updates": 128,
+      "value_logits_equal": true
+    },
+    "terminal_head": {
+      "fit_identity_sha256": "424b7a7588ffb0e1bfc923853d045194ba89c3e9b8fd708daadf9705880a1fb2",
+      "frozen_tensors_equal": true,
+      "metrics": {
+        "anchor_action_changed_fraction": 0.005859375,
+        "anchor_kl": 0.05066864937543869,
+        "loss": 0.9660977721214294,
+        "root_action_changed_fraction": 0.0,
+        "root_target_agreement": 0.71875,
+        "target_ce": 0.9154291152954102
+      },
+      "path": "runs/terminal-target-head-v6/fit/terminal_head.pt",
+      "sha256": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718",
+      "trainable_parameters": 5160,
+      "updates": 128,
+      "value_logits_equal": true
+    }
+  },
+  "complete": true,
+  "dataset": {
+    "anchor_count": 512,
+    "metadata_sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b",
+    "path": "runs/terminal-target-head-v6/dataset/training.npz",
+    "root_count": 32,
+    "sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26"
+  },
+  "experiment_id": "terminal-target-head-v6",
+  "files": {
+    "batch-rng.json": "9bf2846c292e156f6a48a90e57dba183ea111e35954005276da6046d582fbee3",
+    "batches.npz": "609a31a83326b44c5cf642a5d1804ad0d643e45ac860c3aea4b42ad6924cbd6a",
+    "identity.json": "650a41272afc8e81594e9fb482c1fdf93360f3639085e21c96f6504878bef795",
+    "parent-metadata.json": "1e18e1f8898b004e2272d622a59ca24c1974d205e42c19a31fc0b8fec6b8b786",
+    "puct_head.pt": "805af399e61044da899d409b6a5ba8521aaccdc53ab79c2d9fa5eaf59960cc38",
+    "terminal_head.pt": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718"
+  },
+  "fit_config": {
+    "anchor_batch_size": 32,
+    "anchor_kl_weight": 1,
+    "batch_size": 32,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "learning_rate": 0.0003,
+    "seed": 203101,
+    "target_weight": 0.75,
+    "updates": 128,
+    "weight_decay": 0.0001
+  },
+  "fit_identity": {
+    "batch_sha256": "5fb87535e655b6776ab05fef1f95f1c36d90c0719c3c887bc12cee488778c998",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "common_sha256": "dfe577a1faca739f109fd65a917714ea0e14500230ab00e63bb9a9aef0c3c6fd",
+    "dataset_metadata_sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b",
+    "dataset_sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26",
+    "fit_config": {
+      "anchor_batch_size": 32,
+      "anchor_kl_weight": 1,
+      "batch_size": 32,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "learning_rate": 0.0003,
+      "seed": 203101,
+      "target_weight": 0.75,
+      "updates": 128,
+      "weight_decay": 0.0001
+    },
+    "fitter_sha256": "3341b1d418f7e9b38468d36f848db38cde27154a8063d1590acedf2115b7dd9f",
+    "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+    "numpy_version": "2.3.5",
+    "torch_version": "2.15.0+cpu"
+  },
+  "fit_identity_sha256": "424b7a7588ffb0e1bfc923853d045194ba89c3e9b8fd708daadf9705880a1fb2",
+  "format_version": 1,
+  "frozen_state_sha256": "3dfdc987563fe3d0b8a1e247d56bff20847f2f537ded5320f236e8805880dbd3",
+  "gradient_input_overlap": {
+    "checked": true,
+    "gradient_input_count": 544,
+    "intersection_count": 0,
+    "set_sha256": "51cbdb299672293c65afdfe12dd41cf007cb32b04dbccb353dc8cf5b40cd6f9c",
+    "validation_input_count": 16
+  },
+  "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26"
+}

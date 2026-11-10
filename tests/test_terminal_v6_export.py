@@ -319,6 +319,21 @@ class TerminalV6ExportTest(unittest.TestCase):
         self.assertEqual(result["dependency"]["initialization_ancestor"]["artifact_sha256"], "a" * 64)
         self.assertTrue(result["dependency"]["cp2_included"])
 
+    def test_historical_prerequisite_snapshot_does_not_import_v5_source_games(self):
+        name = f"{E.PROGRESS}/source/progress/terminal-target-head-v5/independent-coverage-audit.json"
+        reference = {"source_json": "runs/terminal-target-head-v5/sources/training-m0-j1.json",
+                     "source_sha256": "f" * 64,
+                     "cache_npz": "runs/terminal-target-head-v5/sources/training-m0-j1.npz",
+                     "cache_sha256": "e" * 64}
+        write(self.root, name, json.dumps(reference))
+        comparison = f"{E.PROGRESS}/source-coverage-comparison.json"
+        write(self.root, comparison, json.dumps({"v5": reference}))
+        result = E.create_export(self.root)
+        with tarfile.open(result["archive"]) as archive:
+            self.assertIn(name, archive.getnames())
+            self.assertIn(comparison, archive.getnames())
+            self.assertFalse(any(path.startswith("runs/terminal-target-head-v5/") for path in archive.getnames()))
+
 
 if __name__ == "__main__":
     unittest.main()
