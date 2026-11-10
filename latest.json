@@ -1,0 +1,20 @@
+{
+  "archive": "campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz",
+  "branch": "campaign-checkpoints",
+  "created_at": "2026-11-10T03:06:27.142217+00:00",
+  "file_count": 62,
+  "format_version": 1,
+  "git": {
+    "commit": "fb0ce74ed7231c9878d24769a0cb2e9502d118eb",
+    "worktree_dirty": true
+  },
+  "manifest_path": "snapshots/campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz.manifest.json",
+  "path": "snapshots/campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz",
+  "published_at": "2026-11-10T03:13:00.971199+00:00",
+  "release": "campaign-state",
+  "release_upload_auth_error": "GitHub release upload rejected configured credentials",
+  "repository": "terryvanbelle/battlecode26-alpha0",
+  "sha256": "a3bbbdd68c7ac4ae9a7bbd6f36209cc36b53d4c943bc323daa004673dab3b032",
+  "size": 1121476,
+  "storage": "git"
+}
