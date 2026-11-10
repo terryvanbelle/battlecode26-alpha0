@@ -1,0 +1,15 @@
+{
+  "proposed_seeds": [
+    219003,
+    219013,
+    219029,
+    219041
+  ],
+  "matches": [],
+  "read_errors": [],
+  "scanned_files": 15668,
+  "unique_observed_seed_integers": 456,
+  "inventory_sha256": "9167f80b5d8ffd32027e9fce61dd81c5167f2a0c0287f3b6bc976c267d91df29",
+  "scope": "Local recorded JSON/JSONL seed fields only. Active journals may advance. Rerun after V8 quiescence and review reserved formula ranges and historical archives before final preregistration.",
+  "final_preregistration": false
+}

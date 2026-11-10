@@ -3,8 +3,8 @@
   "complete": false,
   "draws": 0,
   "expected": 256,
-  "losses": 36,
+  "losses": 83,
   "unresolved_errors": 0,
-  "valid": 94,
-  "wins": 58
+  "valid": 156,
+  "wins": 73
 }

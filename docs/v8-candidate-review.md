@@ -22,3 +22,9 @@ Draft protocol for review after the matched PUCT panel completes:
 - Implement in a new run/progress namespace only after full V8 review; three-hour resumable budget, all existing locks/STOPs plus its own, at mostthree one-thread actors and process-tree watchdogs. Freeze implementation/config before any new outcomes.
 
 This is an unlaunched proposal, not an approved result or a completed preregistration. The full PUCT result and independent audit may change the research choice before new data are collected.
+
+## Planning inventory (no new games)
+
+A read-only reconstruction from the frozen V8 training arrays and terminal journals finds **14 changed target actions among32 roots**. Physically sharing identical-action cells reduces the proposed four-seed recheck from256 to **184 distinct continuations**, while keeping all32 roots in every aggregate. The original selection-seed mean advantage is0.328125; this is explicitly an in-sample maximum over actions and is biased upward, so it cannot establish target reliability. [Exact action/source/input inventory](../diagnostics/target-recheck-planning/action-inventory.json).
+
+The seed scan is only a preparatory check of local recorded JSON fields. It must be repeated after quiescence and supplemented by reserved-formula/archive review before final preregistration. Nothing in this planning step changes V8, fits weights, launches games or consumes confirmation seeds.
