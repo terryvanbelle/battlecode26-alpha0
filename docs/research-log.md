@@ -527,3 +527,8 @@ not a traced proof of the exact divergent action. Both valid outcomes remain;
 no opponent/harness patch, outcome-selected rerun or threshold change is made.
 Use the preregistered fresh matched control and retain the original baseline
 comparison too; fresh-seed confirmation remains required.
+
+
+### V8 bounded continuation guard — 2026-11-10
+
+The first three-hour cycle is still evaluating the preregistered panel. A separate nonpinned watcher, `scripts/continue_v8_after_budget.py`, waits for its verified deadline boundary, checks all seven locks and STOPs, reruns independent input/fit audits, exports and verifies recovery plus an isolated restore, and publishes it before one further bounded cycle. It resumes only unfinished benchmark work; completed fitting is not repeated. Genuine errors, changed runtime, STOP, or more than two first-attempt watchdog interruptions require review. Status is `runs/research-sequence/boundary-status.json`; its own `boundary.lock` prevents duplicate watchers. This is operational continuity, not evidence of stronger play.
