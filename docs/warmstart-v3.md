@@ -77,12 +77,61 @@ Baseline and trained reports must have identical evaluation configuration and
 frozen-suite hashes before a comparison is accepted.
 
 `--target-iteration` is an operational bound, not part of the immutable training
-configuration. A later reviewed continuation can explicitly request iteration 2
-while retaining this lineage. The present request stops after iteration 1;
-there is no automatic promotion, holdout evaluation or change to neutral v2.
+configuration. After checkpoint 1 retained 20/24 valid smoke wins, continuation
+to iteration 2 was authorized, conditional on verifying the iteration-1 recovery
+archive. It uses the same configuration and one-actor allocation:
+
+```bash
+.venv/bin/python -u scripts/run_warmstart_experiment.py \
+  --hours 2 --target-iteration 2
+```
+
+This second cycle can use the critic learned during the first cycle. The prior
+champion stays preserved. There is no automatic promotion, holdout evaluation or
+change to neutral v2; the runner stops at the requested operational target.
 
 Seven targeted tests cover exact model import, empty replay/fresh optimizer,
 initialization crash recovery, checkpoint protection, checksum and comparison
 identity checks, exclusive locking, operational iteration targets and cleanup of
 thread-spawned workers in separate sessions. The first launch passed these checks
 and independent review before starting real self-play.
+
+## First completed cycle and recovery
+
+The first cycle completed in 14.8 minutes: eight terminal self-play games,
+17,531 real decisions, 1,948 genuine search targets and 48 optimizer updates.
+Checkpoint 1 retained the initial **20/24** smoke wins with no errors. The four
+losses against `bestsofar` and `basic51` had exactly unchanged terminal states,
+including king HP, surviving armies and round counts. This is preservation of
+the prior's smoke performance, not an observed strength gain. See the
+[all-cell comparison and terminal diagnostics](../progress/warmstart-v3/iteration-001.md)
+and [progress graphs](../progress/warmstart-v3/README.md).
+
+After the runner exits, create its durable resume archive with:
+
+```bash
+.venv/bin/python scripts/export_warmstart.py --iteration 1
+```
+
+The exporter requires the runner lock to be free and both completed checkpoint
+evaluations to match. It preserves checkpoints, latest optimizer/RNG, active
+replay and its RNG, initialization dependency, plans, game transcripts,
+project-owned sources, maps, notices and progress evidence under
+`artifacts/warmstart-v3/iteration-001/`. The archive and each file have SHA-256
+checksums. Redundant consumed game arrays and older replay generations are
+omitted with recorded hashes; local files remain intact. Six focused tests
+verify corruption rejection, locking and exact state recovery; an additional
+regression rejects dependency payloads. Restore at the original checkout path
+and run the archived hash-pinned bootstrap scripts as documented in `RESUME.md`.
+Downloaded benchmark sources, all compiled classes, vendor engine JARs, JDK
+files and the Python environment are excluded. The archive retains repository
+commits, source/runtime hashes and setup scripts to reproduce those local
+dependencies, together with `LICENSE` and `THIRD_PARTY.md`.
+
+A future separate pure-current-self-play control could isolate league-related
+target shifts. Same-policy games retain searched positions from both players;
+historical-opponent games retain only the current learner's searched positions.
+Winning those league games therefore changes the positive-label proportion.
+Game-balanced replay does not balance wins, sides or opponent identities, and
+the network observes physical state rather than an explicit opponent identity.
+No active immutable configuration was changed for this observation.

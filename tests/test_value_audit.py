@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pytest
 
-from scripts.audit_value import equal_game_summary, score_game_logits, targets_from_players
+from scripts.audit_value import equal_game_summary, opponent_group_summaries, score_game_logits, targets_from_players
 
 
 def test_terminal_labels_follow_the_acting_player():
@@ -47,3 +47,12 @@ def test_extreme_wrong_logits_are_finite_and_endpoint_bins_are_retained():
     assert scored["saturated_fraction"] == 1
     assert scored["reliability_bins"][0]["positions"] == 1
     assert scored["reliability_bins"][-1]["positions"] == 1
+
+
+def test_league_labels_are_reported_separately_from_both_team_targets():
+    same = {"opponent_checkpoint": None, **score_game_logits([0, 0], [0, 1], 1)}
+    league = {"opponent_checkpoint": "checkpoint-0000.pt", **score_game_logits([0] * 8, [1] * 8, -1)}
+    groups = {row["opponent_group"]: row for row in opponent_group_summaries([same, league])}
+    assert groups["same_policy"]["mean_target_win_rate"] == .5
+    assert groups["historical_opponent"]["mean_target_win_rate"] == 1
+    assert equal_game_summary([same, league])["mean_target_win_rate"] == .75

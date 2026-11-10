@@ -1,0 +1,32 @@
+{
+  "all_opponents_beaten": false,
+  "budget_hours": 2.0,
+  "checkpoint": "runs/warmstart-v3/checkpoint-0001.pt",
+  "elapsed_seconds": 18.384305681000114,
+  "empty_initial_replay": true,
+  "evaluation_iteration": null,
+  "experiment_id": "winner-prior-mcts32-v3",
+  "fresh_initial_optimizer": true,
+  "games_total": 8,
+  "initialization": {
+    "artifact": "artifacts/bootstrap-v3/candidate-002-winners/warmstart.pt",
+    "artifact_sha256": "c1473de81dda381c9f14868ea246c11f5bbd644fb59b0b0420e547598b26aa0e",
+    "empty_search_replay": true,
+    "fresh_optimizer": true,
+    "method": "winner-only behavior cloning from own-rule self-play; no benchmark examples",
+    "model_weights_only": true,
+    "source_dataset_sha256": "8b608a88e563c5998445ca0443001a3300d0162c77aaf631898bec2a79be3ac4",
+    "source_experiment_id": "macro40-bootstrap-v3-winners",
+    "teacher_version": "own-rules-assault-forage-guard-v1",
+    "value_head": "exactly neutral zero before MCTS"
+  },
+  "iteration": 1,
+  "measured_active_cpu_cores": 3.120732665563525,
+  "neutral_initial_value": true,
+  "phase": "self_play_and_training",
+  "pid": 39672,
+  "production_promoted": false,
+  "started_at": "2026-11-10T03:50:51.912110+00:00",
+  "target_iteration": 2,
+  "updated_at": "2026-11-10T03:51:10.296326+00:00"
+}

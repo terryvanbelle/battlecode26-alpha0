@@ -8,7 +8,7 @@ The active v2 experiment uses an **87,973-parameter dual-scale policy/value netw
 
 [Current v2 results and graphs](progress/campaign-v2/README.md) · [Future-game value calibration](docs/v2-value-calibration.md) · [Live published status](progress/campaign-v2/status.json) · [Research plan and victory criteria](docs/RESEARCH_PLAN.md) · [Resume and stop instructions](docs/autonomy.md)
 
-The strongest measured initialization so far wins **20/24 smoke games**: [winner-only own-teacher prior](progress/bootstrap-v3-winners/README.md). It beats ten opponents in both seats on `tiny`, but still loses to `bestsofar` and `basic51`. This is a separately labeled warmstart; search-guided continuation is tested against that baseline, and the neutral v2 run remains a control.
+The strongest measured initialization so far wins **20/24 smoke games**: [winner-only own-teacher prior](progress/bootstrap-v3-winners/README.md). It beats ten opponents in both seats on `tiny`, but still loses to `bestsofar` and `basic51`. Its [first search-guided iteration](progress/warmstart-v3/iteration-001.md) also scored **20/24**, so it has not improved on that prior yet. Further self-play is running separately from the neutral v2 control.
 
 The goal is one frozen learned checkpoint that beats **each** of the twelve opponents: at least 60% score per opponent over 192 development games, followed by 384 games on reserved maps, with both seats covered and no unresolved errors. A smoke win, a scripted controller result, or falling training loss does not satisfy this gate. Results from different model/action versions are kept separate.
 

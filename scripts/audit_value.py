@@ -108,6 +108,16 @@ def equal_game_summary(games: list[dict]) -> dict:
     return result
 
 
+def opponent_group_summaries(games: list[dict]) -> list[dict]:
+    """Keep current-only league targets separate from both-seat self-play."""
+    grouped = defaultdict(list)
+    for game in games:
+        kind = "historical_opponent" if game.get("opponent_checkpoint") else "same_policy"
+        grouped[kind].append(game)
+    return [{"opponent_group": kind, **equal_game_summary(rows)}
+            for kind, rows in sorted(grouped.items())]
+
+
 def checkpoint_path(row: dict, run: Path) -> Path:
     saved = Path(row["checkpoint"])
     # A copied run can retain the original absolute path in its provenance.
@@ -188,7 +198,9 @@ def audit_game(path: Path, run: Path, cache: dict, *, batch_size: int, bins: int
             "game_json_sha256": hashlib.sha256(raw).hexdigest(), "game_npz_sha256": data_sha,
             "training_runtime_sha256": row["identity"].get("runtime_sha256"),
             "terminal_value_a": row["terminal_value_a"], "winner": row["winner"],
-            "opponent_checkpoint": row.get("opponent_checkpoint"), **metrics}
+            "current_team": row["current_team"],
+            "opponent_checkpoint": row.get("opponent_checkpoint"),
+            "opponent_checkpoint_sha256": row["identity"].get("opponent_checkpoint_sha256"), **metrics}
 
 
 def run_audit(run: Path, *, batch_size: int = 32, bins: int = 10) -> dict:
@@ -224,10 +236,11 @@ def run_audit(run: Path, *, batch_size: int = 32, bins: int = 10) -> dict:
     for (generation, checkpoint_sha), rows in sorted(groups.items()):
         summaries.append({"checkpoint_iteration": generation, "checkpoint_sha256": checkpoint_sha,
                           "historical_opponent_games": sum(bool(row["opponent_checkpoint"]) for row in rows),
+                          "opponent_groups": opponent_group_summaries(rows),
                           "planned_games": sum(value == generation for value in planned.values()) or None,
                           **equal_game_summary(rows)})
     ids = {game["game_id"] for game in games}
-    return {"schema_version": 1, "generated_at": datetime.now(timezone.utc).isoformat(),
+    return {"schema_version": 2, "generated_at": datetime.now(timezone.utc).isoformat(),
             "snapshot_started_at": snapshot_started_at,
             "audit_source_sha256": file_hash(Path(__file__)),
             "inference_environment": {"torch_version": str(torch.__version__), "numpy_version": np.__version__},
@@ -334,6 +347,37 @@ def markdown_report(report: dict) -> str:
                   "This measures value forecasting, not playing strength. Self-play policies and the mix of historical opponents change between generations, "
                   "so these scores do not isolate a causal effect of training. Historical-opponent games retain only current-policy positions, "
                   "which can shift the label balance; equal-game weighting prevents longer retained trajectories from dominating."]
+    lines += ["", "## Same-policy and historical-opponent games", "",
+              "The same-policy group uses the generation checkpoint for both teams and retains searched positions from both. "
+              "The historical-opponent (league) group searches and retains only the current checkpoint's team; "
+              "the older opponent samples its policy without search. Consequently a decisive league game has either all positive "
+              "or all negative retained labels, while same-policy games usually contribute labels from both teams. "
+              "Each row below weights its games equally; a group's weight in the aggregate is its fraction of completed games.", "",
+              "| Checkpoint | Group | Games | Positions | Predicted win | Terminal win label | Brier | BCE |",
+              "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
+    for row in report["checkpoints"]:
+        for group in row["opponent_groups"]:
+            name = "League, current-only" if group["opponent_group"] == "historical_opponent" else "Same policy, both teams"
+            lines.append(f"| {row['checkpoint_iteration']} | {name} | {group['games']} | {group['positions']:,} | "
+                         f"{group['mean_win_probability']:.4f} | {group['mean_target_win_rate']:.4f} | "
+                         f"{group['brier']:.4f} | {group['bce']:.4f} |")
+    lines += ["", "The observation encoder supplies board state and side-relative game statistics, but no checkpoint identity, "
+              "league flag, opponent search budget or opponent temperature. A board position's eventual outcome can depend on "
+              "those omitted policy conditions, so a single value head learns a changing mixture of continuation regimes. "
+              "This is a plausible source of forecast drift, together with small samples, changing visited states and fitting error; "
+              "the observed changes alone do **not** establish overfitting or prove opponent aliasing caused the errors. "
+              "See the unchanged [feature encoder](../alpha0/features_v2.py), "
+              "[rollout selection](../alpha0/learn_v2.py) and [game-balanced replay](../alpha0/replay_v2.py).", "",
+              "A future controlled test should start two isolated runs from the same immutable checkpoint, keep optimizer/search "
+              "budgets and paired map/seed schedules fixed, and compare pure current-policy self-play with a fixed 25% historical-opponent "
+              "mixture over two generations of 16 games. Predeclare the league assignments rather than letting an eight-game binomial "
+              "draw change the mixture sharply. Score each resulting checkpoint on fresh, completed future games, reporting same-policy "
+              "and fixed historical-opponent strata separately with equal-game weighting. Include a matched-retention control that scores "
+              "only the designated current team in both groups, to separate changes in opponents from changes in which labels are retained. "
+              "Keep benchmark trajectories excluded. "
+              "An alternative follow-up is a versioned value model conditioned on the simulator-known opponent policy/search regime, "
+              "or separate value heads; that needs a documented default for unknown opponents at deployment. These are proposed tests, "
+              "not changes to the active campaign, and success requires better future-game Brier/BCE rather than lower replay loss."]
     lines += ["", "## Per-game measurements", "",
               "| Game | Map | Checkpoint | Positions | Brier | Value MSE | BCE | Mean value | Saturated |",
               "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]

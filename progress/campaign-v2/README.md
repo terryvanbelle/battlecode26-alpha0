@@ -1,6 +1,6 @@
 # Training progress
 
-Generated from repository JSONL measurements at `2026-11-10T03:35:41+00:00`.
+Generated from repository JSONL measurements at `2026-11-10T03:50:25+00:00`.
 
 Run `python scripts/plot_progress.py --progress-dir progress/campaign-v2` from the repository root to regenerate these figures and this report.
 
@@ -8,15 +8,15 @@ Run `python scripts/plot_progress.py --progress-dir progress/campaign-v2` from t
 
 | Measurement | Observed value |
 |---|---:|
-| `iteration` | 3 |
-| `games_total` | 24 |
-| `positions_total` | 11684 |
-| `policy_loss` | 2.78214 |
-| `value_loss` | 0.65177 |
-| `total_loss` | 3.43391 |
-| `entropy` | 2.80034 |
-| `games_per_hour` | 42.0406 |
-| `wall_seconds` | 1470.66 |
+| `iteration` | 4 |
+| `games_total` | 32 |
+| `positions_total` | 15226 |
+| `policy_loss` | 2.58595 |
+| `value_loss` | 0.642089 |
+| `total_loss` | 3.22804 |
+| `entropy` | 2.58264 |
+| `games_per_hour` | 44.935 |
+| `wall_seconds` | 2111.58 |
 
 ![Training loss, entropy, data volume and throughput](training.png)
 
@@ -30,7 +30,7 @@ Replay counts describe the current buffer, not cumulative data. Searched positio
 
 ## Latest benchmark checkpoint
 
-Iteration **2**, checkpoint `checkpoint-0002.pt [718f0843/macro_v2/greedy/ef6f893e]`.
+Iteration **4**, checkpoint `checkpoint-0004.pt [1f04b952/macro_v2/greedy/ef6f893e]`.
 
 **24 completed games; 0 errors; 12/12 panel opponents represented.**
 

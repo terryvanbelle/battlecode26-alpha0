@@ -1,10 +1,10 @@
 {
-  "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+  "checkpoint_sha256": "1f04b9526c36d2f165c5badee24e7bf6533e341481fa667201eff9fcf17267bd",
   "completed": 24,
   "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
   "expected": 24,
   "full_panel_complete": true,
-  "iteration": 2,
+  "iteration": 4,
   "opponents": {
     "CS50Crab_rapierV1": {
       "completed": 2,

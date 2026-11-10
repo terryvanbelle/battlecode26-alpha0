@@ -16,9 +16,11 @@ def main():
     record = json.loads(args.game.read_text())
     if record["status"] != "ok":
         parser.error("only a completed game has a verifiable terminal state")
-    with EngineEnv() as env:
+    action_version = record.get("action_version", "macro_v1")
+    with EngineEnv(action_version=action_version) as env:
         actual = env._request({"cmd": "replay", "map": record["map"], "seed": record["seed"],
-                               "maps_dir": env.maps_dir, "actions": record["actions"]})
+                               "maps_dir": env.maps_dir, "actions": record["actions"],
+                               "action_version": action_version})
     expected = record["terminal"]
     diagnostic_keys = {"snapshot", "valid_game", "benchmark_failures", "diagnostics"}
     differences = [key for key in expected if key not in diagnostic_keys and expected[key] != actual.get(key)]

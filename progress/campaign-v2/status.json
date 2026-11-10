@@ -1,15 +1,15 @@
 {
   "all_opponents_beaten": false,
   "budget_hours": 3.0,
-  "checkpoint": "runs/campaign/v2/checkpoint-0003.pt",
-  "evaluation_stage": "smoke",
+  "checkpoint": "runs/campaign/v2/checkpoint-0004.pt",
+  "evaluation_stage": "standard",
   "experiment_id": "dual-scale-macro40-v2",
-  "games_total": 24,
+  "games_total": 32,
   "initial_iteration": 0,
-  "iteration": 3,
-  "last_published_recovery": "campaign-state-20261110T032355847902Z-e41ba370fe80.tar.gz",
+  "iteration": 4,
+  "last_published_recovery": "campaign-state-20261110T033747902021Z-7d4f8f896ac9.tar.gz",
   "phase": "evaluating",
   "pid": 23675,
   "started_at": "2026-11-10T03:06:22.848972+00:00",
-  "updated_at": "2026-11-10T03:35:41.702539+00:00"
+  "updated_at": "2026-11-10T03:50:25.278623+00:00"
 }

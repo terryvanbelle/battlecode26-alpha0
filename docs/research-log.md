@@ -122,3 +122,33 @@ comparison. The [audit report](v2-value-calibration.md) records all source hashe
 label distributions and reliability plots. This supports keeping the warmstart
 critic neutral initially and requiring future-game calibration before assuming
 that deeper search has a good leaf evaluator.
+
+### Calibration refresh: 2026-11-10 03:45 UTC
+
+The 23-game measurements above remain the historical snapshot. The
+[latest audit report](v2-value-calibration.md) now contains **29 completed games**,
+with matching audit-script provenance and no excluded inputs. Checkpoints 0, 1
+and 2 each have eight subsequent games; checkpoint 3 has five of eight. Their
+equal-game Brier scores are **0.2500, 0.2582, 0.2874 and 0.2824**. No predictions
+are saturated. The JSON and plot were regenerated from immutable pre-game
+checkpoints; three planned games were pending at this snapshot.
+
+Separating same-policy and league games explains the sharp label-prevalence
+change in checkpoint 1's subsequent games. Its four same-policy games have a
+**0.4839** mean terminal win label, Brier **0.2499** and BCE **0.6929**. Its four
+league games were all current-checkpoint wins; because only that team's searched
+positions are retained, their label mean is **1.0000**, Brier **0.2664** and BCE
+**0.7260**. Equal game weights therefore produce the aggregate label mean
+**0.7419**. Checkpoint 2's eight subsequent games are all same-policy, with label
+mean **0.4927**, while its mean forecast is **0.6823**.
+
+The encoder has no opponent identity or policy/search-regime input. The same
+board observation can therefore be associated with different continuation
+policies, and the mixture of retained labels changes with league outcomes.
+These facts make mixture shift and omitted opponent conditions plausible
+contributors; they do not prove overfitting or identify the cause of the forecast
+errors. The audit records a future controlled comparison of pure current-policy
+self-play and a fixed league mixture, including matched side retention and
+separate future-game calibration. Opponent-conditioned value prediction is a
+separate versioned experiment. No active training configuration or runtime was
+changed for this investigation.

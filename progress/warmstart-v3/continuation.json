@@ -1,0 +1,15 @@
+{
+  "operation": "continue_same_lineage",
+  "target_iteration": 2,
+  "pid": 39672,
+  "started_at": "2026-11-10T03:50:51.912110+00:00",
+  "prior_iteration": 1,
+  "prior_smoke_wins": 20,
+  "prior_smoke_games": 24,
+  "errors": 0,
+  "archive_verified": "artifacts/warmstart-v3/iteration-001/verification.json",
+  "config_unchanged": true,
+  "champion_preserved": true,
+  "holdout_consumed": false,
+  "production_promoted": false
+}

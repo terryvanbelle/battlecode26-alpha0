@@ -1,1 +1,3 @@
 patches/*.patch -whitespace
+# CSV writers use RFC 4180 CRLF line endings. Preserve measured artifact bytes.
+*.csv whitespace=cr-at-eol

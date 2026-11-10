@@ -1,0 +1,23 @@
+{
+  "archive": "artifacts/warmstart-v3/iteration-001/resume.tar.gz",
+  "archive_bytes": 6958799,
+  "archive_sha256": "c94e6fef95645ae06426a7ecf9993b72f92ffeef0f3452eeaf6ed3a98a5adaa5",
+  "checkpoint_sha256": "121acf1bd12d6f44c4909766167011664106605f1325371a585ed10a118d1360",
+  "dependency_hashes_and_pins": "preserved",
+  "engine_or_evaluation_started": false,
+  "games_total": 8,
+  "iteration": 1,
+  "live_run_modified": false,
+  "model": "exact",
+  "numpy_rng": "exact",
+  "optimizer": "exact",
+  "replay_games": 8,
+  "replay_positions": 1948,
+  "replay_rng": "exact",
+  "restore_runtime": "existing local Python training modules; no vendor/build payloads extracted",
+  "third_party_payloads": "absent",
+  "torch_rng": "exact",
+  "verified": true,
+  "verified_at": "2026-11-10T03:58:17.475559+00:00",
+  "verified_files": 309
+}
