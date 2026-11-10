@@ -14,9 +14,9 @@
 All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot). For `thewaxmango`, bot crashes are excluded: win rate is wins divided by valid games, with the excluded count shown; these crashes are also excluded from the overall rate. Other incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->
 
-**Baseline status:** collection ended with four reproducible `collegejunior` bot errors on `wallsofparadis`; this panel cannot establish improvement. [Crash review and replacement qualification](diagnostics/collegejunior-wallsofparadis/README.md) preserves the evidence. All eight maps remain required.
+**Revised baseline is running:** v4 replaces the crashing `collegejunior` with YokoOno, which passed 32/32 qualification games. A fresh 256-game cp2 evaluation is underway. The graphs above currently show the prior v3 panel (four crashes excluded from displayed rates), not the new baseline. [Replacement evidence](progress/yokoono-qualification-v1/README.md) · [Current v4 protocol](docs/development-benchmarks-v4.md).
 
-[Active benchmark and improvement rules](docs/development-benchmarks-v3.md) · [Benchmark configuration](configs/benchmarks-development-v3.json) · [Latest completed game research](docs/terminal-v6-results.md)
+[Active benchmark and improvement rules](docs/development-benchmarks-v4.md) · [Benchmark configuration](configs/benchmarks-development-v4.json) · [Latest completed game research](docs/terminal-v6-results.md)
 
 The goal is verified improvement, not winning against every bot or on every map.
 The initial development threshold is a 5-percentage-point gain in mean game score,
