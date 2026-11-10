@@ -4,12 +4,16 @@ The source-temperature amendment filled **32/32 training roots, 512/512 anchors
 and 16/16 input-disjoint validation roots**. There are 19 completed training
 source games and 9 validation sources. All 32 PUCT comparators are frozen.
 
-At `2026-11-10T08:02:40.033889+00:00`, target collection has **423/1,458 valid terminal
-games**; attempts by status: `{'ok': 423}`. Both fitted heads, independent terminal
+At `2026-11-10T08:48:04.156289+00:00`, target collection has **1214/1,458 valid terminal
+games**; attempts by status: `{'ok': 1214}`. Both fitted heads, independent terminal
 validation and the 72 fresh benchmark games remain pending. No learned
 improvement or all-map victory has been established; historical cp2 remains **20/24**.
 
 ![Paired source coverage](source-coverage-comparison.png)
+
+![Observed terminal collection throughput](collection-throughput.png)
+
+The throughput figure is a dated snapshot; [its exact counts, timing and provenance](collection-throughput.md) distinguish completed games from pending journals.
 
 [Exact paired coverage and limitations](source-coverage-comparison.md) ·
 [Preregistered protocol](../../docs/terminal-target-head-v6.md) ·

@@ -13,3 +13,6 @@ __pycache__/
 *.key
 progress/**/.lock
 progress/**/.*.lock
+
+# Raw v6 terminal journals are preserved in verified recovery archives.
+progress/terminal-target-head-v6/cells/
