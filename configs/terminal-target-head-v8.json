@@ -1,0 +1,76 @@
+{
+  "experiment_id": "terminal-target-head-v8",
+  "schema_version": 1,
+  "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "maps": [
+    "tiny",
+    "DefaultSmall",
+    "closeup",
+    "knifefight"
+  ],
+  "temperature": 0.35,
+  "training_roots": 32,
+  "validation_roots": 16,
+  "anchor_count": 512,
+  "anchor_seed": 205151,
+  "selection_seeds": [
+    205003,
+    205013
+  ],
+  "validation_seeds": [
+    205021,
+    205043,
+    205067,
+    205091
+  ],
+  "selection_cell_ceiling": 1600,
+  "workers": 3,
+  "torch_threads": 1,
+  "wall_budget_seconds": 10800,
+  "cell_timeout_seconds": 180,
+  "source_timeout_seconds": 1800,
+  "response_timeout_seconds": 10,
+  "max_decisions": 100000,
+  "max_error_attempts": 2,
+  "evaluation_timeout_seconds": 1800,
+  "evaluation_attempts": 2,
+  "fit": {
+    "updates": 2048,
+    "batch_size": 32,
+    "anchor_batch_size": 32,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "seed": 205101,
+    "target_weight": 0.75,
+    "anchor_kl_weight": 1
+  },
+  "search": {
+    "simulations": 32,
+    "max_depth": 12,
+    "cpuct": 1.5,
+    "dirichlet_alpha": 0.3,
+    "exploration_fraction": 0.25,
+    "root_noise": true,
+    "root_seed_base": 205201
+  },
+  "thresholds": {
+    "mean_delta_min": 0.1,
+    "improved_roots_min": 2,
+    "worst_root_delta_min": -0.25,
+    "mean_vs_cp2_min": 0
+  },
+  "benchmark_data_used_for_training": false,
+  "source_temperature": 1.0,
+  "v7_audit": {
+    "path": "progress/cached-head-constraint-v7/independent-final-audit.json",
+    "sha256": "e3776f8fbde2d0ff65117c2efcf029a54265a734d00b1b069ada06dc70b6ebd2"
+  },
+  "benchmark_manifest": "configs/benchmarks-development-v4.json",
+  "improvement_config": "configs/improvement-v4.json"
+}

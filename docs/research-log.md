@@ -448,3 +448,20 @@ YokoOno completed 32/32 qualification games with zero errors. Freeze v4 replacin
 only collegejunior; retain all maps, seeds and success criteria. Start fresh cp2
 256-game baseline under shared locks and a three-hour bound. Qualification games
 are not baseline games. No improvement claim is available yet.
+
+## V8 migration tested while the revised baseline runs
+
+V8 now schedules 768 fresh development games (cp2 plus both fixed heads),
+pins the v4 panel and improvement rule, and uses the approved score-gain,
+paired-map bootstrap and zdb-nonregression criterion. First-action validation
+remains a separate mechanism diagnostic. No old tiny-only result substitutes
+for broad-panel evidence. All seven locks/STOPs are respected.
+
+The full V8 suite passed 82 tests and 41 subtests, including synthetic complete
+768-cell comparisons, missing-data rejection, zdb regression veto and isolated
+2048-update model/optimizer/RNG recovery round trips. These are implementation
+checks, not real game improvements. V8 has not yet generated games or gradients.
+A bounded baseline-to-V8 handoff checks complete valid terminal evidence, runtime
+identity, STOPs and quiescence before starting the preregistered three-hour cycle.
+It stops for review on invalid baseline evidence or existing V8 state, and shifts
+to tournament-compatibility review if baseline wins already reach 70%.
