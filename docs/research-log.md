@@ -479,3 +479,19 @@ roots and its PUCT comparators, then began the fixed 1,508-cell selection panel.
 At this publication review it was healthy in collect_selection with three
 workers; no SGD or V8 benchmark result was available. No pinned actor runtime
 was edited. Final counts and recovery must be reviewed after its bounded cycle.
+
+## Independent V8 input audit during active collection
+
+A separate read-only auditor, without importing the collector/learner hashing
+helpers, reconstructed all 560 cached model inputs (32 training roots, 512
+anchors, 16 validation roots). It verified source/cache checksums, legal masks,
+seed formulas, balanced role/team slots and matching-parity reserves. The
+544 distinct current gradient inputs plus 560 historical inputs form an
+1,104-input exclusion union; all 16 validation inputs are disjoint. All 30
+referenced source games are terminal and valid. The fixed selection budget is
+1,508 continuations. See progress/terminal-target-head-v8/reviews/input-audit-20261110.json.
+
+This is an input-integrity audit, not a final experiment audit or stronger-play
+claim. Completed source caches remain in the live run and will enter the separate
+verified recovery export after quiescence. V8 remains healthy in collection with
+its pinned identity unchanged; no model or experiment settings were changed.
