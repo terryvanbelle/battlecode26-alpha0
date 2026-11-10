@@ -1,0 +1,80 @@
+{
+  "benchmark_suite_id": "yokoono-crash-qualification-v1",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "complete": true,
+  "completed": 32,
+  "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+  "executed": true,
+  "exhausted_cells": 0,
+  "expected": 32,
+  "expected_cell_ids": [
+    "5916d5fd7e32f73d7206552de3276217e68f6e752974f91e7f4c8bea8379eaeb",
+    "47c0718423efd13fe3543a8699e6a596ba086ad3d4a18f6a34b6a057ce2c6d13",
+    "d4e76def6f363540dbff36ce7ce6700624f320b2886039226f378563d6978fe3",
+    "7dadbd9edc08788bab0be8bc900c036f69043dddf8e55066ad01d223af20391a",
+    "b9f2142be5e46468e742c79e1f40d911293283962b2b7b3c2055d34dd6f3b9b8",
+    "6999ab79b9887bdc0b0f15af09ce78b3a83846881b758b3d509bc7b44b956d36",
+    "ef2b1a3b68b7a5563cd858005e49beb37b959a8b12293b3087c8830406a62b73",
+    "9270ce9c12aa73ee6375161e9524823e7e08a43cac4c8a919f3ad8a0c03e5a8b",
+    "e396e940249a42cd6ad78a114f315be73029cd4ef17bd911c2838e6dcfaa8ac9",
+    "95a76b3a290fae4cf13a331a8b94464f8d646681e0e2dc371d67da606e3ac60e",
+    "bc1423cdff4e371ffe85c9ab8fbc41e3bdbb1c319e98f446eefe392ea73e7c17",
+    "4b660f19ea07b9166f4c1d431210b8f5cda1f95418eca5cfbb5f2d2f61858c4e",
+    "dea170ba743b1455a2f0bc02ab12c6c48d5b20e8a9647bedf948b550a9be9b6b",
+    "aee582215536d0ee40116d8156086a1217e5ef1bb61374abe914206c4e5f6b8f",
+    "0c762dbf5e23e9fb842c678bc8c71b4595f2fc40329d4732a4b74066f2d87568",
+    "4cfbfa06b52841155f6b0f6d06f91f416aa3cb17ea4190b7806c80d097fb7d7c",
+    "071886777a5e35982d859532a6306547f479b072a8d95ccce80522b3df56b7ec",
+    "56c88b84216765ffa52608170227380e466822e3c836d93fc60430f587edf025",
+    "5027c29cbcd5a544bc51a4236bf750ab104242c5bb2e2b79354231ce36d9caa0",
+    "c4c6d4ac5fe2e6e1ea487f258e0ed5aea84b319a4ad9af0b68f40944ded211c9",
+    "4ab2a12ff5e2044d8a2ec5b4810ae8e0585934da107f15529bae9c24ee7e7155",
+    "b8827881d8f148c8833d5d9daa3a3e2426e1f36904d1a6439591fe81e7768d95",
+    "69901c5214209112a6401e25234d6b7920a8e9ea3eec1fbfb181258829b868e7",
+    "57554075a554fb0713bee32d950389c240ed7b7ce9aba82642a15d47c84b74be",
+    "2dc7baeab4ae7de21eff16f6d475a0367bdd7c7cd5415f06c57ac8eb392b60c3",
+    "b84a402bc9ff7690e38385b51c5e8195733f01c66755b0644f930d017d7e5f59",
+    "219262aa9684437018321225731206c0a2586bfe7f6071a2401eaa40b101fa1b",
+    "78ba7f5e6748d305f54ea6be00e776025e188533726f633ec53e29687f5b1ae2",
+    "27c4f5fdb8ff4978bb8d5940bff760720d5396593c266495c0fd5b335b839942",
+    "18f5b8cd58c158f23fbfde0b058f6cd650b823697d7ae3b24ab30817581eabf6",
+    "174e54d70b17f26c2300b06c934989c4102e247999f426d46604c5c4f5c970b0",
+    "fdc97b99cf63f1ee1e3e613302b41d5ef700af3f08241cdeb098905468a5bb71"
+  ],
+  "full_panel": true,
+  "full_panel_complete": true,
+  "iteration": 2,
+  "opponents": {
+    "HugoIngelsson_YokoOno": {
+      "completed": 32,
+      "draws": 0,
+      "errors": 0,
+      "expected": 32,
+      "losses": 20,
+      "mean_score": 0.375,
+      "score_sum": 12.0,
+      "sides": {
+        "A": {
+          "completed": 16,
+          "expected": 16,
+          "mean_score": 0.1875,
+          "score_sum": 3.0
+        },
+        "B": {
+          "completed": 16,
+          "expected": 16,
+          "mean_score": 0.5625,
+          "score_sum": 9.0
+        }
+      },
+      "wins": 12
+    }
+  },
+  "pending": 0,
+  "pending_cell_ids": [],
+  "stage": "standard",
+  "stop_reason": null,
+  "stopped_early": false,
+  "suite": "standard",
+  "unresolved_errors": 0
+}

@@ -441,3 +441,10 @@ reintroduce universal opponent/map wins. The current displayed original-panel
 rate is 78/252 valid games (30.95%), with four crashes excluded; it is not a
 complete valid milestone panel. The qualified replacement still needs a fresh
 full baseline.
+
+## Revised v4 panel frozen and baseline launch
+
+YokoOno completed 32/32 qualification games with zero errors. Freeze v4 replacing
+only collegejunior; retain all maps, seeds and success criteria. Start fresh cp2
+256-game baseline under shared locks and a three-hour bound. Qualification games
+are not baseline games. No improvement claim is available yet.

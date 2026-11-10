@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "experiment_id": "development-improvement-v4",
+  "manifest": "configs/benchmarks-development-v4.json",
+  "baseline_checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+  "baseline_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "maps": [
+    {
+      "name": "tiny",
+      "sha256": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e"
+    },
+    {
+      "name": "DefaultSmall",
+      "sha256": "664653d43fd633497ac0e0acd874384fe5ebc644de2e6d0036f863b9ff74a68f"
+    },
+    {
+      "name": "DefaultMedium",
+      "sha256": "7d886ee7d3607e49205e5f4d5bd24baf298c917a52ef34d10fcc66a8863c6c5e"
+    },
+    {
+      "name": "DefaultLarge",
+      "sha256": "64588be498e836522096cdaf6cb4c81e61ae17b042dbd711b2f976b7f456f648"
+    },
+    {
+      "name": "closeup",
+      "sha256": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680"
+    },
+    {
+      "name": "knifefight",
+      "sha256": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5"
+    },
+    {
+      "name": "cheesefarm",
+      "sha256": "ee50d2f5ff9965c8c825660d433cc0eafcb371b6aa2711f8874e58223d6ab51a"
+    },
+    {
+      "name": "wallsofparadis",
+      "sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28"
+    }
+  ],
+  "seeds": [
+    0,
+    2026
+  ],
+  "sides": [
+    "A",
+    "B"
+  ],
+  "minimum_absolute_score_gain": 0.05,
+  "score_definition": "win=1, draw=0.5, loss=0",
+  "bootstrap_unit": "map, retaining both seeds, both seats and all opponents",
+  "bootstrap_replicates": 10000,
+  "bootstrap_seed": 602113,
+  "require_95_percent_lower_bound_above_zero": true,
+  "require_zdb_nonregression": true,
+  "require_complete_valid_games": true,
+  "hard_opponents_are_required_wins": false,
+  "automatic_promotion": false,
+  "replaces_all_opponent_all_map_completion_goal": true
+}
