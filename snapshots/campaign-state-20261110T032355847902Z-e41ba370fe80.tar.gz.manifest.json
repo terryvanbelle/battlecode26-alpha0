@@ -1,0 +1,14 @@
+{
+  "archive": "campaign-state-20261110T032355847902Z-e41ba370fe80.tar.gz",
+  "created_at": "2026-11-10T03:23:55.847933+00:00",
+  "file_count": 236,
+  "format_version": 1,
+  "git": {
+    "commit": "f64505e88ac82054fb0c395d208991e3e9b84625",
+    "worktree_dirty": true
+  },
+  "release": "campaign-state",
+  "repository": "terryvanbelle/battlecode26-alpha0",
+  "sha256": "e41ba370fe8043afaef4cdbf523ddfc7a17e9da4d2ab070811a2b06b9a5ab77e",
+  "size": 26993167
+}
