@@ -61,11 +61,14 @@ public final class EngineBridge {
         int cursor;
         InternalRobot current;
         boolean benchmark;
+        String actionVersion;
         int learnedTeam;
         long decisions;
         ArrayList<Map<String,Object>> benchmarkFailures=new ArrayList<>();
         DiagnosticLog botOutput;
         Session(JsonNode req) throws Exception {
+            actionVersion=req.path("action_version").asText("macro_v1");
+            if(!actionVersion.equals("macro_v1") && !actionVersion.equals("macro_v2")) throw new IllegalArgumentException("Unknown action_version: "+actionVersion);
             benchmark=req.hasNonNull("opponent_package"); learnedTeam=req.path("learned_team").asInt(0);
             if(benchmark) botOutput=new DiagnosticLog();
             String mapName=req.path("map").asText("tiny");
@@ -122,6 +125,7 @@ public final class EngineBridge {
             }
         }
         List<Integer> legalActions() {
+            if("macro_v2".equals(actionVersion)) return MacroV2.legal(this);
             ArrayList<Integer> ids=new ArrayList<>();
             if(current==null) return ids;
             ids.add(0);
@@ -168,6 +172,7 @@ public final class EngineBridge {
             for(RobotInfo r:seen) if(r.team!=rc.getTeam() && rc.canAttack(r.location)) {rc.attack(r.location);break;}
         }
         void macro(int action) {
+            if("macro_v2".equals(actionVersion)) {MacroV2.execute(this,action);return;}
             try {
                 RobotControllerImpl rc=current.getController();
                 forage(rc);
@@ -190,6 +195,8 @@ public final class EngineBridge {
         }
         Map<String,Object> state() {
             Map<String,Object> s=new LinkedHashMap<>();
+            s.put("action_version",actionVersion==null?"macro_v1":actionVersion);
+            s.put("action_dim","macro_v2".equals(actionVersion)?MacroV2.ACTION_DIM:17);
             int w=world.getGameMap().getWidth(),h=world.getGameMap().getHeight();
             s.put("width",w);s.put("height",h);s.put("round",world.getCurrentRound());s.put("seed",world.getMapSeed());s.put("map",world.getGameMap().getMapName());
             s.put("terminal",!world.isRunning());s.put("winner",world.getWinner()==null?-1:world.getWinner().ordinal());
@@ -199,6 +206,7 @@ public final class EngineBridge {
             TeamInfo ti=world.getTeamInfo();
             s.put("bank",new int[]{ti.getCheese(Team.A),ti.getCheese(Team.B)});s.put("transferred",new int[]{ti.getCheeseTransferred(Team.A),ti.getCheeseTransferred(Team.B)});
             s.put("cat_damage",new int[]{ti.getDamageToCats(Team.A),ti.getDamageToCats(Team.B)});s.put("kings",new int[]{ti.getNumRatKings(Team.A),ti.getNumRatKings(Team.B)});
+            s.put("dirt_bank",new int[]{ti.getDirt(Team.A),ti.getDirt(Team.B)});
             ArrayList<Map<String,Object>> robots=new ArrayList<>();
             world.getObjectInfo().eachDynamicBodyByExecOrder(r->{
                 Map<String,Object> v=new LinkedHashMap<>();
@@ -206,6 +214,9 @@ public final class EngineBridge {
                 v.put("x",r.getLocation().x);v.put("y",r.getLocation().y);v.put("hp",r.getHealth());v.put("cheese",r.getCheese());v.put("direction",r.getDirection().ordinal());
                 v.put("action_cooldown",r.getActionCooldownTurns());v.put("movement_cooldown",r.getMovementCooldownTurns());v.put("turning_cooldown",r.getTurningCooldownTurns());
                 v.put("carried",r.isGrabbedByRobot());v.put("thrown",r.isBeingThrown());
+                v.put("carrying_id",r.getRobotBeingCarried()==null?-1:r.getRobotBeingCarried().getID());
+                v.put("carried_by_id",r.getGrabbedByRobot()==null?-1:r.getGrabbedByRobot().getID());
+                v.put("remaining_carried_duration",r.getRemainingCarriedDuration());v.put("chirality",r.getChirality());
                 ArrayList<int[]> parts=new ArrayList<>();for(MapLocation p:r.getAllPartLocations()) parts.add(new int[]{p.x,p.y});v.put("parts",parts);
                 robots.add(v);return true;});
             s.put("robots",robots);

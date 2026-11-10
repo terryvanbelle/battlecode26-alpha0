@@ -1,0 +1,14 @@
+{
+  "all_opponents_beaten": false,
+  "baseline_games": 24,
+  "baseline_wins": 3,
+  "budget_hours": 3,
+  "checkpoint": "runs/campaign/v2/checkpoint-0000.pt",
+  "experiment_id": "dual-scale-macro40-v2",
+  "games_total": 0,
+  "iteration": 0,
+  "phase": "baseline_complete",
+  "pid": 22420,
+  "started_at": "2026-11-10T03:00:26.450449+00:00",
+  "updated_at": "2026-11-10T03:00:27.254881+00:00"
+}

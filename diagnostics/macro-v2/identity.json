@@ -1,0 +1,16 @@
+{
+  "controller_script_sha256": "04fad4a9c01504df0d68f11daa213cb9b129581d7842d0442e946b62c63cb33f",
+  "bridge_classes_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+  "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+  "map": "tiny",
+  "map_sha256": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e",
+  "seed": 0,
+  "action_version": "macro_v2",
+  "benchmark_suite_id": "field-twelve-v2",
+  "watchdog_seconds": 180.0,
+  "controllers": [
+    "assault",
+    "balanced"
+  ],
+  "purpose": "diagnostic fixed rules-only macro capability; not learned-policy evaluation or training"
+}

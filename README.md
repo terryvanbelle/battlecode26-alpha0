@@ -2,9 +2,24 @@
 
 Search-guided self-play in MIT Battlecode 2026's **official Java engine 1.2.6**. This is an initial CPU research experiment: an AlphaZero-style policy/value network, PUCT search, terminal game outcomes, replay training, and a frozen **12-bot panel**: ten external competitors from `battlecode26b-vibe`'s downloaded pool, the official example player, and that project's current accepted champion.
 
-The current policy uses 17 turn-level macros, automatic pickup/transfer/attacks, and privileged full-state features. It is **not tournament compatible** and does not yet search the complete Battlecode action space. No strength claim follows from a small integration run.
+The active v2 experiment uses an **87,973-parameter dual-scale policy/value network**, 40 turn-level macros, and privileged local plus full-map observations. Search guides self-play; evaluation uses the greedy network. It is **not tournament compatible**. The original 17-action experiment remains available for reproducibility.
 
-## Measured progress
+## Active autonomous campaign
+
+[Current v2 results and graphs](progress/campaign-v2/README.md) · [Live published status](progress/campaign-v2/status.json) · [Research plan and victory criteria](docs/RESEARCH_PLAN.md) · [Resume and stop instructions](docs/autonomy.md)
+
+The goal is one frozen learned checkpoint that beats **each** of the twelve opponents: at least 60% score per opponent over 192 development games, followed by 384 games on reserved maps, with both seats covered and no unresolved errors. A smoke win, a scripted controller result, or falling training loss does not satisfy this gate. Results from different model/action versions are kept separate.
+
+```bash
+bash scripts/bootstrap.sh
+bash scripts/run_campaign.sh --hours 3
+# Graceful stop; a later restart requires intentionally removing this marker.
+touch runs/campaign/STOP
+```
+
+The campaign resumes model, optimizer, RNG, complete-game replay and evaluation cells. Each cycle has a time budget and a review boundary. GitHub release assets provide checkpoint recovery; `nohup` alone cannot survive a cloud environment being reclaimed. See the [operating instructions](docs/autonomy.md) for current continuation setup and persistence limits.
+
+## Initial v1 measurements
 
 Initial run: **6 self-play games, 43,779 retained positions, 3 training iterations**. All four checkpoints completed the final 12-bot smoke panel: **96 evaluation games, no unresolved failures**. Final score is **5/24 wins (20.8%)**, matching the untrained baseline; this run does not demonstrate an overall strength improvement.
 
@@ -26,7 +41,7 @@ bash scripts/bootstrap.sh
 .venv/bin/python -m alpha0.train train --config configs/smoke.json --run-dir runs/initial
 ```
 
-The smoke experiment is deliberately small: 49,242 parameters, four search simulations per decision, two full games and 32 gradient updates per iteration. The production starting configuration uses 103,290 parameters and 32 simulations; it has not been demonstrated to produce a strong bot.
+The legacy v1 smoke experiment is deliberately small: 49,242 parameters, four search simulations per decision, two full games and 32 gradient updates per iteration. The active v2 configuration is [`configs/campaign-v2.json`](configs/campaign-v2.json); its architecture, corrected footprint attacks, sparse search and game-balanced replay are documented in [DESIGN.md](DESIGN.md).
 
 ```bash
 # Continue the same run with its original configuration.

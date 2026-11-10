@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "gate_id": "field-twelve-v2-victory-v1",
+  "benchmark_suite_id": "field-twelve-v2",
+  "panel_fingerprint_sha256": "f18d20f65e086a216c53613e8aaf1de6b714c0a5cea8c1ffcf5505ce72c3a43d",
+  "panel_fingerprint_definition": "SHA256 of UTF-8 compact sorted-key JSON of frozen_opponents sorted by id; entries contain only id,source_commit,java_tree_sha256.",
+  "frozen_opponents": [
+    {
+      "id": "Krak9n_robot",
+      "source_commit": "8a4af4fe0329bc7b6039b59104492eb65888c0d8",
+      "java_tree_sha256": "20cb14a3bc1ac299ff59b8104abfcae3b9d6c9c59e50250e2841e256207a5130"
+    },
+    {
+      "id": "seru9_TOTAL_AGGRO",
+      "source_commit": "bf4823b6e04912a3ceec38c56e1df1bb99d66f7f",
+      "java_tree_sha256": "3ce7093cdfe1f34ceb60674d14bd526d51e77acb5aada928ee4d3eafb49c1d74"
+    },
+    {
+      "id": "Camleaf_mk1",
+      "source_commit": "061afddd1d3da0d4bd43c99af2e11cc15d67d3a2",
+      "java_tree_sha256": "2bba7eaa0110364f93a3f8d11c3a587c3859cdf5cddc76a0d1e068c7a67a6d55"
+    },
+    {
+      "id": "CS50Crab_rapierV1",
+      "source_commit": "f4b60966bb2428e065e9d1781c9202b0a6da70e9",
+      "java_tree_sha256": "ee319f0fd2d60214b032df596f818d3093e3998c00e67c2c6e85aebbe60ca0ca"
+    },
+    {
+      "id": "spsquared_TSPAARK_QUALS",
+      "source_commit": "64c3257a929f52c9824e60a330a7acf5a3670ef1",
+      "java_tree_sha256": "b005ed227e12265fb5a2e16244b6d53707612c410b0973d9c8afa5209663a1e8"
+    },
+    {
+      "id": "HugoIngelsson_Xzibit",
+      "source_commit": "5414895a77f602d37034f06367223eb16a2e8ee6",
+      "java_tree_sha256": "c83dad2be1ac5ccad811e94f0f07efc472a93224e981a8e193d3757f57a8bcff"
+    },
+    {
+      "id": "abcdezyxwv_bestsofar",
+      "source_commit": "0a0b266dd010d31a66f2b4942853e4445dc36ace",
+      "java_tree_sha256": "b1bd9e455b619b128a44060eac36557d15359f51a0c8299799eca83a59753ef6"
+    },
+    {
+      "id": "IvanGeffner_basic51",
+      "source_commit": "70b3f40cebefcca9dc858771715d78088e7ae520",
+      "java_tree_sha256": "a1a0bef0fc4d5a640e1c8775e15271cf7dc531f405cac05811f843aca1f1b764"
+    },
+    {
+      "id": "bc26-example",
+      "source_commit": "f69e2ab872a0061c9d4a684aa1dd798a0829da85",
+      "java_tree_sha256": "31197617ef4384b6a2c81edb2832780151132060b1fc5b4aa0057c6ffad1f0ae"
+    },
+    {
+      "id": "vibe26b_zdb",
+      "source_commit": "fc044c24c37d89d2581562e23439a2571bb2b300",
+      "java_tree_sha256": "0c69409ceaad4e69e9f4763c547e2c5f83d9d8c05cfd98245a6a20240fcf485a"
+    },
+    {
+      "id": "thewaxmango_collegejunior",
+      "source_commit": "f8f7864b5f12ac6c303339e89e06c4aa49102f8b",
+      "java_tree_sha256": "104f9792b2c24cbeb44be392af0786a304884c2b65887494ad270bf7ce8bf782"
+    },
+    {
+      "id": "uravt_Version41",
+      "source_commit": "fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+      "java_tree_sha256": "4f07fc2e9a43632125d01b37e400ddac2798eaaaf5eeac1ee8329be020c20679"
+    }
+  ],
+  "required_opponents": 12,
+  "purpose": "Empirical all-opponent victory gate, not a claim of statistical proof or universal superiority.",
+  "identity_fields": [
+    "checkpoint_sha256",
+    "policy",
+    "engine_version",
+    "benchmark_suite_id",
+    "opponent_java_sha256",
+    "opponent_source_commit"
+  ],
+  "runtime_identity_requirements": [
+    "engine_jar_sha256",
+    "engine_patch_sha256",
+    "bridge_sha256",
+    "action_schema",
+    "observation_schema",
+    "evaluation_config_sha256"
+  ],
+  "completion": {
+    "require_every_expected_cell": true,
+    "require_both_sides": true,
+    "require_valid_game": true,
+    "maximum_unresolved_errors": 0,
+    "deduplicate_by": [
+      "checkpoint_sha256",
+      "opponent",
+      "map",
+      "seed",
+      "side",
+      "stage",
+      "evaluation_config_sha256"
+    ],
+    "error_score": null,
+    "valid_scores": [
+      0,
+      0.5,
+      1
+    ],
+    "retry_policy": "Retry failed infrastructure cells using identical checkpoint,policy,engine,opponent,map,seed,side. Preserve all attempts. Never replay a successful cell to select a favorable result."
+  },
+  "stages": {
+    "standard": {
+      "maps": [
+        "tiny",
+        "DefaultSmall",
+        "cheesefarm",
+        "wallsofparadis"
+      ],
+      "seeds": [
+        0,
+        2026
+      ],
+      "sides": [
+        "A",
+        "B"
+      ],
+      "games_per_opponent": 16,
+      "paired_cells_per_opponent": 8,
+      "games_total": 192,
+      "min_score": 0.6,
+      "min_score_each_side": 0.5,
+      "interpretation": "Development qualification: at least10/16 decisive wins for every opponent, with at least4/8 in each seat. Scores permit half credit for actual draws."
+    },
+    "holdout": {
+      "maps": [
+        "Stash",
+        "Hike",
+        "heart",
+        "ratsareants"
+      ],
+      "seeds": [
+        90101,
+        90107,
+        90121,
+        90133
+      ],
+      "sides": [
+        "A",
+        "B"
+      ],
+      "games_per_opponent": 32,
+      "paired_cells_per_opponent": 16,
+      "games_total": 384,
+      "min_score": 0.6,
+      "min_score_each_side": 0.5,
+      "requires_stage": "standard",
+      "freeze_candidate_before_first_game": true,
+      "maximum_candidate_attempts": 1,
+      "interpretation": "Fresh-map confirmation: at least20/32 decisive wins for every opponent, with at least8/16 in each seat. No gradient training or checkpoint choice may use these games."
+    }
+  },
+  "success": {
+    "require_all_stages": true,
+    "require_every_opponent_pass_each_stage": true,
+    "require_same_checkpoint_and_evaluation_policy": true,
+    "minimum_pooled_score_each_opponent": 0.6,
+    "aggregate_panel_score_cannot_substitute": true
+  },
+  "holdout_isolation": {
+    "exclude_holdout_maps_from_training": true,
+    "exclude_holdout_games_from_replay": true,
+    "exclude_all_benchmark_games_from_training": true,
+    "lock_before_first_holdout_match": true,
+    "ledger_required_fields": [
+      "gate_id",
+      "panel_fingerprint_sha256",
+      "checkpoint_sha256",
+      "evaluation_config_sha256",
+      "engine_patch_sha256",
+      "action_schema",
+      "observation_schema",
+      "started_at",
+      "status"
+    ],
+    "after_failed_candidate": "Mark this holdout version consumed. It may be used as development evidence, but any later independent confirmation requires a new predeclared disjoint map set and gate version. Never silently replace results or reuse it as fresh holdout.",
+    "resume": "Only the locked candidate may finish missing or failed infrastructure cells in this gate version."
+  },
+  "uncertainty": {
+    "unit": "map-seed pair containing both seats",
+    "report": "Per-opponent and panel paired map-seed bootstrap95% intervals; show every map and seat result plus coverage. Resample complete pairs, never robot turns or individual seats.",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 261109,
+    "interpretation": "Intervals are descriptive. Standard has8 and holdout16 pairs per opponent; testing12 opponents and choosing checkpoints on standard data does not establish simultaneous95% superiority. The operational pass criteria do not require significance."
+  },
+  "panel_change_policy": "Do not remove or substitute a strong opponent. Only reproducible uncaught failures across at least2 seeds under a validated harness justify investigation/replacement; retain all evidence, version the panel, and rerun the full gate. Physical deaths, legal resignation/disintegration, and ordinary losses are not failures.",
+  "cycle_budget": {
+    "max_training_iterations": 4,
+    "games_per_iteration": 8,
+    "max_completed_selfplay_games": 32,
+    "max_wall_seconds": 14400,
+    "max_standard_evaluation_games": 192,
+    "checkpoint_each_completed_game": true,
+    "publish_cycle_report": true,
+    "continue_next_cycle_only_after_reviewing_measured_failure_modes": true,
+    "note": "A cycle is a finite recoverable unit, not an overall cap on the authorized research. Do not promise victory within a cycle or keep a silent endless process."
+  }
+}

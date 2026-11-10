@@ -1,40 +1,102 @@
 # Design decisions
 
-## What is being learned
+## Versioned experiments and evidence
 
-One policy controls every rat on both teams during self-play. It learns a 17-way decision for each non-forced robot turn: hold, eight movement/dig directions, or eight king-spawn directions. Every option also invokes fixed legal pickup, transfer and opportunistic attack routines. Those routines prioritize enemy rats and may trigger backstabbing; the network cannot explicitly veto an available automatic attack.
+This is AlphaZero-style policy iteration over the official Battlecode 2026 engine, with a deliberately restricted, hand-authored action interface. It is not a faithful implementation of full-action AlphaZero: observations are privileged, action macros contain tactical/navigation heuristics, the game is multi-agent and stochastic, and the CPU campaign searches only some decisions. Each policy controls all rats on its team with shared weights.
 
-This action abstraction is a substantial inductive bias. The model does not yet choose traps, promotion, ratnapping, throwing, squeaks, shared-array messages, attack cheese spending, or the order of every primitive action. A small action space makes an initial full-game CPU experiment feasible. A stronger experiment should expand it and re-evaluate the frozen panel, rather than interpret these results as full-action AlphaZero.
+| Version | Action interface | Observations | Model | Value objective |
+| --- | --- | --- | --- | --- |
+| Initial v1 | `macro_v1`, 17 actions | Local 24×17×17 + 32 scalars | 49,242 parameters in the measured smoke run; 103,290 in the unvalidated larger configuration | Tanh value + terminal-outcome MSE |
+| Current v2 | `macro_v2`, 40 actions | Local 33×17×17 + global 33×60×60 + 64 scalars | Dual-scale residual network, 87,973 parameters | Raw win logit + terminal-outcome BCEWithLogits |
 
-## Observation and topology
+The first experiment completed **six self-play games, three iterations and 96 optimizer updates**. It retained 43,779 positions cumulatively, with only 10,000 in each final replay snapshot. All four checkpoints completed the final 12-bot smoke panel: **96 evaluation games**. Both untrained and final checkpoints won **5/24 games (20.8%)**. There is no demonstrated aggregate strength improvement. The final recorded value MSE was **2.74076**, worse than the MSE of 1 from a constant-zero predictor.
 
-The input is a **24 × 17 × 17** actor-centered tensor plus **32** scalar features. Ally/enemy channels are relative to the acting team. Coordinates retain the engine's compass orientation, so directional actions align with the input. There is no memory or recurrent hidden state.
+An independent replay audit found the final value predictions near −0.998, with all sampled predictions saturated beyond magnitude 0.95 even though the last replay contained 58.75% positive labels. Between 90.9% and 100% of each replay came from its last long game. This motivates a new value objective and game-balanced replay; it does not prove either change will yield a stronger policy. The audit, hashes and limitations are in [the research plan](docs/RESEARCH_PLAN.md). Original v1 checkpoints, action transcripts and results remain under `artifacts/initial/` and `progress/`; no v2 data silently replaces that history.
 
-Spatial channels encode on-map mask, wall, dirt, mine, loose cheese, allied/enemy traps, acting robot, allied/enemy babies and kings, cats, normalized health, carried cheese, facing direction, and three cooldowns. Global scalars encode round, cooperation, map size, actor coordinates/type/health/resources/readiness, both teams' cheese and transfers, cat damage, king/baby counts and health, cat count/health, ground cheese, and legal-action count. Exact ordered names and normalization constants are in `alpha0/env.py`.
+V1 and v2 action meanings, feature shapes, model classes and run directories are separate. V2 checkpoints record `model_version="dual_scale_v2"`, `feature_version=2`, `action_version="macro_v2"` and their network configuration. V1 loaders remain supported. Replay tensors and weights cannot be reinterpreted across versions. An archived 4,610-action v1 game still reproduces its prior terminal physical state after the versioned bridge changes.
 
-These are privileged observations: local terrain/entities are omniscient even outside the official vision cone, while aggregate team/enemy information is global. Legality and all physical action effects still use the official controller. Carried and airborne robots contribute to global counts but are omitted from ground occupancy; dedicated carried/airborne status planes are deferred. The encoding is not a complete Markov state even though search branches the full engine state.
+## V2 actions and fixed controller behavior
 
-The default network uses a 32-channel convolution followed by three residual blocks (two 3×3 convolutions each), GroupNorm and SiLU. Its outputs combine an 8-channel spatial projection pooled to 4×4, global mean/max trunk features, and a 32-unit scalar embedding, through a 128-unit fused layer. Heads produce 17 policy logits and a 64-unit/tanh scalar value. There are **103,290 parameters**. The initial smoke model uses 16 channels and two blocks, **49,242 parameters**, with the same input/output schema.
+The 40 choices are complete robot turns. The policy chooses when to invoke a macro; the macro implements its legal primitive actions. Exact ordered IDs, priorities and limits are in [the macro-v2 specification](docs/macro-v2.md).
 
-GroupNorm supports single-position CPU inference without batch-statistic drift. Illegal actions are masked before softmax and loss. The network predicts the win/loss result from the acting team's perspective.
+| IDs | Choices |
+| --- | --- |
+| 0 | Hold, preserving cooperation when possible |
+| 1–8 | Compass movement and digging |
+| 9–16 | Compass king-spawn directions |
+| 17–27 | Gather, return, claim a mine, guard a king, assault a king, hunt a baby, hunt cats, retreat, relocate a king, spawn for economy, spawn for assault |
+| 28–31 | Place rat/cat traps, clear an own trap, form a king |
+| 32–36 | Carry an enemy, rescue an ally, throw for damage, throw for transport, drop safely |
+| 37–39 | Powered bite, clear a route, cooperating economy |
 
-## Search and learning
+Free legal cheese pickup occurs before and after the primary action. Economic/support macros may transfer cheese; combat/carry/throw macros preserve action cooldown for their primary purpose. Goal macros can remain selectable when a target exists but movement is temporarily blocked or on cooldown. The mask therefore represents available macro intentions, not a promise that every choice immediately changes position. Each primitive still checks the official controller's legality.
 
-PUCT uses network priors and leaf values, with exploration constant 1.5. Self-play adds Dirichlet noise (alpha 0.3, mixture 0.25) at every root. Targets are normalized visit counts; move selection applies temperature to the visits. Early rounds use temperature 1, then a lower configured value. Stored targets always retain the original normalized counts.
+Navigation uses fixed Dijkstra route costs over robot-center positions, with footprint walls, dirt, congestion, traps and contextual threat costs. Retreat, target selection, trap placement, king clustering and throw-ray scoring are fixed heuristics. These are substantive inductive biases, authored from rules and APIs rather than copied from benchmark bots. There are still no learned primitive action orderings, communication actions, or recurrent private robot programs.
 
-Battlecode turn order follows spawn order, so the same team can act repeatedly. Search stores all edge values in absolute team-A coordinates and converts them to the current player's sign during selection. It never blindly negates at every depth. Cats and forced turns advance inside the official engine. Snapshot copies include mutable world state, object identity relationships, RNGs and turn cursor; immutable pathfinding tables are shared.
+V2 also corrects limitations in the v1 controller: baby bites and cheese transfers target legal king footprint tiles instead of unreachable centers; cat attacks use its footprint; king digging uses its leading edge; redundant turning is avoided; and combat can reserve cooldown instead of automatically transferring first. These are **controller improvements, not learned gains**. Compare trained v2 checkpoints with a fresh untrained v2 baseline under identical engine, macro and evaluation settings. A cross-version score jump alone cannot establish learning. Any later macro or engine change must receive a new runtime identity and a new comparable baseline.
 
-Training minimizes visit-target cross entropy plus mean-squared error against the actual terminal winner, using AdamW, weight decay and gradient clipping. Search-depth cutoffs bootstrap the value network; wall-clock/decision-limit aborts never become fake draw labels. All retained positions from a completed game receive its final outcome in their team's perspective. There is no reward shaping, benchmark imitation or benchmark-game training.
+## V2 observations and network topology
 
-Replay is bounded. Position tensors use float16 storage and float32 computation. A per-game reservoir bounds memory even before a long game finishes; it samples uniformly when a game exceeds its configured position capacity. The initial smoke run uses up to 10,000 retained positions per game and a 10,000-position replay, so a long game can displace earlier games; that is a limitation of the tiny integration run. The larger configuration caps each game at 5,000 positions in a 50,000-position replay to retain more game diversity. Checkpoints store network, optimizer, iteration, RNGs, game/sample counts and configuration. Replay is committed before the matching checkpoint. Continuation requires the same configuration; a different experiment belongs in a separate run/progress directory.
+Both spatial tensors share **33 channels**: on-map mask, walls, dirt, mines, logarithmically scaled ground cheese, separate allied/enemy rat and cat traps, the acting robot, ground babies/kings/cats and normalized HP, allied/enemy carried cheese, facing, three cooldowns, allied/enemy carried and airborne robots, and coordinates relative to the actor. Carried/airborne status has dedicated planes and does not overwrite a ground carrier's health or direction.
 
-## Evaluation and interpretation
+The local view is actor-centered at **17×17**. The global view retains the full official map, padded to **60×60** with an explicit validity mask. Coordinates keep the engine's compass orientation; NORTH is increasing y. Ally/enemy channels are relative to the acting team. The **64 scalars** describe actor state, map/round/cooperation, both teams' economy and armies, cat statistics, legal choices, and presence/direction/distance to the nearest mine, loose cheese, allied king, enemy king, cat and enemy baby. Nearest-target inputs are Euclidean geometry, not a predicted opponent strategy. Exact ordered names and normalizers are in [`alpha0/features_v2.py`](alpha0/features_v2.py).
 
-The frozen external panel spans historical skill and different authors. Each map/seed is played from both seats. Baseline iteration 0 and trained checkpoints use identical greedy-network evaluation settings. Evaluation does not apply root noise or train on its games. Legacy opponent execution cannot be cloned safely, so benchmark games measure the network alone; they do not measure the full search-enhanced self-play player.
+These observations are omniscient research inputs, including opposing traps and entities beyond official vision. They are not tournament-compatible and are not a complete Markov description: for example, not every engine timer or historical rule flag is encoded. Search still branches the full physical state. The model has no recurrent memory. Tournament-compatible observation design and distillation are deferred until useful strength is demonstrated.
 
-The smoke panel is only 24 games per checkpoint and the training smoke maps overlap it. It establishes integration and exposes failures, not generalization or statistical strength. The standard panel has 192 games; it is still a development set, so reserve unseen maps/seeds for final claims. Error/timeout rows are reported separately and never quietly converted to game losses. Per-opponent Wilson intervals are descriptive; the aggregate paired bootstrap requires enough complete shared map-seed cells.
+The local trunk has a 3×3 convolution to 24 channels and two residual blocks, each containing two 3×3 convolutions. The global trunk uses two stride-2 convolutions to 16 channels, reducing 60×60 to 15×15, followed by two residual blocks. GroupNorm and SiLU support batch-one inference without moving batch statistics. Fusion combines local actor-center/valid-mean/valid-max features, global actor/valid-mean/valid-max features, a four-channel coarse 4×4 global projection, and a 32-unit scalar embedding. A 128-unit fused layer feeds 40 policy logits and a 64-unit value head. Total: **87,973 parameters**.
 
-Main research risks are sparse terminal feedback, short search horizons relative to 2000-round games, small CPU-scale data volume, action abstraction, privileged observations, and the difference between search self-play and network-only evaluation. These are visible limitations to improve in subsequent experiments, not evidence that a small initial loss reduction implies stronger play.
+Illegal actions are masked before softmax and policy loss. The last value linear layer is initialized to zero; the initial value is exactly neutral. The value head returns an **unbounded win logit** during training. Inference converts it to `2*sigmoid(logit)-1`, preserving the PUCT evaluator's [−1,1] contract. A one-thread CPU smoke measurement on `DefaultSmall` took approximately **1.50 ms for inference and 0.35 ms for feature encoding**; this is not end-to-end game throughput, which also includes engine execution, serialization, navigation and snapshots.
+
+## Search and sparse self-play targets
+
+PUCT uses network priors and leaf values with exploration constant 1.5. Searched self-play roots receive Dirichlet noise with alpha 0.3 and mixture 0.25. Policy targets are normalized visit counts. Temperature changes actual action sampling but never rewrites those visit targets. Search cutoffs bootstrap the network; only real terminal game results provide outcome labels.
+
+Battlecode follows robot spawn order, so multiple consecutive turns can belong to one team. Edge values are stored in absolute team-A coordinates and converted for the acting team during selection. Search never blindly negates at each ply. One ply means a robot decision, **not a complete round**; depth 12 can therefore remain a short horizon in a populated game. Cats and forced turns advance through the engine.
+
+The current configuration is [`configs/campaign-v2.json`](configs/campaign-v2.json), implemented by [`alpha0/learn_v2.py`](alpha0/learn_v2.py):
+
+| Setting | Current value |
+| --- | --- |
+| Training maps | `tiny`, `DefaultSmall`, `closeup`, `knifefight` |
+| Parallel actors / games per iteration | 2 / 8 |
+| Search per selected decision | 8 simulations, maximum depth 12 |
+| Probability of searching a candidate-policy decision | 35% for kings, 15% for babies; the first eligible decision is searched |
+| Current-policy action temperature | 1 through round 80; 0.35 afterward |
+| Historical-opponent games | 25% probability when earlier checkpoints exist; candidate seat alternates |
+| Historical opponent sampling temperature | 0.3 |
+| Updates per iteration | 48 minibatches of 32 |
+| Optimizer | AdamW, learning rate 0.0003, weight decay 0.0001, gradient norm cap 1 |
+
+On decisions without search, the relevant checkpoint's policy is sampled with the configured temperature. Those decisions advance the real game but **are not stored as imitation targets**. Only searched candidate-policy positions enter replay; in current-versus-current games both sides are eligible. In historical-opponent games the other side uses an earlier learned checkpoint, and PUCT uses the appropriate side's checkpoint for priors and leaf evaluation. No frozen benchmark enters the self-play league.
+
+Sparse search trades target density for complete-game throughput. It is a deliberate departure from searching every AlphaZero move, and eight simulations may still cover few actions among 40. Its benefit requires measurement. Raising search budgets, adding batched frontier inference, or measuring search-enabled evaluation are future experiments rather than assumed improvements.
+
+## Terminal objective, game-balanced replay and recovery
+
+For a completed game, `z` is +1 for the winning team, −1 for the losing team, or 0 only for an actual draw. Each stored position gets its own player's `z`. The v2 objective is visit-distribution cross entropy plus `BCEWithLogits(value_logit, (z+1)/2)`. There is no reward shaping or discounted surrogate score. MSE after inference conversion, BCE, mean value, saturation fraction, entropy and losses are reported separately; the v1 MSE curve and v2 BCE curve must not be interpreted as the same quantity.
+
+BCE fixes a specific optimization defect: wrong-sign logits of magnitude 30 retain finite corrective gradients, while tanh followed by MSE has effectively zero gradient there. Regression tests establish that behavior and the zero-valued initialization. They do **not** establish calibrated values, resistance to forgetting or competitive play. Game diversity and independent episode-level validation remain necessary.
+
+[`alpha0/replay_v2.py`](alpha0/replay_v2.py) stores each completed self-play game separately. A uniform reservoir retains at most **512 searched positions per game**. Minibatches select a retained game uniformly, then a position uniformly within that game, so a long game cannot dominate solely through its length. Limits are **6,000 positions and 32 games**, with whole-game FIFO eviction; if every game retains 512 positions, the position limit binds before 32 games. Inputs use float16 storage and float32 computation. Benchmark/evaluation source markers and incomplete games are rejected, and saved policy masks and terminal-label perspectives are validated.
+
+Each completed actor saves its action transcript, terminal state, metadata and hashed numeric-array shard. The learner can reuse completed jobs after interruption. Immutable replay game files are published before an atomic index; model/optimizer/RNG/configuration checkpoints follow the replay and completed optimizer iteration. Restarting requires the same configuration. Different configurations belong in separate versioned experiments, and partial games are errors rather than fabricated draws. Hashes and generation checkpoints keep the evidence attributable.
+
+## Development evaluation and the all-opponent victory gate
+
+The frozen panel contains 12 bots spanning different authors and historical skill. Both seats are played for each map/seed. Evaluation currently uses the **greedy network with no root noise and no search**, because live Java opponent threads cannot be cloned safely. It is not a measurement of the full search-enhanced self-play player. Benchmark code, trajectories, observations and outcomes never enter gradient replay or the historical-checkpoint league; development results can inform research decisions.
+
+The original 24-game smoke panel overlaps training and has just one paired map/seed cell per opponent. It checks integration and exposes weaknesses; it cannot establish generalization. V2 checkpoint comparisons require the same checkpoint family, action/observation schema, engine/patch/bridge identity, opponent hashes and evaluation settings. Errors and timeouts remain explicit and never count as candidate wins.
+
+The machine-readable success definition is [`configs/victory_gate.json`](configs/victory_gate.json), explained in [the research plan](docs/RESEARCH_PLAN.md):
+
+| Stage | Schedule | Required against every opponent |
+| --- | --- | --- |
+| Development qualification | `tiny`, `DefaultSmall`, `cheesefarm`, `wallsofparadis`; seeds 0 and 2026; both seats; **192 games** total | Score at least 60%, and at least 50% in each seat: at least 10/16 decisive wins |
+| Fresh-map confirmation | `Stash`, `Hike`, `heart`, `ratsareants`; seeds 90101, 90107, 90121, 90133; both seats; **384 games** total | Score at least 60%, and at least 50% in each seat: at least 20/32 decisive wins |
+
+The **same frozen checkpoint and evaluation policy** must pass both stages against **all twelve** opponents. Aggregate panel score cannot substitute for beating one difficult opponent. Every expected cell must have a valid result, with no unresolved errors. Actual draws earn half credit. These are empirical qualification thresholds, not proof of superiority on all maps or simultaneous statistical significance.
+
+The confirmation maps are excluded from training. Before its first holdout game, lock candidate, panel, policy and runtime identities in a persistent ledger. Only that candidate may finish missing or failed infrastructure cells; successful cells cannot be rerun to choose favorable outcomes. A failed candidate consumes this holdout version. Later independent confirmation needs a newly declared disjoint holdout and version, rather than repeated checkpoint selection on the same data. Report paired map-seed bootstrap intervals and every seat's coverage; pairs, not robot turns or independently resampled seats, are the uncertainty unit. A configured gate is not evidence that it has passed.
 
 ## Engine and simulator decisions
 
@@ -75,20 +137,21 @@ Benchmark sources are downloaded into ignored directories, keeping third-party c
 
 ## Experiment, compute and persistence decisions
 
-The first run uses `configs/smoke.json`: two games per iteration on `tiny` and `DefaultSmall`, four simulations per decision, depth limit eight, 32 gradient steps of batch size 32, AdamW learning rate 0.001, and replay capacity 10,000. Its purpose is to exercise the complete pipeline and obtain a measured starting point. The standard configuration increases model size, simulations, map diversity and training volume, but remains an unvalidated starting configuration.
+The initial `configs/smoke.json` run remains a historical integration experiment: two games per iteration, four simulations at every decision, depth eight, 32 gradient steps, learning rate 0.001, and a 10,000-position FIFO replay. Its larger v1 `configs/train.json` configuration was an unvalidated starting point. The v2 campaign above is a new experiment addressing observed controller, observation and value-learning failures; success must be established from its own baseline and evaluations.
 
-The attached executor has a four-core CPU quota and 16 GiB memory limit, with no detected GPU. PyTorch uses one thread for each training/inference process to avoid oversubscription with Java. Current game generation is serial inside an experiment; separate evaluation can run concurrently. Parallel actor workers and batched inference are future throughput improvements, not implemented capabilities.
+The executor has a four-core CPU quota and 16 GiB memory limit, with no detected GPU. V2 uses two independent actor processes and one PyTorch thread per process. Training follows completed iteration games. Separate evaluation may run concurrently within measured resource capacity. Batched inference is available at the model API, but shared actor inference batching is not implemented. The benchmark/campaign runners retain finite timeouts and decision caps; these are local watchdogs, not tournament bytecode constraints.
 
-`battlecode-dev` is **not used**. It is historically an eight-vCPU/31GB machine with another active project, and this executor lacks its SSH/GCloud credentials. Moving to it requires working access and coordination with the owner before changing workloads. Nothing in this repository starts/stops VM services or submits to the Battlecode service.
+`battlecode-dev` is **not used**. It is historically an eight-vCPU/31GB machine with another active project, and this executor lacks its SSH/GCloud credentials. Nothing here starts or stops that VM's services or submits to the Battlecode service. No tournament-sized JVM heap cap is set; host limits and JVM ergonomic sizing remain.
 
-No tournament-sized JVM heap cap is set. Host memory limits and JVM ergonomic heap sizing remain. The driver has finite request/game watchdogs and decision caps; a timed-out game is an error and cannot train the value head. Checkpoint and replay persistence support recovery, but this is a bounded command-line experiment rather than an always-running hosted training service. Resuming requires the original run configuration; new experiments need separate output directories.
+Campaign work is organized into finite recoverable cycles: at most four training iterations of eight games per configured cycle, with an explicit wall-time budget. The launcher defaults to three hours; the research gate records four hours as a cycle ceiling. A stop sentinel prevents new scheduling and is never silently deleted. Already running games have their own watchdogs, so a wall-time scheduling boundary is not a hard instantaneous process-kill deadline. Completed game shards, plans, replay and model checkpoints survive between cycles. Each cycle should publish measured failure modes and the next hypothesis before continuing; operational cycle limits are not a promise of victory or an overall cap on the authorized research.
 
-The public GitHub repository was created by the owner after the integration token lacked repository-creation permission. Source, manifests, measured progress JSONL, charts and selected small checkpoint artifacts are published there. Large replay buffers, downloaded dependencies, full run directories and all credentials stay out of Git. Charts are regenerated from measurements; they reach GitHub when committed and pushed, not through an implicit background sync.
+The public GitHub repository was created by the owner after the integration token lacked repository-creation permission. Source, manifests, measured JSONL, graphs and selected compact checkpoint artifacts are published there. Large replay buffers, dependencies, full run directories and credentials stay out of Git. Plots must label model/action versions, losses, evaluation coverage and invalid attempts. Files reach GitHub when committed and pushed, not merely when a local run refreshes a graph.
 
-## Next decisions to revisit after measurement
+## Decisions to revisit after measurement
 
-1. Expand the policy action space, particularly explicit attacks/cooperation, traps, king promotion and carry/throw interactions; fix king leading-edge digging as part of that versioned interface.
-2. Increase search depth/simulations and actor throughput after profiling; compare network-only and search-enabled play with opponents whose state can be safely replayed or cloned.
-3. Add global spatial context, temporal memory and carried/airborne status features; then test whether privileged inputs materially improve learning.
-4. Use more training games and held-out maps/seeds before making strength claims; preserve the external panel as evaluation-only.
-5. Only after useful results, design tournament-compatible observations and distillation/compression within actual bytecode and memory budgets.
+1. Evaluate whether v2 learns beyond its untrained macro-controller baseline; separate heuristic/controller gains from optimizer gains.
+2. Audit held-out self-play episode calibration, replay diversity and forgetting; a lower replay loss alone is insufficient.
+3. Compare 8/16/32 simulations, searched-decision fractions and completed-game throughput under a fixed development protocol. Measure depth in rounds as well as robot decisions.
+4. Add learned-champion promotion and search-enabled comparisons only with explicit reproducible opponent semantics. An approximate neural model of a Java opponent is not its exact private program state.
+5. Keep the 12-bot panel evaluation-only and reserve confirmation maps until one frozen candidate qualifies. Preserve failures rather than tuning the holdout retrospectively.
+6. After useful strength is demonstrated, design tournament-compatible sensing, memory and distillation under actual submission budgets.

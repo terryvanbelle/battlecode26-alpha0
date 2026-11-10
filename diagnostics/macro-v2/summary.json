@@ -1,0 +1,194 @@
+[
+  {
+    "controller": "assault",
+    "opponent": "CS50Crab_rapierV1",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "Camleaf_mk1",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "HugoIngelsson_Xzibit",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "IvanGeffner_basic51",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "Krak9n_robot",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "abcdezyxwv_bestsofar",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "bc26-example",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "seru9_TOTAL_AGGRO",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "spsquared_TSPAARK_QUALS",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "thewaxmango_collegejunior",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "uravt_Version41",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "assault",
+    "opponent": "vibe26b_zdb",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "CS50Crab_rapierV1",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "Camleaf_mk1",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "HugoIngelsson_Xzibit",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "IvanGeffner_basic51",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "Krak9n_robot",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "abcdezyxwv_bestsofar",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "bc26-example",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "seru9_TOTAL_AGGRO",
+    "wins": 2.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "spsquared_TSPAARK_QUALS",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "thewaxmango_collegejunior",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "uravt_Version41",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  },
+  {
+    "controller": "balanced",
+    "opponent": "vibe26b_zdb",
+    "wins": 0.0,
+    "completed": 2,
+    "errors": 0,
+    "timeouts": 0
+  }
+]

@@ -163,6 +163,29 @@ def markdown_cell(value: object) -> str:
     return str(value).replace("|", "\\|").replace("\n", " ").replace("\r", " ")
 
 
+def learning_health_series(training: list[dict]) -> dict | None:
+    """Return recorded v2 diagnostics; missing values remain gaps, never zeros.
+
+    A generic legacy value_loss is not necessarily BCE. Only an explicitly
+    recorded value_bce or declared BCEWithLogits objective is labelled BCE.
+    Search coverage is a per-iteration ratio, not a cumulative game metric.
+    """
+    triggers = ("value_bce", "value_mse", "value_mean", "value_saturated_fraction",
+                "replay_games", "searched_positions", "actual_decisions")
+    if not any(math.isfinite(number(row, key)) for row in training for key in triggers):
+        return None
+    series = {key: [number(row, key) for row in training] for key in
+              (*triggers, "replay_positions")}
+    series["iterations"] = [int(row["iteration"]) for row in training]
+    series["value_bce"] = [number(row, "value_bce") if math.isfinite(number(row, "value_bce"))
+                           else number(row, "value_loss") if row.get("value_loss_type") == "BCEWithLogits"
+                           else float("nan") for row in training]
+    series["search_fraction"] = [searched / actual if math.isfinite(searched) and math.isfinite(actual) and actual > 0
+                                 else float("nan") for searched, actual in
+                                 zip(series["searched_positions"], series["actual_decisions"])]
+    return series
+
+
 def generate(progress: Path, manifest_path: Path) -> dict:
     progress.mkdir(parents=True, exist_ok=True)
     # Matplotlib's default cache may be read-only in a managed executor.
@@ -248,6 +271,77 @@ def generate(progress: Path, manifest_path: Path) -> dict:
         count_axis(sample_ax, [])
     finish(fig, "training.png")
 
+    health = learning_health_series(train)
+    if health is not None:
+        fig, axes = plt.subplots(2, 3, figsize=(15, 9), constrained_layout=True)
+        fig.suptitle("Learning health · training-batch diagnostics", fontsize=17, fontweight="bold")
+        fig.supxlabel("Observed fitting batches, not held-out calibration. Missing measurements are gaps; search counts describe each iteration.", fontsize=10)
+        value_ax, mean_ax, saturation_ax, replay_ax, decisions_ax, coverage_ax = axes.flat
+        xs = health["iterations"]
+        for ax in axes.flat:
+            iteration_axis(ax, xs)
+
+        def health_line(ax, key, label, color, style="o-"):
+            values = health[key]
+            if not any(math.isfinite(value) for value in values):
+                return False
+            ax.plot(xs, values, style, ms=5, label=label, color=color)
+            return True
+
+        value_ax.set_title("Value fitting: BCE and MSE")
+        value_ax.set_ylabel("Training-batch loss")
+        measured = health_line(value_ax, "value_bce", "Win-logit BCE", colors["blue"])
+        measured |= health_line(value_ax, "value_mse", "Value MSE (−1 to +1 scale)", colors["orange"])
+        if measured:
+            value_ax.legend(fontsize=8)
+            value_ax.set_ylim(bottom=0)
+        else:
+            empty(value_ax, "Value losses not recorded")
+
+        mean_ax.set_title("Mean predicted value")
+        mean_ax.set_ylabel("Training-batch mean · −1 to +1")
+        mean_ax.set_ylim(-1.05, 1.05)
+        mean_ax.axhline(0, color="#94a3b8", linewidth=0.8, linestyle="--")
+        if not health_line(mean_ax, "value_mean", "Mean prediction", colors["purple"]):
+            empty(mean_ax, "Mean value not recorded")
+
+        saturation_ax.set_title("Saturated value predictions")
+        saturation_ax.set_ylabel("Training-batch fraction with |value| > 0.95")
+        saturation_ax.set_ylim(-0.03, 1.03)
+        saturation_ax.yaxis.set_major_formatter(PercentFormatter(1))
+        if not health_line(saturation_ax, "value_saturated_fraction", "Saturated fraction", colors["red"]):
+            empty(saturation_ax, "Saturation not recorded")
+
+        replay_ax.set_title("Current replay buffer")
+        replay_ax.set_ylabel("Stored positions", color=colors["blue"])
+        positions_recorded = health_line(replay_ax, "replay_positions", "Positions", colors["blue"])
+        replay_games_ax = replay_ax.twinx()
+        replay_games_ax.set_ylabel("Stored complete games", color=colors["green"])
+        games_recorded = health_line(replay_games_ax, "replay_games", "Games", colors["green"], "s--")
+        replay_games_ax.grid(False)
+        count_axis(replay_ax, health["replay_positions"])
+        count_axis(replay_games_ax, health["replay_games"])
+        if not positions_recorded and not games_recorded:
+            empty(replay_ax, "Replay counts not recorded")
+
+        decisions_ax.set_title("Real decisions and searched positions")
+        decisions_ax.set_ylabel("Count in this iteration")
+        measured = health_line(decisions_ax, "actual_decisions", "Actual game decisions", colors["blue"])
+        measured |= health_line(decisions_ax, "searched_positions", "Positions searched with MCTS", colors["orange"])
+        if measured:
+            decisions_ax.legend(fontsize=8)
+        else:
+            empty(decisions_ax, "Search/decision counts not recorded")
+        count_axis(decisions_ax, health["actual_decisions"] + health["searched_positions"])
+
+        coverage_ax.set_title("Search coverage")
+        coverage_ax.set_ylabel("Searched positions / actual decisions")
+        coverage_ax.set_ylim(-0.03, max(1.03, max((v for v in health["search_fraction"] if math.isfinite(v)), default=1) * 1.05))
+        coverage_ax.yaxis.set_major_formatter(PercentFormatter(1))
+        if not health_line(coverage_ax, "search_fraction", "Per-iteration search fraction", colors["green"]):
+            empty(coverage_ax, "Coverage unavailable without both counts")
+        finish(fig, "learning-health.png")
+
     fig, (score_ax, count_ax) = plt.subplots(2, 1, figsize=(12, 7), constrained_layout=True, sharex=True)
     fig.suptitle("Frozen benchmark evaluation", fontsize=17, fontweight="bold")
     score_ax.set_title("Equal-weight mean across opponents with completed games")
@@ -329,7 +423,13 @@ def generate(progress: Path, manifest_path: Path) -> dict:
             lines.append(f"| `{key}` | {text} |")
     else:
         lines.append("No training measurements have been recorded. Empty axes are intentional; no synthetic baseline is plotted.")
-    lines += ["", "![Training loss, entropy, data volume and throughput](training.png)", "", "## Latest benchmark checkpoint", ""]
+    lines += ["", "![Training loss, entropy, data volume and throughput](training.png)"]
+    if health is not None:
+        lines += ["", "## Learning health", "",
+                  "These are **training-batch diagnostics, not held-out calibration**. Value BCE fits win logits; value MSE and mean use predictions on the −1 to +1 scale. Saturation is the fraction with |value| > 0.95.", "",
+                  "Replay counts describe the current buffer, not cumulative data. Searched positions and actual decisions describe each training iteration; their ratio shows search coverage. Missing measurements remain gaps and are not filled with zero.", "",
+                  "![Training-batch value diagnostics, replay size and search coverage](learning-health.png)"]
+    lines += ["", "## Latest benchmark checkpoint", ""]
     if summaries:
         latest = summaries[-1]
         lines += [f"Iteration **{latest['iteration']}**, checkpoint `{markdown_cell(latest['checkpoint'])}`.", "",
@@ -368,6 +468,8 @@ def generate(progress: Path, manifest_path: Path) -> dict:
     atomic_text(progress / "README.md", "\n".join(lines))
     summary = {"training_rows": len(train), "evaluation_cells": len(evals), "checkpoints": len(summaries), "warnings": warnings,
                "outputs": ["training.png", "evaluation.png", "opponents.png", "README.md"]}
+    if health is not None:
+        summary["outputs"].insert(1, "learning-health.png")
     return summary
 
 

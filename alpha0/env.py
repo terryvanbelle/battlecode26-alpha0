@@ -85,7 +85,8 @@ Frozen Java opponents support sequential evaluation but not snapshot search.
     """
     def __init__(self, command: list[str] | None = None, maps_dir: str | Path | None = None,
                  opponent_package: str | None = None, opponent_classes: str | Path | None = None,
-                 learned_team: int = 0, response_timeout: float = 120.0):
+                 learned_team: int = 0, response_timeout: float = 120.0,
+                 action_version: str = "macro_v1"):
         java = Path(os.environ["JAVA_HOME"]) / "bin/java" if os.environ.get("JAVA_HOME") else ROOT / "vendor/jdk/bin/java"
         command = command or [str(java) if java.exists() else "java", *JAVA_OPENS, "-cp",
             f"{ROOT / 'build/java'}:{ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'}", "alpha0.EngineBridge"]
@@ -94,6 +95,9 @@ Frozen Java opponents support sequential evaluation but not snapshot search.
         self.opponent_classes = str(Path(opponent_classes).resolve()) if opponent_classes else None
         self.learned_team = learned_team
         self.response_timeout = response_timeout
+        if action_version not in ("macro_v1", "macro_v2"):
+            raise ValueError(f"unknown action version: {action_version}")
+        self.action_version = action_version
         # A file avoids an unread stderr pipe stalling the Java process.
         self._stderr = tempfile.TemporaryFile(mode="w+b")
         self.process = subprocess.Popen(command, cwd=ROOT, stdin=subprocess.PIPE,
@@ -154,7 +158,7 @@ Frozen Java opponents support sequential evaluation but not snapshot search.
             self.release_except(None)
         self._game_id += 1
         self._reset_args = {"cmd": "reset", "map": map_name, "seed": int(seed), "maps_dir": self.maps_dir,
-                            "snapshot": self.opponent_package is None}
+                            "snapshot": self.opponent_package is None, "action_version": self.action_version}
         if self.opponent_package is not None:
             self._reset_args.update(opponent_package=self.opponent_package,
                                     opponent_classes=self.opponent_classes, learned_team=self.learned_team)

@@ -1,6 +1,7 @@
 """Checks for measured-only reporting and correct benchmark denominators."""
 import importlib.util
 import json
+import math
 from pathlib import Path
 import tempfile
 import unittest
@@ -85,6 +86,52 @@ class ProgressTest(unittest.TestCase):
     def test_invalid_completed_scores_fail_loudly(self):
         with self.assertRaises(ValueError):
             report.clean_rows([], [row(score=3)])
+
+    def test_legacy_value_loss_is_not_relabelled_as_bce(self):
+        legacy = dict(iteration=1, value_loss=0.75, replay_positions=200)
+        self.assertIsNone(report.learning_health_series([legacy]))
+        measured = dict(iteration=2, value_loss=0.6, value_loss_type='BCEWithLogits',
+                        value_mse=0.8, value_mean=0.0, value_saturated_fraction=0.0,
+                        searched_positions=20, actual_decisions=100, replay_games=4)
+        series = report.learning_health_series([legacy, measured])
+        self.assertTrue(math.isnan(series['value_bce'][0]))
+        self.assertEqual(series['value_bce'][1], 0.6)
+        self.assertEqual(series['value_mean'][1], 0.0)
+        self.assertEqual(series['value_saturated_fraction'][1], 0.0)
+        self.assertTrue(math.isnan(series['replay_games'][0]))
+        self.assertTrue(math.isnan(series['search_fraction'][0]))
+        self.assertEqual(series['search_fraction'][1], 0.2)
+
+    def test_zero_decisions_does_not_invent_search_coverage(self):
+        series = report.learning_health_series([
+            dict(iteration=1, value_bce=0.7, actual_decisions=0, searched_positions=0),
+            dict(iteration=2, value_bce=0.5, searched_positions=10),
+        ])
+        self.assertTrue(all(math.isnan(value) for value in series['search_fraction']))
+
+    def test_health_figure_is_conditional_and_labels_training_diagnostics(self):
+        # Deliberate unit-test fixtures only, never written to repository progress.
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            manifest = path / 'manifest.json'
+            manifest.write_text(json.dumps({'bots': [{'id': 'weak'}]}))
+            log = path / 'training.jsonl'
+            log.write_text(json.dumps(dict(iteration=1, value_loss=0.8)) + '\n')
+            result = report.generate(path, manifest)
+            self.assertNotIn('learning-health.png', result['outputs'])
+            self.assertFalse((path / 'learning-health.png').exists())
+            self.assertNotIn('Learning health', (path / 'README.md').read_text())
+            log.write_text(json.dumps(dict(iteration=2, value_loss=0.6,
+                value_loss_type='BCEWithLogits', value_mse=0.8, value_mean=0.0,
+                value_saturated_fraction=0.0, replay_games=4, replay_positions=200,
+                searched_positions=20, actual_decisions=100)) + '\n')
+            result = report.generate(path, manifest)
+            self.assertIn('learning-health.png', result['outputs'])
+            image = path / 'learning-health.png'
+            self.assertTrue(image.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'))
+            text = (path / 'README.md').read_text()
+            self.assertIn('training-batch diagnostics, not held-out calibration', text)
+            self.assertIn('](learning-health.png)', text)
 
 
 if __name__ == '__main__':
