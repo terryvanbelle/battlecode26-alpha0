@@ -1,0 +1,13 @@
+.venv/
+vendor/
+build/
+runs/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.class
+*.bc26
+*.log
+.env
+*.pem
+*.key

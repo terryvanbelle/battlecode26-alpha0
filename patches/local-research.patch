@@ -1,0 +1,42 @@
+--- a/battlecode/world/GameWorld.java
++++ b/battlecode/world/GameWorld.java
+@@ -955,7 +955,7 @@
+      * Sets a winner arbitrarily. Hopefully this is actually random.
+      */
+     public void setWinnerArbitrary() {
+-        setWinner(Math.random() < 0.5 ? Team.A : Team.B, DominationFactor.WON_BY_DUBIOUS_REASONS);
++        setWinner(rand.nextDouble() < 0.5 ? Team.A : Team.B, DominationFactor.WON_BY_DUBIOUS_REASONS);
+     }
+ 
+     public boolean timeLimitReached() {
+--- a/battlecode/world/InternalRobot.java
++++ b/battlecode/world/InternalRobot.java
+@@ -1447,7 +1447,7 @@
+     }
+ 
+     public int getBytecodeLimit() {
+-        return canExecuteCode() ? this.currentBytecodeLimit : 0;
++        return canExecuteCode() ? (Boolean.getBoolean("bc.alpha0.tournamentLimits") ? this.currentBytecodeLimit : 1000000000) : 0;
+     }
+ 
+     // *********************************
+--- a/battlecode/world/control/PlayerControlProvider.java
++++ b/battlecode/world/control/PlayerControlProvider.java
+@@ -121,7 +121,7 @@
+     }
+ 
+     public long getTimeLeft() {
+-        return Math.max(GameConstants.MAX_TEAM_EXECUTION_TIME - totalPlayerTime, 0L);
++        return Boolean.getBoolean("bc.alpha0.tournamentLimits") ? Math.max(GameConstants.MAX_TEAM_EXECUTION_TIME - totalPlayerTime, 0L) : Long.MAX_VALUE;
+     }
+ 
+     @Override
+@@ -212,7 +212,7 @@
+             long timeBefore = System.nanoTime();
+             player.step();
+             totalPlayerTime += (System.nanoTime() - timeBefore);
+-            if(totalPlayerTime > GameConstants.MAX_TEAM_EXECUTION_TIME) {
++            if(Boolean.getBoolean("bc.alpha0.tournamentLimits") && totalPlayerTime > GameConstants.MAX_TEAM_EXECUTION_TIME) {
+                 ErrorReporter.warn("Team " + team + " has timed out!");
+                 robot.getController().resign();
+             }

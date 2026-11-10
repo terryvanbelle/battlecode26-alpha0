@@ -1,0 +1,22 @@
+{
+  "seed": 20261109,
+  "maps": ["DefaultMedium", "arrows", "closeup", "dirtfulcat", "minimaze", "peaceinourtime"],
+  "iterations": 100,
+  "games_per_iteration": 8,
+  "simulations": 32,
+  "max_search_depth": 32,
+  "channels": 32,
+  "blocks": 3,
+  "batch_size": 64,
+  "train_steps": 200,
+  "learning_rate": 0.0003,
+  "weight_decay": 0.0001,
+  "replay_capacity": 50000,
+  "temperature_rounds": 150,
+  "temperature_late": 0.1,
+  "max_decisions": 500000,
+  "game_timeout_seconds": 14400,
+  "torch_threads": 1,
+  "eval_every": 5,
+  "eval_suite": "standard"
+}

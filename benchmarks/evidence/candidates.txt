@@ -1,0 +1,9 @@
+# Selected external panel rows from research/field/candidates.txt
+spsquared_battlecode26	TSPAARK_QUALS
+HugoIngelsson_podemice-Battlecode-2026	Xzibit
+CS50Crab_The-Blades-Battlecode-2026	rapierV1
+IvanGeffner_BC26	basic51
+abcdezyxwv_Parmesan-bc2026	bestsofar
+seru9_BattleCode2026	TOTAL_AGGRO
+Camleaf_battlecode26	mk1
+Krak9n_battlecode-2026	robot

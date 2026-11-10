@@ -1,0 +1,1 @@
+{"iteration": 1, "games_total": 2, "positions_total": 14610, "replay_positions": 10000, "policy_loss": 1.5918937213718891, "value_loss": 0.5686172498390079, "total_loss": 2.1605109684169292, "entropy": 1.562331035733223, "games_per_hour": 19.32678515813628, "wall_seconds": 372.545132933, "rounds_mean": 191.0, "simulations": 4, "seed": 20261109}

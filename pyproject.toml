@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "battlecode26-alpha0"
+version = "0.1.0"
+description = "Search-guided self-play in the official Battlecode 2026 engine"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3", "torch>=2.5,<3", "matplotlib>=3.8,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+bc26-alpha0 = "alpha0.train:main"
+
+[tool.setuptools]
+packages = ["alpha0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
