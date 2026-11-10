@@ -1,0 +1,16 @@
+{
+  "reason": "Both workers received supervisor SIGTERM at the recorded 21:04 UTC deadline, before terminal outcomes. Generic exception handling mislabeled them evaluation_error. No bot crash or scored outcome. Preserve originals; authorize only attempt 2 using unchanged benchmark_worker/runtime.",
+  "cells": {
+    "e09e59c8554986ffe6066da364fcfcab3c9f57ec24e34427b7af8033ed7289d4": {
+      "original_sha256": "6b4365bb4c629baf44362966af11725236660b7ff6664dec63288dcb059e8d36",
+      "recorded_at": "2026-11-10T21:04:00.251491+00:00"
+    },
+    "91e1ee62b35fa5a0dca8afd7e0073122062548f84d270192996f5c8207da1348": {
+      "original_sha256": "1220d4652a70c2acbd08e2f4cecb958f320861505cd7bc69602812abeb48762a",
+      "recorded_at": "2026-11-10T21:03:59.834373+00:00"
+    }
+  },
+  "stage_evidence": "progress/terminal-target-head-v8/stage-timing/1794344640504296284-119087.json",
+  "runtime_unchanged": true,
+  "retry_limit_unchanged": 2
+}
