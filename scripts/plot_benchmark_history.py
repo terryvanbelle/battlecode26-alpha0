@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'progress/overview';OUT.mkdir(exist_ok=True)
-bots=[b['id'] for b in json.loads((ROOT/'configs/benchmarks.json').read_text())['bots']]
+ordered=sorted(json.loads((ROOT/'configs/benchmarks.json').read_text())['bots'],key=lambda b:(b['historical_rating']['elo'],b['id']));bots=[b['id'] for b in ordered]
 points=[];inputs={}
 def add_series(path,family,prefix):
  inputs[str(path.relative_to(ROOT))]=hashlib.sha256(path.read_bytes()).hexdigest()
@@ -39,7 +39,7 @@ for k,f in enumerate(families):
  ids=[i for i,p in enumerate(points) if p['family']==f];ax.plot(ids,total[ids],'-o',label=f,color=colors(k),linewidth=2)
  for i in ids:ax.annotate(f"{points[i]['wins']}/24",(i,total[i]),xytext=(0,7),textcoords='offset points',ha='center',fontsize=8)
 ax.set_ylim(-5,110);ax.set_ylabel('Overall win rate (%)');ax.grid(axis='y',alpha=.25);ax.legend(loc='upper center',bbox_to_anchor=(.5,1.45),ncol=3,fontsize=9)
-heat.imshow(mat,aspect='auto',vmin=0,vmax=100,cmap='RdYlGn');heat.set_yticks(range(12),bots);heat.set_xticks(x,[p['label'] for p in points],fontsize=9)
+heat.imshow(mat,aspect='auto',vmin=0,vmax=100,cmap='RdYlGn');heat.set_yticks(range(12),[f"{b['id']} ({b['historical_rating']['elo']:.1f})" for b in ordered]);heat.set_ylabel('Opponent · prior Elo (ascending)');heat.set_xticks(x,[p['label'] for p in points],fontsize=9)
 for j in range(12):
  for i in x:heat.text(i,j,f'{mat[j,i]:.0f}%',ha='center',va='center',fontsize=8,color='black' if mat[j,i]==50 else 'white')
 for i in range(1,len(points)):

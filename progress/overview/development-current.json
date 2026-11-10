@@ -1,7 +1,7 @@
 {
   "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
   "source": "progress/development-v3/baseline",
-  "completed": 80,
+  "completed": 90,
   "expected": 256,
   "cells": [
     {
@@ -113,85 +113,26 @@
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "closeup"
+      "map": "closeup",
+      "L": 3,
+      "W": 1
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "knifefight"
+      "map": "knifefight",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "cheesefarm"
+      "map": "cheesefarm",
+      "L": 1,
+      "W": 1
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
       "map": "wallsofparadis"
     },
     {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "tiny"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultSmall"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultMedium"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultLarge"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "closeup"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "knifefight"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "cheesefarm"
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "wallsofparadis"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "tiny"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultSmall"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultMedium"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultLarge"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "closeup"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "knifefight"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "cheesefarm"
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "wallsofparadis"
-    },
-    {
       "opponent": "vibe26b_zdb",
       "map": "tiny"
     },
@@ -256,6 +197,38 @@
       "map": "wallsofparadis"
     },
     {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "tiny"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "closeup"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "wallsofparadis"
+    },
+    {
       "opponent": "uravt_Version41",
       "map": "tiny"
     },
@@ -285,6 +258,38 @@
     },
     {
       "opponent": "uravt_Version41",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "tiny"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "closeup"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
       "map": "wallsofparadis"
     }
   ]

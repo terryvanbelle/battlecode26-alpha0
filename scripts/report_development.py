@@ -8,7 +8,7 @@ def generate(progress):
  matplotlib.use('Agg')
  import matplotlib.pyplot as plt
  import numpy as np
- manifest=json.loads((ROOT/'configs/benchmarks-development-v3.json').read_text());bots=[b['id'] for b in manifest['bots']];maps=manifest['evaluation_protocol']['standard']['maps']
+ manifest=json.loads((ROOT/'configs/benchmarks-development-v3.json').read_text());ordered=sorted(manifest['bots'],key=lambda b:(b['historical_rating']['elo'],b['id']));bots=[b['id'] for b in ordered];maps=manifest['evaluation_protocol']['standard']['maps']
  rows=[json.loads(l) for l in (Path(progress)/'evaluations.jsonl').read_text().splitlines()] if (Path(progress)/'evaluations.jsonl').exists() else []
  cells={};hashes=set()
  for r in rows:
@@ -30,7 +30,7 @@ def generate(progress):
  for i,b in enumerate(bots):
   for j,m in enumerate(maps):
    c=counts[b,m];n=sum(c.values());ax.text(j,i,f"{c['W']} / {c['L']} / {c['D']}\n{n}/4 games",ha='center',va='center',color='white' if n and (a[i,j]<25 or a[i,j]>75) else 'black',fontsize=9)
- ax.set_xticks(range(len(maps)),maps,rotation=20,ha='right');ax.set_yticks(range(len(bots)),bots)
+ ax.set_xticks(range(len(maps)),maps,rotation=20,ha='right');ax.set_yticks(range(len(bots)),[f"{b['id']} ({b['historical_rating']['elo']:.1f})" for b in ordered]);ax.set_ylabel('Opponent · prior Elo (ascending)')
  n=sum(sum(c.values()) for c in counts.values());sha=next(iter(hashes),'not-yet-evaluated')
  ax.set_title(f'Current development benchmark · W / L / D · {n}/256 valid games\nCheckpoint {sha[:12]} · background = win percentage of completed games')
  fig.tight_layout();out=ROOT/'progress/overview';out.mkdir(exist_ok=True);fig.savefig(out/'development-current.png',dpi=150);plt.close(fig)
