@@ -1,0 +1,21 @@
+{
+  "charged_wall_seconds": 20.986300502998347,
+  "ended_at": "2026-11-10T09:38:13.821134+00:00",
+  "engine_games": 0,
+  "experiment_id": "cached-head-constraint-v7",
+  "identity_sha256": "ae384626094084e15417051b066cecdb9d480436cac9c5a016ac4ba3f4c96eb2",
+  "integrity_verified": true,
+  "invocation": 1,
+  "phase": "complete_review_required",
+  "pid": 70167,
+  "promotion_allowed": false,
+  "reason": null,
+  "report_error": null,
+  "reserved_wall_seconds": 900.0,
+  "started_at": "2026-11-10T09:37:52.834851+00:00",
+  "supervisor_cpu_seconds": 6.3525091090000005,
+  "training_only": true,
+  "wall_budget_previously_consumed": 0.0,
+  "worker_pid": null,
+  "worker_tree_cpu_seconds": 14.348269
+}

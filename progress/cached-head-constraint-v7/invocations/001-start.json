@@ -1,0 +1,9 @@
+{
+  "experiment_id": "cached-head-constraint-v7",
+  "identity_sha256": "ae384626094084e15417051b066cecdb9d480436cac9c5a016ac4ba3f4c96eb2",
+  "invocation": 1,
+  "pid": 70167,
+  "reserved_wall_seconds": 900.0,
+  "started_at": "2026-11-10T09:37:52.834851+00:00",
+  "wall_budget_previously_consumed": 0.0
+}

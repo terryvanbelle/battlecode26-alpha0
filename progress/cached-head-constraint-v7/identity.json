@@ -1,0 +1,132 @@
+{
+  "benchmark_data_read": false,
+  "config": {
+    "anchor_count": 512,
+    "arms": [
+      {
+        "anchor_kl_weight": 1.0,
+        "id": "kl_1"
+      },
+      {
+        "anchor_kl_weight": 0.0,
+        "id": "kl_0"
+      }
+    ],
+    "automatic_promotion": false,
+    "benchmark_data_used_for_training": false,
+    "changed_targets": 9,
+    "checkpoint": {
+      "path": "runs/warmstart-v3/checkpoint-0002.pt",
+      "sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c"
+    },
+    "checkpoint_interval": 16,
+    "classification": {
+      "anchoring": "kl_0 reaches all32 at any fixed snapshot and kl_1 never does through2048",
+      "budget": "kl_1 reaches all32 at512or2048 after exact128 reproduction",
+      "fixed_snapshots_only": true,
+      "neither": "neither arm reaches all32 at a fixed snapshot; review optimization/conditioning",
+      "required_greedy_targets": 32
+    },
+    "dataset": {
+      "path": "runs/terminal-target-head-v6/dataset/training.npz",
+      "sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26"
+    },
+    "dataset_metadata": {
+      "path": "runs/terminal-target-head-v6/dataset/training.json",
+      "sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b"
+    },
+    "experiment_id": "cached-head-constraint-v7",
+    "fit": {
+      "anchor_batch_size": 32,
+      "batch_size": 32,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "learning_rate": 0.0003,
+      "seed": 203101,
+      "target_weight": 0.75,
+      "weight_decay": 0.0001
+    },
+    "reference_batches": {
+      "path": "runs/terminal-target-head-v6/fit/batches.npz",
+      "sha256": "609a31a83326b44c5cf642a5d1804ad0d643e45ac860c3aea4b42ad6924cbd6a"
+    },
+    "reference_terminal_checkpoint": {
+      "path": "runs/terminal-target-head-v6/fit/terminal_head.pt",
+      "sha256": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718"
+    },
+    "retained_targets": 23,
+    "schema_version": 1,
+    "snapshots": [
+      128,
+      512,
+      2048
+    ],
+    "torch_threads": 1,
+    "total_wall_budget_seconds": 900,
+    "trainable_parameters": 5160,
+    "training_diagnosis": {
+      "path": "progress/terminal-target-head-v6/training-underfit.json",
+      "sha256": "4ff88c4f8fe68b623d35941415a92ac3741907d840da4e7aea405bf9b0f4da68"
+    },
+    "training_roots": 32,
+    "updates": 2048,
+    "v6_final_audit": {
+      "path": "progress/terminal-target-head-v6/independent-final-audit.json",
+      "sha256": "ab8f824a645432916417e8142d61c7cd13ec5e69561b96869115ff95288dd564"
+    },
+    "v6_identity": {
+      "path": "progress/terminal-target-head-v6/identity.json",
+      "sha256": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c"
+    },
+    "validation_data_used_for_fitting": false,
+    "workers": 1
+  },
+  "config_file_sha256": "960e76b3b94dbfe957f2b56e09757b5e969bb6f718c3c5d85c5309727934ea63",
+  "engine_games": 0,
+  "experiment_id": "cached-head-constraint-v7",
+  "inputs": {
+    "progress/terminal-target-head-v6/identity.json": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c",
+    "progress/terminal-target-head-v6/independent-final-audit.json": "ab8f824a645432916417e8142d61c7cd13ec5e69561b96869115ff95288dd564",
+    "progress/terminal-target-head-v6/training-underfit.json": "4ff88c4f8fe68b623d35941415a92ac3741907d840da4e7aea405bf9b0f4da68",
+    "runs/terminal-target-head-v6/dataset/training.json": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b",
+    "runs/terminal-target-head-v6/dataset/training.npz": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26",
+    "runs/terminal-target-head-v6/fit/batches.npz": "609a31a83326b44c5cf642a5d1804ad0d643e45ac860c3aea4b42ad6924cbd6a",
+    "runs/terminal-target-head-v6/fit/terminal_head.pt": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718",
+    "runs/warmstart-v3/checkpoint-0002.pt": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c"
+  },
+  "promotion_allowed": false,
+  "runtime": {
+    "device": "cpu",
+    "numpy": "2.3.5",
+    "python": "3.12.14",
+    "torch": "2.15.0+cpu",
+    "torch_interop_threads": 1,
+    "torch_threads": 1
+  },
+  "schema_version": 1,
+  "sources": {
+    "alpha0/__init__.py": "b6e95fad7458b8ce259866b47a69d8393ad8fffd442bb53af3ec6940bea2c795",
+    "alpha0/constraint_v7.py": "10b531abdbd32907288d24fce78eb2c599660012a9becb9100bc910fd2312829",
+    "alpha0/constraint_v7_common.py": "cba8449f9724498e67bd6686984216b1251ee9b36605f90b1df2dd365f7a6557",
+    "alpha0/constraint_v7_fit.py": "54f411a2d6cda57a434ba0c1f73e0c4a8c7b06a1fe6a6f2f5d7111591a378c29",
+    "alpha0/constraint_v7_report.py": "67747e8181704cec909b09cb495f270e02bd6a4706251d6a3a46489ef045cf98",
+    "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+    "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "alpha0/learn_v2.py": "81e0dc77edb64dbc037781f284e0b41ffdf9be14dbc7b6b661a83f630e4efa31",
+    "alpha0/mcts.py": "e37c7b595ff6be844b3c8f83818eb8b32224698a692ebf2c9a3023c55c382271",
+    "alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747",
+    "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+    "alpha0/replay.py": "f21cb7e2293026cb726ecc48799da356cd2d21c31ca7bbb4f2061a33bbd634ec",
+    "alpha0/replay_v2.py": "f6087c10d239e4b2f8d411ce5bb3fc36fd8b6cb541b66695f8041dee59eb4ada",
+    "alpha0/terminal_v6_common.py": "dfe577a1faca739f109fd65a917714ea0e14500230ab00e63bb9a9aef0c3c6fd",
+    "alpha0/terminal_v6_fit.py": "3341b1d418f7e9b38468d36f848db38cde27154a8063d1590acedf2115b7dd9f",
+    "alpha0/train.py": "dbfdd7cbda0554089cc6371ab4543fd6307d4b2af81405d8729781eb14b0798f",
+    "docs/cached-head-constraint-v7.md": "57d8bcabd9059592ea2de9ce793185e898ea4970ab2cb5dc2588006b3b5d13c6",
+    "scripts/plot_constraint_v7.py": "70baf8f0768cc19ac68e124b128417271f83535ede09d633962eaa87fe9adb31"
+  },
+  "training_only": true,
+  "validation_data_read": false
+}

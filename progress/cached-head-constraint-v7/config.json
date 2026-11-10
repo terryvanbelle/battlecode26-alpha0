@@ -1,0 +1,84 @@
+{
+  "anchor_count": 512,
+  "arms": [
+    {
+      "anchor_kl_weight": 1.0,
+      "id": "kl_1"
+    },
+    {
+      "anchor_kl_weight": 0.0,
+      "id": "kl_0"
+    }
+  ],
+  "automatic_promotion": false,
+  "benchmark_data_used_for_training": false,
+  "changed_targets": 9,
+  "checkpoint": {
+    "path": "runs/warmstart-v3/checkpoint-0002.pt",
+    "sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c"
+  },
+  "checkpoint_interval": 16,
+  "classification": {
+    "anchoring": "kl_0 reaches all32 at any fixed snapshot and kl_1 never does through2048",
+    "budget": "kl_1 reaches all32 at512or2048 after exact128 reproduction",
+    "fixed_snapshots_only": true,
+    "neither": "neither arm reaches all32 at a fixed snapshot; review optimization/conditioning",
+    "required_greedy_targets": 32
+  },
+  "dataset": {
+    "path": "runs/terminal-target-head-v6/dataset/training.npz",
+    "sha256": "c6d0043b1de3c5d228598d749637cd73efa297da111669dd1431363baf9e5f26"
+  },
+  "dataset_metadata": {
+    "path": "runs/terminal-target-head-v6/dataset/training.json",
+    "sha256": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b"
+  },
+  "experiment_id": "cached-head-constraint-v7",
+  "fit": {
+    "anchor_batch_size": 32,
+    "batch_size": 32,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "learning_rate": 0.0003,
+    "seed": 203101,
+    "target_weight": 0.75,
+    "weight_decay": 0.0001
+  },
+  "reference_batches": {
+    "path": "runs/terminal-target-head-v6/fit/batches.npz",
+    "sha256": "609a31a83326b44c5cf642a5d1804ad0d643e45ac860c3aea4b42ad6924cbd6a"
+  },
+  "reference_terminal_checkpoint": {
+    "path": "runs/terminal-target-head-v6/fit/terminal_head.pt",
+    "sha256": "1479fe9474c3f149497fb9994ff53ad6e7fcdf79021fb12a444346b862530718"
+  },
+  "retained_targets": 23,
+  "schema_version": 1,
+  "snapshots": [
+    128,
+    512,
+    2048
+  ],
+  "torch_threads": 1,
+  "total_wall_budget_seconds": 900,
+  "trainable_parameters": 5160,
+  "training_diagnosis": {
+    "path": "progress/terminal-target-head-v6/training-underfit.json",
+    "sha256": "4ff88c4f8fe68b623d35941415a92ac3741907d840da4e7aea405bf9b0f4da68"
+  },
+  "training_roots": 32,
+  "updates": 2048,
+  "v6_final_audit": {
+    "path": "progress/terminal-target-head-v6/independent-final-audit.json",
+    "sha256": "ab8f824a645432916417e8142d61c7cd13ec5e69561b96869115ff95288dd564"
+  },
+  "v6_identity": {
+    "path": "progress/terminal-target-head-v6/identity.json",
+    "sha256": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c"
+  },
+  "validation_data_used_for_fitting": false,
+  "workers": 1
+}

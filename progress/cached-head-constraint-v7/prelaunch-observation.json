@@ -1,0 +1,22 @@
+{
+  "actors": [],
+  "git_commit": "fe407fb646374233a40af0c512e0c4d0b13e0faf",
+  "identity_sha256": "ae384626094084e15417051b066cecdb9d480436cac9c5a016ac4ba3f4c96eb2",
+  "locks_exclusively_acquired": [
+    "runs/campaign/campaign.lock",
+    "runs/warmstart-v3/experiment.lock",
+    "runs/terminal-target-head-v5/experiment.lock",
+    "runs/terminal-target-head-v6/experiment.lock",
+    "runs/cached-head-constraint-v7/experiment.lock"
+  ],
+  "observed_at": "2026-11-10T09:37:46.910799+00:00",
+  "remaining_wall_seconds": 900.0,
+  "sgd_launched": false,
+  "stops": {
+    "runs/cached-head-constraint-v7/STOP": false,
+    "runs/campaign/STOP": false,
+    "runs/terminal-target-head-v5/STOP": false,
+    "runs/terminal-target-head-v6/STOP": false,
+    "runs/warmstart-v3/STOP": false
+  }
+}

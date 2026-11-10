@@ -1,0 +1,12 @@
+{
+  "actors": [],
+  "all_five_locks_acquired": true,
+  "observed_at": "2026-11-10T09:38:25.939409+00:00",
+  "stops": {
+    "runs/cached-head-constraint-v7/STOP": false,
+    "runs/campaign/STOP": false,
+    "runs/terminal-target-head-v5/STOP": false,
+    "runs/terminal-target-head-v6/STOP": false,
+    "runs/warmstart-v3/STOP": false
+  }
+}

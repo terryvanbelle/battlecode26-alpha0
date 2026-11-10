@@ -1,0 +1,17 @@
+{
+  "archive_sha256": "bcd84dbf2d18bc749f217c42ad2b33f5c4b9734f40bd25a34c995fd5c7ea6d5f",
+  "checkpoint_payloads_verified": 264,
+  "coverage": {
+    "fit_complete": true,
+    "fixed_snapshots": 6,
+    "generation_pairs": 256,
+    "latest_generation": {
+      "kl_0": 2048,
+      "kl_1": 2048
+    }
+  },
+  "files": 575,
+  "schema": "cached-head-constraint-v7-recovery-v1",
+  "verified": true,
+  "isolated_restore": "deferred: conservative guard detects active baseline actors"
+}

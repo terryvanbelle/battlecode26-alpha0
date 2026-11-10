@@ -400,3 +400,15 @@ Cp2 needs a fresh full baseline; no tiny-only score is reused. The new rule and
 paired map bootstrap are documented in development-benchmarks-v3.md. The README
 now leads with the opponent-by-map W/L/D dashboard, and evaluation refreshes it.
 The stopped all-map zdb run remains stopped: 0W/60L/0D, incomplete, no errors.
+
+
+## Broader baseline running; V8 implementation review resumed
+
+The new cp2 baseline is actively collecting the 256-game revised panel under
+all predecessor locks. An 80-game partial W/L/D dashboard was published at
+`ec1c0e1`; partial coverage is explicit. No complete-panel improvement is claimed.
+The V8 preflight suite initially found four failures (61 tests passed): an
+undefined plotting variable and unimplemented diagnostic metrics. These are
+being repaired in the unlaunched draft. The draft still needs its old 12-bot
+smoke evaluator and decision rule migrated to the new development protocol
+before it can be frozen or launched. No active evaluation runtime was changed.

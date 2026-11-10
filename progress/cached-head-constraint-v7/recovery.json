@@ -1,0 +1,7 @@
+{
+  "archive": "artifacts/cached-head-constraint-v7/recovery-20261110T095144883025Z-bcd84dbf2d18.tar.gz",
+  "sha256": "bcd84dbf2d18bc749f217c42ad2b33f5c4b9734f40bd25a34c995fd5c7ea6d5f",
+  "staging_verified": true,
+  "isolated_restore_verified": false,
+  "restore_pending_reason": "active baseline evaluation; retry after quiescence"
+}
