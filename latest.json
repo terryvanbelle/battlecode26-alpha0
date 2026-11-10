@@ -1,20 +1,20 @@
 {
-  "archive": "campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz",
+  "archive": "campaign-state-20261110T031440820420Z-51b731e5fa5d.tar.gz",
   "branch": "campaign-checkpoints",
-  "created_at": "2026-11-10T03:06:27.142217+00:00",
-  "file_count": 62,
+  "created_at": "2026-11-10T03:14:40.820457+00:00",
+  "file_count": 148,
   "format_version": 1,
   "git": {
-    "commit": "fb0ce74ed7231c9878d24769a0cb2e9502d118eb",
+    "commit": "63ab2354ad25050ac5140e282c98b68edb2edb04",
     "worktree_dirty": true
   },
-  "manifest_path": "snapshots/campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz.manifest.json",
-  "path": "snapshots/campaign-state-20261110T030627142189Z-a3bbbdd68c7a.tar.gz",
-  "published_at": "2026-11-10T03:13:00.971199+00:00",
+  "manifest_path": "snapshots/campaign-state-20261110T031440820420Z-51b731e5fa5d.tar.gz.manifest.json",
+  "path": "snapshots/campaign-state-20261110T031440820420Z-51b731e5fa5d.tar.gz",
+  "published_at": "2026-11-10T03:14:45.151643+00:00",
   "release": "campaign-state",
   "release_upload_auth_error": "GitHub release upload rejected configured credentials",
   "repository": "terryvanbelle/battlecode26-alpha0",
-  "sha256": "a3bbbdd68c7ac4ae9a7bbd6f36209cc36b53d4c943bc323daa004673dab3b032",
-  "size": 1121476,
+  "sha256": "51b731e5fa5d8f8f92d2537cd0991515d6e7b18ce482d0c9d09cbb3f05ff36d3",
+  "size": 14046731,
   "storage": "git"
 }
