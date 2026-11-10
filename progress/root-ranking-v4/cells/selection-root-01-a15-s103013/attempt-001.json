@@ -1,0 +1,49 @@
+{
+  "action": 15,
+  "actions_sha256": "a9fa289575903d8f5c5da416e15ca90dd916e93392bbff8f199671ab82896d45",
+  "attempt": 1,
+  "benchmark_failures": [],
+  "decisions": 840,
+  "elapsed_seconds": 3.734538013000929,
+  "ended_at": "2026-11-10T05:38:51.039920+00:00",
+  "experiment_identity": "35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162",
+  "identity": "781bd52ab98486240b24ce20556d11dfb39bdadd3f1860706b16d5c97cfc372e",
+  "root_id": "root-01",
+  "root_player": 0,
+  "root_prefix_sha256": "ab7c61da794444afa2eb729440b252873550330a3e15b5d906ce7af4071228c1",
+  "root_state_sha256": "a524cc4d151a054cadcd87812f2290fdffb34fa7c508caec9207b614f3452c11",
+  "roots_sha256": "8acb333c8ecaec50cdbd5cc7a4637315e830dce792dd98c0bb3b40a6ad46a536",
+  "score": 1.0,
+  "seed": 103013,
+  "stage": "selection",
+  "started_at": "2026-11-10T05:38:47.305383+00:00",
+  "status": "ok",
+  "temperature": 0.35,
+  "terminal": true,
+  "terminal_round": 34,
+  "terminal_state_sha256": "2d8e74f59a0b93a2d683d0b68a075577601238d94e8fca0f9c805f2b7b5265d3",
+  "terminal_summary": {
+    "bank": [
+      1112,
+      1162
+    ],
+    "cat_damage": [
+      0,
+      0
+    ],
+    "kings": [
+      0,
+      0
+    ],
+    "round": 34,
+    "terminal": true,
+    "transferred": [
+      40,
+      20
+    ],
+    "win_reason": "MORE_POINTS",
+    "winner": 0
+  },
+  "valid_game": true,
+  "winner": 0
+}

@@ -4,7 +4,7 @@
 
 This is a bounded test of first-action ranking on frozen own-self-play roots. **No SGD updates and no benchmark data are used. It does not establish benchmark strength or authorize an automatic training promotion.**
 
-**0/8 roots have complete paired validation.** Selection: 32/374 valid cells. Validation: 0/0 valid scheduled unique cells.
+**2/8 roots have complete paired validation.** Selection: 96/374 valid cells. Validation: 12/12 valid scheduled unique cells.
 
 Selection uses seeds `103003, 103013` for every legal first action. The rollout action is chosen by mean terminal score, with the frozen original network prior breaking ties. The comparator is unchanged 32-simulation/depth-12 PUCT.
 
@@ -18,7 +18,7 @@ The conjunction below is evaluated only after every frozen root has complete val
 
 | Requirement | Observed | Outcome |
 |---|---:|---|
-| Every root complete | 0/8 | Incomplete |
+| Every root complete | 2/8 | Incomplete |
 | Equal-root mean Δ ≥ +0.10 | — | Pending |
 | At least two distinct roots improve (Δ > 0) | — | Pending |
 | No root has mean Δ < −0.25 | — | Pending |
@@ -31,8 +31,8 @@ The +0.10 threshold applies to the equal-root aggregate, not each individual roo
 
 | Root | Map / role / round | Rollout / PUCT action | Source cells | Unique valid / scheduled | Rollout mean | PUCT mean | Paired mean Δ | Status |
 |---|---|---|---|---:|---:|---:|---:|---|
-| `root-00` | tiny / BABY_RAT / 4 | — / 21 | Not scheduled | 0/0 | — | — | — | Incomplete |
-| `root-01` | tiny / RAT_KING / 8 | — / 27 | Not scheduled | 0/0 | — | — | — | Incomplete |
+| `root-00` | tiny / BABY_RAT / 4 | 21 / 21 | Shared four cells | 4/4 | 1.000 | 1.000 | +0.000 | Complete |
+| `root-01` | tiny / RAT_KING / 8 | 15 / 27 | Two actions × four cells | 8/8 | 1.000 | 0.000 | +1.000 | Complete |
 | `root-02` | DefaultSmall / BABY_RAT / 20 | — / 21 | Not scheduled | 0/0 | — | — | — | Incomplete |
 | `root-03` | DefaultSmall / RAT_KING / 63 | — / 21 | Not scheduled | 0/0 | — | — | — | Incomplete |
 | `root-04` | closeup / BABY_RAT / 49 | — / 21 | Not scheduled | 0/0 | — | — | — | Incomplete |
@@ -46,7 +46,14 @@ Values below are root-player scores, in the fixed validation-seed order. The sam
 
 | Root | Seed | Rollout-selected score | PUCT-selected score | Δ |
 |---|---:|---:|---:|---:|
-| — | — | — | — | — |
+| `root-00` | 103021 | 1 | 1 | +0 |
+| `root-00` | 103043 | 1 | 1 | +0 |
+| `root-00` | 103067 | 1 | 1 | +0 |
+| `root-00` | 103091 | 1 | 1 | +0 |
+| `root-01` | 103021 | 1 | 0 | +1 |
+| `root-01` | 103043 | 1 | 0 | +1 |
+| `root-01` | 103067 | 1 | 0 | +1 |
+| `root-01` | 103091 | 1 | 0 | +1 |
 
 ![Measured selection and validation coverage](coverage.png)
 
@@ -56,9 +63,9 @@ Cumulative recorded error attempts: **0**.
 
 ## Source snapshot
 
-- Exact input report: [`f8be061cf715757d8e41b5f057f7087d1a1b4bfba48f47d6bbc489c49327b306.json`](report-snapshots/f8be061cf715757d8e41b5f057f7087d1a1b4bfba48f47d6bbc489c49327b306.json)
-- Report SHA-256: `f8be061cf715757d8e41b5f057f7087d1a1b4bfba48f47d6bbc489c49327b306`
+- Exact input report: [`2e3015a12f360cda9cba2e42631ef1f9ef73a755ce3872ffcfb717a44bcbf911.json`](report-snapshots/2e3015a12f360cda9cba2e42631ef1f9ef73a755ce3872ffcfb717a44bcbf911.json)
+- Report SHA-256: `2e3015a12f360cda9cba2e42631ef1f9ef73a755ce3872ffcfb717a44bcbf911`
 - Experiment identity SHA-256: `35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162`
-- Generated at: `2026-11-10T05:36:45+00:00`
+- Generated at: `2026-11-10T05:41:30+00:00`
 
 Regenerate from the repository root with `.venv/bin/python scripts/plot_root_ranking.py`. The renderer performs no engine runs or parameter updates; it recomputes the reported research decision from complete paired validation scores.
