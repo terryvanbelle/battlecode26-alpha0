@@ -1,0 +1,10 @@
+{
+  "checkpoint_sha256": "4c5b5470064bd8f7eeb3946b3a51e0d6481f779b1add726070b808924818bc38",
+  "complete": false,
+  "draws": 0,
+  "expected": 256,
+  "losses": 36,
+  "unresolved_errors": 0,
+  "valid": 94,
+  "wins": 58
+}

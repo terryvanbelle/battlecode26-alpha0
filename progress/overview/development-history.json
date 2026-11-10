@@ -220,15 +220,15 @@
     },
     {
       "overall": {
-        "wins": 77,
-        "losses": 81,
+        "wins": 81,
+        "losses": 175,
         "draws": 0,
-        "valid": 158,
+        "valid": 256,
         "expected": 256,
         "errors": 0,
         "excluded_crashes": 0,
-        "complete": false,
-        "win_rate": null
+        "complete": true,
+        "win_rate": 0.31640625
       },
       "checkpoint_sha256": "898d5f869fcc4aee2fe789fa921f09969dd6df5a17e21e80e8a176bbdcca3e8d",
       "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
@@ -280,9 +280,117 @@
         },
         "HugoIngelsson_YokoOno": {
           "wins": 15,
-          "losses": 15,
+          "losses": 17,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.46875
+        },
+        "abcdezyxwv_bestsofar": {
+          "wins": 0,
+          "losses": 32,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.0
+        },
+        "uravt_Version41": {
+          "wins": 3,
+          "losses": 29,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.09375
+        },
+        "IvanGeffner_basic51": {
+          "wins": 1,
+          "losses": 31,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.03125
+        }
+      },
+      "source": "progress/development-v4/v8-terminal_head/evaluations.jsonl",
+      "source_sha256": "575f9c92a4c1dae3ecd2cd5f7e42e4bfce6c867a2a950326cc49b0b86e70b051"
+    },
+    {
+      "overall": {
+        "wins": 58,
+        "losses": 36,
+        "draws": 0,
+        "valid": 94,
+        "expected": 256,
+        "errors": 0,
+        "excluded_crashes": 0,
+        "complete": false,
+        "win_rate": null
+      },
+      "checkpoint_sha256": "4c5b5470064bd8f7eeb3946b3a51e0d6481f779b1add726070b808924818bc38",
+      "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+      "started_at": "2026-11-10T22:46:40.191264+00:00",
+      "bots": {
+        "CS50Crab_rapierV1": {
+          "wins": 26,
+          "losses": 6,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.8125
+        },
+        "spsquared_TSPAARK_QUALS": {
+          "wins": 15,
+          "losses": 17,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.46875
+        },
+        "HugoIngelsson_Xzibit": {
+          "wins": 17,
+          "losses": 13,
           "draws": 0,
           "valid": 30,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "vibe26b_zdb": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "HugoIngelsson_YokoOno": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
           "expected": 32,
           "errors": 0,
           "complete": false,
@@ -323,8 +431,8 @@
           "win_rate": null
         }
       },
-      "source": "progress/development-v4/v8-terminal_head/evaluations.jsonl",
-      "source_sha256": "43391ad84b31503633d914a5cd3e24bcd2375f070302bd13600927e31d5d6d94"
+      "source": "progress/development-v4/v8-puct_head/evaluations.jsonl",
+      "source_sha256": "a0207e76b5f11b35f36f78abfa7e8dc429eb5e7de21d3b49f41af4ff0e98ec29"
     }
   ]
 }

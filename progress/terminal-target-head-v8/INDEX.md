@@ -1,6 +1,6 @@
 # Follow V8 progress
 
-**Current review (2026-11-10 22:25 UTC):** **414/768 valid benchmark games**, with both deadline-interrupted cells recovered on their second and final permitted attempts. Original error journals remain unchanged. The verified recovery archive has been published and a second bounded cycle has resumed. [Recovery proof](recovery.json) · [Interruption review](reviews/deadline-recovery-20261110.json).
+**Current review (2026-11-10 23:13 UTC):** the fixed terminal candidate completed256/256 valid games: **81W / 175L / 0D**. It fails the development improvement rule against fresh cp2 (82W) and original cp2 (83W). PUCT control is still running. [Candidate review and next hypothesis](../../docs/v8-candidate-review.md) · [Independent terminal-panel audit](reviews/completed-panels-20261110T2313.json).
 
 Current panels: cp2 control **82 W / 174 L / 0 D (256/256)**; terminal candidate **77 W / 81 L / 0 D (158/256)**; PUCT pending. No unresolved errors in this snapshot. Partial candidate results are not a full-suite strength estimate. The original baseline remains 83/256 wins.
 
