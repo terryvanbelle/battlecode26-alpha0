@@ -3,6 +3,17 @@
   "aggregation": "wins / valid games; thewaxmango opponent crashes excluded; other incomplete panels have no rate; draws are not wins",
   "evaluations": [
     {
+      "overall": {
+        "wins": 78,
+        "losses": 174,
+        "draws": 0,
+        "valid": 252,
+        "expected": 256,
+        "errors": 4,
+        "excluded_crashes": 4,
+        "complete": false,
+        "win_rate": 0.30952380952380953
+      },
       "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
       "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
       "started_at": "2026-11-10T14:33:13.804587+00:00",

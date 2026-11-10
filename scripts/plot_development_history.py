@@ -42,7 +42,12 @@ def summarize(rows, manifest):
                        'errors': len(rr)-len(valid), 'complete': complete,
                        'excluded_crashes': len(rr)-len(valid) if crash_exclusion else 0,
                        'win_rate': counts['wins']/len(valid) if rate_available else None}
-    return {'checkpoint_sha256': rows[0]['checkpoint_sha256'],
+    overall = {key: sum(bot[key] for bot in result.values())
+               for key in ('wins', 'losses', 'draws', 'valid', 'expected', 'errors', 'excluded_crashes')}
+    overall['complete'] = all(bot['complete'] for bot in result.values())
+    overall['win_rate'] = (overall['wins']/overall['valid']
+                           if overall['valid'] and all(bot['win_rate'] is not None for bot in result.values()) else None)
+    return {'overall': overall, 'checkpoint_sha256': rows[0]['checkpoint_sha256'],
             'evaluation_config_sha256': rows[0]['evaluation_config_sha256'],
             'started_at': min(r['started_at'] for r in rows), 'bots': result}
 
@@ -87,11 +92,24 @@ def generate(current, manifest):
             ax.plot(range(len(history)), ys, marker=markers[index % len(markers)],
                     color=colors[index % len(colors)], linewidth=2, markersize=8,
                     label=label if j == 0 else None)
+    latest_overall = history[-1]['overall'] if history else None
+    overall_label = 'Overall'
+    if latest_overall and latest_overall['win_rate'] is not None:
+        overall_label += f" · {100*latest_overall['win_rate']:.1f}% ({latest_overall['wins']}/{latest_overall['valid']})"
+        if latest_overall['excluded_crashes']:
+            overall_label += f" · {latest_overall['excluded_crashes']} crashes excluded"
+    else:
+        overall_label += ' · pending'
+    for j, runtime in enumerate(sorted({h['evaluation_config_sha256'] for h in history})):
+        ys = [100*h['overall']['win_rate'] if h['evaluation_config_sha256']==runtime and h['overall']['win_rate'] is not None else float('nan') for h in history]
+        ax.plot(range(len(history)), ys, color='#111111', marker='o', linewidth=3.5,
+                markersize=10, markeredgecolor='white', markeredgewidth=1.5, zorder=10,
+                label=overall_label if j == 0 else None)
     ax.set_ylim(-3,103);ax.set_xlim(-.5,max(.5,len(history)-.5))
     ax.set_yticks(range(0,101,10));ax.grid(alpha=.2)
     ax.set_xticks(range(len(history)),labels,fontsize=9)
     ax.set_ylabel('Win rate (%)');ax.set_xlabel('Evaluation start (America/Vancouver) · checkpoint SHA')
-    ax.set_title(f"Per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · thewaxmango crashes excluded from its denominator",fontsize=13)
+    ax.set_title(f"Overall and per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · thewaxmango crashes excluded from bot and overall rates",fontsize=13)
     ax.legend(loc='center left',bbox_to_anchor=(1.02,.5),frameon=False,fontsize=9,
               title='Opponents by prior Elo · latest wins / valid games')
     fig.tight_layout()
