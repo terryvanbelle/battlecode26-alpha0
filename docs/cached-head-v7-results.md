@@ -37,7 +37,7 @@ verified all 529 fit files, 256 recovery generations and six snapshots, exact
 v6 reproduction, frozen tensors and all 544 cached critic outputs. It recomputed
 the metrics and classification without any optimizer steps. Audit SHA-256:
 `e3776f8fbde2d0ff65117c2efcf029a54265a734d00b1b069ada06dc70b6ebd2`.
-The [separate recovery archive](../artifacts/cached-head-constraint-v7/README.md) passed staging and checkpoint verification; an isolated restore awaits baseline quiescence.
+The [separate recovery archive](../artifacts/cached-head-constraint-v7/README.md) passed staging and checkpoint verification; an isolated restore subsequently verified 573 files and all 264 checkpoint payloads.
 This is a training-fit result only. V6 remains the latest measured policy
 comparison: cp2 and both v6 heads scored 20/24 smoke, with zero validation
 advantage. V7 diagnostic heads are retained without benchmark evaluation or

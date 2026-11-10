@@ -17,8 +17,9 @@ def generate(progress):
   if k in cells:raise ValueError('duplicate cell')
   cells[k]=r;hashes.add(r['checkpoint_sha256'])
  if len(hashes)>1:raise ValueError('mixed checkpoints')
- counts=collections.defaultdict(collections.Counter)
+ counts=collections.defaultdict(collections.Counter);errors=collections.Counter()
  for r in cells.values():
+  if r['status']!='ok':errors[r['opponent'],r['map']]+=1
   if r['status']=='ok':counts[r['opponent'],r['map']][{1:'W',0:'L',.5:'D'}[r['score']]]+=1
  a=np.full((len(bots),len(maps)),np.nan)
  fig,ax=plt.subplots(figsize=(15,6))
@@ -29,17 +30,17 @@ def generate(progress):
  ax.imshow(a,vmin=0,vmax=100,cmap='RdYlGn',aspect='auto')
  for i,b in enumerate(bots):
   for j,m in enumerate(maps):
-   c=counts[b,m];n=sum(c.values());ax.text(j,i,f"{c['W']} / {c['L']} / {c['D']}\n{n}/4 games",ha='center',va='center',color='white' if n and (a[i,j]<25 or a[i,j]>75) else 'black',fontsize=9)
+   c=counts[b,m];n=sum(c.values());ax.text(j,i,f"{c['W']} / {c['L']} / {c['D']}\n{n}/4 valid{'; '+str(errors[b,m])+' errors' if errors[b,m] else ''}",ha='center',va='center',color='white' if n and (a[i,j]<25 or a[i,j]>75) else 'black',fontsize=9)
  ax.set_xticks(range(len(maps)),maps,rotation=20,ha='right');ax.set_yticks(range(len(bots)),[f"{b['id']} ({b['historical_rating']['elo']:.1f})" for b in ordered]);ax.set_ylabel('Opponent · prior Elo (ascending)')
  n=sum(sum(c.values()) for c in counts.values());sha=next(iter(hashes),'not-yet-evaluated')
- ax.set_title(f'Current development benchmark · W / L / D · {n}/256 valid games\nCheckpoint {sha[:12]} · background = win percentage of completed games')
+ ax.set_title(f'Current development benchmark · W / L / D · {n}/256 valid games · {sum(errors.values())} unresolved errors\nCheckpoint {sha[:12]} · background = win percentage of completed games')
  fig.tight_layout();out=ROOT/'progress/overview';out.mkdir(exist_ok=True);fig.savefig(out/'development-current.png',dpi=150);plt.close(fig)
- data={'checkpoint_sha256':sha,'source':str(Path(progress).resolve().relative_to(ROOT)),'completed':n,'expected':256,'cells':[{'opponent':b,'map':m,**dict(counts[b,m])} for b in bots for m in maps]}
+ data={'checkpoint_sha256':sha,'source':str(Path(progress).resolve().relative_to(ROOT)),'completed':n,'unresolved_errors':sum(errors.values()),'expected':256,'cells':[{'opponent':b,'map':m,**dict(counts[b,m])} for b in bots for m in maps]}
  (out/'development-current.json').write_text(json.dumps(data,indent=2)+'\n')
  block=f'''<!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
-**{n}/256 games complete.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `{sha[:12]}`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation]({data['source']}/evaluations.jsonl).
+**{n}/256 valid games; {sum(errors.values())} unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `{sha[:12]}`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation]({data['source']}/evaluations.jsonl).
 <!-- CURRENT_BENCHMARK_END -->'''
  if not rows:block=block.replace(f' · [Raw evaluation]({data["source"]}/evaluations.jsonl)','').replace('Checkpoint `not-yet-eval`','Baseline evaluation pending')
  readme=ROOT/'README.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)

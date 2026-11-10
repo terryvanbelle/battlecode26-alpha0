@@ -1,0 +1,240 @@
+{
+  "bot": {
+    "archive_url": "https://codeload.github.com/abcdezyxwv/Parmesan-bc2026/tar.gz/0a0b266dd010d31a66f2b4942853e4445dc36ace",
+    "entrypoint": "bestsofar.RobotPlayer",
+    "files": [
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Baby.java",
+        "sha256": "03e32be24bd3fa6a6f6081bd7b51714fe830df68b6a5ca4cd263dbd66f8b8e8d",
+        "upstream_path": "src/bestsofar/Baby.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/King.java",
+        "sha256": "2ca89e69801aa48c8831194cee853efc619626a06bb4d0554081756d86c335fc",
+        "upstream_path": "src/bestsofar/King.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/RobotPlayer.java",
+        "sha256": "8cac7dfbc7202be3bd8e96cd1b36954953be35ead7fb8815fd2fc6c5b17adfac",
+        "upstream_path": "src/bestsofar/RobotPlayer.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Roles/AntiCat.java",
+        "sha256": "f61fd17ad213774a5462c0348d89d74a295ef98d952baaadc5af3afc78ecfbe8",
+        "upstream_path": "src/bestsofar/Roles/AntiCat.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Roles/Hunter.java",
+        "sha256": "95798b2754ad70bd771f49119084f8f033c6505d4be42f506f471cd12574e6b3",
+        "upstream_path": "src/bestsofar/Roles/Hunter.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Roles/Miner.java",
+        "sha256": "43fbcbb7e1f33de9825ac8c6e66c34fe92a70d29b34421b9b99282b5b49a02d2",
+        "upstream_path": "src/bestsofar/Roles/Miner.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Roles/Multiking.java",
+        "sha256": "f369c2d45666db23aeb3f4908c02fea58f36eb16d93edfa10acbc3c4a91ef85b",
+        "upstream_path": "src/bestsofar/Roles/Multiking.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Roles/Rush.java",
+        "sha256": "18172cfd3844db17f98922e0923bebe7f4e9e836116c826222fad49ebd96d75e",
+        "upstream_path": "src/bestsofar/Roles/Rush.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/UPSTREAM_LICENSE",
+        "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182",
+        "upstream_path": "src/LICENSE"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/AdditionalClasses/Threat.java",
+        "sha256": "7cb2421ec1568c4fe4cc82f459ad942e09267464b2ab1d6cbda532f9fb9506ad",
+        "upstream_path": "src/bestsofar/Utils/AdditionalClasses/Threat.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/AdditionalClasses/Thrown.java",
+        "sha256": "54c7aa5173c2a1ae62d16e290da4bd00c56f8574fda89f2b5d45fbc046cc4ac0",
+        "upstream_path": "src/bestsofar/Utils/AdditionalClasses/Thrown.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Attack.java",
+        "sha256": "96a2cd76726d07d059723d905c09a1728b568e12da70a91ea4dacc5fec6d2ec6",
+        "upstream_path": "src/bestsofar/Utils/Attack.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/BellmanFordNavigator.java",
+        "sha256": "08906ebf135786cee9bd0c02576e7d63702385fea983825aca2437e2afa326ce",
+        "upstream_path": "src/bestsofar/Utils/BellmanFordNavigator.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/BellmanFordNavigatorCat.java",
+        "sha256": "9552a9cff3a4d2a7cd9a90b8b8829a4d5f0466f0f4bec9b93d13c5f062bde93e",
+        "upstream_path": "src/bestsofar/Utils/BellmanFordNavigatorCat.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/BugNavigator.java",
+        "sha256": "55e475261243142703c4b0a358c251a323a92901f402101a202033ffded7b6a0",
+        "upstream_path": "src/bestsofar/Utils/BugNavigator.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/CatsAreWalls.java",
+        "sha256": "9eedc3100321d17ef4233c7c09d5ef3a1e4f84246fef27887d60581746ea1029",
+        "upstream_path": "src/bestsofar/Utils/CatsAreWalls.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Comms.java",
+        "sha256": "922e229c566e749d6b5141f639ad6dbc6d3864ce56a45b725fcc88f4b94288b1",
+        "upstream_path": "src/bestsofar/Utils/Comms.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/FastSet.java",
+        "sha256": "2946d6b78e503085f3a692fd5f6cb7a8b4a1e9783be007584661ae607cba5bce",
+        "upstream_path": "src/bestsofar/Utils/FastSet.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Globals.java",
+        "sha256": "4d4ef455f8d8a3034ae3c338a4a321e087b879bce4846e267abd952d8fa56371",
+        "upstream_path": "src/bestsofar/Utils/Globals.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Movement.java",
+        "sha256": "fad60d79fbc5d96819b8d2f90d9ddca0f479208d0d2d63f1fc14d97d023cec46",
+        "upstream_path": "src/bestsofar/Utils/Movement.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Navigator.java",
+        "sha256": "e7900635ac1fd33e7286e5fe2338335389349257f029b5c3e5c5bb8640fcb61f",
+        "upstream_path": "src/bestsofar/Utils/Navigator.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Reachability.java",
+        "sha256": "2bdc335b6eb8f65bfe0c4d62a43d4111ccbb49fa0ec0508326e0a4ebfbe710b4",
+        "upstream_path": "src/bestsofar/Utils/Reachability.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Symmetry.java",
+        "sha256": "4fb86ec2eed20c3eddddcac2481723544eb36ba512994030c7f57d39d2677d0e",
+        "upstream_path": "src/bestsofar/Utils/Symmetry.java"
+      },
+      {
+        "path": "benchmarks/bots/abcdezyxwv_bestsofar/Utils/Vision.java",
+        "sha256": "1bb5b793f906505c177f012c1870350ed1dcc1cc8c1f1049447ab33d59d9bf4f",
+        "upstream_path": "src/bestsofar/Utils/Vision.java"
+      }
+    ],
+    "historical_rating": {
+      "elo": 2010.4,
+      "expected_field_score": 0.8223,
+      "games": 2457,
+      "standard_error": 7.9
+    },
+    "id": "abcdezyxwv_bestsofar",
+    "java_tree_sha256": "b1bd9e455b619b128a44060eac36557d15359f51a0c8299799eca83a59753ef6",
+    "license": {
+      "source_path": "src/LICENSE",
+      "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+    },
+    "package": "bestsofar",
+    "path": "benchmarks/bots/abcdezyxwv_bestsofar",
+    "source_commit": "0a0b266dd010d31a66f2b4942853e4445dc36ace",
+    "source_commit_date": "2026-02-05T22:10:37+11:00",
+    "source_path": "src/bestsofar",
+    "source_repository": "https://github.com/abcdezyxwv/Parmesan-bc2026",
+    "stratum": "very strong field; grab/throw swarm",
+    "validation": {
+      "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee.",
+      "standalone_java21_compile": "passed against official 1.2.6.jar"
+    }
+  },
+  "checkpoint_path": "/workspace/battlecode26-alpha0/runs/warmstart-v3/checkpoint-0002.pt",
+  "evaluation_cell_id": "01f3a03d1320039f701a5a9a7fed1ab236068a1c7682b114e5b830724a569174",
+  "generation": 2,
+  "identity": {
+    "artifact_version": 2,
+    "benchmark_suite_id": "development-eight-v3",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "evaluation_config": {
+      "policy_random_seed": 0,
+      "policy_schema": {
+        "action_dim": 40,
+        "action_version": "macro_v2",
+        "feature_version": 2,
+        "model_version": "dual_scale_v2",
+        "network_config": {
+          "action_dim": 40,
+          "blocks": 2,
+          "global_channels": 33,
+          "global_width": 16,
+          "hidden_dim": 128,
+          "local_channels": 33,
+          "local_width": 24,
+          "scalar_dim": 64
+        }
+      },
+      "runtime": {
+        "bridge_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+        "compiled_classes": {
+          "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+          "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+          "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+          "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+          "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+          "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+          "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+          "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+          "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+          "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+          "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+          "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+          "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+          "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+          "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+          "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+          "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+        },
+        "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+        "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+        "engine_version": "1.2.6",
+        "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+        "numpy_version": "2.3.5",
+        "physics": {
+          "benchmark_bytecode_limit": 1000000000,
+          "engine_rules": "official-1.2.6",
+          "team_execution_timeout_disabled": true
+        },
+        "python_adapter_sha256": "797ee5634316b622dfa5f2e2ba63a885065ab0008e99230af9c17a7538ae1e7d",
+        "python_sources": {
+          "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+          "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+          "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+          "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+        },
+        "torch_version": "2.15.0+cpu"
+      },
+      "search_config": {},
+      "search_mode": "greedy",
+      "tie_break": "first-legal-action",
+      "timeout_seconds": 1800.0,
+      "torch_threads": 1
+    },
+    "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+    "map": "wallsofparadis",
+    "map_sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28",
+    "opponent": "abcdezyxwv_bestsofar",
+    "opponent_java_sha256": "b1bd9e455b619b128a44060eac36557d15359f51a0c8299799eca83a59753ef6",
+    "opponent_source_commit": "0a0b266dd010d31a66f2b4942853e4445dc36ace",
+    "panel_fingerprint_sha256": "6c99d2a95eace1d82923641618590b16bb6361ca5de4e8dc32e9c780425c0915",
+    "seed": 2026,
+    "side": "B",
+    "stage": "standard"
+  },
+  "iteration": 2,
+  "maps_dir": "/workspace/battlecode26-alpha0/maps",
+  "stage": "standard",
+  "suite": "standard"
+}

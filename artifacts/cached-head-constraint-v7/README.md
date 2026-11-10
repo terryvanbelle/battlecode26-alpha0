@@ -1,6 +1,6 @@
 # V7 training-only recovery
 
-This directory holds the separate recovery export for the preregistered cached-head update-budget/anchor diagnostic. The archive passed staging verification: 575 files, 264 checkpoint payloads, six snapshots and 256 recovery generation pairs. An isolated restore remains pending because the conservative guard detects active baseline actors.
+This directory holds the separate recovery export for the preregistered cached-head update-budget/anchor diagnostic. The archive passed staging verification: 575 files, 264 checkpoint payloads, six snapshots and 256 recovery generation pairs. After baseline quiescence, an isolated restore also succeeded: 573 files and all 264 checkpoint payloads verified, with the relocation STOP guard retained. [Restore report](isolated-restore.json).
 
 Archive: [recovery-20261110T095144883025Z-bcd84dbf2d18.tar.gz](recovery-20261110T095144883025Z-bcd84dbf2d18.tar.gz). SHA-256: `bcd84dbf2d18bc749f217c42ad2b33f5c4b9734f40bd25a34c995fd5c7ea6d5f`. [Verification report](verification.json).
 

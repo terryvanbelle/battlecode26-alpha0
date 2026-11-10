@@ -1,0 +1,38 @@
+{
+  "checkpoint_payloads_verified": 264,
+  "coverage": {
+    "fit_complete": true,
+    "fixed_snapshots": 6,
+    "generation_pairs": 256,
+    "latest_generation": {
+      "kl_0": 2048,
+      "kl_1": 2048
+    }
+  },
+  "files_written": 573,
+  "restored": true,
+  "resume_blocked": true,
+  "resume_requirements": [
+    "original_canonical_repository_path",
+    "configs/cached-head-constraint-v7.json",
+    "docs/cached-head-constraint-v7.md",
+    "alpha0/__init__.py",
+    "alpha0/constraint_v7.py",
+    "alpha0/constraint_v7_common.py",
+    "alpha0/constraint_v7_fit.py",
+    "alpha0/constraint_v7_report.py",
+    "alpha0/env.py",
+    "alpha0/features_v2.py",
+    "alpha0/learn_v2.py",
+    "alpha0/mcts.py",
+    "alpha0/network.py",
+    "alpha0/network_v2.py",
+    "alpha0/replay.py",
+    "alpha0/replay_v2.py",
+    "alpha0/terminal_v6_common.py",
+    "alpha0/terminal_v6_fit.py",
+    "alpha0/train.py",
+    "scripts/plot_constraint_v7.py",
+    "artifacts/bootstrap-v3/candidate-002-winners/warmstart.pt"
+  ]
+}
