@@ -1,0 +1,180 @@
+{
+  "schema_version": 2,
+  "suite_id": "yokoono-crash-qualification-v1",
+  "source_repository": "https://github.com/terryvanbelle/battlecode26b-vibe",
+  "source_commit": "f4d6ec971b13a20f7f38fb56d249f62c0251ed05",
+  "source_roster_paths": [
+    "tools/galaxy26/field-teams.tsv",
+    "research/field/FIELD.tsv",
+    "research/field/candidates.txt"
+  ],
+  "engine_version": "1.2.6",
+  "purpose": "User-authorized broader-map improvement benchmark; historical twelve-bot gate retained separately.",
+  "hash_algorithm": "SHA-256; tree hash concatenates sorted POSIX relative .java paths, NUL, and original file bytes.",
+  "historical_rating_method": "Batch Bradley-Terry Elo fit, mixed local score-share and replica wins, map-adjusted; source progress/ELO.md. Ratings describe the source engine and compute limits, not this project.",
+  "provenance_caveat": "The original VM downloads are unavailable. Roster names and source package paths match the historical field exactly; reacquired public upstream commits are pinned and all predate historical acquisition, but original VM source/compiled hashes were not recorded in the available repository, so exact artifact identity cannot be proven. Historical Elo describes the named historical bots, not freshly measured strength of these pinned copies.",
+  "bots": [
+    {
+      "id": "HugoIngelsson_YokoOno",
+      "package": "YokoOno",
+      "path": "benchmarks/bots/HugoIngelsson_YokoOno",
+      "entrypoint": "YokoOno.RobotPlayer",
+      "source_repository": "https://github.com/HugoIngelsson/podemice-Battlecode-2026",
+      "source_commit": "5414895a77f602d37034f06367223eb16a2e8ee6",
+      "source_commit_date": "2026-01-28T21:32:18-08:00",
+      "source_path": "YokoOno",
+      "archive_url": "https://codeload.github.com/HugoIngelsson/podemice-Battlecode-2026/tar.gz/5414895a77f602d37034f06367223eb16a2e8ee6",
+      "stratum": "Second nearest historical rating after Icarus failed crash qualification",
+      "java_tree_sha256": "4d4ebafc60928e2e905ad91eb0743ec1463e282e3cd3345601001007cb6b1a54",
+      "files": [
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/BabyRat.java",
+          "upstream_path": "YokoOno/BabyRat.java",
+          "sha256": "f5fde53b602b80c4de7aca8d77257da19952bc81c9c6202616aee660c80b4321"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Cache.java",
+          "upstream_path": "YokoOno/Cache.java",
+          "sha256": "ba5a308f0fd252e2d6d3a41ad3ddca30951150b53137322cab6c65be9dc5cbcb"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Comms.java",
+          "upstream_path": "YokoOno/Comms.java",
+          "sha256": "7277c765d15f415ebec03e125422d9bbef6f2eddff728358c4989d7b7ec67d24"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/ConfidenceSymmetry.java",
+          "upstream_path": "YokoOno/ConfidenceSymmetry.java",
+          "sha256": "ee88f188e078c4f2769a7c19fc20cdb8c4bfcaf05de8d2f4f661b6518b6f1ac5"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Constants.java",
+          "upstream_path": "YokoOno/Constants.java",
+          "sha256": "888e3f89a8d2b33e6390a2d78715d3af1b85168e773c0e2610a4709b2bd7286b"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Debug.java",
+          "upstream_path": "YokoOno/Debug.java",
+          "sha256": "dc54b7cb4874b3e60a1cff384f23653b3c71d6e04e95b285507af9419afdf225"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/MicroManager.java",
+          "upstream_path": "YokoOno/MicroManager.java",
+          "sha256": "80ad96b9c8a82cc115f18676a9919d97845c218efd5f4fe7c8c77d906e18b222"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/MovementManager.java",
+          "upstream_path": "YokoOno/MovementManager.java",
+          "sha256": "6e5868b83b2048670aa86585001478606a10a4180dbd7127cbe5d40245d504c0"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Navigation.java",
+          "upstream_path": "YokoOno/Navigation.java",
+          "sha256": "6370c271e1d2289e46c63fec785eeabc7f3844c2f68c6503b1c97c55d095f6bb"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/RatKing.java",
+          "upstream_path": "YokoOno/RatKing.java",
+          "sha256": "0f034e10ddfe9d17b7292855a7aa075d2249677d651ba7edf11fe8124d6660e9"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Robot.java",
+          "upstream_path": "YokoOno/Robot.java",
+          "sha256": "cd4c8834113de262714d77b9fe16f13c8a9ede220e393b9e77fd7804c3c79121"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/RobotPlayer.java",
+          "upstream_path": "YokoOno/RobotPlayer.java",
+          "sha256": "957962e328719b55381d5e8e9e693a2955c3bd70dcb22c8f35341b89728158af"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Squeaker.java",
+          "upstream_path": "YokoOno/Squeaker.java",
+          "sha256": "aa84968f63599cfb29b097ba59baf7fc1a728c2a849616a1ab2633a3aeaa2782"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/TargetManager.java",
+          "upstream_path": "YokoOno/TargetManager.java",
+          "sha256": "667c3aec1c781af200ec9977ab108c662f4979b7b8905a6db459da772c31e1d7"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/ThrowMicroManager.java",
+          "upstream_path": "YokoOno/ThrowMicroManager.java",
+          "sha256": "613cc93fb341d43cedeb6845a1ef3a12dac55031ccc8a9d056f2b211355a345a"
+        },
+        {
+          "path": "benchmarks/bots/HugoIngelsson_YokoOno/Util.java",
+          "upstream_path": "YokoOno/Util.java",
+          "sha256": "afb65baec7b6d0faa07c3aa66e06d38808a7133450e8fb358cc8e73ddca4fe3d"
+        }
+      ],
+      "license": {
+        "source_path": null,
+        "status": "No license file found; sources remain downloaded local dependencies, not repository-distributed copies"
+      },
+      "historical_rating": {
+        "elo": 1734.2,
+        "standard_error": 6.6,
+        "games": 3084,
+        "expected_field_score": 0.6422
+      },
+      "validation": {
+        "status": "pending full eight-map crash qualification"
+      }
+    }
+  ],
+  "evaluation_protocol": {
+    "side_pairing": [
+      "A",
+      "B"
+    ],
+    "smoke": {
+      "maps": [
+        "tiny"
+      ],
+      "seeds": [
+        0
+      ],
+      "games_per_checkpoint": 16,
+      "interpretation": "Integration/early learning only; insufficient for strength claims."
+    },
+    "standard": {
+      "maps": [
+        "tiny",
+        "DefaultSmall",
+        "DefaultMedium",
+        "DefaultLarge",
+        "closeup",
+        "knifefight",
+        "cheesefarm",
+        "wallsofparadis"
+      ],
+      "seeds": [
+        0,
+        2026
+      ],
+      "games_per_checkpoint": 256,
+      "interpretation": "Eight-opponent development suite, equal map/opponent weights, both seats. Improvement against fixed cp2 baseline."
+    },
+    "selection": "Freeze map and seed schedules across checkpoints; reserve an additional unseen-map suite for final claims. If evaluation maps are used for self-play, label these results in-distribution.",
+    "metrics": [
+      "wins/draws/losses by opponent and side",
+      "equal-weight mean over represented panel opponents with coverage shown",
+      "paired-map-seed bootstrap 95% interval for complete shared cells; descriptive per-opponent Wilson intervals",
+      "ending reason, rounds and terminal game points",
+      "crashes/timeouts/illegal actions recorded separately from completed games"
+    ],
+    "failure_policy": "Do not silently drop failures or count them as ordinary game losses. Publish completion rate and failure counts; report win rate on completed games with explicit denominator. A match forfeited under engine rules remains a game result, labelled forfeiture.",
+    "compute_mode": "Evaluate candidate and benchmarks under the same documented local engine settings. Record engine binary hash and patches; bytecode relaxation changes historical baselines."
+  },
+  "incumbent_checked_source_commit": "fc044c24c37d89d2581562e23439a2571bb2b300",
+  "retired_opponents": [
+    {
+      "id": "AdamTan12_Finals",
+      "from_suite": "field-twelve-v1",
+      "replacement": "thewaxmango_collegejunior",
+      "reason": "Repeated genuine uncaught GameActionException in ThrowOutsideCombat.throwAtWall when sensing an off-map adjacent square; independently reproduced after harness validation.",
+      "archive": "benchmarks/retired/AdamTan12_Finals/README.md"
+    }
+  ]
+}
