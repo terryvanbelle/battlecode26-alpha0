@@ -1,0 +1,954 @@
+{
+  "checkpoint": "checkpoint-0002.pt",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "equivalence": "All six original arrays byte-exact after replay player int8 is widened to original int64; derived replay values checked against terminal outcome.",
+  "format_version": 1,
+  "games": {
+    "iter-0001-game-000": {
+      "json_sha256": "f2886f45fd462a24d23c648da7c824b7ffd6858652c01513a1062233712f52f5",
+      "original_npz_sha256": "76f9c09a6f238ff763e5a8612f7610646fae1d22a783e11967d3b5c950daf4a0",
+      "replay_file": "game-5df4d686f6904f13a7d288a0dc268f4f.npz",
+      "replay_sha256": "5e5673d48b2bdd141d1e96cd2763e6bcae876811f692bcde7a01d41d8cd43a2a",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "7af4cddd62bb3478fc5275095bc3703fd4c0028293de53594395f09af4b8f667",
+          "shape": [
+            115,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "50bd292b7833f0c5e357c4ef85b7f847b7c3966ab9b62ab74fa5088e2da62995",
+          "shape": [
+            115,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "221844b56fd699ff0a441e699325b624fede5954f073ae621c3d9220e6fa0fea",
+          "shape": [
+            115,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "d84510459d78d1c5745daf9c1af488f5314dd8ca730ab65751fbbbc1d4f201af",
+          "shape": [
+            115
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "4e3443a94b0ba92b88b95a4ab7110308b6168e2c44342324a7a8f9230e8a9913",
+          "shape": [
+            115,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "90af7115de6cf6b4f2bd6d7ac48643eab31cd68cfb980ad7f08022b2d943ce7c",
+          "shape": [
+            115,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-001": {
+      "json_sha256": "975ddaa258b25e9851cc098c9f9d5100bef149b4a23cee3c376504d218da9a88",
+      "original_npz_sha256": "393a894c5151585fedfa1520764ad225fb972129ab40b9922498f1f4fc1a7227",
+      "replay_file": "game-95b5f07f20fe40b4a9a8b3e576b8c633.npz",
+      "replay_sha256": "bb5405e62593ed3d371425910679ededa8352f95d7881a93ca4d5fc06fcd9efb",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "e02012825775cc50e6bb6c36c01149fb48e59fe68b8025b25aaedf942502b121",
+          "shape": [
+            363,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "500f077bdd509db566f8fd87703bca3002090852df0012d71f23c7ce325167ea",
+          "shape": [
+            363,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "9258afb3b8c008ca196c7122101cc6f1845d2dad034282bb56807abc68030cd3",
+          "shape": [
+            363,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "462ba8789a3b62b1575d2fcf2e887e1ce463cbc3c90a77249aaf48b214ec9773",
+          "shape": [
+            363
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "f8dcab657a6b54de5101f1750c41094e5b5d8ce779b80648ef49b724202e3cae",
+          "shape": [
+            363,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "7c07edbc100b82ad9f63b4d0d7c98898a182002a3853e30341c73dfd0499b14b",
+          "shape": [
+            363,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-002": {
+      "json_sha256": "dd6a7362e9caf9afe769dc97c63f0fc89c8f869776ccdd1cec41e6c29382f4a8",
+      "original_npz_sha256": "5ed5a2fd860302c1cb3e54a5268b22eadf73557198ede0f69c2601d9e94a8084",
+      "replay_file": "game-62e69044eb444494b6f47db96f5b809c.npz",
+      "replay_sha256": "d3a9868783b13d5e8d4cb6def0636fd2855adc8a24565009d0f8768eded8a14a",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "09ff2077b3279c319719bac2b89e6352903dffa0c9ed72b1cd155eab2bb2ad07",
+          "shape": [
+            416,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "35152df502f315d01f583e667e65202b72207c4a9f1305364a8b10773d41f086",
+          "shape": [
+            416,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "c75b9b447f6043354e51c8ce344ea7f5f7f9d99b771625622a67bc60c4d1beb9",
+          "shape": [
+            416,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "cb8d933483c5720930b8c6360cfe18ff38552641c9aad5e211461598d0ab1c75",
+          "shape": [
+            416
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "f368a95234c2e3c3aeb02b7025a2258ca9919c28b0bfecf77bc7980cfd6a3bc8",
+          "shape": [
+            416,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "6880448d6ff53219d9285c4854019ae5fa56f5dd01ac84627466fa54c07a6434",
+          "shape": [
+            416,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-003": {
+      "json_sha256": "0f9cf64d1ef0f001ae146202ecb785d77f822a67db2c5c421acc1eee8477a0b7",
+      "original_npz_sha256": "49384e0f03edf47cb82d720c833f23b495c6b5fd14b7eee7fe29d7b9bd74376e",
+      "replay_file": "game-f863f71c73f14a1082e9eff82996f6c3.npz",
+      "replay_sha256": "91b3ddcba430da966248e7fe6a158c96d46cd00caea63369ea38757ad3188f5b",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "56b44a8c0d18e703baf700c7514aa297960da24e4fd7c74f697313107af0c2a9",
+          "shape": [
+            126,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "16e5d6db7e2c8a751a99b5803ce8bd066960e635d2311349b3501d715edc3713",
+          "shape": [
+            126,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "6d12930b9379acaa242a67df6f2b7456ecacdc4443f8080a883b55cd78d0624a",
+          "shape": [
+            126,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "f7b63df9bd566d5b782af855c89636cf6f1ad7da8177d3ac225b5c81cedc1c8d",
+          "shape": [
+            126
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "e5d86b115e89c00f34de14e84d00dd513c88d1a2a03cd8f127ee39737cc0af13",
+          "shape": [
+            126,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "a8fbf841b5eb96193640408abf7d48da14d63285a7e36bc1a6e503574da83bdd",
+          "shape": [
+            126,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-004": {
+      "json_sha256": "2b48a4acf3b2f54c564206f8b2238ae8834f6b2223d1aaa9003d6ab3cf8ec21b",
+      "original_npz_sha256": "a36394912961abeb557af47da3b816c92595a90c51c407ececbb79f1f1c06daf",
+      "replay_file": "game-e18b22dcffcc40df8588f7adc91826f6.npz",
+      "replay_sha256": "675e962a7b74dc651e4facf44d82305092a0bcdc45d526cbc16540686b9f1511",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "c8cd77beab13fc8395232c90993e0cbd913bdb3a62b6bbbc645a10fc8b2e0ba9",
+          "shape": [
+            75,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "475020ffe240110ef621e5877cac7dd5ec7033e575c7cdd4af9bfad74a99344c",
+          "shape": [
+            75,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "18957f1e0617c8cad188e044bf357aaa56d3f383bae0113282ab9c5ec79adcfa",
+          "shape": [
+            75,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "39294acfbc8f83d54ce7a6a64f8bea0a965b6a66cbadea75a86cb0c606bf7546",
+          "shape": [
+            75
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "16d9d0ce043d9b06813fa6d912edfef706cd54f97ae7e32eb23eaf735ae9d9bb",
+          "shape": [
+            75,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "27001cbf42d7717149a8e0d64298d86d5dbeaa921496903333acdb78d4f536f3",
+          "shape": [
+            75,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-005": {
+      "json_sha256": "bb65c16f74fa020b0a6cc04493c7d9640147424bde6b34c5decc4fa356efb1ca",
+      "original_npz_sha256": "226162b11aa7e746eae8fd1a3c365dc5d073026e5dc4253ce772f9940f9899e9",
+      "replay_file": "game-fe84a5b43b534fceb5585e345c54bc6f.npz",
+      "replay_sha256": "d147a5d66746a6d2f3276b558b37bee2aa7f00874052b21aeacea5597abbc87f",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "630402803aebd9efb4057b8a125d87e8de12ef551a4fe677a84dca6dedd79da7",
+          "shape": [
+            274,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "63d1b938a4dcd2a6dfd8c9b4785e5fc9c2f191e4e10fb9c4178dc8c64b5fdcc1",
+          "shape": [
+            274,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "b9774d3520d4bab92125744b62ea7360cb00e0e7e5f6d4ff38f0ff375cec539d",
+          "shape": [
+            274,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "a35ad2fc693af11fdaa2f438e3b47da18a99481653db171111aa6ef279464584",
+          "shape": [
+            274
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "6347ef0fda56a000b8a0fc510e97a079be5d3cdc9d7c5f0171625e9037a260c7",
+          "shape": [
+            274,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "eb491e4affbc0c2acdebad70497a3d46e41ec371dacf6d838e5a3a25ed212d76",
+          "shape": [
+            274,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-006": {
+      "json_sha256": "58ec289dd77296fd046d0f8e875dfc6dabd2279bbe41cd7d7f0d464e59a1b6c2",
+      "original_npz_sha256": "e2abb44538d74b3fd13456d752fc94d4923599e8730248cbc83a9b617a6bf82d",
+      "replay_file": "game-6c7f88753e3844fe82f2c4674c09a3b1.npz",
+      "replay_sha256": "332970a228d38347ee0970b5634804094367aec4cecd6acb7384f13825d0da2e",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "2e21ca72fec0af587ebdc3198e8e6c3f50b0c7a087fbe821f51c4a42f471c0e7",
+          "shape": [
+            482,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "482c592e842b81af69a857ed621c58cb4c577e8533ec7d9382d50aab9d451d93",
+          "shape": [
+            482,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "b20a542e48095b5a0575983ba27623b4f77a9a437ee7dcc2354cebc1cc051d5e",
+          "shape": [
+            482,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "5b14c7e8b6789024ef92ec0b0620853f25e0997c2cfecc53de9e58dab2352105",
+          "shape": [
+            482
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "5237a9b3024f2a985b99468517d53e3b4dd3ce418dcfc81a329c02adb70a48ed",
+          "shape": [
+            482,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "83a2801ac5a74a761767af4a9d44eb057601dd9b28620bfe785c64e69265af7a",
+          "shape": [
+            482,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0001-game-007": {
+      "json_sha256": "2c6a734648215fe8efd5bcd2cc88158665a05c6788b15b87c737381b994424dc",
+      "original_npz_sha256": "8fb5751183299bd2503aebb2cec0e7b4e0b87374e7f3fe7fe42ec45d9575253a",
+      "replay_file": "game-f9c71848850a453faa339be21149eabd.npz",
+      "replay_sha256": "ebc512bdd68031757680e6b2b494ed0143b0dd758c2fdce26e570347f32f83f5",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "d27ff12182b43705aca449faf969880a5750522751148c915aa2fb1dca1ed083",
+          "shape": [
+            97,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "09b26ab1e2008d97e3903ca08a144437ae2fc192dd170ff05d206f224a071075",
+          "shape": [
+            97,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "3a2b29b03fbf2a8548f40f8ae5ca7ca9b792d1339459e95c8cbbae0973ebe088",
+          "shape": [
+            97,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "d65fbb0ff5b10ea01bdf9dd8b3dcd2837ad2a3f2f3f87ecb0295aef7c9264bfe",
+          "shape": [
+            97
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "c4eaff26ea74410e12f9de734bd0f8489acfd5cb719ead0774726dfd010a039f",
+          "shape": [
+            97,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "f2f8b89eb26f87b9d61e4c563808011f9ed400b1e530093d800018281653dd8d",
+          "shape": [
+            97,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-000": {
+      "json_sha256": "9af1f5aaed3e1fe4187feceac908dc9f65082791607445eb288d73f00f970ae5",
+      "original_npz_sha256": "67a927f084d2a3e7d92dc7fb91637bfe9c1136d8ae339b751104dfd9568d4ee9",
+      "replay_file": "game-e51afe5e450c4510b66ebf491b8b7fb2.npz",
+      "replay_sha256": "059db2e4aa7ab9509946035903c5f41d903c9d46641dd0b89cbc72ca0ae361d0",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "904eefe987af29ea1f327fc22e3eaa309af5526fed0f01991297776e28682c31",
+          "shape": [
+            29,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "55ed3306de68b6a91d108ab22b3070bc012c43d13f0b0622356f7c375d6bd564",
+          "shape": [
+            29,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "828afa01885f910b16e0381d84b60e7d671c81564b3f7d544f7bab652013c28c",
+          "shape": [
+            29,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "dbc98745bb89574fe808968d7aafdc064cc3716ca2659f29141f428aa5be64c5",
+          "shape": [
+            29
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "419ae06e457f0a241cf9ad43fac36532917e364baebb28ebb1ec096281e3745f",
+          "shape": [
+            29,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "e7a3af9d203424c63f2d0529b0803a2ea8797a37104b7da16c4819d5c161a19c",
+          "shape": [
+            29,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-001": {
+      "json_sha256": "d832ac36a7e431ddab33788b2ac2119d69f6d1990a16a3151abb516146be289f",
+      "original_npz_sha256": "1994ffc99d735448743245bfdcf305ca1c70456ff6d21455625dff904a097bdf",
+      "replay_file": "game-ac258c4ee8ef4686bf1f1f6bfb1fdc47.npz",
+      "replay_sha256": "a899b476ea23ce14f7795b31090a40642234d1be958961830f5d39f6b1c08c94",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "a1326104bd3ba9b79b8fb4e9845eb105499ae6ca7463b8d52a809cb14d8aeed7",
+          "shape": [
+            155,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "9b80c685d4e20938395ded91a1350925174c338ba857e3ee4fd79a428550da63",
+          "shape": [
+            155,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "2724949898ef85cbf2512f571eb5870f525c782b945576a928ee78a21cc1b179",
+          "shape": [
+            155,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "be35dae855452c2ddbc5fb9264fd7325e2d0fa3392fdf5ef30ac94b9439e7532",
+          "shape": [
+            155
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "349a94bbf0aeed799611b1da8e6b3bae192d5f583ddbf0f90d0320aa36e3f746",
+          "shape": [
+            155,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "461b8d3df8fe3fed638145f8b6df7504a644334a761bf4a8c8c8e0dd1d0f6747",
+          "shape": [
+            155,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-002": {
+      "json_sha256": "131928a1e75ab597564b670aef2d12ae5b345042cfcee7467205eb2462ff41b7",
+      "original_npz_sha256": "ddcf4695880ddace8100b12b8bf4e698619faf8b6dfcb024ac38143ef8219242",
+      "replay_file": "game-c38b93018e994d04879d2dec20b775f1.npz",
+      "replay_sha256": "259e6a10754418691e370f06e8109954fcc83c016ce2213d70db4d04f28d0e55",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "99ed4d81d54ca3fe692731384452391048e6d489be966169e2c5f596ab417969",
+          "shape": [
+            391,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "3094cd0a0078eeff7aea1d64751fe578dbc63ded2beaa0e5c40d18135f7b4a88",
+          "shape": [
+            391,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "c0b3f38fcef7c794bfa6b645d47d53f1745efb69c7ed43e49e6d32d40725e565",
+          "shape": [
+            391,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "3ff22b46a9cb130ac3badf1d9192c1749fbaec9b99a70c905d1ab91583478009",
+          "shape": [
+            391
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "9b8e789ab24986aed508d4845c0b56da1a94d2c2dbf1da30657a0b60cc0f8231",
+          "shape": [
+            391,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "99379d98400a3e5842efc9ff0edc259d86855b2cd67e881a01e439dd09914f15",
+          "shape": [
+            391,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-003": {
+      "json_sha256": "062e2b8fe420fb0cfebac0cba2f75d6ec25380399cf9932983343972c1cc79bb",
+      "original_npz_sha256": "037b337bab0b082cb70fcbe7fe3a9847c3297de8fffee376c0c3d45ae21353ae",
+      "replay_file": "game-54d3fa47c4754312908ffd663f94d13e.npz",
+      "replay_sha256": "2fad12dac057b8077335c07b64ef0ccc20506884caa7293f2a964b622852edfb",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "8f492c633467e31f9c00317f93dd81b2c71f9ad9cf71195c0398a4e5a31c2d67",
+          "shape": [
+            249,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "c8eca240dbac5c4f39152dbbdffb8c3f4c23464e1fe729e357a4613ec6bf4651",
+          "shape": [
+            249,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "2b668ea3771397d5c746f898c21be06d7758539007b6e5d65cb997a8a8cc5a9b",
+          "shape": [
+            249,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "527f7dd4424a7c0f0f947e47fbe11cd7d293cdcb3cc80c9ba4f76d108493efab",
+          "shape": [
+            249
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "6d36ebcb944d8bc430c36f4be93fa07e821441f57ce44274001fd28505442fd5",
+          "shape": [
+            249,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "768f97207a639176e4c2000fa038f03d2ac5202e4ba6b2406beecec15ae953b2",
+          "shape": [
+            249,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-004": {
+      "json_sha256": "3ba02bc40a68e594cf33f4aa414bf175be10ad1847247ddb44462a94d2d49a61",
+      "original_npz_sha256": "4b1738dddc263afd1fe61f605ec00b2c46cdd333c53dcd25955046c7d6eaf03a",
+      "replay_file": "game-9284e8b182b64f6f8e13a89b1c55670a.npz",
+      "replay_sha256": "c94edd35daa06428d914a7be4ba5e198135c8668900b1dad26dd01923278bc7c",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "ad398aceb21de4d47030ac95d7bb47b67832822e9fa363bfc4f7ec1a49649800",
+          "shape": [
+            47,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "430e3efb6cfe282c513cf97353082ccf5bfa0f396d370630661d40636a032a36",
+          "shape": [
+            47,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "9a915d09bafa4fab29ac215d4f7d01ae0802e13547582806d7a44c89f02c0064",
+          "shape": [
+            47,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "26024828f474780106d3c5e7a267c74838b8114642515a6e94b209aa5ac7def7",
+          "shape": [
+            47
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "aa501b21e6047754f715d45525dc2c982336c94a4d826fef88977e7964140726",
+          "shape": [
+            47,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "1964442886ba7351a19ecd6109597d9e2d486144bfb9db1e316e0f15b7c49999",
+          "shape": [
+            47,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-005": {
+      "json_sha256": "07cfd8fc2ac7bf629366889c856e81fd29b559f5b64e3640c390f806b0f7fba0",
+      "original_npz_sha256": "c69e58ec316ecac95f0b393f4fb0d39929fdc726f126f498026ddaeb668b6533",
+      "replay_file": "game-ddbb4892d7ff4630b4dc2dbc16fc46cb.npz",
+      "replay_sha256": "d307a1020dbaff15a0d09e0556d387db59ed49394b3df99353261116c5be89e2",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "7c74d13c4f0a265067ff42e72538fcb26e9c094ba3fedc65a72ae5f55dbcde47",
+          "shape": [
+            346,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "39e2725db6a7f03d75e85210d07c6e17f9b71e2a63cdf998ece265a78a46222f",
+          "shape": [
+            346,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "b7777f360f04cc6e554aa940121fb56640ba366106ef77a5b7ecf74b04c791d1",
+          "shape": [
+            346,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "4f163dee14382975dd56f50a96dcf401d9a98d34e8be8e68ae17129d87c1811c",
+          "shape": [
+            346
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "c76a0f7810952200a106397fc9396d767f65511eda36c804184f9f717b2e8840",
+          "shape": [
+            346,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "634f7e9a87d0db885422666e1f2f37f71493e121c772d4ad69baf9d18d22ecb8",
+          "shape": [
+            346,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-006": {
+      "json_sha256": "5707dc3c8f31710e0ba57aecadf68e62a648c5b3e0a240d48cf2a0ae716fac33",
+      "original_npz_sha256": "2fb1f9ac688afa43cb1f199931a3b67db5f7e6731a76ef68d4f337ec65bd56f8",
+      "replay_file": "game-e6a7d820d87c4c8bbb9dfaa12b547af5.npz",
+      "replay_sha256": "3615788cecd8938beb9bc69738a413d007b9aab934a44601e504433ffc76e608",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "3af0d3f5fed2a3a26f88471bd32d6d477b114d052433a8722207b6fc425c34f7",
+          "shape": [
+            486,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "f0163e8b45bf45cda5e4f3e08db1a80733871d6c0c5172a4b33d4f5e6a6fe88e",
+          "shape": [
+            486,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "82e9c02f8419081d86396d87d0af9222fc342dceb69098f67e351dea7856ed94",
+          "shape": [
+            486,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "4783292b4734a2d5c866d05cdda5f2d2dca623e71d0f130a8216d957cf06a168",
+          "shape": [
+            486
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "1c1512d77d4a56cc19968f4895604c0170ea8ac177d8453686604b94f6ce7e8c",
+          "shape": [
+            486,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "ae1ea4851058985c03601c892ccf8f0f6bce8f5adeb14e1f661673ba21389ce5",
+          "shape": [
+            486,
+            64
+          ]
+        }
+      }
+    },
+    "iter-0002-game-007": {
+      "json_sha256": "a3ae05aec30048a89a725754644348209031c8e70488691183c801c3cc99fab2",
+      "original_npz_sha256": "406d959a2fdc4a0ac7e106b354966ed50dd66ad8630227ebd827ad802020f134",
+      "replay_file": "game-0f889b5b5f9944489342cf871d108d7e.npz",
+      "replay_sha256": "51f77bc7ae089be7174cbcfd3573deec2b3a4dd864eaec12d86d95c683d56996",
+      "source_arrays": {
+        "global_board": {
+          "dtype": "<f2",
+          "sha256": "fae66dda4f1b205b4e5a9029ff56b9deec0a276a41898deb538c4558abe65388",
+          "shape": [
+            100,
+            33,
+            60,
+            60
+          ]
+        },
+        "legal_mask": {
+          "dtype": "|b1",
+          "sha256": "06648e91927d0e495b4d45b204dd804a40c1d124b3ddc9cd9e8131a0b8cd245b",
+          "shape": [
+            100,
+            40
+          ]
+        },
+        "local": {
+          "dtype": "<f2",
+          "sha256": "8330ac9fb99dbbec9afd2ac7211491b16c42e7f3cb9b667a4f49dce7419b54a5",
+          "shape": [
+            100,
+            33,
+            17,
+            17
+          ]
+        },
+        "player": {
+          "dtype": "<i8",
+          "sha256": "88163244840eeecf6554c622bb0701919ca70a3ff3761c4204e33af20acbde61",
+          "shape": [
+            100
+          ]
+        },
+        "policy": {
+          "dtype": "<f4",
+          "sha256": "513b4e2d79e24eda9b0985aa6b044699fd1fb4f96daa21752aae80df9c792486",
+          "shape": [
+            100,
+            40
+          ]
+        },
+        "scalars": {
+          "dtype": "<f4",
+          "sha256": "d675751c441e778ba1e951b09eaaa3440cb943ef0043f915cbccb36cf979f7c6",
+          "shape": [
+            100,
+            64
+          ]
+        }
+      }
+    }
+  },
+  "replay_index_sha256": "0bb3e346638ee311de24c9cb7b157ab57abe0aa7d3a68d26587129fe3adc2fc4",
+  "replay_path": "replay/iteration-0002"
+}

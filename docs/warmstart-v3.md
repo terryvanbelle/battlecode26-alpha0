@@ -50,8 +50,8 @@ control, so a comparison between their final scores compares whole recipes. The
 checkpoint 0 versus checkpoint 1 comparison within this experiment isolates the
 effect of its completed MCTS training iteration under the same evaluation
 runtime. One development map and one seed cannot establish general strength.
-Neither a teacher fit nor a smoke score passes the standard and untouched
-holdout victory gates.
+Neither a teacher fit nor a smoke score passes the all-map standard and
+fresh-seed confirmation gates.
 
 ## Run, stop and resume
 
@@ -87,7 +87,7 @@ archive. It uses the same configuration and one-actor allocation:
 ```
 
 This second cycle can use the critic learned during the first cycle. The prior
-champion stays preserved. There is no automatic promotion, holdout evaluation or
+champion stays preserved. There is no automatic promotion, confirmation evaluation or
 change to neutral v2; the runner stops at the requested operational target.
 
 Seven targeted tests cover exact model import, empty replay/fresh optimizer,
@@ -121,8 +121,9 @@ project-owned sources, maps, notices and progress evidence under
 checksums. Redundant consumed game arrays and older replay generations are
 omitted with recorded hashes; local files remain intact. Six focused tests
 verify corruption rejection, locking and exact state recovery; an additional
-regression rejects dependency payloads. Restore at the original checkout path
-and run the archived hash-pinned bootstrap scripts as documented in `RESUME.md`.
+regression rejects dependency payloads. Verify archives in a separate staging
+directory before restoring missing run state, and provision matching local
+dependencies with the pinned bootstrap scripts.
 Downloaded benchmark sources, all compiled classes, vendor engine JARs, JDK
 files and the Python environment are excluded. The archive retains repository
 commits, source/runtime hashes and setup scripts to reproduce those local
@@ -135,3 +136,36 @@ Winning those league games therefore changes the positive-label proportion.
 Game-balanced replay does not balance wins, sides or opponent identities, and
 the network observes physical state rather than an explicit opponent identity.
 No active immutable configuration was changed for this observation.
+
+## Checkpoint 2, current gate and next research decision
+
+Checkpoint 2 also scored **20/24**, with no errors and no change in the four
+strong-opponent loss rounds or enemy king HP. Its verified recovery archive is
+`artifacts/warmstart-v3/iteration-002/resume.tar.gz` (410 files, 10,466,711 bytes;
+SHA-256 `6ad3af33a098e60825ada827d2711eb37388bba7ba4d0db319f21834ca26e760`).
+It restores 16 games, 3,751 search positions, optimizer and all RNG states exactly.
+
+**Preserve the current user-approved gate during recovery.** This immutable
+checkpoint-2 archive contains historical gate-v1/source snapshots. Do not
+extract it over current main or newer work. First verify every archived byte in
+staging; restore only an absent `runs/warmstart-v3/` and missing checksum-pinned
+initialization artifacts. The initialization artifact is already tracked.
+Preserve/merge current progress by evaluation identity instead of overwriting
+it. Keep current gate-v2 operational files and newer checkpoints intact. Use an
+isolated checkout if exact historical code reproduction is needed. The older
+archive's instruction to use a clean original-path checkout does not authorize
+downgrading the active gate.
+
+Current schema 2 uses all 74 maps for final standard and fresh-seed confirmation,
+with every one of the 888 opponent–map pairs required to pass independently.
+Routine development evaluations can use small subsets. The original four map
+exclusions remain excluded from gradient training through initialization ancestry.
+
+The [plateau investigation](warmstart-plateau.md) found that search reproduced
+its source policy's preferred action about 98–99% of the time. A bounded own-state
+probe completed 48 terminal continuations and 48 search comparisons in 7.5 minutes;
+larger/deeper search and a zero-critic control changed none of its eight preferred
+actions. One local retreat improved the terminal outcome, while another harmed
+it. The proposed next cycle tests complete root-action coverage with terminal
+rollouts and separate validation seeds. **No target-3 SGD run was launched**;
+checkpoint 2 and the prior champion remain preserved pending that measured test.

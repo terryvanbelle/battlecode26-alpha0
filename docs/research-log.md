@@ -222,3 +222,9 @@ It preserves exact model/optimizer/RNG and the iteration-4 replay generation.
 The [published pointer](../progress/campaign-v2/snapshot.json) uses the tested
 `campaign-checkpoints` branch fallback because release-asset upload credentials
 remain insufficient. No newer local run was overwritten.
+
+### Warmstart plateau diagnosis and next bounded experiment
+
+The [recorded target audit and counterfactual probe](warmstart-plateau.md) completed without changing training state. Across 16 own self-play games, search visit argmax matched its source policy on 99.20%/98.41% of sampled states. Eight reconstructed tactical roots produced 48 completed terminal continuations; 48 searches spanning depth/budget and zero-critic controls kept the original preferred action. A retreat improved both sampled continuations at one king root and worsened another baby root, supporting context-dependent action ranking rather than a blanket heuristic. These are diagnostic observations, not benchmark gains.
+
+The approved next review cycle is the precommitted `terminal-root-ranking-v4` mechanism test in that report: new recorded roots, all legal first actions, separate fixed selection/validation seeds, one actor and a two-hour resumable limit. It must meet its declared research decision rule before any subsequent rollout-guided SGD pilot. The recurring continuation now prioritizes implementing and running that versioned test; it does not blindly repeat the unchanged target-3 warmstart. Both existing runs and the original champion remain preserved. The maintenance-owned gate migration STOP was removed only after migration checks passed; no user stop marker was removed.

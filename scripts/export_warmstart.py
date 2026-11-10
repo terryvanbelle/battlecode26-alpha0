@@ -63,6 +63,7 @@ def payload_allowed(name, prior_directory):
 
 def dependency_requirements(resume):
     return {
+        "restore_policy": "Verify the full archive in staging. Preserve current user-approved gate/code and newer state; restore only an absent run and missing pinned initialization artifacts, and merge progress by identity. Historical source reproduction belongs in an isolated checkout.",
         "payload_policy": "No downloaded benchmark source, compiled classes, engine JARs or JDK files are bundled.",
         "bootstrap_command": "bash scripts/bootstrap.sh",
         "python_environment": "Recreate pinned packages from scripts/bootstrap.sh and recorded Torch/NumPy versions.",
@@ -336,8 +337,11 @@ def create_export(root=ROOT, iteration=1, *, runner_sha256=CURRENT_RUNNER_SHA256
                 if validated_resume(root, iteration, runner_sha256) != resume:
                     raise RuntimeError("published resume identity changed during export")
                 readme = (f"# Warmstart iteration {iteration} resume\n\n"
-                    "Verify resume.tar.gz against its sidecar SHA-256 and verify extracted file hashes against SNAPSHOT-MANIFEST.json.\n\n"
-                    f"Restore into a clean checkout at the original source root `{root}`. Archive paths are repository-relative. "
+                    "Verify resume.tar.gz against its sidecar SHA-256 and verify every extracted file against SNAPSHOT-MANIFEST.json in a separate staging directory.\n\n"
+                    "Never extract historical source/config snapshots over current main, a newer run, or the active user-approved victory gate. "
+                    f"At the original source root `{root}`, restore only an absent `{RUN}` directory and missing checksum-pinned initialization artifacts. "
+                    "Preserve and merge current progress by evaluation identity. Keep current operational gate/code files intact; exact historical reproduction requires an isolated checkout. "
+                    "Archive paths are repository-relative. "
                     "Plans and evidence retain absolute original paths; this exporter does not rebase them. "
                     "Run the archived hash-pinned bootstrap/setup/fetch scripts to provision Python/JDK/engine and rebuild bridge/benchmark classes; verify recorded runtime hashes. "
                     "Downloaded benchmark source, compiled classes, engine JARs and JDK files are not bundled. "

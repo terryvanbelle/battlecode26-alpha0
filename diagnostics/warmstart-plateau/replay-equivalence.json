@@ -1,0 +1,33 @@
+{
+  "audit_source_sha256": "3fa3097587485efef98afee2b4c4f478964582f70e9c574f48c7ec4f12866049",
+  "different_fields": [
+    "created_at",
+    "elapsed_seconds",
+    "game_provenance"
+  ],
+  "equal_fields": [
+    "checkpoint_policy_pairs",
+    "checkpoint_provenance",
+    "exact_target_groups",
+    "games",
+    "inference_groups",
+    "inference_weighting",
+    "input_manifest_sha256",
+    "iteration_totals",
+    "limitations",
+    "sample_method",
+    "sample_positions",
+    "sample_selection",
+    "sampled_games",
+    "scope",
+    "search_horizon_proxy",
+    "source_sha256",
+    "target_count_weighting"
+  ],
+  "games": 16,
+  "input_manifest_sha256": "b3549fc80ab9ac9d3541f3a408dd04175c16bcc1b6f1a38e3e067f24bfb2ed28",
+  "method": "Original versus forced pinned checkpoint-replay full audit; source arrays byte-equal after player dtype widening; missing-original route also covered by tests.test_plateau_audit.",
+  "original_report_sha256": "f2c300b81bb26c605a6a5a2d4e47fb2a18fd9906beb828519e93f74c08eb7f77",
+  "positions": 3751,
+  "replay_report_sha256": "37544763c7d064b5dd11e64811814b7c10d390ddf4d900012f747acb63c45bfc"
+}

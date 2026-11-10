@@ -1,0 +1,7 @@
+{
+  "files": {
+    "probe.py": "5d20163ee515e1cce03418e7bedffa7d760d8551453450c46c0c1677039cfae1",
+    "probe_zero_critic.py": "f37338d1263251c2f03a983433e70792a4eefce7d9d03f3abf1ea0ed6a8ea7c5"
+  },
+  "note": "Exact executed diagnostic sources. Later operational STOP guards in parent-directory scripts do not reinterpret these results."
+}
