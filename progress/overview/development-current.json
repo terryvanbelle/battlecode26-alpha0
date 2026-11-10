@@ -1,88 +1,115 @@
 {
-  "checkpoint_sha256": "not-yet-evaluated",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
   "source": "progress/development-v3/baseline",
-  "completed": 0,
+  "completed": 80,
   "expected": 256,
   "cells": [
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "tiny"
+      "map": "tiny",
+      "W": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "DefaultSmall"
+      "map": "DefaultSmall",
+      "W": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "DefaultMedium"
+      "map": "DefaultMedium",
+      "W": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "DefaultLarge"
+      "map": "DefaultLarge",
+      "W": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "closeup"
+      "map": "closeup",
+      "L": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "knifefight"
+      "map": "knifefight",
+      "W": 3,
+      "L": 1
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "cheesefarm"
+      "map": "cheesefarm",
+      "W": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
-      "map": "wallsofparadis"
+      "map": "wallsofparadis",
+      "W": 4
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "tiny"
+      "map": "tiny",
+      "W": 4
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "DefaultSmall"
+      "map": "DefaultSmall",
+      "L": 2,
+      "W": 2
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "DefaultMedium"
+      "map": "DefaultMedium",
+      "L": 2,
+      "W": 2
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "DefaultLarge"
+      "map": "DefaultLarge",
+      "L": 3,
+      "W": 1
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "closeup"
+      "map": "closeup",
+      "L": 4
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "knifefight"
+      "map": "knifefight",
+      "L": 3,
+      "W": 1
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "cheesefarm"
+      "map": "cheesefarm",
+      "W": 4
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "wallsofparadis"
+      "map": "wallsofparadis",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "tiny"
+      "map": "tiny",
+      "W": 4
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultSmall"
+      "map": "DefaultSmall",
+      "W": 3,
+      "L": 1
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultMedium"
+      "map": "DefaultMedium",
+      "W": 4
     },
     {
       "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultLarge"
+      "map": "DefaultLarge",
+      "W": 3,
+      "L": 1
     },
     {
       "opponent": "HugoIngelsson_Xzibit",

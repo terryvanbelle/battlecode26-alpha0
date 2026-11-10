@@ -5,7 +5,7 @@
 <!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
-**0/256 games complete.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Baseline evaluation pending. [Dashboard data](progress/overview/development-current.json).
+**80/256 games complete.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `20d9e8133490`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v3/baseline/evaluations.jsonl).
 <!-- CURRENT_BENCHMARK_END -->
 
 [Active benchmark and improvement rules](docs/development-benchmarks-v3.md) · [Benchmark configuration](configs/benchmarks-development-v3.json) · [Latest completed game research](docs/terminal-v6-results.md)
