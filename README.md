@@ -1,5 +1,22 @@
 # Battlecode 2026 Alpha0
 
+## Benchmark performance over time
+
+![Win rate against every benchmark bot over time](progress/overview/benchmark-history.png)
+
+**Best measured smoke result: 20/24 wins (83.3%).** Each column above tests all 12 bots on `tiny`, seed 0, in both seats. The lower panel shows each opponent, including **vibe26b_zdb**, separately. Experiment boundaries distinguish controller changes, initialization and subsequent learning. This small-map result is **not** an all-map strength claim.
+
+[Chart data and interpretation](progress/overview/README.md) · [Partial all-map zdb head-to-head](progress/zdb-allmaps-cp2/README.md)
+
+| Results to inspect | What they contain |
+|---|---|
+| [Benchmark history](progress/overview/README.md) | One overview of all complete smoke panels |
+| [Warmstart / MCTS](progress/warmstart-v3/README.md) | Current measured champion, learning curves and opponent results |
+| [Latest completed game experiment: V6](docs/terminal-v6-results.md) | Controlled head training, validation, all-bot evaluation and audit |
+| [Neutral RL control](progress/campaign-v2/README.md) | Separate baseline experiment |
+| [Design](DESIGN.md) | Architecture, observations, training and evaluation decisions |
+
+
 Search-guided self-play in MIT Battlecode 2026's **official Java engine 1.2.6**. This is an initial CPU research experiment: an AlphaZero-style policy/value network, PUCT search, terminal game outcomes, replay training, and a frozen **12-bot panel**: ten external competitors from `battlecode26b-vibe`'s downloaded pool, the official example player, and that project's current accepted champion.
 
 The active v2 experiment uses an **87,973-parameter dual-scale policy/value network**, 40 turn-level macros, and privileged local plus full-map observations. Search guides self-play; evaluation uses the greedy network. It is **not tournament compatible**. The original 17-action experiment remains available for reproducibility.
@@ -10,16 +27,13 @@ The active v2 experiment uses an **87,973-parameter dual-scale policy/value netw
 
 The strongest measured initialization so far wins **20/24 smoke games**: [winner-only own-teacher prior](progress/bootstrap-v3-winners/README.md). It beats ten opponents in both seats on `tiny`, but still loses to `bestsofar` and `basic51`. Its first two [search-guided checkpoints](progress/warmstart-v3/README.md) also scored **20/24**, so these measurements have not shown improvement on that prior. The warmstart experiment and neutral v2 control have separate checkpoints and progress records; consult their status files for current execution state.
 
-The completed [terminal root-ranking experiment](docs/root-ranking-v4.md) passed its precommitted mechanism rule: 418 valid continuations, eight roots, and a mean paired validation advantage of **0.21875** over shallow PUCT. Its [graphs and audited evidence](progress/root-ranking-v4/README.md) separate selection from independent validation. No weights changed and no benchmark games were played. The [policy-head learning pilot](docs/terminal-target-head-v5.md) stopped at its preregistered coverage check: 20 complete source games supplied 24 of 32 required roots, with all eight missing slots on `closeup`. [The coverage evidence and graphs](progress/terminal-target-head-v5/README.md) preserve this no-SGD result; the 20/24 benchmark score above remains unchanged. The [completed v6 pilot](docs/terminal-v6-results.md) filled all required inputs, ran 1,458 terminal target games, trained both heads and completed 72 fresh benchmark games. Both learned heads still scored **20/24**, with zero validation advantage. [Audited results and learning curves](progress/terminal-target-head-v6/README.md) preserve the negative result. The next experiment isolates fitting budget from prior-preservation pressure on the existing training data.
+The completed [terminal root-ranking experiment](docs/root-ranking-v4.md) passed its precommitted mechanism rule: 418 valid continuations, eight roots, and a mean paired validation advantage of **0.21875** over shallow PUCT. Its [graphs and audited evidence](progress/root-ranking-v4/README.md) separate selection from independent validation. No weights changed and no benchmark games were played. The [policy-head learning pilot](docs/terminal-target-head-v5.md) stopped at its preregistered coverage check: 20 complete source games supplied 24 of 32 required roots, with all eight missing slots on `closeup`. [The coverage evidence and graphs](progress/terminal-target-head-v5/README.md) preserve this no-SGD result; the 20/24 benchmark score above remains unchanged. The [completed v6 pilot](docs/terminal-v6-results.md) filled all required inputs, ran 1,458 terminal target games, trained both heads and completed 72 fresh benchmark games. Both learned heads still scored **20/24**, with zero validation advantage. [Audited results and learning curves](progress/terminal-target-head-v6/README.md) preserve the negative result. The completed [v7 training-only diagnostic](docs/cached-head-constraint-v7.md) fitted all 32 selected actions at 2,048 updates with anchoring retained. Its six fixed snapshots establish fitting-budget evidence, not stronger play. Fresh-data transfer research is being reviewed next.
 
 The goal is one frozen learned checkpoint that beats **each of the twelve opponents on every one of the 74 available maps**. Schema 2 of [`configs/victory_gate.json`](configs/victory_gate.json) requires all **888 opponent–map pairs** to score at least 60%, with at least 50% in each seat, independently in **3,552 standard games** and **7,104 fresh-seed confirmation games**. Scores cannot be pooled across maps, opponents or stages to rescue a failure. Both stages use the complete hash-pinned map inventory. No checkpoint has passed this gate.
 
 Most evaluations use cheap small map subsets. The campaign automatically opens the expensive standard stage only after a complete smoke evaluation scores at least 50% against **every** opponent; an explicit periodic research review can also schedule an occasional all-map check. That screen is not qualification: the prior and its 20/24 checkpoints still fail it against two opponents. Confirmation locks one candidate per gate version; a failed confirmation consumes its four-seed set. A later attempt needs a new version and four unused seeds across all maps. `Stash`, `Hike`, `heart` and `ratsareants` remain excluded from gradient training, while all benchmark trajectories remain evaluation-only. See the [full protocol](docs/all-maps-victory.md).
 
-![Warmstart benchmark progress and completion counts](progress/warmstart-v3/evaluation.png)
-![Frozen-checkpoint terminal ranking: selection and separate validation](progress/root-ranking-v4/comparison.png)
-
-The second figure is a search-mechanism diagnostic, not a benchmark score. The [neutral control graphs](progress/campaign-v2/README.md) and all earlier experiments remain available separately.
+Detailed [search-mechanism graphs](progress/root-ranking-v4/README.md) and [neutral control graphs](progress/campaign-v2/README.md) remain available separately.
 
 ```bash
 bash scripts/bootstrap.sh
