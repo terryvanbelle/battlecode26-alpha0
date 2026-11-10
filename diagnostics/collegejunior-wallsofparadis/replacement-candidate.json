@@ -1,0 +1,269 @@
+{
+  "id": "AdamTan12_Icarus",
+  "package": "Icarus",
+  "path": "benchmarks/bots/AdamTan12_Icarus",
+  "entrypoint": "Icarus.RobotPlayer",
+  "role": "external",
+  "source_repository": "https://github.com/AdamTan12/BattleCode2026",
+  "source_commit": "91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+  "source_commit_date": "2026-01-29T04:12:59-08:00",
+  "source_path": "src/Icarus",
+  "archive_url": "https://codeload.github.com/AdamTan12/BattleCode2026/tar.gz/91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+  "stratum": "Nearest-rated available distinct-author replacement candidate; qualification pending",
+  "java_tree_sha256": "a455477e0b8aecb87f49aa2b1bcf4d357503dade4dbce4840a03f163ecd598d7",
+  "files": [
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/AttackKing.java",
+      "upstream_path": "src/Icarus/Actions/AttackKing.java",
+      "sha256": "1f43521be0840074160963a4cfb55388ef56285ac240fd2a830fb01e833cfba6"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Cat.java",
+      "upstream_path": "src/Icarus/Actions/Cat.java",
+      "sha256": "8e53a4c8996973eb40d2f8c0838584b676b1a32a93d63c85a1fd2d348a74ecf2"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Cheese.java",
+      "upstream_path": "src/Icarus/Actions/Cheese.java",
+      "sha256": "2d9ab0fab1d12dc979834dd41c5158d1c96b77b6a4c860e208273165dce565f4"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Deliver.java",
+      "upstream_path": "src/Icarus/Actions/Deliver.java",
+      "sha256": "aa1578ae104d0948dbc7696504649ac4813fe9933bb16463a5accc0c64ec72f8"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/MergeKing.java",
+      "upstream_path": "src/Icarus/Actions/MergeKing.java",
+      "sha256": "362f86222d73d11c1555cf453fcf9af0e29abc5c29e19c17937a16ff33d4c249"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Save.java",
+      "upstream_path": "src/Icarus/Actions/Save.java",
+      "sha256": "08ff8abbcc2082419d417516fc6b89e1275199538064ada1323813805c0cec2d"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Squeak.java",
+      "upstream_path": "src/Icarus/Actions/Squeak.java",
+      "sha256": "06bcd872cfd1317797216e6854b329f4d21fc8d0f5e519835f54bff8a0bbe3df"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Actions/ThrowOutsideCombat.java",
+      "upstream_path": "src/Icarus/Actions/ThrowOutsideCombat.java",
+      "sha256": "d63029a3f0c91687ffd0707190e4206a363937a41e8b0862d4b76d8795552068"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Bite.java",
+      "upstream_path": "src/Icarus/Codegen/Generated/Bite.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Carry.java",
+      "upstream_path": "src/Icarus/Codegen/Generated/Carry.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Fight.java",
+      "upstream_path": "src/Icarus/Codegen/Generated/Fight.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Throw.java",
+      "upstream_path": "src/Icarus/Codegen/Generated/Throw.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Trap.java",
+      "upstream_path": "src/Icarus/Codegen/Generated/Trap.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/DEBUG/debug.java",
+      "upstream_path": "src/Icarus/DEBUG/debug.java",
+      "sha256": "8335fe5e0313c9fa84c29324111cf4bce227f87543c4aea28a3d5e510778483f"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/DataStructures/Gain.java",
+      "upstream_path": "src/Icarus/DataStructures/Gain.java",
+      "sha256": "af0ab56620434c7e8bcff987b02476ee111c7f993078b93e8775455270f9bb7e"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BellmanFordCheeseNavigator.java",
+      "upstream_path": "src/Icarus/Helpers/BellmanFordCheeseNavigator.java",
+      "sha256": "32a1bea67899d83ace0e8e4382ab0525ca4205553c38328e6dc419e9a2f1d6c1"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BellmanFordNavigator.java",
+      "upstream_path": "src/Icarus/Helpers/BellmanFordNavigator.java",
+      "sha256": "74d66b816948cde08dd920d80e817fb2f3557217259b9422a1ea0c2d553c0394"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BugNavigator.java",
+      "upstream_path": "src/Icarus/Helpers/BugNavigator.java",
+      "sha256": "f464cac670f8499424c430837d0c8ca4220aa013343fa4678eef47a4be7e134c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/ClosestUnseenEnemy.java",
+      "upstream_path": "src/Icarus/Helpers/ClosestUnseenEnemy.java",
+      "sha256": "ec976c36f089c9ea91f2e66f63ca2d9b4f9e91c31ab84b8b2e3f7d289df2788b"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Comms.java",
+      "upstream_path": "src/Icarus/Helpers/Comms.java",
+      "sha256": "afaaf31bd9c0e5f76e23f40b285b2c532b9404ed6630a45f1d5104def1bff142"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Constants.java",
+      "upstream_path": "src/Icarus/Helpers/Constants.java",
+      "sha256": "59bf30e9c98c7c5bf20b6c5b43c1d860667f7f8ee489d712d5a59d9c362fce3d"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Explore.java",
+      "upstream_path": "src/Icarus/Helpers/Explore.java",
+      "sha256": "d0716db45d5b5a7364a52d9593c55adbbfa86b63c5edbbac78f04de2b13999e0"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Mine.java",
+      "upstream_path": "src/Icarus/Helpers/Mine.java",
+      "sha256": "8465c954fd63e41d1bca00946a5bdb6535b422d8bc1682fed5211620711172cf"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Nav.java",
+      "upstream_path": "src/Icarus/Helpers/Nav.java",
+      "sha256": "98a463746d005da3563b2ca2c7ff77df9434111400805e4984d14310d49a5a26"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Target.java",
+      "upstream_path": "src/Icarus/Helpers/Target.java",
+      "sha256": "271ad431d159cc26ae788f28b74072953b77b51ff72802ff8b931a5f9674d397"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Vision.java",
+      "upstream_path": "src/Icarus/Helpers/Vision.java",
+      "sha256": "8e51d42d4737fe3ad168f434547d583a3c8068e5ef2ace9861342665a83a10c3"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Managers/Global.java",
+      "upstream_path": "src/Icarus/Managers/Global.java",
+      "sha256": "4a80a164f1994c1ac7e701f48cec6b77804c78421080554872cd5a9e40c427e6"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Managers/MapData.java",
+      "upstream_path": "src/Icarus/Managers/MapData.java",
+      "sha256": "11b55174ba787d1ad86a3ad225870f4b8b32d582e8d865a91060cb66480972f2"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Managers/VisionManager.java",
+      "upstream_path": "src/Icarus/Managers/VisionManager.java",
+      "sha256": "e149335c2784bd89c89debde2ba081da3ae7301dd927be6413eb18dc14bbda08"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Bite.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Bite.java",
+      "sha256": "076084e896a6e13ba1e3489709bfa6943f82d1568916c87024c609fa6b72cc06"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Carry.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Carry.java",
+      "sha256": "670aac9d9643f2c41983fafc882d34171c6533fec614a47efe49696ad25bfe2c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Decision.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Decision.java",
+      "sha256": "c9a0b938ce4901c254391f0d42d7bd0290de03036e299c4f5f9a9d73d15f1d9f"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Fight.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Fight.java",
+      "sha256": "304e3ce2c0d3990cf9880da326d07d7eab48ee84e97e28e3a6532b1ed3d34a36"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Throw.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Throw.java",
+      "sha256": "c6ea1ff6ad00d4baeb1bf1bf96acc84f1ac3732d24f8a7085913859e747b7149"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Trap.java",
+      "upstream_path": "src/Icarus/Micro/Attack/Trap.java",
+      "sha256": "b90ba27121a3477277247ea3ebb29949bc6189d1882bb9ae37db3d657a0a4613"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Micro/MicroBabyManager.java",
+      "upstream_path": "src/Icarus/Micro/MicroBabyManager.java",
+      "sha256": "e9981ec70f9f712face54232c7ea97e8460c77ca39fbd5bbe63efc6b3ce007df"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Rat.java",
+      "upstream_path": "src/Icarus/Rat.java",
+      "sha256": "51958f4e349ec001782957ccd478658e5de87aa754f1205c874b7c1f7629d6d0"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/CheeseMove.java",
+      "upstream_path": "src/Icarus/RatKing/CheeseMove.java",
+      "sha256": "eb40213f73d0eeed2f35db87bb0de2bc221ba9f53cd33069e8afdc47b5040591"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/Escape.java",
+      "upstream_path": "src/Icarus/RatKing/Escape.java",
+      "sha256": "d466a6b882904090cac483b0825f0c30fcd89dc0ad2587a2c025bc3b1b228eb5"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/KingManager.java",
+      "upstream_path": "src/Icarus/RatKing/KingManager.java",
+      "sha256": "5a020e2e1a16b9aa418d622fb8e0033011aba826ab8f2c8aad983cc1ce0030d8"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/Spawn.java",
+      "upstream_path": "src/Icarus/RatKing/Spawn.java",
+      "sha256": "cfd3f0eacc91994618d2ee68607aacf2dac3cfc821794be1ae6abfbc1f80ee25"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Rats/BabyRat.java",
+      "upstream_path": "src/Icarus/Rats/BabyRat.java",
+      "sha256": "4e5f79bc2b1da7c83e11f8a71f62251884e14e767646c90c7d2569f5767867d6"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Rats/RatKing.java",
+      "upstream_path": "src/Icarus/Rats/RatKing.java",
+      "sha256": "1cb4aaefe17de4bba5ee2f525b3cb8ea2abca2878fc49d0de1812ecc8babc3bb"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RobotPlayer.java",
+      "upstream_path": "src/Icarus/RobotPlayer.java",
+      "sha256": "63fd6ae7987d0112fe2040dcef4f6cc87bdef8feffb44d6131c8965c230256e0"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/RunRat.java",
+      "upstream_path": "src/Icarus/RunRat.java",
+      "sha256": "e44693f8ceea38a2510a008f7841fe9499336c41b3534ba066f6971586041c1f"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Utils/Calc.java",
+      "upstream_path": "src/Icarus/Utils/Calc.java",
+      "sha256": "55a0a3f6c13077eb248505aaaa9cf25b0e20976a584d63beadcb78b46d0a1229"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Utils/Encoder.java",
+      "upstream_path": "src/Icarus/Utils/Encoder.java",
+      "sha256": "68857260ff315510dddb460ea11656c70ce6c8cc7ac04021efe7d0ed67cd596a"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Icarus/Utils/RNG.java",
+      "upstream_path": "src/Icarus/Utils/RNG.java",
+      "sha256": "d9af6840fef2642727312d34a2509b0e0cc76d19ec8d0a78b16055c28de07242"
+    }
+  ],
+  "license": {
+    "source_path": "LICENSE",
+    "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+  },
+  "historical_rating": {
+    "elo": 1745.9,
+    "standard_error": 6.6,
+    "games": 3021,
+    "expected_field_score": 0.6496
+  },
+  "validation": {
+    "status": "pending full eight-map crash qualification"
+  }
+}
