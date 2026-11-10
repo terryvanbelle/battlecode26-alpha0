@@ -1,0 +1,11 @@
+{
+  "archive": "campaign-state-20261110T042319076016Z-b13fee70a339.tar.gz",
+  "archive_sha256": "b13fee70a33962fcf338c0c5d399fb31f1ae318dcaee7123da31f804c5d2c8a9",
+  "games_total": 32,
+  "iteration": 4,
+  "live_run_modified": false,
+  "model_optimizer_rng": "exact",
+  "replay": "replay/iteration-0004",
+  "restore": "restored",
+  "verified": true
+}

@@ -24,6 +24,42 @@ class ProgressTest(unittest.TestCase):
         self.assertAlmostEqual(lo, 0)
         self.assertAlmostEqual(hi, 0.6576197725)
 
+    def test_wilson_endpoints_never_produce_negative_error_lengths(self):
+        # n=14 and zero wins reproduced the real campaign plotting crash.
+        for n in (1, 2, 14, 16, 296, 592, 3552):
+            self.assertEqual(report.wilson(0, n)[0], 0.0)
+            self.assertEqual(report.wilson(n, n)[1], 1.0)
+
+    def test_stages_and_gate_configurations_remain_separate_evidence(self):
+        rows = []
+        for stage, config in (('smoke', 'old'), ('standard', 'old'),
+                              ('field-twelve-v2-all-maps-v2:standard', 'new'),
+                              ('field-twelve-v2-all-maps-v2:confirmation', 'new')):
+            for side in ('A', 'B'):
+                rows.append(dict(row(side=side), stage=stage, evaluation_config_sha256=config,
+                                 checkpoint_sha256='same-checkpoint'))
+        _, cleaned, _ = report.clean_rows([], rows + [dict(rows[-1])])
+        self.assertEqual(len(cleaned), 8)
+        groups = report.summarize(cleaned, ['weak'])
+        self.assertEqual(len(groups), 4)
+        self.assertTrue(all(group['completed'] == 2 for group in groups))
+        self.assertTrue(all(group['paired']['cells'] == 1 for group in groups))
+        old_identity = dict(rows[0], evaluation_config_sha256='different')
+        _, cleaned, _ = report.clean_rows([], rows + [old_identity])
+        self.assertEqual(len(report.summarize(cleaned, ['weak'])), 5)
+        unbound = dict(row(), stage='standard')
+        bound = dict(unbound, identity={'evaluation_config': {'all_map_gate': {'gate_id': 'current'}}})
+        _, cleaned, _ = report.clean_rows([], [unbound, bound])
+        self.assertEqual(len(report.summarize(cleaned, ['weak'])), 2)
+
+    def test_legacy_and_current_identity_are_not_pooled(self):
+        legacy = row()
+        current = dict(legacy, stage='smoke', evaluation_config_sha256='versioned',
+                       panel_fingerprint_sha256='panel')
+        _, cleaned, _ = report.clean_rows([], [legacy, current])
+        self.assertEqual(len(cleaned), 2)
+        self.assertEqual(len(report.summarize(cleaned, ['weak'])), 2)
+
     def test_errors_do_not_become_wins_or_ordinary_losses(self):
         rows = [row(score=1), row(score=0, status='error', side='B')]
         group = report.summarize(rows, ['weak', 'strong'])[0]
@@ -115,6 +151,14 @@ class ProgressTest(unittest.TestCase):
             path = Path(directory)
             manifest = path / 'manifest.json'
             manifest.write_text(json.dumps({'bots': [{'id': 'weak'}]}))
+            # Exercise the observed zero-score Wilson rendering failure and
+            # independent stage series in temporary test-only measurements.
+            evaluations = [dict(row(score=0, side='A' if i % 2 == 0 else 'B'), seed=i // 2,
+                                stage='standard', evaluation_config_sha256='test-standard',
+                                started_at='2026-11-10T04:06:00+00:00') for i in range(14)]
+            evaluations.append(dict(row(), stage='smoke', evaluation_config_sha256='test-smoke',
+                                    started_at='2026-11-10T03:50:00+00:00'))
+            (path / 'evaluations.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in evaluations))
             log = path / 'training.jsonl'
             log.write_text(json.dumps(dict(iteration=1, value_loss=0.8)) + '\n')
             result = report.generate(path, manifest)
@@ -134,6 +178,11 @@ class ProgressTest(unittest.TestCase):
             self.assertIn('](learning-health.png)', text)
             self.assertIn(f'--progress-dir {path}', text)
             self.assertIn(f'--manifest {manifest}', text)
+            self.assertIn('Evaluation series: `standard [test-sta]`', text)
+            self.assertIn('do not establish the all-map victory gate', text)
+            self.assertEqual(result['evaluation_cells'], 15)
+            self.assertEqual(result['evaluation_groups'], 2)
+            self.assertEqual(result['checkpoints'], 1)
 
 
 if __name__ == '__main__':

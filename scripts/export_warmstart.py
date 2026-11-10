@@ -25,10 +25,19 @@ RUN = "runs/warmstart-v3"
 PROGRESS = "progress/warmstart-v3"
 MANIFEST = "SNAPSHOT-MANIFEST.json"
 LAUNCH_RUNNER_SHA256 = "ceb84913cdc5e6a323d6ae7b1b5d07f015624cf478c9203a1ad5f46fba8e3762"
+CURRENT_RUNNER_SHA256 = "926960741d2a99a43bd9252e6376c7508d507812e220d7d853ddd3cdcf1c2428"
+RUNNER_OPERATIONAL_AMENDMENTS = [{
+    "id": "all-map-victory-gate-v2",
+    "previous_sha256": LAUNCH_RUNNER_SHA256,
+    "runner_sha256": CURRENT_RUNNER_SHA256,
+    "reason": "User expanded evaluation to all frozen maps; gradient exclusions now come from training_excluded_maps, with legacy gate-v1 fallback.",
+    "scope": "Operational gate parsing and status terminology only; learner, engine, inference, model weights, teacher lineage and immutable training configuration are unchanged.",
+}]
 SOURCE_FILES = ("scripts/run_warmstart_experiment.py", "scripts/export_warmstart.py",
                 "scripts/setup_engine.py", "scripts/bootstrap.sh", "scripts/fetch_benchmarks.py",
                 "scripts/plot_progress.py", "configs/warmstart-v3.json", "configs/benchmarks.json",
-                "configs/victory_gate.json", "pyproject.toml", "LICENSE", "THIRD_PARTY.md")
+                "configs/victory_gate.json", "configs/archive/victory_gate_v1.json",
+                "pyproject.toml", "LICENSE", "THIRD_PARTY.md")
 RUN_SUFFIXES = {".json", ".jsonl", ".pt", ".npz", ".log"}
 PROGRESS_SUFFIXES = {".json", ".jsonl", ".csv", ".png", ".svg", ".md", ".txt", ".log"}
 
@@ -160,7 +169,7 @@ def validated_resume(root, iteration, runner_sha256):
         raise ValueError("baseline/trained smoke report identities differ")
     runner = checked_path(root, "scripts/run_warmstart_experiment.py")
     if sha256(runner) != runner_sha256:
-        raise ValueError("runner source differs from the recorded original launch source")
+        raise ValueError("runner source differs from the approved operational runner source")
     replay_path = payload["replay_path"]
     if replay_path != f"replay/iteration-{iteration:04d}":
         raise ValueError("checkpoint replay generation differs from its iteration")
@@ -209,7 +218,9 @@ def validated_resume(root, iteration, runner_sha256):
     return {"iteration": iteration, "checkpoint_sha256": checkpoint_hash, "replay_path": replay_path,
             "replay_index_sha256": sha256(index_path), "replay_games": len(index["games"]),
             "replay_positions": index["positions"], "config_sha256": fingerprint(config),
-            "initialization": initial, "original_runner_sha256": runner_sha256,
+            "initialization": initial, "original_runner_sha256": LAUNCH_RUNNER_SHA256,
+            "exported_runner_sha256": runner_sha256,
+            "runner_operational_amendments": RUNNER_OPERATIONAL_AMENDMENTS if runner_sha256 == CURRENT_RUNNER_SHA256 else [],
             "training_runtime": runtime}
 
 
@@ -280,7 +291,7 @@ def git_identity(root):
     return {"commit": commit, "worktree_dirty": bool(dirty.strip())}
 
 
-def create_export(root=ROOT, iteration=1, *, runner_sha256=LAUNCH_RUNNER_SHA256):
+def create_export(root=ROOT, iteration=1, *, runner_sha256=CURRENT_RUNNER_SHA256):
     root = Path(root).resolve()
     if type(iteration) is not int or iteration < 1:
         raise ValueError("export iteration must be a positive integer")

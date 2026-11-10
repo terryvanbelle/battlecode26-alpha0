@@ -1,0 +1,314 @@
+{
+  "checkpoint_sha256": "1f04b9526c36d2f165c5badee24e7bf6533e341481fa667201eff9fcf17267bd",
+  "completed": 78,
+  "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+  "expected": 192,
+  "full_panel_complete": false,
+  "iteration": 4,
+  "opponents": {
+    "CS50Crab_rapierV1": {
+      "completed": 16,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 16,
+      "mean_score": 0.0,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "Camleaf_mk1": {
+      "completed": 16,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 8,
+      "mean_score": 0.5,
+      "passed": false,
+      "score_sum": 8.0,
+      "sides": {
+        "A": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 0.5,
+          "score_sum": 4.0
+        },
+        "B": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 0.5,
+          "score_sum": 4.0
+        }
+      },
+      "wins": 8
+    },
+    "HugoIngelsson_Xzibit": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "IvanGeffner_basic51": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "Krak9n_robot": {
+      "completed": 16,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": 1.0,
+      "passed": true,
+      "score_sum": 16.0,
+      "sides": {
+        "A": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 1.0,
+          "score_sum": 8.0
+        },
+        "B": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 1.0,
+          "score_sum": 8.0
+        }
+      },
+      "wins": 16
+    },
+    "abcdezyxwv_bestsofar": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "bc26-example": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "seru9_TOTAL_AGGRO": {
+      "completed": 16,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": 1.0,
+      "passed": true,
+      "score_sum": 16.0,
+      "sides": {
+        "A": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 1.0,
+          "score_sum": 8.0
+        },
+        "B": {
+          "completed": 8,
+          "expected": 8,
+          "mean_score": 1.0,
+          "score_sum": 8.0
+        }
+      },
+      "wins": 16
+    },
+    "spsquared_TSPAARK_QUALS": {
+      "completed": 14,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 14,
+      "mean_score": 0.0,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 7,
+          "expected": 8,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 7,
+          "expected": 8,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "thewaxmango_collegejunior": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "uravt_Version41": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "vibe26b_zdb": {
+      "completed": 0,
+      "draws": 0,
+      "errors": 0,
+      "expected": 16,
+      "losses": 0,
+      "mean_score": null,
+      "passed": false,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 0,
+          "expected": 8,
+          "mean_score": null,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    }
+  },
+  "passed": false,
+  "stage": "standard",
+  "suite": "victory_gate",
+  "unresolved_errors": 0
+}

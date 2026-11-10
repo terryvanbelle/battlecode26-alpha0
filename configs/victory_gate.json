@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "gate_id": "field-twelve-v2-victory-v1",
+  "schema_version": 2,
+  "gate_id": "field-twelve-v2-all-maps-v2",
   "benchmark_suite_id": "field-twelve-v2",
   "panel_fingerprint_sha256": "f18d20f65e086a216c53613e8aaf1de6b714c0a5cea8c1ffcf5505ce72c3a43d",
   "panel_fingerprint_definition": "SHA256 of UTF-8 compact sorted-key JSON of frozen_opponents sorted by id; entries contain only id,source_commit,java_tree_sha256.",
@@ -67,7 +67,7 @@
     }
   ],
   "required_opponents": 12,
-  "purpose": "Empirical all-opponent victory gate, not a claim of statistical proof or universal superiority.",
+  "purpose": "Every frozen opponent must be beaten on every available map separately; no average across maps or opponents substitutes.",
   "identity_fields": [
     "checkpoint_sha256",
     "policy",
@@ -109,10 +109,80 @@
   "stages": {
     "standard": {
       "maps": [
-        "tiny",
+        "5t4rv4t10n_1337",
+        "DefaultLarge",
+        "DefaultMedium",
         "DefaultSmall",
+        "EscapeTheNight",
+        "Excavation",
+        "FreeTheCheese",
+        "Hike",
+        "Meow",
+        "Nofreecheese",
+        "RUN",
+        "Stash",
+        "TheHeist",
+        "UncomfortablyClose",
+        "ZeroDay",
+        "arrows",
+        "attack_on_cat",
+        "averyfineline",
+        "averystrangespace",
+        "bed",
+        "canyoudig",
+        "cheesebottles",
         "cheesefarm",
-        "wallsofparadis"
+        "cheeseguardians",
+        "clockwisdom",
+        "closeup",
+        "clouds",
+        "constrictinglattice",
+        "corridorofdoomanddespair",
+        "diamond",
+        "dirtfulcat",
+        "dirtpassageway",
+        "evileye",
+        "externalsustenance",
+        "fullofsecrets",
+        "gridlock",
+        "groveisbeingdesecrated",
+        "hatefullattice",
+        "heart",
+        "houseofcards",
+        "jail",
+        "keepout",
+        "knifefight",
+        "krotus",
+        "learn_your_lesson",
+        "mercifullattice",
+        "mincemeat",
+        "minimaze",
+        "peaceinourtime",
+        "pipes",
+        "popthecork",
+        "ratsareants",
+        "rift",
+        "rose",
+        "safelycontained",
+        "seepastyourgreed",
+        "sittingducks",
+        "starvation",
+        "streetsofnewyork",
+        "sunandmoon",
+        "superioristhmus",
+        "t_minus_five_minutes",
+        "thunderdome",
+        "tiny",
+        "toomuchcheese",
+        "tornadoes",
+        "trapped",
+        "ultimatestarvation",
+        "uneasy_alliance",
+        "uneruesansfin",
+        "wallsofparadis",
+        "whatsthecatdoin",
+        "where_are_you",
+        "whereisthecheese"
       ],
       "seeds": [
         0,
@@ -122,19 +192,89 @@
         "A",
         "B"
       ],
-      "games_per_opponent": 16,
-      "paired_cells_per_opponent": 8,
-      "games_total": 192,
-      "min_score": 0.6,
-      "min_score_each_side": 0.5,
-      "interpretation": "Development qualification: at least10/16 decisive wins for every opponent, with at least4/8 in each seat. Scores permit half credit for actual draws."
+      "games_per_opponent_map": 4,
+      "games_per_opponent": 296,
+      "games_total": 3552,
+      "min_score_per_map": 0.6,
+      "min_score_each_side_per_map": 0.5,
+      "interpretation": "Every opponent-map pair independently requires score >=60%, with >=50% from each starting side; draws count half. Every scheduled cell must be valid."
     },
-    "holdout": {
+    "confirmation": {
       "maps": [
-        "Stash",
+        "5t4rv4t10n_1337",
+        "DefaultLarge",
+        "DefaultMedium",
+        "DefaultSmall",
+        "EscapeTheNight",
+        "Excavation",
+        "FreeTheCheese",
         "Hike",
+        "Meow",
+        "Nofreecheese",
+        "RUN",
+        "Stash",
+        "TheHeist",
+        "UncomfortablyClose",
+        "ZeroDay",
+        "arrows",
+        "attack_on_cat",
+        "averyfineline",
+        "averystrangespace",
+        "bed",
+        "canyoudig",
+        "cheesebottles",
+        "cheesefarm",
+        "cheeseguardians",
+        "clockwisdom",
+        "closeup",
+        "clouds",
+        "constrictinglattice",
+        "corridorofdoomanddespair",
+        "diamond",
+        "dirtfulcat",
+        "dirtpassageway",
+        "evileye",
+        "externalsustenance",
+        "fullofsecrets",
+        "gridlock",
+        "groveisbeingdesecrated",
+        "hatefullattice",
         "heart",
-        "ratsareants"
+        "houseofcards",
+        "jail",
+        "keepout",
+        "knifefight",
+        "krotus",
+        "learn_your_lesson",
+        "mercifullattice",
+        "mincemeat",
+        "minimaze",
+        "peaceinourtime",
+        "pipes",
+        "popthecork",
+        "ratsareants",
+        "rift",
+        "rose",
+        "safelycontained",
+        "seepastyourgreed",
+        "sittingducks",
+        "starvation",
+        "streetsofnewyork",
+        "sunandmoon",
+        "superioristhmus",
+        "t_minus_five_minutes",
+        "thunderdome",
+        "tiny",
+        "toomuchcheese",
+        "tornadoes",
+        "trapped",
+        "ultimatestarvation",
+        "uneasy_alliance",
+        "uneruesansfin",
+        "wallsofparadis",
+        "whatsthecatdoin",
+        "where_are_you",
+        "whereisthecheese"
       ],
       "seeds": [
         90101,
@@ -146,60 +286,383 @@
         "A",
         "B"
       ],
-      "games_per_opponent": 32,
-      "paired_cells_per_opponent": 16,
-      "games_total": 384,
-      "min_score": 0.6,
-      "min_score_each_side": 0.5,
+      "games_per_opponent_map": 8,
+      "games_per_opponent": 592,
+      "games_total": 7104,
+      "min_score_per_map": 0.6,
+      "min_score_each_side_per_map": 0.5,
+      "interpretation": "Every opponent-map pair independently requires score >=60%, with >=50% from each starting side; draws count half. Every scheduled cell must be valid.",
       "requires_stage": "standard",
       "freeze_candidate_before_first_game": true,
       "maximum_candidate_attempts": 1,
-      "interpretation": "Fresh-map confirmation: at least20/32 decisive wins for every opponent, with at least8/16 in each seat. No gradient training or checkpoint choice may use these games."
+      "confirmation_type": "fresh-seed all-map confirmation; maps are not claimed to be unseen"
     }
   },
   "success": {
     "require_all_stages": true,
-    "require_every_opponent_pass_each_stage": true,
+    "require_every_opponent_map_pass_each_stage": true,
     "require_same_checkpoint_and_evaluation_policy": true,
-    "minimum_pooled_score_each_opponent": 0.6,
-    "aggregate_panel_score_cannot_substitute": true
-  },
-  "holdout_isolation": {
-    "exclude_holdout_maps_from_training": true,
-    "exclude_holdout_games_from_replay": true,
-    "exclude_all_benchmark_games_from_training": true,
-    "lock_before_first_holdout_match": true,
-    "ledger_required_fields": [
-      "gate_id",
-      "panel_fingerprint_sha256",
-      "checkpoint_sha256",
-      "evaluation_config_sha256",
-      "engine_patch_sha256",
-      "action_schema",
-      "observation_schema",
-      "started_at",
-      "status"
-    ],
-    "after_failed_candidate": "Mark this holdout version consumed. It may be used as development evidence, but any later independent confirmation requires a new predeclared disjoint map set and gate version. Never silently replace results or reuse it as fresh holdout.",
-    "resume": "Only the locked candidate may finish missing or failed infrastructure cells in this gate version."
+    "require_inventory_matches_all_available_maps": true,
+    "aggregate_map_score_cannot_substitute": true,
+    "aggregate_panel_score_cannot_substitute": true,
+    "expected_opponent_map_pairs": 888
   },
   "uncertainty": {
-    "unit": "map-seed pair containing both seats",
-    "report": "Per-opponent and panel paired map-seed bootstrap95% intervals; show every map and seat result plus coverage. Resample complete pairs, never robot turns or individual seats.",
+    "unit": "seed pair containing both seats, within each opponent-map pair",
+    "report": "Show every opponent-map and seat result with counts; paired-seed intervals are descriptive only. Never pool maps for pass/fail.",
     "bootstrap_replicates": 10000,
     "bootstrap_seed": 261109,
-    "interpretation": "Intervals are descriptive. Standard has8 and holdout16 pairs per opponent; testing12 opponents and choosing checkpoints on standard data does not establish simultaneous95% superiority. The operational pass criteria do not require significance."
+    "interpretation": "Only two standard and four confirmation seed pairs per opponent-map; 888 comparisons do not establish simultaneous95% superiority. This is an empirical operational gate."
   },
   "panel_change_policy": "Do not remove or substitute a strong opponent. Only reproducible uncaught failures across at least2 seeds under a validated harness justify investigation/replacement; retain all evidence, version the panel, and rerun the full gate. Physical deaths, legal resignation/disintegration, and ordinary losses are not failures.",
   "cycle_budget": {
     "max_training_iterations": 4,
     "games_per_iteration": 8,
     "max_completed_selfplay_games": 32,
-    "max_wall_seconds": 14400,
-    "max_standard_evaluation_games": 192,
+    "max_wall_seconds": 10800,
+    "max_standard_evaluation_games": 3552,
     "checkpoint_each_completed_game": true,
     "publish_cycle_report": true,
     "continue_next_cycle_only_after_reviewing_measured_failure_modes": true,
-    "note": "A cycle is a finite recoverable unit, not an overall cap on the authorized research. Do not promise victory within a cycle or keep a silent endless process."
+    "note": "Finite recoverable scheduling cycles; the all-map gate spans cycles. Failed/partial stages cannot qualify. A mathematically failed candidate may be stopped early with all evidence retained.",
+    "max_confirmation_evaluation_games": 7104
+  },
+  "supersedes": "field-twelve-v2-victory-v1",
+  "user_amendment": {
+    "date": "2026-11-09",
+    "timezone": "America/Vancouver",
+    "requirement": "Beat all opponents on all available maps."
+  },
+  "required_maps": 74,
+  "frozen_maps": [
+    {
+      "name": "5t4rv4t10n_1337",
+      "sha256": "f1408ac19caaba76286f4fc6b02754f657cdde169764e43d2c7d58b7bee54c6b"
+    },
+    {
+      "name": "DefaultLarge",
+      "sha256": "64588be498e836522096cdaf6cb4c81e61ae17b042dbd711b2f976b7f456f648"
+    },
+    {
+      "name": "DefaultMedium",
+      "sha256": "7d886ee7d3607e49205e5f4d5bd24baf298c917a52ef34d10fcc66a8863c6c5e"
+    },
+    {
+      "name": "DefaultSmall",
+      "sha256": "664653d43fd633497ac0e0acd874384fe5ebc644de2e6d0036f863b9ff74a68f"
+    },
+    {
+      "name": "EscapeTheNight",
+      "sha256": "03f32781ccf887d1aca5b3e6c1ab07545ac6f7747bbbf4816ec12491f86e6963"
+    },
+    {
+      "name": "Excavation",
+      "sha256": "66018e813b4fcc86f60d2f1d73054f3c25064c2eb281f8b7af882a30effed5ff"
+    },
+    {
+      "name": "FreeTheCheese",
+      "sha256": "25a0297ddee2db8e8b51204fcd4b4cd34b1964082962dee41aad41f76b4a5217"
+    },
+    {
+      "name": "Hike",
+      "sha256": "c080d40cee4a49eda61ab9a3ad8caeede32684f135d976f7b761285e3db301e1"
+    },
+    {
+      "name": "Meow",
+      "sha256": "ac2819828c63e772b02d388c5c863e6bd6245f9c243110dfd0b0c1e924984efc"
+    },
+    {
+      "name": "Nofreecheese",
+      "sha256": "223ae65f78ff3eb166cc07c47fabab7252e1ba80815ab51b1b795a4e9304286c"
+    },
+    {
+      "name": "RUN",
+      "sha256": "0fc2b7b1f0c2834b0366ac41eba3e0e883605a8d850d3cb63a501891cef239fa"
+    },
+    {
+      "name": "Stash",
+      "sha256": "d595ec4f1d12387f8930de63ac671f507243ee9fc64d57ab8add1cde8d4fb8e1"
+    },
+    {
+      "name": "TheHeist",
+      "sha256": "a843b63b8872e8bc76451958620576424bd82091395f94b43e7bd7557789a005"
+    },
+    {
+      "name": "UncomfortablyClose",
+      "sha256": "2fa8e6fe6233978c483f3e359c54972b73afc81b10a648f36d1e7b60b597656a"
+    },
+    {
+      "name": "ZeroDay",
+      "sha256": "12f9669dcf0c5d405c59fe081ad2fbcce552e6134c3cec7ee61257e0aad5e2e3"
+    },
+    {
+      "name": "arrows",
+      "sha256": "96d4ddf40cc5a1720c5027779c7af83c38ff4564c14097d3771f5863e0013079"
+    },
+    {
+      "name": "attack_on_cat",
+      "sha256": "06f35543dc356b87b690899dcef3bdd5563cc21d409c0412533f01089e488834"
+    },
+    {
+      "name": "averyfineline",
+      "sha256": "75edfc4910eda8e2dcbc97447562d881834c830c2ebf076d39a9927339504d57"
+    },
+    {
+      "name": "averystrangespace",
+      "sha256": "655a51b3bbad759480be93df7baea0a06bc06723f98ce49ee94fa0407e9431e9"
+    },
+    {
+      "name": "bed",
+      "sha256": "901e70ece4c1567f50b1f2636759b5d8a59f790312d57e34920200ebc0d79e28"
+    },
+    {
+      "name": "canyoudig",
+      "sha256": "b31a3f82a751807917eb4699e3ecd935a0ee71a91c4501b27070add3f6d9e5e6"
+    },
+    {
+      "name": "cheesebottles",
+      "sha256": "06d65275fec39db90552591d7c7081c0d556abc8a829de1e0b6435bcad7987ae"
+    },
+    {
+      "name": "cheesefarm",
+      "sha256": "ee50d2f5ff9965c8c825660d433cc0eafcb371b6aa2711f8874e58223d6ab51a"
+    },
+    {
+      "name": "cheeseguardians",
+      "sha256": "765fc0ddaaf12b9d440cb7e4502a8e629a43fc67256d70147edf1be670b2395a"
+    },
+    {
+      "name": "clockwisdom",
+      "sha256": "262c3bea40a2f7be7cab4e13874ad79909bedac50067056755dbaf5f33f65f5c"
+    },
+    {
+      "name": "closeup",
+      "sha256": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680"
+    },
+    {
+      "name": "clouds",
+      "sha256": "fb14216e03211b0a4efc32a996dc7970dede5f63fa985404f38a18240ae21522"
+    },
+    {
+      "name": "constrictinglattice",
+      "sha256": "3f4b03a9a0d22fc07683acf949823d16fb3f308e082e470cc1bcc41da953b56a"
+    },
+    {
+      "name": "corridorofdoomanddespair",
+      "sha256": "7b7b38487c635415f0d0102466de6155408908ae54f0b0ea907225a96795a06a"
+    },
+    {
+      "name": "diamond",
+      "sha256": "ca28a2511179f886b86b6ff6c470ec0bdd1d6b2b459bd55cd00c59f9e22a3673"
+    },
+    {
+      "name": "dirtfulcat",
+      "sha256": "e0787a3c077b5dbd900662f90b5465d5b960add737d2792cabac47d9fedbc8b4"
+    },
+    {
+      "name": "dirtpassageway",
+      "sha256": "8dccba40fb9e500f98516f3a421b451ae8b76b9a2b1bf778c3f25ac22505a3f3"
+    },
+    {
+      "name": "evileye",
+      "sha256": "2c09c2c8c1f407ba21b33d644b48a51129acf2895eb30afefe4b8500a31d48d0"
+    },
+    {
+      "name": "externalsustenance",
+      "sha256": "7a688d63da11472d62ad87712e7283119f507231338d9fd9a175115751b9bcae"
+    },
+    {
+      "name": "fullofsecrets",
+      "sha256": "2b711f318a90391ca37bd962ce7d4925a59e36650b03a44b49de64dc2d9ab91b"
+    },
+    {
+      "name": "gridlock",
+      "sha256": "0b89e3f745328d7687fed93b5b4104c158c1c7d4a9718f4b6bc642ed55897899"
+    },
+    {
+      "name": "groveisbeingdesecrated",
+      "sha256": "e38d667943bb36eba65eb05b9e60d6520a397d96723a937c1b241b03a63101ea"
+    },
+    {
+      "name": "hatefullattice",
+      "sha256": "30f817d291f2f493d27a087e956999bb4bffc2e3d078c49e9066eeb64e4dfb48"
+    },
+    {
+      "name": "heart",
+      "sha256": "558d787de451024d7e3e8e2294c338fac44c88de6aef1e65fc1b0009ebb0f3b3"
+    },
+    {
+      "name": "houseofcards",
+      "sha256": "7387f509e131d0c2b1d47117c35667d36ba6e5f3fcf75b0700695f0a87f7fed4"
+    },
+    {
+      "name": "jail",
+      "sha256": "143166ab3ce31d33c10b383083f7fbd97e63f45aef1a96eab15d251b0b14a364"
+    },
+    {
+      "name": "keepout",
+      "sha256": "7d437fde6604c526281fc491ae872789e27046639be045e86b8c3674f56feb10"
+    },
+    {
+      "name": "knifefight",
+      "sha256": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5"
+    },
+    {
+      "name": "krotus",
+      "sha256": "6b1d293303504b7612724c5e5bd19521fa9e7f013d283831911135cbc773c8cc"
+    },
+    {
+      "name": "learn_your_lesson",
+      "sha256": "ef9e66e2d9e7d5734dabdd5f51f02e3f0e3865a7991089488ce261f92f50f5d9"
+    },
+    {
+      "name": "mercifullattice",
+      "sha256": "299028771fc519832c7ca749a67271193f9f398a9cfb2f69d56068ba9062e661"
+    },
+    {
+      "name": "mincemeat",
+      "sha256": "e9e80ca74b02fc7420f8618861acb2b5296a3cd6cec9974796712cc9b2810316"
+    },
+    {
+      "name": "minimaze",
+      "sha256": "a595a2727ff53fb346f485681e43702c7c9e9450841d36b30c68b1960ddee6e6"
+    },
+    {
+      "name": "peaceinourtime",
+      "sha256": "a4d63e28bbb373fa2acf11e6c63b60defe4094aabf83ace665989ab940c4c62d"
+    },
+    {
+      "name": "pipes",
+      "sha256": "b71bb6e18bf79eff309229aaa53e9a6028df82ec6c45a261264dea6a7b80d788"
+    },
+    {
+      "name": "popthecork",
+      "sha256": "70bd533fb852b41fceeb8611dec9a1bfd2950a41c533a49a1e3125bd9945f8c5"
+    },
+    {
+      "name": "ratsareants",
+      "sha256": "750a401891d03447c5bcf100a82082e8a5db38cbb1e3877aa6804fb4ba423a18"
+    },
+    {
+      "name": "rift",
+      "sha256": "e59a9e618987cc717c98f9995fe707fa5f2b3185d04887a5c8b8b86961e5faaf"
+    },
+    {
+      "name": "rose",
+      "sha256": "1b9c71d170913c3ca12374bf986f70468afc603864d9c216af0dbe67490e7a3c"
+    },
+    {
+      "name": "safelycontained",
+      "sha256": "1d3f70a52c422b4aaefa5baa953bb889e65b3b78fa9ce8dae22a842d0d2cacb9"
+    },
+    {
+      "name": "seepastyourgreed",
+      "sha256": "2c6f859771546156a805967ffbefcb869f1fbb375231408c16ec06804907689c"
+    },
+    {
+      "name": "sittingducks",
+      "sha256": "7bd01a94d10992da18c20f8c11ef6b54f2672f20f9763511778bc7f052e6de7b"
+    },
+    {
+      "name": "starvation",
+      "sha256": "4a11d52e9ac44f6d31f74ebbcf0e1a00735c7ed1956ad44266a376b01cc1e905"
+    },
+    {
+      "name": "streetsofnewyork",
+      "sha256": "d4a1bedaa529c0ab4c76be0afaef09f056cabd16bb3d9da5507dadadde41052f"
+    },
+    {
+      "name": "sunandmoon",
+      "sha256": "f05d94f68eb0653d015a3a390efc1dff7a2accc1ae9c7ebb00174cf3facbc992"
+    },
+    {
+      "name": "superioristhmus",
+      "sha256": "64b540dc2297ada61121ac66d5b17fc623d327d6076857c3ad398fac5526b4ed"
+    },
+    {
+      "name": "t_minus_five_minutes",
+      "sha256": "0f5ba9b058a7449245734c70105eb723275488a8e60b74840add2c610c3a0044"
+    },
+    {
+      "name": "thunderdome",
+      "sha256": "52e2ecd34cc715546487c391f635db6ed0f00c188ad542582f0418529c5d26ae"
+    },
+    {
+      "name": "tiny",
+      "sha256": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e"
+    },
+    {
+      "name": "toomuchcheese",
+      "sha256": "c0655b6160ad9001833867046df096eaa2d83a8ef13736831ec986ad98e9b5e0"
+    },
+    {
+      "name": "tornadoes",
+      "sha256": "8890ab24317a11aead31da8b2f0d0a542c7b01b7fc731270430c4f231b2d6ab5"
+    },
+    {
+      "name": "trapped",
+      "sha256": "f06873b2b7b585a03baa8b9000e82310c0259e6edb1856905dc1fb72c06eea43"
+    },
+    {
+      "name": "ultimatestarvation",
+      "sha256": "689acca789f9cb567e2f8b3d854cbcd168788e3733568953dc5828e3696b20fe"
+    },
+    {
+      "name": "uneasy_alliance",
+      "sha256": "ad7d3ff04e273afebe6a0c2e25678aef00cdd792b862acd49ef85b4a4ba1132f"
+    },
+    {
+      "name": "uneruesansfin",
+      "sha256": "98cfb5a858fc097b33c18530c249068afdd3ae9ef5f22b25287d269f95a2a348"
+    },
+    {
+      "name": "wallsofparadis",
+      "sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28"
+    },
+    {
+      "name": "whatsthecatdoin",
+      "sha256": "82b17c4d883c128448bdd6bf32ae0f922f563ee787f221193819d5159365ff00"
+    },
+    {
+      "name": "where_are_you",
+      "sha256": "d5f229e428b6f85fc6b95fb70c3be7c72e8af2ffc5ef819ccc05a9d3181528e5"
+    },
+    {
+      "name": "whereisthecheese",
+      "sha256": "085b91c3838087984664630987eb95231b112ae8668bbae149c90b3fb5e3a290"
+    }
+  ],
+  "map_inventory_sha256": "c93f589749c7ff4b922f8a42b8cd60368958a31910e20da1379fdd2a66b472b7",
+  "map_inventory_definition": "SHA256 of compact sorted-key JSON of frozen_maps sorted by name; every maps/*.map26 file must match exactly. Added, missing or changed maps require an explicit new gate version.",
+  "training_excluded_maps": [
+    "Stash",
+    "Hike",
+    "heart",
+    "ratsareants"
+  ],
+  "confirmation_isolation": {
+    "exclude_confirmation_seeds_from_training": true,
+    "exclude_confirmation_games_from_replay": true,
+    "exclude_all_benchmark_games_from_training": true,
+    "exclude_reserved_maps_from_training_through_ancestry": true,
+    "reserved_maps": [
+      "Stash",
+      "Hike",
+      "heart",
+      "ratsareants"
+    ],
+    "lock_before_first_confirmation_match": true,
+    "ledger_required_fields": [
+      "gate_id",
+      "gate_config_sha256",
+      "panel_fingerprint_sha256",
+      "map_inventory_sha256",
+      "checkpoint_sha256",
+      "evaluation_config_sha256",
+      "started_at",
+      "status"
+    ],
+    "after_failed_candidate": "Consume the confirmation seed set. A later candidate requires a new version with four predeclared unused seeds across the same complete current map corpus. Never reuse these games as fresh confirmation.",
+    "resume": "Only the same locked candidate and configuration may complete missing or retryable infrastructure cells."
   }
 }

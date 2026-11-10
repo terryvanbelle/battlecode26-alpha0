@@ -2,7 +2,7 @@
 """Regenerate repository progress charts from observed training/evaluation JSONL.
 
 No placeholder measurements are generated. Repeated evaluation cells are deduplicated
-by checkpoint/iteration/opponent/map/seed/side, keeping the last recorded outcome.
+within the same checkpoint, stage and evaluation configuration.
 Run from any directory: .venv/bin/python scripts/plot_progress.py
 """
 from __future__ import annotations
@@ -54,7 +54,33 @@ def wilson(score_sum: float, n: int, z: float = 1.959963984540054) -> tuple[floa
     denominator = 1 + z * z / n
     center = (p + z * z / (2 * n)) / denominator
     radius = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denominator
-    return max(0.0, center - radius), min(1.0, center + radius)
+    # Exact endpoints prevent cancellation producing a tiny positive lower bound
+    # at p=0 (or an upper bound below 1 at p=1), which breaks errorbar lengths.
+    return (0.0 if p == 0 else max(0.0, center - radius),
+            1.0 if p == 1 else min(1.0, center + radius))
+
+
+def evaluation_series(row: dict) -> tuple[str, ...]:
+    """Identity shared across checkpoints, without pooling distinct protocols.
+
+    New all-map stages are gate-qualified; their evaluation-config hash also
+    includes the frozen gate identity. Legacy rows lacking metadata stay in
+    their own series rather than inheriting a newer protocol's identity.
+    """
+    fields = ("stage", "suite", "evaluation_config_sha256", "gate_id", "gate_config_sha256",
+              "benchmark_suite_id", "panel_fingerprint_sha256", "engine_version", "engine_jar_sha256", "engine_patch_sha256",
+              "bridge_sha256", "action_schema", "observation_schema", "policy", "search_mode")
+    identity = row.get("identity") or {}
+    configuration = identity.get("evaluation_config") or {}
+    all_map_gate = configuration.get("all_map_gate")
+    return tuple(json.dumps(value, sort_keys=True, separators=(",", ":"))
+                 for value in (*[row.get(field) for field in fields], all_map_gate))
+
+
+def series_label(row: dict) -> str:
+    stage = str(row.get("stage") or "legacy/unlabelled")
+    configuration = row.get("evaluation_config_sha256")
+    return f"{stage} [{str(configuration)[:8]}]" if configuration else stage
 
 
 def clean_rows(training: list[dict], evaluations: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
@@ -79,7 +105,8 @@ def clean_rows(training: list[dict], evaluations: list[dict]) -> tuple[list[dict
             raise ValueError(f"unknown evaluation status {row['status']!r}")
         if row["side"] not in ("A", "B"):
             raise ValueError(f"unknown evaluation side {row['side']!r}")
-        key = tuple(row[key] for key in required[:-1])
+        key = (*tuple(row[key] for key in required[:-1]), row.get("checkpoint_sha256"), evaluation_series(row),
+               row.get("map_sha256"), row.get("opponent_source_commit"), row.get("opponent_java_sha256"))
         cells[key] = row
     if len(cells) < len(evaluations):
         warnings.append(f"Evaluation: kept the latest outcome for {len(evaluations) - len(cells)} repeated checkpoint cells; repeats are not extra evidence.")
@@ -116,11 +143,16 @@ def paired_panel_interval(rows: list[dict], panel: list[str], repetitions: int =
 
 def summarize(rows: list[dict], panel: list[str]) -> list[dict]:
     grouped = defaultdict(list)
-    # Checkpoint is part of the group: distinct checkpoints must never be pooled.
-    for row in rows:
-        grouped[(int(row["iteration"]), str(row["checkpoint"]))].append(row)
+    # Distinct checkpoints, stages and evaluation protocols are separate evidence.
+    last_indices = {}
+    for index, row in enumerate(rows):
+        key = (int(row["iteration"]), str(row["checkpoint"]),
+               str(row.get("checkpoint_sha256") or ""), evaluation_series(row))
+        grouped[key].append(row)
+        last_indices[key] = index
     result = []
-    for (iteration, checkpoint), group in sorted(grouped.items()):
+    for key, group in sorted(grouped.items()):
+        iteration, checkpoint, checkpoint_sha256, series = key
         opponents = {}
         for name in panel + sorted({r["opponent"] for r in group} - set(panel)):
             selected = [r for r in group if r["opponent"] == name]
@@ -142,6 +174,11 @@ def summarize(rows: list[dict], panel: list[str]) -> list[dict]:
         known = [opponents[name]["score"] for name in panel if opponents[name]["n"]]
         result.append({
             "iteration": iteration, "checkpoint": checkpoint, "opponents": opponents,
+            "checkpoint_sha256": checkpoint_sha256, "series_key": series,
+            "series_label": series_label(group[-1]), "stage": group[-1].get("stage"),
+            "evaluation_config_sha256": group[-1].get("evaluation_config_sha256"),
+            "last_row_index": last_indices[key],
+            "latest_started_at": max(str(row.get("started_at") or "") for row in group),
             "completed": sum(r["status"] == "ok" for r in group),
             "errors": sum(r["status"] == "error" for r in group),
             "observed_opponents": len(known), "panel_size": len(panel),
@@ -213,6 +250,15 @@ def generate(progress: Path, manifest_path: Path) -> dict:
                          "axes.grid": True, "grid.alpha": 0.2, "figure.facecolor": "white",
                          "axes.titleweight": "bold", "savefig.facecolor": "white"})
     colors = {"blue": "#2563eb", "green": "#059669", "orange": "#ea580c", "red": "#dc2626", "purple": "#7c3aed"}
+    evidence_series = defaultdict(list)
+    for group in summaries:
+        evidence_series[group["series_key"]].append(group)
+    multiple_series = len(evidence_series) > 1
+    series_colors = {key: plt.get_cmap("tab10")(index % 10) for index, key in enumerate(evidence_series)}
+    series_indices = {key: index for index, key in enumerate(evidence_series)}
+
+    def group_color(group):
+        return series_colors[group["series_key"]] if multiple_series else colors["blue"]
 
     def empty(ax, message):
         ax.text(0.5, 0.5, message, transform=ax.transAxes, ha="center", va="center", color="#64748b")
@@ -356,16 +402,21 @@ def generate(progress: Path, manifest_path: Path) -> dict:
             x, y = group["iteration"], group["macro_score"]
             if y is not None:
                 score_ax.plot(x, y, "o" if group["full_panel"] else "D", ms=7,
-                              color=colors["blue"] if group["full_panel"] else colors["orange"])
+                              color=group_color(group) if multiple_series else colors["blue"] if group["full_panel"] else colors["orange"])
                 score_ax.annotate(f"n={group['completed']} · {group['observed_opponents']}/{group['panel_size']} bots",
-                                  (x, y), xytext=(5 if x == 0 else 0, 10), textcoords="offset points",
+                                  (x, y), xytext=(5 if x == 0 else 0, 10 + 13 * series_indices[group["series_key"]]), textcoords="offset points",
                                   ha="left" if x == 0 else "center", fontsize=8)
         xs = [g["iteration"] for g in summaries]
         for ax in (score_ax, count_ax):
             iteration_axis(ax, xs)
         # No line connects partial panels, which would suggest directly comparable strength.
-        score_ax.plot([], [], "o", color=colors["blue"], label="All panel opponents represented")
-        score_ax.plot([], [], "D", color=colors["orange"], label="Partial panel; composition may differ")
+        if multiple_series:
+            for groups in evidence_series.values():
+                score_ax.plot([], [], "o", color=group_color(groups[0]), label=groups[0]["series_label"])
+            score_ax.plot([], [], "D", color="#64748b", label="Diamond = partial opponent panel")
+        else:
+            score_ax.plot([], [], "o", color=colors["blue"], label="All panel opponents represented")
+            score_ax.plot([], [], "D", color=colors["orange"], label="Partial panel; composition may differ")
         for group in summaries:
             paired = group["paired"]
             if paired["lower"] is not None:
@@ -374,10 +425,15 @@ def generate(progress: Path, manifest_path: Path) -> dict:
                                   fmt="s", color=colors["purple"], capsize=4, ms=5)
         if any(g["paired"]["lower"] is not None for g in summaries):
             score_ax.plot([], [], "s", color=colors["purple"], label="Balanced paired-cell mean + bootstrap 95% interval")
-        score_ax.legend(loc="lower right", fontsize=8)
-        count_ax.plot(xs, [g["completed"] for g in summaries], "o-", label="Completed", color=colors["green"])
-        count_ax.plot(xs, [g["errors"] for g in summaries], "s--", label="Errors / timeouts", color=colors["red"])
-        count_ax.legend()
+        score_ax.legend(loc="upper left" if multiple_series else "lower right", fontsize=8)
+        for groups in evidence_series.values():
+            label = f" · {groups[0]['series_label']}" if multiple_series else ""
+            color = group_color(groups[0])
+            count_ax.plot([g["iteration"] for g in groups], [g["completed"] for g in groups], "o-",
+                          label="Completed" + label, color=color if multiple_series else colors["green"])
+            count_ax.plot([g["iteration"] for g in groups], [g["errors"] for g in groups], "s--",
+                          label="Errors / timeouts" + label, color=color if multiple_series else colors["red"])
+        count_ax.legend(fontsize=8)
         count_axis(count_ax, [g[key] for g in summaries for key in ("completed", "errors")])
     else:
         empty(score_ax, "No benchmark games recorded yet")
@@ -396,19 +452,32 @@ def generate(progress: Path, manifest_path: Path) -> dict:
         if measured:
             xs = [g["iteration"] for g in measured]
             iteration_axis(ax, xs)
-            ys = [g["opponents"][name]["score"] for g in measured]
-            lo = [y - g["opponents"][name]["lower"] for y, g in zip(ys, measured)]
-            hi = [g["opponents"][name]["upper"] - y for y, g in zip(ys, measured)]
-            ax.errorbar(xs, ys, yerr=[lo, hi], fmt="o-", color=colors["blue"], capsize=3, ms=4)
-            for x, y, group in zip(xs, ys, measured):
-                stats = group["opponents"][name]
-                ax.annotate(f"n={stats['n']}", (x, y), xytext=(4, 6), textcoords="offset points", fontsize=8)
+            for key in evidence_series:
+                selected = [g for g in measured if g["series_key"] == key]
+                if not selected:
+                    continue
+                series_xs = [g["iteration"] for g in selected]
+                ys = [g["opponents"][name]["score"] for g in selected]
+                lo = [max(0.0, y - g["opponents"][name]["lower"]) for y, g in zip(ys, selected)]
+                hi = [max(0.0, g["opponents"][name]["upper"] - y) for y, g in zip(ys, selected)]
+                ax.errorbar(series_xs, ys, yerr=[lo, hi], fmt="o-", color=group_color(selected[0]),
+                            capsize=3, ms=4, label=selected[0]["series_label"])
+                for x, y, group in zip(series_xs, ys, selected):
+                    stats = group["opponents"][name]
+                    ax.annotate(f"n={stats['n']}", (x, y), xytext=(4, 6 + 12 * series_indices[key]),
+                                textcoords="offset points", fontsize=8, color=group_color(group))
         else:
             empty(ax, "No completed games")
     for ax in list(axes.flat)[len(names):]:
         ax.set_visible(False)
     if not names:
         axes.flat[0].set_visible(True); empty(axes.flat[0], "No benchmark panel or results yet")
+    if multiple_series:
+        from matplotlib.lines import Line2D
+        handles = [Line2D([], [], color=group_color(groups[0]), marker="o", label=groups[0]["series_label"])
+                   for groups in evidence_series.values()]
+        # Place below the explanatory footer; tight saving includes this artist.
+        fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.005), ncol=2, fontsize=8)
     fig.supxlabel("Score = win 1 / draw ½ / loss 0. Errors excluded and reported separately. Paired sides/maps are correlated; intervals are descriptive.", fontsize=9)
     finish(fig, "opponents.png")
 
@@ -440,8 +509,9 @@ def generate(progress: Path, manifest_path: Path) -> dict:
                   "![Training-batch value diagnostics, replay size and search coverage](learning-health.png)"]
     lines += ["", "## Latest benchmark checkpoint", ""]
     if summaries:
-        latest = summaries[-1]
+        latest = max(summaries, key=lambda group: (group["iteration"], group["latest_started_at"], group["last_row_index"]))
         lines += [f"Iteration **{latest['iteration']}**, checkpoint `{markdown_cell(latest['checkpoint'])}`.", "",
+                  f"Evaluation series: `{markdown_cell(latest['series_label'])}`. Stages and evaluation configurations are reported separately.", "",
                   f"**{latest['completed']} completed games; {latest['errors']} errors; {latest['observed_opponents']}/{latest['panel_size']} panel opponents represented.**", ""]
         if latest["macro_score"] is not None:
             qualification = "all frozen panel opponents" if latest["full_panel"] else "the observed subset of opponents only"
@@ -470,12 +540,15 @@ def generate(progress: Path, manifest_path: Path) -> dict:
               "- The panel mean weights opponents equally. A partial panel is labelled and is not comparable to a full panel. Different map/seed or side coverage can also change the score.",
               "- Wilson intervals are descriptive per-game intervals. With draws they use fractional successes. Mirrored sides and repeated maps are correlated, so these are not paired-map uncertainty estimates or evidence of a statistically significant improvement.",
               "- The panel bootstrap resamples complete shared map–seed cells, keeping both sides and every opponent together (2,000 resamples, fixed RNG seed). It uses the balanced intersection of completed cells; this can differ from the all-completed-game mean. Four cells is the calculation minimum, not a guarantee of adequate power. Bootstrap intervals can collapse when every observed cell has the same outcome.",
-              "- Distinct checkpoints are never pooled. Duplicate checkpoint/opponent/map/seed/side cells keep their final recorded outcome and do not increase sample size.",
+              "- Distinct checkpoints, stages, panels and evaluation configurations are never pooled. Missing legacy identity is not treated as the current gate. Duplicate cells within the same identity keep their final recorded outcome and do not increase sample size.",
+              "- These descriptive panel averages do not establish the all-map victory gate. That gate separately requires every opponent–map pair and both seats to satisfy its standard and confirmation thresholds; averages across opponents or maps cannot substitute.",
               "- Loss reductions describe fitting to self-play targets; benchmark outcomes measure playing performance. Neither a small smoke suite nor self-play win balance establishes strength against the wider field.", ""]
     if warnings:
         lines += ["## Data notices", ""] + [f"- {warning}" for warning in warnings] + [""]
     atomic_text(progress / "README.md", "\n".join(lines))
-    summary = {"training_rows": len(train), "evaluation_cells": len(evals), "checkpoints": len(summaries), "warnings": warnings,
+    summary = {"training_rows": len(train), "evaluation_cells": len(evals),
+               "checkpoints": len({(g["iteration"], g["checkpoint"], g["checkpoint_sha256"]) for g in summaries}),
+               "evaluation_groups": len(summaries), "warnings": warnings,
                "outputs": ["training.png", "evaluation.png", "opponents.png", "README.md"]}
     if health is not None:
         summary["outputs"].insert(1, "learning-health.png")

@@ -1,6 +1,12 @@
 # Resumable campaign operation
 
-The goal is to keep improving the learned policy and measuring it against all twelve frozen opponents. Each campaign invocation is a bounded cycle. Checkpoints, replay data, evaluation rows, and machine-readable status allow later cycles to resume. Completion of a cycle is not evidence that the research objective has been reached; that requires the campaign's recorded benchmark results and success criterion.
+The goal is one learned policy that beats all twelve frozen opponents on **every one of the 74 available maps**. The user permits small map subsets for routine evaluations, with occasional full-map checks. Each campaign invocation has a **maximum three-hour budget**. Checkpoints, replay data, evaluation rows, and machine-readable status allow later cycles to resume. A cycle, smoke result or partial map panel cannot establish success.
+
+Schema 2 of [`configs/victory_gate.json`](../configs/victory_gate.json), implemented by [`alpha0.victory`](../alpha0/victory.py), requires **888 opponent–map pairs** to pass independently: at least 60% score and at least 50% in each seat, both in **3,552 standard games** and **7,104 fresh-seed confirmation games**. The same candidate must pass both stages. No pooled score substitutes. See [all-maps-victory.md](all-maps-victory.md) for the frozen inventory and exact completion rules.
+
+Routine smoke or other predeclared small-subset diagnostics guide research. Automatic standard qualification starts only after all twelve opponents have complete smoke results with at least 50% score each; it does not run every four weak iterations. A periodic research review may explicitly schedule an additional all-map check. The winner-only initialization and its first two search checkpoints each scored 20/24 on one map, losing both seats to two opponents, so none qualifies from those smoke results.
+
+Confirmation uses four fresh seeds on all maps, not a disjoint map set. Lock one candidate per version before the first game. Failed confirmation consumes the seed set; a later candidate needs a new version and four unused seeds across the complete inventory. Keep `Stash`, `Hike`, `heart` and `ratsareants` out of gradient training through the entire initialization lineage, reserve confirmation seeds, and exclude every benchmark trajectory from training.
 
 ## Run one cycle
 
@@ -45,7 +51,7 @@ Normal expiration of the time budget does not create a STOP marker, so a later s
 
 An hourly **Battlecode self-play research** continuation was created and enabled on 2026-11-10. A subsequent tool lookup confirmed that it inherits this thread's managed **Default Cloud** configuration and `/workspace` working directory. The first scheduled instruction was received in the active conversation. This confirms scheduling and environment selection; it does not establish uninterrupted compute or successful completion of any future run.
 
-The continuation inspects campaign status, resumes interrupted work, reviews measurements, improves the implementation, and publishes checkpoint and progress artifacts. It is instructed to report meaningful milestones or blockers, and to pause itself when the frozen victory gate passes. A laptop sleeping or closing does not directly terminate this cloud process, but the managed runtime can still be paused or replaced. [Release snapshots](campaign-snapshots.md) provide the separate durable recovery path.
+The continuation inspects campaign status, resumes interrupted work, reviews measurements, improves the implementation, and publishes checkpoint and progress artifacts. Its instructions now use the all-map schema-2 goal while allowing small-subset evaluations most of the time. It reports meaningful milestones or blockers and pauses itself only after the recorded all-map standard and confirmation stages pass. A laptop sleeping or closing does not directly terminate this cloud process, but the managed runtime can still be paused or replaced. [Release snapshots](campaign-snapshots.md) provide the separate durable recovery path.
 
 The continuing agent should respect `runs/campaign/STOP`, the campaign lock, and any later user instruction to stop. It should verify current process and checkpoint state before launching work, and should never claim that every benchmark has been beaten from training loss, a self-play win, or a partial benchmark panel.
 

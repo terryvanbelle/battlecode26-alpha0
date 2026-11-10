@@ -135,6 +135,11 @@ class WarmstartExportTests(unittest.TestCase):
         self.assertNotIn(f"{E.PROGRESS}/evaluation_cells/cell/.lock", names)
         self.assertIn(f"{E.RUN}/experiment.log", names)
         self.assertIn("scripts/run_warmstart_experiment.py", names)
+        self.assertEqual(manifest["resume"]["original_runner_sha256"], E.LAUNCH_RUNNER_SHA256)
+        self.assertEqual(manifest["resume"]["exported_runner_sha256"],
+                         E.sha256(self.root / "scripts/run_warmstart_experiment.py"))
+        self.assertEqual(E.RUNNER_OPERATIONAL_AMENDMENTS[-1]["previous_sha256"], E.LAUNCH_RUNNER_SHA256)
+        self.assertEqual(E.RUNNER_OPERATIONAL_AMENDMENTS[-1]["runner_sha256"], E.CURRENT_RUNNER_SHA256)
         self.assertIn("artifacts/prior/warmstart.pt", names)
         self.assertIn(self.replay_file.relative_to(self.root).as_posix(), names)
         self.assertNotIn(f"{E.RUN}/replay/iteration-0000/index.json", names)
@@ -211,7 +216,7 @@ class WarmstartExportTests(unittest.TestCase):
             export(self.root)
 
     def test_runner_drift_symlink_and_unfinished_boundary_are_rejected(self):
-        with self.assertRaisesRegex(ValueError, "original launch source"):
+        with self.assertRaisesRegex(ValueError, "approved operational runner source"):
             E.create_export(self.root, runner_sha256="0" * 64)
         write(self.root, f"{E.RUN}/status.json", '{"phase":"paused","iteration":1}')
         with self.assertRaisesRegex(ValueError, "completed"):

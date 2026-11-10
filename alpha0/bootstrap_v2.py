@@ -21,6 +21,7 @@ import torch
 
 from .env import EngineEnv, EngineState
 from .features_v2 import ACTION_DIM, ACTION_VERSION, encode
+from .gate_config import training_excluded_maps
 from .network_v2 import NetworkConfig, PolicyValueNetV2, policy_value_loss
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -198,11 +199,11 @@ def run(config: BootstrapConfig, output: Path) -> dict:
         raise ValueError("invalid optimization or execution budget")
     if not 0 <= config.teacher_epsilon < 1:
         raise ValueError("teacher epsilon must be in[0,1)")
-    # Gate metadata is consulted only to preserve held-out-map isolation.
+    # Gate metadata only preserves gradient-data exclusions; evaluation may use all maps.
     gate = json.loads((ROOT / "configs/victory_gate.json").read_text())
-    reserved = set(gate["stages"]["holdout"]["maps"])
+    reserved = training_excluded_maps(gate)
     if not config.maps or reserved.intersection(config.maps):
-        raise ValueError("bootstrap maps must be nonempty and exclude the reserved holdout")
+        raise ValueError("bootstrap maps must be nonempty and exclude training-excluded maps (legacy holdout)")
     for name in config.maps:
         if not re.fullmatch(r"[A-Za-z0-9_-]+", name) or not (ROOT / "maps" / f"{name}.map26").exists():
             raise ValueError(f"invalid or unavailable map {name!r}")
@@ -292,9 +293,9 @@ later, separately configured MCTS experiment.
     if steps < 1 or batch_size < 1:
         raise ValueError("steps and batch size must be positive")
     source_config = json.loads((source / "config.json").read_text())
-    reserved = set(json.loads((ROOT / "configs/victory_gate.json").read_text())["stages"]["holdout"]["maps"])
+    reserved = training_excluded_maps(json.loads((ROOT / "configs/victory_gate.json").read_text()))
     if reserved.intersection(source_config["maps"]):
-        raise ValueError("source teacher curriculum overlaps reserved holdout maps")
+        raise ValueError("source teacher curriculum overlaps training-excluded maps (legacy holdout)")
     games, provenance = [], []
     row_paths = sorted((source / "games").glob("teacher-*.json"))
     if len(row_paths) != source_config["games"]:

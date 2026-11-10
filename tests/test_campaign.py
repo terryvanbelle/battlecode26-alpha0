@@ -13,13 +13,20 @@ from alpha0 import campaign as C
 
 IDS = [f'bot-{i}' for i in range(12)]
 PUBLISH_RECOVERY = C.Campaign.publish_recovery
+GATE = {'schema_version': 2, 'gate_id': 'test-all-maps-v2',
+        'frozen_opponents': [{'id': name} for name in IDS], 'required_opponents': 12,
+        'frozen_maps': [{'name': name} for name in ('tiny', 'Stash')], 'required_maps': 2,
+        'training_excluded_maps': ['Stash']}
 
 
 def report(*, complete=True, full_panel=True, passed=False, score=0.0, errors=0, opponents=None):
     names = IDS if opponents is None else opponents
     return {'complete': complete, 'full_panel_complete': complete and full_panel,
             'unresolved_errors': errors, 'passed': passed, 'victory_gate_passed': passed,
-            'opponents': {name: {'mean_score': score} for name in names}}
+            'gate_id': GATE['gate_id'], 'gate_config_sha256': C.fingerprint(GATE),
+            'checkpoint_sha256': 'checkpoint', 'evaluation_config_sha256': 'policy',
+            'all_maps_complete': complete,
+            'opponents': {name: {'mean_score': score, 'maps': {'tiny': {}, 'Stash': {}}} for name in names}}
 
 
 class FakeLearner:
@@ -42,8 +49,7 @@ class CampaignTest(unittest.TestCase):
         self.config = {'experiment_id': 'test', 'maps': ['tiny'], 'workers': 2,
                        'game_timeout_seconds': 60, 'smoke_eval_every': 1,
                        'standard_eval_every': 99, 'max_iterations_per_cycle': 1}
-        self.gate = {'frozen_opponents': [{'id': name} for name in IDS], 'required_opponents': 12,
-                     'stages': {'holdout': {'maps': ['Stash']}}}
+        self.gate = json.loads(json.dumps(GATE))
         self.fake_learner = mock.patch.object(C, 'Learner', FakeLearner); self.fake_learner.start()
         self.plotter = mock.patch.object(C.Campaign, 'plots'); self.plotter.start()
         # Ordinary state-machine tests must never invoke network publication.
@@ -102,18 +108,18 @@ class CampaignTest(unittest.TestCase):
             self.assertEqual(campaign.assess(), 'continue')
         self.assertEqual(calls, ['smoke', 'standard'])
 
-    def test_failed_holdout_pauses_without_training_another_candidate(self):
+    def test_failed_confirmation_pauses_without_training_another_candidate(self):
         campaign = self.make(); calls = []
         def evaluate(stage):
             calls.append(stage)
-            return report(score=1, passed=True) if stage!='holdout' else report(score=0.4, passed=False)
+            return report(score=1, passed=True) if stage!='confirmation' else report(score=0.4, passed=False)
         with mock.patch.object(campaign, 'evaluation', side_effect=evaluate):
-            self.assertEqual(campaign.run_cycle(), 'holdout_consumed_review_required')
-        self.assertEqual(calls, ['smoke', 'standard', 'holdout'])
+            self.assertEqual(campaign.run_cycle(), 'confirmation_consumed_review_required')
+        self.assertEqual(calls, ['smoke', 'standard', 'confirmation'])
         self.assertEqual(campaign.learner.training_calls, [])
         self.assertFalse(campaign.cycle['all_opponents_beaten'])
 
-    def test_complete_passing_full_holdout_is_only_victory_path(self):
+    def test_complete_passing_full_confirmation_is_only_victory_path(self):
         campaign = self.make()
         with mock.patch.object(campaign, 'evaluation', return_value=report(score=1, passed=True)):
             self.assertEqual(campaign.run_cycle(), 'victory')
@@ -129,10 +135,48 @@ class CampaignTest(unittest.TestCase):
         campaign = self.make(); calls = []
         def evaluate(stage):
             calls.append(stage)
-            return report(score=1, passed=True, opponents=IDS[:-1] if stage=='holdout' else IDS)
+            return report(score=1, passed=True, opponents=IDS[:-1] if stage=='confirmation' else IDS)
         with mock.patch.object(campaign, 'evaluation', side_effect=evaluate):
             self.assertEqual(campaign.run_cycle(), 'evaluation_error')
         self.assertFalse(campaign.cycle['all_opponents_beaten'])
+
+    def test_missing_map_cannot_claim_victory(self):
+        campaign = self.make()
+        def evaluate(stage):
+            result = report(score=1, passed=True)
+            if stage == 'confirmation':
+                del result['opponents'][IDS[0]]['maps']['Stash']
+            return result
+        with mock.patch.object(campaign, 'evaluation', side_effect=evaluate):
+            self.assertEqual(campaign.assess(), 'evaluation_error')
+
+    def test_old_gate_report_cannot_advance(self):
+        campaign = self.make()
+        def evaluate(stage):
+            result = report(score=1, passed=True)
+            if stage == 'standard':
+                result['gate_id'] = 'old-four-map-gate'
+            return result
+        with mock.patch.object(campaign, 'evaluation', side_effect=evaluate):
+            self.assertEqual(campaign.assess(), 'evaluation_error')
+
+    def test_different_checkpoint_confirmation_cannot_claim_victory(self):
+        campaign = self.make()
+        def evaluate(stage):
+            result = report(score=1, passed=True)
+            if stage == 'confirmation':
+                result['checkpoint_sha256'] = 'another-checkpoint'
+            return result
+        with mock.patch.object(campaign, 'evaluation', side_effect=evaluate):
+            self.assertEqual(campaign.assess(), 'evaluation_error')
+
+    def test_periodic_weak_checkpoint_does_not_open_large_gate(self):
+        self.config['test_initial_iteration'] = 4
+        self.config['standard_eval_every'] = 4
+        campaign = self.make()
+        with mock.patch.object(campaign, 'evaluation', return_value=report(score=0)) as evaluate:
+            self.assertEqual(campaign.assess(), 'continue')
+        evaluate.assert_called_once_with('smoke')
 
     def test_evaluation_error_pauses_without_training(self):
         campaign = self.make()
@@ -168,7 +212,7 @@ class CampaignTest(unittest.TestCase):
         self.assertEqual(status['last_published_recovery'], 'checkpoint.tar.gz')
         self.assertNotIn('recovery_publication_error', status)
 
-    def test_training_map_overlap_with_holdout_rejected(self):
+    def test_training_map_overlap_with_confirmation_rejected(self):
         self.config['maps'].append('Stash')
         with self.assertRaisesRegex(ValueError, 'overlap'):
             self.make()

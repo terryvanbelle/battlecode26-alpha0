@@ -1,6 +1,6 @@
 # Training progress
 
-Generated from repository JSONL measurements at `2026-11-10T03:50:25+00:00`.
+Generated from repository JSONL measurements at `2026-11-10T04:20:44+00:00`.
 
 Run `python scripts/plot_progress.py --progress-dir progress/campaign-v2` from the repository root to regenerate these figures and this report.
 
@@ -32,26 +32,28 @@ Replay counts describe the current buffer, not cumulative data. Searched positio
 
 Iteration **4**, checkpoint `checkpoint-0004.pt [1f04b952/macro_v2/greedy/ef6f893e]`.
 
-**24 completed games; 0 errors; 12/12 panel opponents represented.**
+Evaluation series: `standard [ef6f893e]`. Stages and evaluation configurations are reported separately.
 
-Equal-weight mean game score: **16.7%** across all frozen panel opponents. This is not an Elo estimate.
+**78 completed games; 0 errors; 5/12 panel opponents represented.**
 
-Paired-map bootstrap interval unavailable: 1 shared map–seed cells have both sides completed against every panel opponent; at least 4 are required. A small smoke suite is insufficient for a strength claim.
+Equal-weight mean game score: **50.0%** across the observed subset of opponents only. This is not an Elo estimate.
+
+Paired-map bootstrap interval unavailable: 0 shared map–seed cells have both sides completed against every panel opponent; at least 4 are required. A small smoke suite is insufficient for a strength claim.
 
 | Opponent | Completed | W–D–L | Mean score | Descriptive 95% Wilson interval | Errors | Sides A/B |
 |---|---:|---:|---:|---:|---:|---:|
-| `Krak9n_robot` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
-| `seru9_TOTAL_AGGRO` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
-| `Camleaf_mk1` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `CS50Crab_rapierV1` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `spsquared_TSPAARK_QUALS` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `HugoIngelsson_Xzibit` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `abcdezyxwv_bestsofar` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `IvanGeffner_basic51` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `bc26-example` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `vibe26b_zdb` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `thewaxmango_collegejunior` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
-| `uravt_Version41` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `Krak9n_robot` | 16 | 16–0–0 | 100.0% | 80.6%–100.0% | 0 | 8/8 |
+| `seru9_TOTAL_AGGRO` | 16 | 16–0–0 | 100.0% | 80.6%–100.0% | 0 | 8/8 |
+| `Camleaf_mk1` | 16 | 8–0–8 | 50.0% | 28.0%–72.0% | 0 | 8/8 |
+| `CS50Crab_rapierV1` | 16 | 0–0–16 | 0.0% | 0.0%–19.4% | 0 | 8/8 |
+| `spsquared_TSPAARK_QUALS` | 14 | 0–0–14 | 0.0% | 0.0%–21.5% | 0 | 7/7 |
+| `HugoIngelsson_Xzibit` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `abcdezyxwv_bestsofar` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `IvanGeffner_basic51` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `bc26-example` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `vibe26b_zdb` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `thewaxmango_collegejunior` | 0 | 0–0–0 | — | — | 0 | 0/0 |
+| `uravt_Version41` | 0 | 0–0–0 | — | — | 0 | 0/0 |
 
 ![Benchmark scores and completion counts](evaluation.png)
 
@@ -63,5 +65,6 @@ Paired-map bootstrap interval unavailable: 1 shared map–seed cells have both s
 - The panel mean weights opponents equally. A partial panel is labelled and is not comparable to a full panel. Different map/seed or side coverage can also change the score.
 - Wilson intervals are descriptive per-game intervals. With draws they use fractional successes. Mirrored sides and repeated maps are correlated, so these are not paired-map uncertainty estimates or evidence of a statistically significant improvement.
 - The panel bootstrap resamples complete shared map–seed cells, keeping both sides and every opponent together (2,000 resamples, fixed RNG seed). It uses the balanced intersection of completed cells; this can differ from the all-completed-game mean. Four cells is the calculation minimum, not a guarantee of adequate power. Bootstrap intervals can collapse when every observed cell has the same outcome.
-- Distinct checkpoints are never pooled. Duplicate checkpoint/opponent/map/seed/side cells keep their final recorded outcome and do not increase sample size.
+- Distinct checkpoints, stages, panels and evaluation configurations are never pooled. Missing legacy identity is not treated as the current gate. Duplicate cells within the same identity keep their final recorded outcome and do not increase sample size.
+- These descriptive panel averages do not establish the all-map victory gate. That gate separately requires every opponent–map pair and both seats to satisfy its standard and confirmation thresholds; averages across opponents or maps cannot substitute.
 - Loss reductions describe fitting to self-play targets; benchmark outcomes measure playing performance. Neither a small smoke suite nor self-play win balance establishes strength against the wider field.

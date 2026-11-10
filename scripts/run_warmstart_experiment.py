@@ -3,7 +3,7 @@
 
 Separate run/progress/lock/STOP paths protect the neutral v2 control. Import only
 model weights, evaluate cp0, complete one search-target iteration, then evaluate
-cp1. This runner never promotes a policy or opens the reserved holdout.
+cp1. This runner never promotes a policy or opens a confirmation evaluation.
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
 
 import torch
 from alpha0.evaluate import atomic_json
+from alpha0.gate_config import training_excluded_maps
 from alpha0.learn_v2 import Learner
 from alpha0.network_v2 import NetworkConfig
 
@@ -175,8 +176,9 @@ class Experiment:
         self.target_iteration = target_iteration
         gate = json.loads((self.root / "configs/victory_gate.json").read_text())
         self.opponent_ids = {b["id"] for b in gate["frozen_opponents"]}
-        if len(self.opponent_ids) != 12 or set(config["maps"]) & set(gate["stages"]["holdout"]["maps"]):
-            raise ValueError("expected full12 panel and training maps disjoint from holdout")
+        excluded = training_excluded_maps(gate)
+        if len(self.opponent_ids) != 12 or set(config["maps"]) & excluded:
+            raise ValueError("expected full12 panel and training maps disjoint from training exclusions")
         if config["workers"] != 1 or config["evaluation_workers"] != 1 or config["torch_threads"] != 1 or target_iteration < 1:
             raise ValueError("this experiment requires a positive target, one actor, one evaluator and one Torch thread")
         self.learner = None
@@ -298,7 +300,7 @@ class Experiment:
         wins = lambda r: sum(x["wins"] for x in r["opponents"].values())
         self.status("complete_review_required", baseline_wins=wins(baseline), trained_wins=wins(trained),
                     evaluation_games_per_checkpoint=24, completed_mcts_iterations=self.learner.iteration,
-                    reason="requested iteration target complete; no promotion or holdout attempted")
+                    reason="requested iteration target complete; no promotion or confirmation attempted")
 
     @staticmethod
     def check_comparison(baseline: dict, trained: dict):

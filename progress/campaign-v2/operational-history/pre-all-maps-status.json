@@ -1,0 +1,17 @@
+{
+  "all_opponents_beaten": false,
+  "budget_hours": 3.0,
+  "checkpoint": "runs/campaign/v2/checkpoint-0004.pt",
+  "error": "Command '['/workspace/battlecode26-alpha0/.venv/bin/python', '/workspace/battlecode26-alpha0/scripts/plot_progress.py', '--progress-dir', '/workspace/battlecode26-alpha0/progress/campaign-v2']' returned non-zero exit status 1.",
+  "evaluation_stage": "standard",
+  "experiment_id": "dual-scale-macro40-v2",
+  "games_total": 32,
+  "initial_iteration": 0,
+  "iteration": 4,
+  "last_published_recovery": "campaign-state-20261110T033747902021Z-7d4f8f896ac9.tar.gz",
+  "phase": "failed",
+  "pid": 23675,
+  "started_at": "2026-11-10T03:06:22.848972+00:00",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/battlecode26-alpha0/alpha0/campaign.py\", line 187, in main\n    campaign.run_cycle()\n  File \"/workspace/battlecode26-alpha0/alpha0/campaign.py\", line 151, in run_cycle\n    outcome = self.assess()\n              ^^^^^^^^^^^^^\n  File \"/workspace/battlecode26-alpha0/alpha0/campaign.py\", line 128, in assess\n    standard = self.evaluation(\"standard\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/battlecode26-alpha0/alpha0/campaign.py\", line 101, in evaluation\n    self.plots()\n  File \"/workspace/battlecode26-alpha0/alpha0/campaign.py\", line 56, in plots\n    subprocess.run([sys.executable, str(self.root / \"scripts/plot_progress.py\"),\n  File \"/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['/workspace/battlecode26-alpha0/.venv/bin/python', '/workspace/battlecode26-alpha0/scripts/plot_progress.py', '--progress-dir', '/workspace/battlecode26-alpha0/progress/campaign-v2']' returned non-zero exit status 1.\n",
+  "updated_at": "2026-11-10T04:08:06.665377+00:00"
+}

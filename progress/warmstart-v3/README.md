@@ -1,6 +1,6 @@
 # Training progress
 
-Generated from repository JSONL measurements at `2026-11-10T03:51:10+00:00`.
+Generated from repository JSONL measurements at `2026-11-10T04:20:45+00:00`.
 
 Run `python scripts/plot_progress.py --progress-dir progress/warmstart-v3` from the repository root to regenerate these figures and this report.
 
@@ -8,15 +8,15 @@ Run `python scripts/plot_progress.py --progress-dir progress/warmstart-v3` from 
 
 | Measurement | Observed value |
 |---|---:|
-| `iteration` | 1 |
-| `games_total` | 8 |
-| `positions_total` | 1948 |
-| `policy_loss` | 1.05512 |
-| `value_loss` | 0.689091 |
-| `total_loss` | 1.74421 |
-| `entropy` | 1.03407 |
-| `games_per_hour` | 51.0397 |
-| `wall_seconds` | 564.267 |
+| `iteration` | 2 |
+| `games_total` | 16 |
+| `positions_total` | 3751 |
+| `policy_loss` | 1.32276 |
+| `value_loss` | 0.643679 |
+| `total_loss` | 1.96644 |
+| `entropy` | 1.30968 |
+| `games_per_hour` | 43.2279 |
+| `wall_seconds` | 1230.5 |
 
 ![Training loss, entropy, data volume and throughput](training.png)
 
@@ -30,7 +30,9 @@ Replay counts describe the current buffer, not cumulative data. Searched positio
 
 ## Latest benchmark checkpoint
 
-Iteration **1**, checkpoint `checkpoint-0001.pt [121acf1b/macro_v2/greedy/ef6f893e]`.
+Iteration **2**, checkpoint `checkpoint-0002.pt [20d9e813/macro_v2/greedy/ef6f893e]`.
+
+Evaluation series: `smoke [ef6f893e]`. Stages and evaluation configurations are reported separately.
 
 **24 completed games; 0 errors; 12/12 panel opponents represented.**
 
@@ -63,5 +65,6 @@ Paired-map bootstrap interval unavailable: 1 shared map–seed cells have both s
 - The panel mean weights opponents equally. A partial panel is labelled and is not comparable to a full panel. Different map/seed or side coverage can also change the score.
 - Wilson intervals are descriptive per-game intervals. With draws they use fractional successes. Mirrored sides and repeated maps are correlated, so these are not paired-map uncertainty estimates or evidence of a statistically significant improvement.
 - The panel bootstrap resamples complete shared map–seed cells, keeping both sides and every opponent together (2,000 resamples, fixed RNG seed). It uses the balanced intersection of completed cells; this can differ from the all-completed-game mean. Four cells is the calculation minimum, not a guarantee of adequate power. Bootstrap intervals can collapse when every observed cell has the same outcome.
-- Distinct checkpoints are never pooled. Duplicate checkpoint/opponent/map/seed/side cells keep their final recorded outcome and do not increase sample size.
+- Distinct checkpoints, stages, panels and evaluation configurations are never pooled. Missing legacy identity is not treated as the current gate. Duplicate cells within the same identity keep their final recorded outcome and do not increase sample size.
+- These descriptive panel averages do not establish the all-map victory gate. That gate separately requires every opponent–map pair and both seats to satisfy its standard and confirmation thresholds; averages across opponents or maps cannot substitute.
 - Loss reductions describe fitting to self-play targets; benchmark outcomes measure playing performance. Neither a small smoke suite nor self-play win balance establishes strength against the wider field.

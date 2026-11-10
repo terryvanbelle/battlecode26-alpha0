@@ -1,7 +1,9 @@
-# Research plan: qualify against every frozen opponent
+# Research plan: qualify against every opponent on every map
 
 The target is a single frozen learned policy that beats each member of the
-12-bot panel across multiple maps, seeds and both seats. The initial experiment
+12-bot panel on **every one of the 74 available maps**, with both seats covered.
+Routine evaluations use small map subsets; the complete inventory is reserved
+for occasional full checks and the final qualification stages. The initial experiment
 does not meet that target: the final checkpoint won **5/24** smoke games, equal
 to the untrained checkpoint's aggregate score. Its value estimator also
 collapsed. More iterations of the same small experiment are not an adequate
@@ -9,7 +11,8 @@ response to those observations.
 
 This document separates measured evidence from requirements for subsequent
 experiments. The gate is machine-readable in
-[`configs/victory_gate.json`](../configs/victory_gate.json). Training and
+schema 2 of [`configs/victory_gate.json`](../configs/victory_gate.json), enforced
+by [`alpha0.victory`](../alpha0/victory.py). Training and
 evaluation implementations must enforce those requirements before declaring
 success; the existence of a configuration file alone is not evidence of a pass.
 
@@ -111,9 +114,10 @@ an immutable baseline, not a source of invented improvement claims.
 5. **Increase self-play diversity.** Rotate maps, seeds, seats and start a
    league of the current policy and earlier self-play checkpoints. Evaluate
    whether the policy is forgetting previous opponents. Early curriculum maps
-   may be `tiny`, `DefaultSmall`, `closeup` and `knifefight`; the reserved
-   holdout maps below must never enter training. A future curriculum can add
-   maps from `configs/train.json`, which are also disjoint from this holdout.
+   may be `tiny`, `DefaultSmall`, `closeup` and `knifefight`; the four reserved
+   maps `Stash`, `Hike`, `heart` and `ratsareants` must never enter gradient
+   training, including warmstarts and checkpoint ancestry. Other maps may enter
+   a versioned curriculum; fresh confirmation seeds must remain unused.
    Benchmark bot code, action traces and benchmark outcomes never enter
    gradient training or the self-play opponent pool.
 
@@ -121,9 +125,9 @@ an immutable baseline, not a source of invented improvement claims.
    learned champion using a separate self-play validation schedule. Publish
    both results and the promotion rule. Do not replace the champion merely
    because the training loss fell. The development benchmark panel can guide
-   research decisions, but the final holdout has a different role.
+   research decisions, but final fresh-seed confirmation has a different role.
 
-## Frozen success gate
+## Frozen all-map success gate
 
 The panel is exactly `field-twelve-v2`, with the twelve source commits and Java
 tree hashes copied into the gate. Its canonical fingerprint is
@@ -133,45 +137,61 @@ under a validated harness can justify an explicitly versioned replacement,
 with the failed source and all measurements retained. Legal resignations,
 disintegration, physical deaths and ordinary losses do not qualify.
 
-| Stage | Maps | Seeds | Games per opponent | Required result against **each** opponent |
-| --- | --- | --- | ---: | --- |
-| Development qualification | `tiny`, `DefaultSmall`, `cheesefarm`, `wallsofparadis` | 0, 2026 | 16, both seats | Score ≥60%, and ≥50% in each seat |
-| Fresh-map confirmation | `Stash`, `Hike`, `heart`, `ratsareants` | 90101, 90107, 90121, 90133 | 32, both seats | Score ≥60%, and ≥50% in each seat |
+The gate freezes all 74 entries in `maps/`, fingerprint
+`c93f589749c7ff4b922f8a42b8cd60368958a31910e20da1379fdd2a66b472b7`.
+This hashes the sorted `frozen_maps` list of `{name, sha256}` entries using compact
+sorted-key JSON. Any map addition, removal or byte change requires a new explicit
+inventory version. The full specification is in [all-maps-victory.md](all-maps-victory.md).
 
-With decisive games only, those thresholds require at least **10/16** wins in
-development and **20/32** wins in confirmation, per opponent. Real draws earn
-half credit. Success requires the same checkpoint and evaluation policy to
-pass both stages against all twelve opponents: 192 development games plus 384
-confirmation games. An aggregate average cannot compensate for losing to one
-opponent. Every expected map–seed–seat cell must have a valid result, with zero
-unresolved infrastructure errors. A timeout or bot crash is not a win.
+| Stage | Maps | Seeds | Games per opponent–map | Required result for **each** opponent–map | Total games |
+| --- | --- | --- | ---: | --- | ---: |
+| Standard qualification | All 74 | 0, 2026 | 4, both seats | Score ≥60%, and ≥50% in each seat | 3,552 |
+| Fresh-seed confirmation | All 74 | 90101, 90107, 90121, 90133 | 8, both seats | Score ≥60%, and ≥50% in each seat | 7,104 |
 
-Freeze the checkpoint, policy configuration, action/observation schema and
+All **888 opponent–map pairs** must pass each stage independently with the same
+checkpoint and evaluation policy. With decisive games, standard requires at
+least **3/4** wins and at least **1/2** in each seat; confirmation requires at
+least **5/8** wins and at least **2/4** in each seat. Draws earn half credit, so
+standard's attainable minimum score is 2.5/4. No pooling across maps, opponents
+or stages can rescue a failure. Every expected cell needs a valid terminal
+result, with zero unresolved infrastructure errors. A timeout or bot crash is
+not a candidate win. A 20/24 smoke result is not all-map qualification.
+
+The former 192-game development and 384-game disjoint-map gate is superseded
+by this user-requested expansion; any historical results retain their original
+scope. Both revised stages cover all maps, so confirmation is **fresh-seed**,
+not unseen-map. The four originally reserved maps remain excluded from gradient
+training as an additional restraint, and benchmark trajectories never enter
+replay. Preserve unused confirmation seeds through training and development.
+
+Freeze the checkpoint, policy configuration, map inventory, panel and
 engine/patch/bridge hashes before the first confirmation game. Persist that
-identity in a holdout ledger. Only that candidate may finish interrupted cells.
-Never rerun an already successful cell to choose a favorable result. A completed
-failed confirmation consumes this holdout version: it can become development
-evidence, but a later independent confirmation requires a new predeclared
-disjoint map set and gate version. Changing the candidate halfway through a
-confirmation is not allowed.
+identity in a confirmation ledger. Only that candidate may finish interrupted
+cells; never rerun a successful cell to choose a favorable result. One candidate
+may attempt confirmation per version. A failed confirmation consumes its
+four-seed set. A later attempt requires a new gate version with four predeclared
+unused seeds across the same complete current map inventory, not disjoint maps.
 
-This is a useful **empirical definition of beating the fixed panel**, not proof
-of superiority on every Battlecode map. There are only eight development and
-sixteen confirmation map–seed pairs per opponent. Report all results and paired
-bootstrap intervals by resampling complete pairs with both seats together.
-Treat those intervals as descriptive: twelve simultaneous comparisons, correlated
-maps and checkpoint selection make a simple independent-game Wilson interval an
-inadequate guarantee of 95% superiority. Do not label a 12/16 result statistically
-proven merely because its independent-Bernoulli Wilson lower bound exceeds 0.5.
+This is an empirical requirement on the frozen schedule, not proof of true
+superiority on all maps. Each opponent–map pair has only two standard and four
+confirmation seed pairs, and there are 888 such comparisons. Report every pair's
+scores, both seats and coverage. Any bootstrap must resample complete two-seat
+seed pairs and be labeled descriptive; small sample sizes, shared maps and
+checkpoint selection prevent a simultaneous 95% superiority claim.
 
 ## Finite, recoverable research cycles
 
 Each cycle is bounded by four training iterations, eight complete games per
-iteration, and four hours of wall time. These are operational limits on one
+iteration, and **three hours** under the user's current instruction. These are operational limits on one
 recoverable job, not tournament restrictions and not an overall limit on the
-authorized research. Measure throughput before increasing concurrency. Complete
-one standard evaluation for the selected candidate at a cycle boundary; reserve
-the 384-game confirmation for a candidate that qualifies.
+authorized research. Measure throughput before increasing concurrency. Use cheap
+small-map subsets for most checkpoint comparisons. Automatic full standard
+qualification is screened by a complete smoke evaluation with at least 50%
+against **each** of all twelve opponents, not by merely reaching four weak
+iterations. An explicit periodic research review may also schedule an occasional
+all-map check to examine coverage and weaknesses. Neither route changes the
+final gate, and partial diagnostics never count as a pass. A complete passing
+3,552-game standard stage is required before the 7,104-game confirmation.
 
 Persist each completed episode, its map/seed/action transcript, generation
 checkpoint, terminal outcome and retained training examples before starting the

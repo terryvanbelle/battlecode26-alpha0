@@ -1,13 +1,16 @@
 {
   "all_opponents_beaten": false,
+  "baseline_wins": 20,
   "budget_hours": 2.0,
-  "checkpoint": "runs/warmstart-v3/checkpoint-0001.pt",
-  "elapsed_seconds": 18.384305681000114,
+  "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+  "completed_mcts_iterations": 2,
+  "elapsed_seconds": 852.8358904119996,
   "empty_initial_replay": true,
-  "evaluation_iteration": null,
+  "evaluation_games_per_checkpoint": 24,
+  "evaluation_iteration": 2,
   "experiment_id": "winner-prior-mcts32-v3",
   "fresh_initial_optimizer": true,
-  "games_total": 8,
+  "games_total": 16,
   "initialization": {
     "artifact": "artifacts/bootstrap-v3/candidate-002-winners/warmstart.pt",
     "artifact_sha256": "c1473de81dda381c9f14868ea246c11f5bbd644fb59b0b0420e547598b26aa0e",
@@ -20,13 +23,15 @@
     "teacher_version": "own-rules-assault-forage-guard-v1",
     "value_head": "exactly neutral zero before MCTS"
   },
-  "iteration": 1,
+  "iteration": 2,
   "measured_active_cpu_cores": 3.120732665563525,
   "neutral_initial_value": true,
-  "phase": "self_play_and_training",
+  "phase": "complete_review_required",
   "pid": 39672,
   "production_promoted": false,
+  "reason": "requested iteration target complete; no promotion or holdout attempted",
   "started_at": "2026-11-10T03:50:51.912110+00:00",
   "target_iteration": 2,
-  "updated_at": "2026-11-10T03:51:10.296326+00:00"
+  "trained_wins": 20,
+  "updated_at": "2026-11-10T04:05:04.747910+00:00"
 }

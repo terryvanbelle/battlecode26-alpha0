@@ -5,11 +5,17 @@
   "evaluation_stage": "standard",
   "experiment_id": "dual-scale-macro40-v2",
   "games_total": 32,
+  "gate_config_sha256": "0581e358675d6a85e4c5db943bd682999b65774cf27250a6b4f8fa4657638671",
+  "gate_id": "field-twelve-v2-all-maps-v2",
   "initial_iteration": 0,
   "iteration": 4,
-  "last_published_recovery": "campaign-state-20261110T033747902021Z-7d4f8f896ac9.tar.gz",
-  "phase": "evaluating",
-  "pid": 23675,
+  "last_published_recovery": "campaign-state-20261110T042319076016Z-b13fee70a339.tar.gz",
+  "phase": "paused",
+  "pid": null,
+  "previous_status": "progress/campaign-v2/operational-history/pre-all-maps-status.json",
+  "reason": "neutral control preserved for research review; plot endpoint failure repaired; all-map gate migrated",
+  "required_maps": 74,
+  "required_opponent_map_pairs": 888,
   "started_at": "2026-11-10T03:06:22.848972+00:00",
-  "updated_at": "2026-11-10T03:50:25.278623+00:00"
+  "updated_at": "2026-11-10T04:21:48.144950+00:00"
 }

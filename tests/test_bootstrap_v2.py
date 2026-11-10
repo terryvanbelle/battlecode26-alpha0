@@ -10,7 +10,7 @@ import unittest
 import numpy as np
 import torch
 
-from alpha0.bootstrap_v2 import BootstrapConfig, ROOT, run, run_winner_only, teacher_policy
+from alpha0.bootstrap_v2 import BootstrapConfig, ROOT, run, run_winner_only, teacher_policy, training_excluded_maps
 from alpha0.env import EngineState
 from alpha0.replay_v2 import GameReplayBuffer
 
@@ -55,12 +55,29 @@ class BootstrapTests(unittest.TestCase):
             self.assertEqual(list(output.iterdir()), [marker])
 
     def test_reserved_holdout_rejected_before_generation(self):
-        reserved = json.loads((ROOT / "configs/victory_gate.json").read_text())["stages"]["holdout"]["maps"][0]
+        reserved = sorted(training_excluded_maps(json.loads((ROOT / "configs/victory_gate.json").read_text())))[0]
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "untouched"
             with self.assertRaisesRegex(ValueError, "holdout"):
                 run(BootstrapConfig(maps=(reserved,)), output)
             self.assertFalse(output.exists())
+
+    def test_versioned_training_exclusions_and_fail_closed_schema(self):
+        old = {"schema_version": 1, "stages": {"holdout": {"maps": ["Stash", "Hike"]}}}
+        new = {"schema_version": 2, "training_excluded_maps": ["Stash", "Hike"],
+               "stages": {"standard": {"maps": ["tiny", "Stash", "Hike"]}, "confirmation": {}}}
+        self.assertEqual(training_excluded_maps(old), training_excluded_maps(new))
+        self.assertEqual(training_excluded_maps({**old, "training_excluded_maps": ["Hike", "Stash"]}),
+                         training_excluded_maps(old))
+        for invalid in ({}, {**new, "schema_version": 3}, {**new, "schema_version": True},
+                        {**old, "training_excluded_maps": ["tiny"]},
+                        {"schema_version": 1, "training_excluded_maps": ["Stash"]},
+                        {"schema_version": 2, "stages": old["stages"]},
+                        {**new, "training_excluded_maps": []}, {**new, "training_excluded_maps": "Stash"},
+                        {**new, "training_excluded_maps": ["Stash", "Stash"]},
+                        {**new, "training_excluded_maps": ["../Stash"]}):
+            with self.subTest(gate=invalid), self.assertRaises(ValueError):
+                training_excluded_maps(invalid)
 
     def test_teacher_targets_cannot_enter_search_replay(self):
         with self.assertRaisesRegex(ValueError, "source"):

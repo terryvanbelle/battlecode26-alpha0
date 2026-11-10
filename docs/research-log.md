@@ -1,5 +1,12 @@
 # Research log
 
+The current goal is to beat all twelve frozen opponents on **every one of the
+74 available maps**. Schema 2 of [the gate](../configs/victory_gate.json) and
+[the all-map protocol](all-maps-victory.md) supersede the earlier four-map
+qualification scope. Routine evaluations may use small map subsets; final
+success requires every opponent–map pair to pass both full-map stages. Entries
+below retain their historical measurements and experimental scope.
+
 ## 2026-11-10: independent continuation and v2 baseline
 
 The user authorized continued independent research until the learned agent beats
@@ -152,3 +159,66 @@ self-play and a fixed league mixture, including matched side retention and
 separate future-game calibration. Opponent-conditioned value prediction is a
 separate versioned experiment. No active training configuration or runtime was
 changed for this investigation.
+
+### Goal expanded to every available map
+
+The user expanded the objective to all opponents on all available maps, then
+clarified that routine evaluations can use small subsets and full-map checks
+should be occasional. Gate `field-twelve-v2-all-maps-v2` now freezes all **74**
+available map files and the existing **12** opponents. Its map-inventory
+fingerprint is
+`c93f589749c7ff4b922f8a42b8cd60368958a31910e20da1379fdd2a66b472b7`,
+computed from sorted `{name, sha256}` entries. No opponent or difficult map is
+removed to improve the result.
+
+Each of **888 opponent–map pairs** must independently score at least 60%, with
+at least 50% in each seat, in both stages: **3,552 standard games** using two
+seeds per map, followed by **7,104 fresh-seed confirmation games** using four.
+The same frozen checkpoint and evaluation policy must pass both. Scores cannot
+be pooled across maps, opponents or stages. Both stages cover the complete
+inventory; confirmation therefore means fresh seeds, not unseen maps.
+`Stash`, `Hike`, `heart` and `ratsareants` remain excluded from gradient training
+through initialization ancestry as an additional restraint. All benchmark
+trajectories remain excluded from training.
+
+The implementation is separate in [`alpha0.victory`](../alpha0/victory.py), with
+`standard` and `confirmation` stages. One candidate is locked per confirmation
+version; failure consumes its four-seed set. A subsequent independent attempt
+needs a new version and four predeclared unused seeds on all maps. The earlier
+192/384-game specification and smoke measurements remain historical evidence,
+not a pass under the expanded goal.
+
+Most evaluations remain inexpensive subset diagnostics. Automatic full
+standard qualification requires a complete smoke panel scoring at least 50%
+against every opponent, rather than triggering after every four weak training
+iterations. A periodic research review may also request an occasional all-map
+check. The winner-only initialization and its first two MCTS checkpoints each
+won **20/24** smoke games, with both-seat losses to `bestsofar` and `basic51`.
+They neither meet that scheduling screen nor demonstrate all-map victory or
+improvement over the prior. The hourly continuation instructions were updated
+to the expanded goal and this evaluation cadence. The user's current budget
+caps each invocation at **three hours**; a full gate may span recoverable cycles.
+
+The old neutral run stopped at checkpoint 4 with 32 completed self-play games.
+A plotting endpoint-roundoff error was repaired: an all-loss Wilson interval
+produced a tiny negative error-bar length. The graph code now also separates
+smoke, old standard and all-map evidence by stage and configuration, instead of
+pooling overlapping schedules. Raw outcomes are unchanged. The pre-migration
+failure status is retained under `progress/campaign-v2/operational-history/`;
+the neutral control is paused for research review while the stronger warmstart
+is investigated. The temporary migration STOP was created by this maintenance
+work, not by the user.
+
+Warmstart checkpoint 2 has a separately verified recovery export with exact
+model, optimizer, Torch/NumPy RNG and replay RNG restoration (16 games, 3,751
+retained searched positions). Its 20/24 smoke score still matches initialization.
+The new all-map scope report starts at **0/3,552 valid qualification games**;
+none of the historical subset games is silently relabeled as full-gate evidence.
+
+The neutral checkpoint-4 recovery snapshot was independently restored and
+verified before publication: SHA-256
+`b13fee70a33962fcf338c0c5d399fb31f1ae318dcaee7123da31f804c5d2c8a9`.
+It preserves exact model/optimizer/RNG and the iteration-4 replay generation.
+The [published pointer](../progress/campaign-v2/snapshot.json) uses the tested
+`campaign-checkpoints` branch fallback because release-asset upload credentials
+remain insufficient. No newer local run was overwritten.

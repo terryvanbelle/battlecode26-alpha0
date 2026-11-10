@@ -11,8 +11,10 @@ import sys
 import time
 import traceback
 
-from .evaluate import atomic_json, evaluate_checkpoint
+from .evaluate import atomic_json, evaluate_checkpoint, fingerprint
+from .gate_config import training_excluded_maps
 from .learn_v2 import Learner
+from .victory import evaluate_victory
 
 
 def now():
@@ -28,16 +30,25 @@ class Campaign:
         self.stop_file = self.directory / "STOP"
         self.config = json.loads((config_path or self.root / "configs/campaign-v2.json").read_text())
         gate = json.loads((self.root / "configs/victory_gate.json").read_text())
+        if gate.get("schema_version") != 2:
+            raise ValueError("Campaign requires the current all-map victory gate")
+        self.gate_id, self.gate_hash = gate["gate_id"], fingerprint(gate)
         self.panel_ids = {bot["id"] for bot in gate["frozen_opponents"]}
+        self.map_names = {entry["name"] for entry in gate["frozen_maps"]}
         if len(self.panel_ids) != gate["required_opponents"]:
             raise ValueError("Victory gate must contain exactly its declared frozen opponents")
-        overlap = set(self.config["maps"]) & set(gate["stages"]["holdout"]["maps"])
+        if len(self.map_names) != gate["required_maps"]:
+            raise ValueError("Victory gate must contain exactly its declared frozen maps")
+        overlap = set(self.config["maps"]) & training_excluded_maps(gate)
         if overlap:
             raise ValueError(f"Training maps overlap the reserved confirmation maps: {sorted(overlap)}")
         self.started = time.monotonic()
         self.deadline = self.started + hours * 3600
         self.cycle = {"started_at": now(), "budget_hours": hours, "pid": os.getpid(),
-                      "experiment_id": self.config["experiment_id"], "all_opponents_beaten": False}
+                      "experiment_id": self.config["experiment_id"], "all_opponents_beaten": False,
+                      "gate_id": self.gate_id, "gate_config_sha256": self.gate_hash,
+                      "required_maps": len(self.map_names),
+                      "required_opponent_map_pairs": len(self.panel_ids) * len(self.map_names)}
         self.learner = Learner(self.run, self.config, self.progress)
 
     def status(self, phase: str, **extra):
@@ -87,25 +98,41 @@ class Campaign:
 
     def evaluation(self, stage: str):
         self.status("evaluating", evaluation_stage=stage)
-        report = evaluate_checkpoint(
-            self.learner.checkpoint_path, iteration=self.learner.iteration,
-            suite="smoke" if stage == "smoke" else "victory_gate", gate_stage=stage if stage != "smoke" else "standard",
-            progress_dir=self.progress, jobs=self.config["workers"],
-            timeout_seconds=self.config["game_timeout_seconds"],
-            deadline=self.deadline, stop_file=self.stop_file)
+        arguments = dict(iteration=self.learner.iteration, progress_dir=self.progress,
+                         jobs=self.config["workers"], timeout_seconds=self.config["game_timeout_seconds"],
+                         deadline=self.deadline, stop_file=self.stop_file)
+        if stage == "smoke":
+            report = evaluate_checkpoint(self.learner.checkpoint_path, suite="smoke", **arguments)
+        else:
+            report = evaluate_victory(self.learner.checkpoint_path, stage=stage, root=self.root,
+                manifest_path=self.root / "configs/benchmarks.json", maps_dir=self.root / "maps",
+                gate_path=self.root / "configs/victory_gate.json",
+                gate_ledger_dir=self.root / "runs/gate-ledgers", **arguments)
         # Keep a small index for human review; authoritative reports retain identities.
         summary = {key: report[key] for key in ("iteration", "checkpoint_sha256", "evaluation_config_sha256",
                    "suite", "stage", "expected", "completed", "unresolved_errors", "full_panel_complete", "opponents")}
         summary["passed"] = report.get("passed", False)
+        for key in ("gate_id", "gate_config_sha256", "map_inventory_sha256", "all_maps_complete",
+                    "victory_gate_passed", "confirmation_ledger"):
+            if key in report:
+                summary[key] = report[key]
         atomic_json(self.progress / f"latest-{stage}.json", summary)
         self.plots()
         return report
 
-    def assessment_issue(self, report: dict) -> str | None:
+    def assessment_issue(self, report: dict, stage: str = "smoke") -> str | None:
         if not report["complete"]:
             return "evaluation_error" if report["unresolved_errors"] else "budget_or_stop"
         # A complete subset or malformed report must not advance the campaign.
         if not report.get("full_panel_complete") or set(report.get("opponents", {})) != self.panel_ids:
+            return "evaluation_error"
+        if report["unresolved_errors"]:
+            return "evaluation_error"
+        if stage != "smoke" and (
+            report.get("gate_id") != self.gate_id or report.get("gate_config_sha256") != self.gate_hash or
+            not report.get("all_maps_complete") or
+            any(set(opponent.get("maps", {})) != self.map_names for opponent in report["opponents"].values())
+        ):
             return "evaluation_error"
         return None
 
@@ -122,25 +149,32 @@ class Campaign:
             promising = all(s["mean_score"] >= 0.5 for s in smoke["opponents"].values())
         else:
             promising = False
-        if (iteration > 0 and iteration % self.config["standard_eval_every"] == 0) or promising:
+        # The expanded 3,552-game qualification is justified only after every
+        # opponent passes the cheap screening floor. A periodic weak checkpoint
+        # does not warrant thousands of games; smoke itself never grants victory.
+        if promising:
             if self.stopped():
                 return "budget_or_stop"
             standard = self.evaluation("standard")
-            issue = self.assessment_issue(standard)
+            issue = self.assessment_issue(standard, "standard")
             if issue:
                 return issue
             if standard["passed"]:
                 if self.stopped():
                     return "budget_or_stop"
-                holdout = self.evaluation("holdout")
-                issue = self.assessment_issue(holdout)
+                confirmation = self.evaluation("confirmation")
+                issue = self.assessment_issue(confirmation, "confirmation")
                 if issue:
                     return issue
-                if holdout["passed"] and holdout["victory_gate_passed"]:
+                same_candidate = all(standard.get(key) is not None and standard[key] == confirmation.get(key)
+                    for key in ("checkpoint_sha256", "evaluation_config_sha256"))
+                if not same_candidate:
+                    return "evaluation_error"
+                if confirmation["passed"] and confirmation["victory_gate_passed"]:
                     return "victory"
-                # A failed held-out confirmation is consumed. An agent must design
-                # and freeze a fresh disjoint confirmation before another candidate.
-                return "holdout_consumed_review_required"
+                # A failed confirmation consumes its seeds. Freeze a fresh unused
+                # seed set on the same complete map inventory for a later candidate.
+                return "confirmation_consumed_review_required"
         return "continue"
 
     def run_cycle(self):
@@ -179,8 +213,8 @@ def main():
     parser.add_argument("--hours", type=float, default=3)
     parser.add_argument("--config", type=Path)
     args = parser.parse_args()
-    if not 0 < args.hours <= 4:
-        parser.error("A review cycle must be greater than zero and no longer than four hours")
+    if not 0 < args.hours <= 3:
+        parser.error("A review cycle must be greater than zero and no longer than three hours")
     campaign = None
     try:
         campaign = Campaign(args.root, args.hours, config_path=args.config)

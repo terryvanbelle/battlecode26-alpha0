@@ -76,6 +76,26 @@ class InitializationTests(unittest.TestCase):
         self.assertEqual(first.config, later.config)
         self.assertEqual(later.target_iteration, 2)
 
+    def test_all_maps_gate_keeps_training_exclusions_and_rejects_unknown_schema(self):
+        directory = self.directory / "configs"
+        directory.mkdir()
+        path = directory / "victory_gate.json"
+        gate = {"schema_version": 2, "frozen_opponents": [{"id": str(i)} for i in range(12)],
+                "training_excluded_maps": ["Stash"],
+                "stages": {"standard": {"maps": ["tiny", "Stash"]}, "confirmation": {"maps": ["tiny", "Stash"]}}}
+        path.write_text(json.dumps(gate))
+        self.assertEqual(W.Experiment(self.directory, self.config, 2, target_iteration=3).target_iteration, 3)
+        overlapping = {**self.config, "maps": ["Stash"]}
+        with self.assertRaisesRegex(ValueError, "training exclusions"):
+            W.Experiment(self.directory, overlapping, 2)
+        for invalid in ({**gate, "schema_version": 99}, {k: v for k, v in gate.items() if k != "training_excluded_maps"}):
+            path.write_text(json.dumps(invalid))
+            with self.assertRaises(ValueError):
+                W.Experiment(self.directory, self.config, 2)
+        path.write_text(json.dumps({"schema_version": 1, "frozen_opponents": gate["frozen_opponents"],
+                                    "stages": {"holdout": {"maps": ["Stash"]}}}))
+        self.assertEqual(W.Experiment(self.directory, self.config, 2).target_iteration, 1)
+
     def test_second_process_cannot_acquire_run_lock(self):
         run = self.directory/"runs/warmstart-v3"
         run.mkdir(parents=True)
