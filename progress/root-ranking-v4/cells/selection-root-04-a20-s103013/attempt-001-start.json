@@ -1,0 +1,18 @@
+{
+  "action": 20,
+  "attempt": 1,
+  "experiment_identity": "35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162",
+  "identity": "8b3ed3068b738f05e8a7a7ee93b27a36233c56c71eed0c17dc2b3f5a94e917ad",
+  "root_id": "root-04",
+  "root_player": 1,
+  "root_prefix_sha256": "514453ca4f388f1d9d7085f1c2aa3b5e9bdb4aad15bd86dd673c4cfa778287a1",
+  "root_state_sha256": "fafa6119deeb59869cca4261b4c33e274cf0d18b3847150b29338522bc02c6e9",
+  "roots_sha256": "8acb333c8ecaec50cdbd5cc7a4637315e830dce792dd98c0bb3b40a6ad46a536",
+  "score": null,
+  "seed": 103013,
+  "stage": "selection",
+  "started_at": "2026-11-10T05:55:37.786964+00:00",
+  "status": "incomplete",
+  "temperature": 0.35,
+  "terminal": false
+}

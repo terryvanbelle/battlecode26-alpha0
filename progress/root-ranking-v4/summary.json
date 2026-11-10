@@ -1084,26 +1084,59 @@
       "round": 49,
       "seed": 1155343044,
       "selection": {
-        "action_scores": {},
-        "complete": false,
-        "completed": 0,
+        "action_scores": {
+          "0": 0.0,
+          "1": 1.0,
+          "17": 1.0,
+          "19": 1.0,
+          "2": 0.0,
+          "20": 0.0,
+          "21": 0.0,
+          "22": 0.0,
+          "23": 0.0,
+          "24": 0.0,
+          "28": 0.0,
+          "29": 0.0,
+          "3": 0.0,
+          "32": 0.0,
+          "37": 0.0,
+          "38": 0.0,
+          "39": 1.0,
+          "4": 1.0,
+          "5": 0.0,
+          "6": 0.0,
+          "7": 0.0,
+          "8": 0.0
+        },
+        "complete": true,
+        "completed": 44,
         "errors": 0,
         "expected": 44,
-        "selected_action": null
+        "selected_action": 4
       },
       "state_sha256": "fafa6119deeb59869cca4261b4c33e274cf0d18b3847150b29338522bc02c6e9",
       "validation": {
-        "complete": false,
-        "completed_unique_cells": 0,
-        "delta": null,
+        "complete": true,
+        "completed_unique_cells": 8,
+        "delta": 1.0,
         "errors": 0,
-        "expected_unique_cells": 0,
+        "expected_unique_cells": 8,
         "puct_action": 21,
-        "puct_mean": null,
-        "puct_scores": [],
-        "rollout_action": null,
-        "rollout_mean": null,
-        "rollout_scores": [],
+        "puct_mean": 0.0,
+        "puct_scores": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rollout_action": 4,
+        "rollout_mean": 1.0,
+        "rollout_scores": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
         "seeds": [
           103021,
           103043,
@@ -1284,9 +1317,26 @@
       "round": 107,
       "seed": 1155343044,
       "selection": {
-        "action_scores": {},
+        "action_scores": {
+          "0": 1.0,
+          "1": 1.0,
+          "14": 1.0,
+          "15": 1.0,
+          "16": 1.0,
+          "17": 1.0,
+          "19": 1.0,
+          "2": 1.0,
+          "21": 1.0,
+          "22": 1.0,
+          "3": 1.0,
+          "4": 1.0,
+          "5": 1.0,
+          "6": 1.0,
+          "7": 1.0,
+          "8": 1.0
+        },
         "complete": false,
-        "completed": 0,
+        "completed": 32,
         "errors": 0,
         "expected": 52,
         "selected_action": null
@@ -1749,11 +1799,11 @@
   ],
   "totals": {
     "attempt_errors": 0,
-    "selection_completed": 176,
+    "selection_completed": 252,
     "selection_expected": 374,
-    "terminal_games_completed": 200,
-    "validation_completed_unique": 24,
-    "validation_expected_unique": 24
+    "terminal_games_completed": 284,
+    "validation_completed_unique": 32,
+    "validation_expected_unique": 32
   },
-  "updated_at": "2026-11-10T05:51:22.259789+00:00"
+  "updated_at": "2026-11-10T06:04:36.715832+00:00"
 }

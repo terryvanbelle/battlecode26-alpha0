@@ -181,6 +181,14 @@ checkpoint selection prevent a simultaneous 95% superiority claim.
 
 ## Finite, recoverable research cycles
 
+The current plateau response is the [terminal-root-ranking-v4 comparison](root-ranking-v4.md):
+fixed checkpoint 2, all legal actions at eight frozen own-self-play roots,
+separate selection/validation seeds, no gradients, and a two-hour resumable
+limit. Its [progress](../progress/root-ranking-v4/README.md) must satisfy the
+precommitted research decision rule before review of any subsequent SGD pilot.
+The cycle limits below do not authorize repeating the stagnant warmstart
+configuration while that test is unresolved.
+
 Each cycle is bounded by four training iterations, eight complete games per
 iteration, and **three hours** under the user's current instruction. These are operational limits on one
 recoverable job, not tournament restrictions and not an overall limit on the

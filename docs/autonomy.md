@@ -8,7 +8,33 @@ Routine smoke or other predeclared small-subset diagnostics guide research. Auto
 
 Confirmation uses four fresh seeds on all maps, not a disjoint map set. Lock one candidate per version before the first game. Failed confirmation consumes the seed set; a later candidate needs a new version and four unused seeds across the complete inventory. Keep `Stash`, `Hike`, `heart` and `ratsareants` out of gradient training through the entire initialization lineage, reserve confirmation seeds, and exclude every benchmark trajectory from training.
 
-## Run one cycle
+## Current research boundary
+
+The neutral campaign is preserved at checkpoint 4 and warmstart at checkpoint 2.
+Neither is currently authorized to repeat unchanged SGD while the
+[terminal-root-ranking-v4 mechanism test](root-ranking-v4.md) is unresolved.
+Inspect `runs/root-ranking-v4/status.json`, the actual process commands and all
+three locks before launching anything. A healthy diagnostic owns its own lock
+and the neutral/warmstart locks; inspect its progress without starting another
+actor. Its [published evidence](../progress/root-ranking-v4/README.md) is separate
+from benchmark qualification.
+
+To resume missing diagnostic cells with unchanged source/configuration:
+
+```bash
+.venv/bin/python -u -m alpha0.root_ranking_v4 --seconds 7200
+```
+
+It respects `runs/campaign/STOP`, `runs/warmstart-v3/STOP` and
+`runs/root-ranking-v4/STOP`, and enforces a two-hour wall deadline. Restore its
+tracked `progress/root-ranking-v4/` records and the separately verified warmstart
+checkpoint-2 dependency before resuming. Never replace current source/gate or
+newer progress with files from the historical warmstart archive. A completed
+diagnostic requires research review; a pass only permits a separately versioned
+training pilot, and a failure requires a reasoned new experiment rather than
+unchanged target-3 training.
+
+## Run one neutral campaign cycle
 
 From this checkout, after bootstrap:
 
