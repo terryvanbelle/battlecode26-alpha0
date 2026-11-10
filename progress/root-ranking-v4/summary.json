@@ -644,27 +644,58 @@
       "seed": 738453664,
       "selection": {
         "action_scores": {
-          "0": 0.0
+          "0": 0.0,
+          "1": 0.0,
+          "19": 0.0,
+          "2": 0.0,
+          "20": 0.0,
+          "21": 0.0,
+          "22": 0.0,
+          "23": 0.0,
+          "24": 0.0,
+          "28": 0.0,
+          "29": 0.5,
+          "3": 0.0,
+          "31": 0.0,
+          "32": 0.0,
+          "37": 0.0,
+          "38": 0.0,
+          "39": 0.0,
+          "4": 0.5,
+          "5": 0.0,
+          "6": 0.0,
+          "7": 0.0,
+          "8": 0.0
         },
-        "complete": false,
-        "completed": 3,
+        "complete": true,
+        "completed": 44,
         "errors": 0,
         "expected": 44,
-        "selected_action": null
+        "selected_action": 4
       },
       "state_sha256": "901b365cadb347c3bce6b89df5d043b574fa078f0adbe0aa171e2298a02cd11e",
       "validation": {
-        "complete": false,
-        "completed_unique_cells": 0,
-        "delta": null,
+        "complete": true,
+        "completed_unique_cells": 8,
+        "delta": -0.25,
         "errors": 0,
-        "expected_unique_cells": 0,
+        "expected_unique_cells": 8,
         "puct_action": 21,
-        "puct_mean": null,
-        "puct_scores": [],
-        "rollout_action": null,
-        "rollout_mean": null,
-        "rollout_scores": [],
+        "puct_mean": 0.25,
+        "puct_scores": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rollout_action": 4,
+        "rollout_mean": 0.0,
+        "rollout_scores": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
         "seeds": [
           103021,
           103043,
@@ -831,26 +862,56 @@
       "round": 63,
       "seed": 738453664,
       "selection": {
-        "action_scores": {},
-        "complete": false,
-        "completed": 0,
+        "action_scores": {
+          "0": 1.0,
+          "1": 1.0,
+          "17": 1.0,
+          "19": 1.0,
+          "21": 1.0,
+          "22": 1.0,
+          "23": 1.0,
+          "24": 1.0,
+          "25": 1.0,
+          "28": 1.0,
+          "3": 1.0,
+          "37": 1.0,
+          "38": 1.0,
+          "39": 1.0,
+          "4": 1.0,
+          "5": 1.0,
+          "6": 1.0,
+          "7": 1.0,
+          "8": 1.0
+        },
+        "complete": true,
+        "completed": 38,
         "errors": 0,
         "expected": 38,
-        "selected_action": null
+        "selected_action": 21
       },
       "state_sha256": "a498c2d2c73f0c1711ddf9c6fcaade5ddd92bcbfba14ee06b733239756d91a72",
       "validation": {
-        "complete": false,
-        "completed_unique_cells": 0,
-        "delta": null,
+        "complete": true,
+        "completed_unique_cells": 4,
+        "delta": 0.0,
         "errors": 0,
-        "expected_unique_cells": 0,
+        "expected_unique_cells": 4,
         "puct_action": 21,
-        "puct_mean": null,
-        "puct_scores": [],
-        "rollout_action": null,
-        "rollout_mean": null,
-        "rollout_scores": [],
+        "puct_mean": 1.0,
+        "puct_scores": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "rollout_action": 21,
+        "rollout_mean": 1.0,
+        "rollout_scores": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
         "seeds": [
           103021,
           103043,
@@ -1688,11 +1749,11 @@
   ],
   "totals": {
     "attempt_errors": 0,
-    "selection_completed": 97,
+    "selection_completed": 176,
     "selection_expected": 374,
-    "terminal_games_completed": 109,
-    "validation_completed_unique": 12,
-    "validation_expected_unique": 12
+    "terminal_games_completed": 200,
+    "validation_completed_unique": 24,
+    "validation_expected_unique": 24
   },
-  "updated_at": "2026-11-10T05:41:29.099961+00:00"
+  "updated_at": "2026-11-10T05:51:22.259789+00:00"
 }
