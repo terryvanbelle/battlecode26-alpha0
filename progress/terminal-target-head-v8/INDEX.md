@@ -1,6 +1,6 @@
 # Follow V8 progress
 
-**Current published benchmark snapshot (2026-11-10 20:45 UTC):** fresh cp2 control complete; terminal candidate evaluation running. The live run may be ahead of this snapshot.
+**Current review (2026-11-10):** the first cycle paused at its three-hour deadline with 412 valid benchmark games. Two in-flight games are being recovered after independently verified supervisor SIGTERM interruptions. [Exact recovery review](reviews/deadline-recovery-20261110.json). The raw attempt records remain unchanged; no scored game is rerun. The dashboard may be ahead of the earlier snapshot below.
 
 - Collection: all 1,508 selection continuations valid, zero unresolved errors.
 - Fitting: both fixed 2,048-update heads match all 32 training targets. The terminal head changes 14 training actions; the matched PUCT head changes none.
