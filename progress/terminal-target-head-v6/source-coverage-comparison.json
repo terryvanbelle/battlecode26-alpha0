@@ -1,0 +1,2965 @@
+{
+  "analysis": "paired-source-slot-coverage-v1",
+  "benchmark_data_used": false,
+  "cache_hashes": "Recorded in source JSON; caches were not reopened for this read-only coverage comparison.",
+  "created_at": "2026-11-10T08:00:44.372223+00:00",
+  "helper_sha256": "9e40e401c1f47f0c4a08da79879ed1780d6481499be082506ee7b6c7d970d6c1",
+  "outcomes_used_for_selection_or_comparison": false,
+  "paired_initial_training_games": [
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620002,
+        620003
+      ],
+      "seed": 20261201,
+      "source_id": "training-m0-j1"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620004,
+        620005
+      ],
+      "seed": 20261202,
+      "source_id": "training-m0-j2"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620006,
+        620007
+      ],
+      "seed": 20261203,
+      "source_id": "training-m0-j3"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620008,
+        620009
+      ],
+      "seed": 20261204,
+      "source_id": "training-m0-j4"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620202,
+        620203
+      ],
+      "seed": 20261301,
+      "source_id": "training-m1-j1"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620204,
+        620205
+      ],
+      "seed": 20261302,
+      "source_id": "training-m1-j2"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620206,
+        620207
+      ],
+      "seed": 20261303,
+      "source_id": "training-m1-j3"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620208,
+        620209
+      ],
+      "seed": 20261304,
+      "source_id": "training-m1-j4"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620402,
+        620403
+      ],
+      "seed": 20261401,
+      "source_id": "training-m2-j1"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620404,
+        620405
+      ],
+      "seed": 20261402,
+      "source_id": "training-m2-j2"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620406,
+        620407
+      ],
+      "seed": 20261403,
+      "source_id": "training-m2-j3"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620408,
+        620409
+      ],
+      "seed": 20261404,
+      "source_id": "training-m2-j4"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620602,
+        620603
+      ],
+      "seed": 20261501,
+      "source_id": "training-m3-j1"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620604,
+        620605
+      ],
+      "seed": 20261502,
+      "source_id": "training-m3-j2"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620606,
+        620607
+      ],
+      "seed": 20261503,
+      "source_id": "training-m3-j3"
+    },
+    {
+      "both_observed": true,
+      "policy_seeds": [
+        620608,
+        620609
+      ],
+      "seed": 20261504,
+      "source_id": "training-m3-j4"
+    }
+  ],
+  "paired_initial_training_games_observed": 16,
+  "reporting_note": "The pinned generic v6 coverage plot labels fully scored validation roots as 'Validation roots'. This separate figure counts collected source roots; no pinned file was changed during active collection.",
+  "schema_version": 1,
+  "scope": "Source temperature coverage amendment; not playing strength, learning transfer, or victory.",
+  "source_file_hashes": {
+    "progress/terminal-target-head-v5/config.json": "2eada34773f9952e9cdd41f255514bafba6caa5db0d8e94b77d33a8c6e81351f",
+    "progress/terminal-target-head-v5/identity.json": "689422b96fda65d711671e7c857b2752097d37b39a9f437debbfac47c00202ed",
+    "progress/terminal-target-head-v5/roots-training.json": "75661c3cab6f36278954d95e250f519c35e6597ea545522b8cec28203127e402",
+    "progress/terminal-target-head-v6/config.json": "de541243c0c0580d47659e4d00ce0169a1e2f3236614b833cf675c18f4caf620",
+    "progress/terminal-target-head-v6/identity.json": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c",
+    "progress/terminal-target-head-v6/roots-training.json": "0ed150534c8c60155bcfe33f0a5cfe0a24ef283cf8ce18b3c011e9d45500a36f",
+    "progress/terminal-target-head-v6/roots-validation.json": "14552424f106bf83ffac3f98265c5f5f859e111a854c573e34b3d283f3e4be1d",
+    "runs/terminal-target-head-v5/sources/training-m0-j1.json": "4ae118ea6e7518161c10ad558593e5bb6b7f8a80e0663c7833d15b7e0ed46f19",
+    "runs/terminal-target-head-v5/sources/training-m0-j2.json": "042bed6a8420b0c77d54da71c70ceda735435b0bcea2b8a17e47a12b0525fbcb",
+    "runs/terminal-target-head-v5/sources/training-m0-j3.json": "a215a53e46e10e92bbfd1dc992e8fa2066f4309d87290a2142acd466814bfef2",
+    "runs/terminal-target-head-v5/sources/training-m0-j4.json": "237743de7d13bcb92b14f3f68cf068001f6719a8fc2bc1e15a16a92e4912477f",
+    "runs/terminal-target-head-v5/sources/training-m1-j1.json": "0d1d0c50f0a9eb16e7ebd1bf8e721e616e6d34762a41b1ba62278bd0b11282f9",
+    "runs/terminal-target-head-v5/sources/training-m1-j2.json": "ff6f63db9ecdaf41726608edad5a9dced032a80e90c72a7654c2a8b9c1790c18",
+    "runs/terminal-target-head-v5/sources/training-m1-j3.json": "b40bc339e94476773f8bd0ab1005bdd24a0be2181e648832fbb8d63f40aa4435",
+    "runs/terminal-target-head-v5/sources/training-m1-j4.json": "a4bc2cac472316b44eeeae7346e91ff9cab0e835f52ef21491bcd7d87587f2f5",
+    "runs/terminal-target-head-v5/sources/training-m2-j1.json": "273ebbf0173ed84f0e0bfb241e459874b3acf58e614a421fbe350811cbbf1c4b",
+    "runs/terminal-target-head-v5/sources/training-m2-j2.json": "43d24d4994c9e016ae1ad29afa19be1c869f753b80a355fdb67f1301f7624b74",
+    "runs/terminal-target-head-v5/sources/training-m2-j3.json": "285938c6073cd0d034ad660e60000651f88cfe0c45fb9d9c086fd490fddd3ae3",
+    "runs/terminal-target-head-v5/sources/training-m2-j4.json": "e2e3bce39fc0769907c53d59a557fefd07e0022c65a76fd33b7f2406092a05ae",
+    "runs/terminal-target-head-v5/sources/training-m2-j5.json": "a66f7889cc7ebab7c9a57380e77c6b7d06f8aef6a9c242c92f36c9384fd3a594",
+    "runs/terminal-target-head-v5/sources/training-m2-j6.json": "bcddab707fe41adf72c36060d8e07c2d4b798e9274e4c1f95ac32e4fd8a7265d",
+    "runs/terminal-target-head-v5/sources/training-m2-j7.json": "994164fc3b2addb952ddd9d6158d06560e036013a5a5fbc095759953982acb3d",
+    "runs/terminal-target-head-v5/sources/training-m2-j8.json": "151a0caa6c127774c6cf2cd7bd6fc144c2676afe65e868db87c3b84b3ed399ac",
+    "runs/terminal-target-head-v5/sources/training-m3-j1.json": "ae3f181a88c9f82899f6db6969d7b7ee125f544038cfa15fccf95ec488748ef8",
+    "runs/terminal-target-head-v5/sources/training-m3-j2.json": "5dfcd9a9cf8e3b522432294f6c3aa35a79c0afee7df192248d6ed0c5969ca1a3",
+    "runs/terminal-target-head-v5/sources/training-m3-j3.json": "b3165fa88a88f1422c1270e850a23ec9db9f0a7db6147bff362064985a825b92",
+    "runs/terminal-target-head-v5/sources/training-m3-j4.json": "c9cca308f140afc3c70b212a98e03379d32fcd9c6d3724cb3b90d90f5e472963",
+    "runs/terminal-target-head-v6/sources/training-m0-j1.json": "40134e7c0d0ffae2cb177457b63cd9bd1c0a6a6da63ce54ec0c96dbce4a7335d",
+    "runs/terminal-target-head-v6/sources/training-m0-j2.json": "cf2563dd892cbd2846760501ed5ad4a536f64e7e3b4fe4c78c5de97a3481b5ac",
+    "runs/terminal-target-head-v6/sources/training-m0-j3.json": "65a9bb00f94e24964e59b2d00c90d8991ee4544595d2e58dc205a7fc052f42bc",
+    "runs/terminal-target-head-v6/sources/training-m0-j4.json": "fa6bb30488671bb2f98d11047a826b9bdfcc30f5de2dbf738994c12da14de64f",
+    "runs/terminal-target-head-v6/sources/training-m1-j1.json": "f322908fa96af8545e0dde767a603ed085cb474fee6a4a3e6d2fa015529997d8",
+    "runs/terminal-target-head-v6/sources/training-m1-j2.json": "6e9f5bed567d8b81620d954381720fc7079317bfcfd960dc2c3c7d156fc0a057",
+    "runs/terminal-target-head-v6/sources/training-m1-j3.json": "f0aeba0c0988c8ec92f08d5c2147dca71c6104cb7c1c1d73ffb4350f20bb5384",
+    "runs/terminal-target-head-v6/sources/training-m1-j4.json": "d446398b74be28a5bfd5b33847037573a47b1d1892989de6221b449a540c1197",
+    "runs/terminal-target-head-v6/sources/training-m2-j1.json": "4622d41bf45b6c2b87422b87ba8021a03c870072697aae0bbfd3061c1edcc682",
+    "runs/terminal-target-head-v6/sources/training-m2-j2.json": "71a1e3c65b80630fdf9c82c9f38ec5a4409d4bd818aa4cfc24393e57db65ae7c",
+    "runs/terminal-target-head-v6/sources/training-m2-j3.json": "3334b0c773f3f4c316a1e8c83a85cab9f25a176e05621e32907acf8d9e8d75f6",
+    "runs/terminal-target-head-v6/sources/training-m2-j4.json": "4e4cb6159cea860df0a58a894993ecd632389d1044358dd1e01db6e5e5a5a4d4",
+    "runs/terminal-target-head-v6/sources/training-m2-j5.json": "ab49acd58f9f07456c6a093633eabc60f149d52fdd2d52f9a42379ebe6257f0a",
+    "runs/terminal-target-head-v6/sources/training-m2-j6.json": "1bea19770728057cccc5fbd63540863189802cff60bf127b73ba9da60819eb4e",
+    "runs/terminal-target-head-v6/sources/training-m2-j8.json": "c152345504cea5a2d02733fe8e709de4bebaff994d395b9acc757c86fa2ae251",
+    "runs/terminal-target-head-v6/sources/training-m3-j1.json": "19385af8ea8e28270004eb49ea34b74c01a62602c84a519b750c89a4e9e5841f",
+    "runs/terminal-target-head-v6/sources/training-m3-j2.json": "8c39a8dbfbaecd1983a1354368d695603a5c0d0e1e12f5a02a27a0f80c776a45",
+    "runs/terminal-target-head-v6/sources/training-m3-j3.json": "8fd5954d199db54246beda4d5b0a3b4cd60e33e8143f9c09fb965f8cdef32f98",
+    "runs/terminal-target-head-v6/sources/training-m3-j4.json": "e431c7a0ea88809c310280d2b05be98c45eacdd80b742b93701a88f935759685",
+    "runs/terminal-target-head-v6/sources/validation-m0-j1.json": "e7bb68295908c9fc0d46b8c8dbb8eeaf6e5fee88a15aef7aa4d3c1672015c417",
+    "runs/terminal-target-head-v6/sources/validation-m0-j2.json": "0ccb3d1f85bc44ef4741ee16fc220ffb89bd1a1b0b0d98157d245de3be77af42",
+    "runs/terminal-target-head-v6/sources/validation-m1-j1.json": "59183c9ce1e5454009374cf552b56a7702b118a0d296021e861c52b6426a2078",
+    "runs/terminal-target-head-v6/sources/validation-m1-j2.json": "f2e9cd4028470f8beb32c0cfae2c6741e60ea41613818485398887d9d7eb2761",
+    "runs/terminal-target-head-v6/sources/validation-m2-j1.json": "45546e6a6fccbb6cf44c66acab08e35a417f460842cd5dd9208733357e359e88",
+    "runs/terminal-target-head-v6/sources/validation-m2-j2.json": "11dcbb815511ecb3bf32857f421a04d75ee9422e81a1a684072e384dc2135f6c",
+    "runs/terminal-target-head-v6/sources/validation-m2-j4.json": "92b3f4a693b2073924bd1a38a2968feb7b20b7af03fe428ad7ced6ebcd0d2aca",
+    "runs/terminal-target-head-v6/sources/validation-m3-j1.json": "2bacae4df386a24f1e419984ded5e40b0182de94a4bb6362159818e1b69248db",
+    "runs/terminal-target-head-v6/sources/validation-m3-j2.json": "a12d52db8fd073e53ba305f4d475daaf1b67220ee2aaaf88fca5fb168b183fe6"
+  },
+  "source_file_hashes_sha256": "433084130520376e2d3fa14118318b494f464d3d39f59b98380e176349ea98a4",
+  "versions": {
+    "v5": {
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "continuation_temperature": 0.35,
+      "engine_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "experiment_identity_sha256": "f28ce105ff9c6e9da536aef14e1686ef70c401739c5bdceb24a5d596928d1313",
+      "source_temperature": 0.35,
+      "sources": {
+        "training-m0-j1": {
+          "cache_sha256_recorded": "afaaebb2037a7d22173225dc0515c5ced6832e8f17cf7128a4132a118b965c6a",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620002,
+            620003
+          ],
+          "seed": 20261201,
+          "source_id": "training-m0-j1",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m0-j1.json",
+          "source_sha256": "4ae118ea6e7518161c10ad558593e5bb6b7f8a80e0663c7833d15b7e0ed46f19",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m0-j2": {
+          "cache_sha256_recorded": "7af1390e783874cfbe5ed8a897cc24cc1c5b07b2bb76db276b9b027c4d1db35c",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620004,
+            620005
+          ],
+          "seed": 20261202,
+          "source_id": "training-m0-j2",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m0-j2.json",
+          "source_sha256": "042bed6a8420b0c77d54da71c70ceda735435b0bcea2b8a17e47a12b0525fbcb",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m0-j3": {
+          "cache_sha256_recorded": "dc32e7f754fd6b820d79f1f78bb63ceba13bfccd44772f7d685efb105893d3f6",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620006,
+            620007
+          ],
+          "seed": 20261203,
+          "source_id": "training-m0-j3",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m0-j3.json",
+          "source_sha256": "a215a53e46e10e92bbfd1dc992e8fa2066f4309d87290a2142acd466814bfef2",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m0-j4": {
+          "cache_sha256_recorded": "36687ffcc6fee8ea30611dfbd99ad8c770fa5fabdae53d8fd7136a5d4d96c86a",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 4,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620008,
+            620009
+          ],
+          "seed": 20261204,
+          "source_id": "training-m0-j4",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m0-j4.json",
+          "source_sha256": "237743de7d13bcb92b14f3f68cf068001f6719a8fc2bc1e15a16a92e4912477f",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m1-j1": {
+          "cache_sha256_recorded": "31229f119ea0a802001ed9cfa2d702397e18dc538b8e3eafa9cfccacb471f99b",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620202,
+            620203
+          ],
+          "seed": 20261301,
+          "source_id": "training-m1-j1",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m1-j1.json",
+          "source_sha256": "0d1d0c50f0a9eb16e7ebd1bf8e721e616e6d34762a41b1ba62278bd0b11282f9",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m1-j2": {
+          "cache_sha256_recorded": "f0d3d444420c385be85a1c1562d651fb3378eef07092f287860bb686377b16c4",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620204,
+            620205
+          ],
+          "seed": 20261302,
+          "source_id": "training-m1-j2",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m1-j2.json",
+          "source_sha256": "ff6f63db9ecdaf41726608edad5a9dced032a80e90c72a7654c2a8b9c1790c18",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m1-j3": {
+          "cache_sha256_recorded": "f126198c2e4d0cb2289c213069b7dde0c332f9aea596f8a6ccb51be98bb66e28",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620206,
+            620207
+          ],
+          "seed": 20261303,
+          "source_id": "training-m1-j3",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m1-j3.json",
+          "source_sha256": "b40bc339e94476773f8bd0ab1005bdd24a0be2181e648832fbb8d63f40aa4435",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m1-j4": {
+          "cache_sha256_recorded": "d137d62eba2bb3ce3b9ffa14e002fed6defa1e8cfa515d41f9e04441b78b64ff",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 4,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620208,
+            620209
+          ],
+          "seed": 20261304,
+          "source_id": "training-m1-j4",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m1-j4.json",
+          "source_sha256": "a4bc2cac472316b44eeeae7346e91ff9cab0e835f52ef21491bcd7d87587f2f5",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j1": {
+          "cache_sha256_recorded": "8ad952430006cb2baee63338ecb1b7505261949aff1735cbda21637946a80e8d",
+          "candidate_slots": [],
+          "j": 1,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620402,
+            620403
+          ],
+          "seed": 20261401,
+          "source_id": "training-m2-j1",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j1.json",
+          "source_sha256": "273ebbf0173ed84f0e0bfb241e459874b3acf58e614a421fbe350811cbbf1c4b",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j2": {
+          "cache_sha256_recorded": "0fe63e5d8b007530215b22d991490efe7454299b470fd9a87b49a45d47ddb4a1",
+          "candidate_slots": [],
+          "j": 2,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620404,
+            620405
+          ],
+          "seed": 20261402,
+          "source_id": "training-m2-j2",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j2.json",
+          "source_sha256": "43d24d4994c9e016ae1ad29afa19be1c869f753b80a355fdb67f1301f7624b74",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j3": {
+          "cache_sha256_recorded": "67969b04f7ee97e503c3ca99cbbdb02b1d447625e8b02153e718b7d8cd818c9f",
+          "candidate_slots": [],
+          "j": 3,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620406,
+            620407
+          ],
+          "seed": 20261403,
+          "source_id": "training-m2-j3",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j3.json",
+          "source_sha256": "285938c6073cd0d034ad660e60000651f88cfe0c45fb9d9c086fd490fddd3ae3",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j4": {
+          "cache_sha256_recorded": "c4cd8c93fc2396721d8108130ed797ef988e34a8c57d6614d18e59af6a65a6f8",
+          "candidate_slots": [],
+          "j": 4,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620408,
+            620409
+          ],
+          "seed": 20261404,
+          "source_id": "training-m2-j4",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j4.json",
+          "source_sha256": "e2e3bce39fc0769907c53d59a557fefd07e0022c65a76fd33b7f2406092a05ae",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j5": {
+          "cache_sha256_recorded": "03dba47830394fe6bce58a75aeb8ceeacd270b91ff30677c501b17483e10aece",
+          "candidate_slots": [],
+          "j": 5,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620410,
+            620411
+          ],
+          "seed": 20261405,
+          "source_id": "training-m2-j5",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j5.json",
+          "source_sha256": "a66f7889cc7ebab7c9a57380e77c6b7d06f8aef6a9c242c92f36c9384fd3a594",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j6": {
+          "cache_sha256_recorded": "e30686fc8e3b3625402c41e2d0c6136137ef97a870cc5a85e7a1e34e53f90b31",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "RAT_KING:1"
+          ],
+          "j": 6,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620412,
+            620413
+          ],
+          "seed": 20261406,
+          "source_id": "training-m2-j6",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j6.json",
+          "source_sha256": "bcddab707fe41adf72c36060d8e07c2d4b798e9274e4c1f95ac32e4fd8a7265d",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j7": {
+          "cache_sha256_recorded": "c6dfc57a1181608b485e9a524f39dee86c4cb531fd556726ce075de391bf1b44",
+          "candidate_slots": [],
+          "j": 7,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620414,
+            620415
+          ],
+          "seed": 20261407,
+          "source_id": "training-m2-j7",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j7.json",
+          "source_sha256": "994164fc3b2addb952ddd9d6158d06560e036013a5a5fbc095759953982acb3d",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m2-j8": {
+          "cache_sha256_recorded": "0d9191915d17db5df144dec39cf9b6ad098fdea50eaa93a248e052291570549b",
+          "candidate_slots": [],
+          "j": 8,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620416,
+            620417
+          ],
+          "seed": 20261408,
+          "source_id": "training-m2-j8",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m2-j8.json",
+          "source_sha256": "151a0caa6c127774c6cf2cd7bd6fc144c2676afe65e868db87c3b84b3ed399ac",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m3-j1": {
+          "cache_sha256_recorded": "511206f65ed886944794ee5cf7d79d66612c21333c5f0a0938ee0ebb6aa31fe6",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620602,
+            620603
+          ],
+          "seed": 20261501,
+          "source_id": "training-m3-j1",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m3-j1.json",
+          "source_sha256": "ae3f181a88c9f82899f6db6969d7b7ee125f544038cfa15fccf95ec488748ef8",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m3-j2": {
+          "cache_sha256_recorded": "1adb983d8728a060182670136a5e817bd7e035f597454c05d43faa6403315f87",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620604,
+            620605
+          ],
+          "seed": 20261502,
+          "source_id": "training-m3-j2",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m3-j2.json",
+          "source_sha256": "5dfcd9a9cf8e3b522432294f6c3aa35a79c0afee7df192248d6ed0c5969ca1a3",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m3-j3": {
+          "cache_sha256_recorded": "262147327138423b42e513636882861c45f2df5ef15a5dabfed26060c5cdd467",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620606,
+            620607
+          ],
+          "seed": 20261503,
+          "source_id": "training-m3-j3",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m3-j3.json",
+          "source_sha256": "b3165fa88a88f1422c1270e850a23ec9db9f0a7db6147bff362064985a825b92",
+          "split": "training",
+          "temperature": 0.35
+        },
+        "training-m3-j4": {
+          "cache_sha256_recorded": "60592c2b2811ba66f846448e5c91cd9fc09a3f0c1e8282fca77f8e4db47b0f46",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 4,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620608,
+            620609
+          ],
+          "seed": 20261504,
+          "source_id": "training-m3-j4",
+          "source_json": "runs/terminal-target-head-v5/sources/training-m3-j4.json",
+          "source_sha256": "c9cca308f140afc3c70b212a98e03379d32fcd9c6d3724cb3b90d90f5e472963",
+          "split": "training",
+          "temperature": 0.35
+        }
+      },
+      "splits": {
+        "training": {
+          "final_accepted_slots": 24,
+          "initial_completed_source_games": 16,
+          "initial_observed_slots": 32,
+          "initial_planned_source_games": 16,
+          "initial_qualified_slots": 24,
+          "initial_slots": [
+            {
+              "candidate_sha256": "130dd947a49d9d2196026a6ad1472c9127210e892f3703b302aa7d38c8ede95b",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j1"
+            },
+            {
+              "candidate_sha256": "0128f522a57d571db6ee07ddc5e36bc18c3a4a80fd88eb65db0fda631993f90a",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j1"
+            },
+            {
+              "candidate_sha256": "5535f72e45bf760a9ac55e56a22e2fc658f351ec335fc5ed9d19d26755a3a9da",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j2"
+            },
+            {
+              "candidate_sha256": "f30ed8d176a73d025a51728ecf7f1d48199bcf7b5623fa94d612d7062922a7fc",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j2"
+            },
+            {
+              "candidate_sha256": "382649086946cfe6ec2d24e1cef2304506bd0e8a63a2a53cf8749ecfdd2ad652",
+              "j": 3,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j3"
+            },
+            {
+              "candidate_sha256": "0bfbd49983b57cfde199476caf217bb9f9d391374de29d665859d038ba5bb212",
+              "j": 3,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j3"
+            },
+            {
+              "candidate_sha256": "a23dbeb339bc7723467c5cd9a8ea1b6191497354d94009c4d8676d98bb588012",
+              "j": 4,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j4"
+            },
+            {
+              "candidate_sha256": "78c68688a858cb8f10750f1948475efca15fc82e0ba2acfb93a4c4d50114de3a",
+              "j": 4,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j4"
+            },
+            {
+              "candidate_sha256": "2f8f05f6f240fef05860d664206a7fd9eedac147a7dd84388daed16d8fd0daf8",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j1"
+            },
+            {
+              "candidate_sha256": "310c35d3356ddb1865de0e815cf290bd5d84d1fd616208cfe3b793d765443d01",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j1"
+            },
+            {
+              "candidate_sha256": "e525e940ae1c5a21e4ac9170a5c269bbfa6cbbd684639ca93d2a7dd8a2b75991",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j2"
+            },
+            {
+              "candidate_sha256": "626477043f6e6fec7008f90e45b4d2accff03d62a447cca184e6e76701701340",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j2"
+            },
+            {
+              "candidate_sha256": "4e6920598724f9985deab3d8e1684b17af521458f62950808dcac548104f6736",
+              "j": 3,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j3"
+            },
+            {
+              "candidate_sha256": "40196425a6270096eb00dd7039387998f7025dc11bfe4f25175c73cb99361838",
+              "j": 3,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j3"
+            },
+            {
+              "candidate_sha256": "252a6b00a52cd60cef851f0345463305b767dde5e36fdc39c966a374ad03cd70",
+              "j": 4,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j4"
+            },
+            {
+              "candidate_sha256": "286d3438d4eca5faab56703e4c401a3fa716638e21b8dc5e22c30b4f19e6015f",
+              "j": 4,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j4"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": false,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 3,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j3"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 3,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j3"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 4,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": false,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j4"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 4,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j4"
+            },
+            {
+              "candidate_sha256": "3ba8ee8f86d4785f910d8465393d249904e3aff67c1b18a4c3b77fdd084b2da8",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j1"
+            },
+            {
+              "candidate_sha256": "796a5aec1715c6296b7305ef15f52ef1f53dd3118af9486f9239b043797fef07",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j1"
+            },
+            {
+              "candidate_sha256": "8cacbfd40bf05bbcb956024847e3e271c6d6874026da234a0033569d0277e9bd",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j2"
+            },
+            {
+              "candidate_sha256": "e742085186a3235450d88153eef7c652c4e2b79a33a8522a19b6608170517c6f",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j2"
+            },
+            {
+              "candidate_sha256": "43e297f93590504c5411388db9e0207e80af01922eff2a664c3a2c9df69689b2",
+              "j": 3,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j3"
+            },
+            {
+              "candidate_sha256": "032051e107c63e97ffadecc44d1362f3ddc43185d3b5a2f4c0c3fa38a3d36b01",
+              "j": 3,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j3"
+            },
+            {
+              "candidate_sha256": "c719c2996bbb41713ef5e0df652806813d7aea6b16f6a7fc4724acd5b631e104",
+              "j": 4,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j4"
+            },
+            {
+              "candidate_sha256": "189defec05e9ed7a24fb4b55d0003799fce20b25a177f834a62b27c84aaaf1d7",
+              "j": 4,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j4"
+            }
+          ],
+          "manifest_complete": false,
+          "manifest_present": true,
+          "planned_slots": 32,
+          "reserve_assignments": [
+            {
+              "filled": [],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 1,
+              "source_id": "training-m2-j5",
+              "source_j": 5,
+              "source_sha256": "a66f7889cc7ebab7c9a57380e77c6b7d06f8aef6a9c242c92f36c9384fd3a594"
+            },
+            {
+              "filled": [],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 1,
+              "source_id": "training-m2-j7",
+              "source_j": 7,
+              "source_sha256": "994164fc3b2addb952ddd9d6158d06560e036013a5a5fbc095759953982acb3d"
+            },
+            {
+              "filled": [],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 2,
+              "source_id": "training-m2-j6",
+              "source_j": 6,
+              "source_sha256": "bcddab707fe41adf72c36060d8e07c2d4b798e9274e4c1f95ac32e4fd8a7265d"
+            },
+            {
+              "filled": [],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 2,
+              "source_id": "training-m2-j8",
+              "source_j": 8,
+              "source_sha256": "151a0caa6c127774c6cf2cd7bd6fc144c2676afe65e868db87c3b84b3ed399ac"
+            }
+          ],
+          "reserve_completed_source_games": 4,
+          "reserve_slots_added": 0,
+          "strata": [
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            }
+          ]
+        },
+        "validation": {
+          "final_accepted_slots": 0,
+          "initial_completed_source_games": 0,
+          "initial_observed_slots": 0,
+          "initial_planned_source_games": 8,
+          "initial_qualified_slots": 0,
+          "initial_slots": [
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m0-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m0-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m0-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m0-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m1-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m1-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m1-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m1-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m2-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m2-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m2-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m2-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m3-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m3-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": false,
+              "player": 1,
+              "qualified": null,
+              "role": "BABY_RAT",
+              "source_id": "validation-m3-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": false,
+              "player": 0,
+              "qualified": null,
+              "role": "RAT_KING",
+              "source_id": "validation-m3-j2"
+            }
+          ],
+          "manifest_complete": false,
+          "manifest_present": false,
+          "planned_slots": 16,
+          "reserve_assignments": [],
+          "reserve_completed_source_games": 0,
+          "reserve_slots_added": 0,
+          "strata": [
+            {
+              "map": "tiny",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "tiny",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 0,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 0,
+              "planned": 1,
+              "player": 1,
+              "qualified": 0,
+              "role": "RAT_KING"
+            }
+          ]
+        }
+      }
+    },
+    "v6": {
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "continuation_temperature": 0.35,
+      "engine_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "experiment_identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+      "source_temperature": 1.0,
+      "sources": {
+        "training-m0-j1": {
+          "cache_sha256_recorded": "e432838eace3a96a9f01a928e25946d1781a5ce1e9eef80b6be66322308369f1",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620002,
+            620003
+          ],
+          "seed": 20261201,
+          "source_id": "training-m0-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m0-j1.json",
+          "source_sha256": "40134e7c0d0ffae2cb177457b63cd9bd1c0a6a6da63ce54ec0c96dbce4a7335d",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m0-j2": {
+          "cache_sha256_recorded": "9caea0a1042d6ae7eb70cf6a849e3262b0b2f41118598ea2569d28460127dd31",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620004,
+            620005
+          ],
+          "seed": 20261202,
+          "source_id": "training-m0-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m0-j2.json",
+          "source_sha256": "cf2563dd892cbd2846760501ed5ad4a536f64e7e3b4fe4c78c5de97a3481b5ac",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m0-j3": {
+          "cache_sha256_recorded": "21b0722c4aed177c819859444ad5a5a1717f3666d6d888d9f1b9e20031d45a6e",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620006,
+            620007
+          ],
+          "seed": 20261203,
+          "source_id": "training-m0-j3",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m0-j3.json",
+          "source_sha256": "65a9bb00f94e24964e59b2d00c90d8991ee4544595d2e58dc205a7fc052f42bc",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m0-j4": {
+          "cache_sha256_recorded": "b3077d0d5d3fdb7ec3f695dd5d6582c220e21e60374b5840c19e956d14763911",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 4,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            620008,
+            620009
+          ],
+          "seed": 20261204,
+          "source_id": "training-m0-j4",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m0-j4.json",
+          "source_sha256": "fa6bb30488671bb2f98d11047a826b9bdfcc30f5de2dbf738994c12da14de64f",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m1-j1": {
+          "cache_sha256_recorded": "cfa341c80d56e53c2e17ad4f01cbd8bc63d7e4fbb26fa4a88c21ab7d74e2ac43",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620202,
+            620203
+          ],
+          "seed": 20261301,
+          "source_id": "training-m1-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m1-j1.json",
+          "source_sha256": "f322908fa96af8545e0dde767a603ed085cb474fee6a4a3e6d2fa015529997d8",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m1-j2": {
+          "cache_sha256_recorded": "ade74c346c39f7696018a02985bf24c44159cdfd3a38a454534c59aeb8eecffc",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0"
+          ],
+          "j": 2,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620204,
+            620205
+          ],
+          "seed": 20261302,
+          "source_id": "training-m1-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m1-j2.json",
+          "source_sha256": "6e9f5bed567d8b81620d954381720fc7079317bfcfd960dc2c3c7d156fc0a057",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m1-j3": {
+          "cache_sha256_recorded": "f852a06791ca41b15844a19c04096d2f4aea5f0a71d59b2c9fa26526ab32fc97",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620206,
+            620207
+          ],
+          "seed": 20261303,
+          "source_id": "training-m1-j3",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m1-j3.json",
+          "source_sha256": "f0aeba0c0988c8ec92f08d5c2147dca71c6104cb7c1c1d73ffb4350f20bb5384",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m1-j4": {
+          "cache_sha256_recorded": "fb3047d90046efea276b8074ab84bd74eebab5b358585b4e4a51e71545ef9126",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0"
+          ],
+          "j": 4,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            620208,
+            620209
+          ],
+          "seed": 20261304,
+          "source_id": "training-m1-j4",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m1-j4.json",
+          "source_sha256": "d446398b74be28a5bfd5b33847037573a47b1d1892989de6221b449a540c1197",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j1": {
+          "cache_sha256_recorded": "13c1e0ebb2326f941be386006808d54e5e5fbc2232e217fb88aa78e4a188507d",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0"
+          ],
+          "j": 1,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620402,
+            620403
+          ],
+          "seed": 20261401,
+          "source_id": "training-m2-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j1.json",
+          "source_sha256": "4622d41bf45b6c2b87422b87ba8021a03c870072697aae0bbfd3061c1edcc682",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j2": {
+          "cache_sha256_recorded": "60930a5b7f13d70f886d075028c1e27e086b3e2118a0600078893caa6266bd5c",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620404,
+            620405
+          ],
+          "seed": 20261402,
+          "source_id": "training-m2-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j2.json",
+          "source_sha256": "71a1e3c65b80630fdf9c82c9f38ec5a4409d4bd818aa4cfc24393e57db65ae7c",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j3": {
+          "cache_sha256_recorded": "bc76c7a2d7612d40c00783e9a51504a25d39e418b80362e501300231a39ad4fc",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620406,
+            620407
+          ],
+          "seed": 20261403,
+          "source_id": "training-m2-j3",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j3.json",
+          "source_sha256": "3334b0c773f3f4c316a1e8c83a85cab9f25a176e05621e32907acf8d9e8d75f6",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j4": {
+          "cache_sha256_recorded": "0438ab8ea42eda2ff12210d344742f558dc82ff173db41fa7a08bfb688aabe93",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1"
+          ],
+          "j": 4,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620408,
+            620409
+          ],
+          "seed": 20261404,
+          "source_id": "training-m2-j4",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j4.json",
+          "source_sha256": "4e4cb6159cea860df0a58a894993ecd632389d1044358dd1e01db6e5e5a5a4d4",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j5": {
+          "cache_sha256_recorded": "aa71d5e5bbcab0043509dfac75aea0fbcf72eef8966c03ca9f5fb8a20481de76",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:1"
+          ],
+          "j": 5,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620410,
+            620411
+          ],
+          "seed": 20261405,
+          "source_id": "training-m2-j5",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j5.json",
+          "source_sha256": "ab49acd58f9f07456c6a093633eabc60f149d52fdd2d52f9a42379ebe6257f0a",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j6": {
+          "cache_sha256_recorded": "46e6071034538b02ef1a5d5785863129b4d76d6d89462f80369ac837ae545d3e",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:1"
+          ],
+          "j": 6,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620412,
+            620413
+          ],
+          "seed": 20261406,
+          "source_id": "training-m2-j6",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j6.json",
+          "source_sha256": "1bea19770728057cccc5fbd63540863189802cff60bf127b73ba9da60819eb4e",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m2-j8": {
+          "cache_sha256_recorded": "830ba7cd1251856d38daeeb2df44af3311ba94b8d619f365014c1ba15a285b83",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 8,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            620416,
+            620417
+          ],
+          "seed": 20261408,
+          "source_id": "training-m2-j8",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m2-j8.json",
+          "source_sha256": "c152345504cea5a2d02733fe8e709de4bebaff994d395b9acc757c86fa2ae251",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m3-j1": {
+          "cache_sha256_recorded": "7711ccd08f035784acbbe9c8d42287c23ab04c170757d0582ead20120320d6de",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620602,
+            620603
+          ],
+          "seed": 20261501,
+          "source_id": "training-m3-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m3-j1.json",
+          "source_sha256": "19385af8ea8e28270004eb49ea34b74c01a62602c84a519b750c89a4e9e5841f",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m3-j2": {
+          "cache_sha256_recorded": "38313d109712c7d80ff43045ed16318928ce46c10653efae007e9330ac8686fb",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620604,
+            620605
+          ],
+          "seed": 20261502,
+          "source_id": "training-m3-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m3-j2.json",
+          "source_sha256": "8c39a8dbfbaecd1983a1354368d695603a5c0d0e1e12f5a02a27a0f80c776a45",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m3-j3": {
+          "cache_sha256_recorded": "8584da386c3108a2487285aaa39fae36e91ed69b02e209c0f6a6207c426db564",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 3,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620606,
+            620607
+          ],
+          "seed": 20261503,
+          "source_id": "training-m3-j3",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m3-j3.json",
+          "source_sha256": "8fd5954d199db54246beda4d5b0a3b4cd60e33e8143f9c09fb965f8cdef32f98",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "training-m3-j4": {
+          "cache_sha256_recorded": "5d9a2086667c22c2e25f6abe4b03afafa844a24bf913388e5b86d3f3bdfe55f7",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 4,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            620608,
+            620609
+          ],
+          "seed": 20261504,
+          "source_id": "training-m3-j4",
+          "source_json": "runs/terminal-target-head-v6/sources/training-m3-j4.json",
+          "source_sha256": "e431c7a0ea88809c310280d2b05be98c45eacdd80b742b93701a88f935759685",
+          "split": "training",
+          "temperature": 1.0
+        },
+        "validation-m0-j1": {
+          "cache_sha256_recorded": "b13339c1d2765422d8dcf76b7fe0b6e683a384363e06e9e1723e841f35e7fb89",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            640002,
+            640003
+          ],
+          "seed": 20262201,
+          "source_id": "validation-m0-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j1.json",
+          "source_sha256": "e7bb68295908c9fc0d46b8c8dbb8eeaf6e5fee88a15aef7aa4d3c1672015c417",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m0-j2": {
+          "cache_sha256_recorded": "3a4979d99d5d8e54c1c59a018a3d564b4b49d9bc64913c2daac6914003876eb6",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "tiny",
+          "map_index": 0,
+          "policy_seeds": [
+            640004,
+            640005
+          ],
+          "seed": 20262202,
+          "source_id": "validation-m0-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m0-j2.json",
+          "source_sha256": "0ccb3d1f85bc44ef4741ee16fc220ffb89bd1a1b0b0d98157d245de3be77af42",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m1-j1": {
+          "cache_sha256_recorded": "6e236a92e93df8903dcd78d133636ffdcf9b128d14c84e122eec340abdcc888f",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            640202,
+            640203
+          ],
+          "seed": 20262301,
+          "source_id": "validation-m1-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j1.json",
+          "source_sha256": "59183c9ce1e5454009374cf552b56a7702b118a0d296021e861c52b6426a2078",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m1-j2": {
+          "cache_sha256_recorded": "6569fa84168f4e62c689d42677f7c81c27a40696eab5745828a94e73677658e1",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "DefaultSmall",
+          "map_index": 1,
+          "policy_seeds": [
+            640204,
+            640205
+          ],
+          "seed": 20262302,
+          "source_id": "validation-m1-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m1-j2.json",
+          "source_sha256": "f2e9cd4028470f8beb32c0cfae2c6741e60ea41613818485398887d9d7eb2761",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m2-j1": {
+          "cache_sha256_recorded": "5a956cb50d8285aa820855ed063295b505daf1894320b06876165c20465e53a5",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            640402,
+            640403
+          ],
+          "seed": 20262401,
+          "source_id": "validation-m2-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j1.json",
+          "source_sha256": "45546e6a6fccbb6cf44c66acab08e35a417f460842cd5dd9208733357e359e88",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m2-j2": {
+          "cache_sha256_recorded": "c317ef4624b4fa468f94f103f5675056e26d448c18565e612ec8ae2f86e1af67",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            640404,
+            640405
+          ],
+          "seed": 20262402,
+          "source_id": "validation-m2-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j2.json",
+          "source_sha256": "11dcbb815511ecb3bf32857f421a04d75ee9422e81a1a684072e384dc2135f6c",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m2-j4": {
+          "cache_sha256_recorded": "3298c1dc0729d470abac03f0b08babef667737fcc5872e612034a2048ec9d846",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0"
+          ],
+          "j": 4,
+          "map": "closeup",
+          "map_index": 2,
+          "policy_seeds": [
+            640408,
+            640409
+          ],
+          "seed": 20262404,
+          "source_id": "validation-m2-j4",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m2-j4.json",
+          "source_sha256": "92b3f4a693b2073924bd1a38a2968feb7b20b7af03fe428ad7ced6ebcd0d2aca",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m3-j1": {
+          "cache_sha256_recorded": "fc06e9c008d82a982c7e099c1f93cd8a080372cf414987d70eb5f61ea53eb66e",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 1,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            640602,
+            640603
+          ],
+          "seed": 20262501,
+          "source_id": "validation-m3-j1",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j1.json",
+          "source_sha256": "2bacae4df386a24f1e419984ded5e40b0182de94a4bb6362159818e1b69248db",
+          "split": "validation",
+          "temperature": 1.0
+        },
+        "validation-m3-j2": {
+          "cache_sha256_recorded": "c67be1451e2d381ac90197f56819b6fef8e4f04882dc6c685b11493a217b0bb3",
+          "candidate_slots": [
+            "BABY_RAT:0",
+            "BABY_RAT:1",
+            "RAT_KING:0",
+            "RAT_KING:1"
+          ],
+          "j": 2,
+          "map": "knifefight",
+          "map_index": 3,
+          "policy_seeds": [
+            640604,
+            640605
+          ],
+          "seed": 20262502,
+          "source_id": "validation-m3-j2",
+          "source_json": "runs/terminal-target-head-v6/sources/validation-m3-j2.json",
+          "source_sha256": "a12d52db8fd073e53ba305f4d475daaf1b67220ee2aaaf88fca5fb168b183fe6",
+          "split": "validation",
+          "temperature": 1.0
+        }
+      },
+      "splits": {
+        "training": {
+          "final_accepted_slots": 32,
+          "initial_completed_source_games": 16,
+          "initial_observed_slots": 32,
+          "initial_planned_source_games": 16,
+          "initial_qualified_slots": 30,
+          "initial_slots": [
+            {
+              "candidate_sha256": "dc697b84c6672f563a9a4ce1cf2ad373a0403cf4db3b702a4b18bb99ca1ead37",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j1"
+            },
+            {
+              "candidate_sha256": "43a58b0dcdf217c3ecf090fb10d4c73564315c7f0df361a27b5bb6e63d512531",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j1"
+            },
+            {
+              "candidate_sha256": "08582fba939914bc8c911e46206eb4934f21b8754105669e9d92a26a7dc54c18",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j2"
+            },
+            {
+              "candidate_sha256": "67ad5851ad1087d79c7ad164075acaee256747cc4373e43e3561aa9875fab884",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j2"
+            },
+            {
+              "candidate_sha256": "b0136a750d03c3c7fd750afe97d8d87aea74940de2a6845fa1f5cc26f373615d",
+              "j": 3,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j3"
+            },
+            {
+              "candidate_sha256": "64e198784f8419ab4a1f3dbe01ce8a9564f0a978fd921f98715222951dc1ca22",
+              "j": 3,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j3"
+            },
+            {
+              "candidate_sha256": "66bad17ea85bd1337627f2050279065141a6d856be0efa67dd809789bbcb500b",
+              "j": 4,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m0-j4"
+            },
+            {
+              "candidate_sha256": "5a80bf0846fedc5a0014f0417ac73aff96850f477f2aa079035f2d30c9e27b1b",
+              "j": 4,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m0-j4"
+            },
+            {
+              "candidate_sha256": "323a1215d8c8e51c07d9d959a50ca0d514ae0b2a5f89a20015badd0e134e01f4",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j1"
+            },
+            {
+              "candidate_sha256": "46a4bd144ef309e21f7df1010aff0b104fe59d28056da11f08b405ef4c9d23a3",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j1"
+            },
+            {
+              "candidate_sha256": "53bd06e916902702f455ce49aaebb51af40f0496974253f608259d4d096bf706",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j2"
+            },
+            {
+              "candidate_sha256": "d7c01ac5201bf36ab01457c05088f2cf30674cee6dddd8942441d9318dff83e1",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j2"
+            },
+            {
+              "candidate_sha256": "83bf149ca63485115f74f262231b0168abb833ecd5b5e41c109ad1994736f99f",
+              "j": 3,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j3"
+            },
+            {
+              "candidate_sha256": "49f21484e3aa509fa5186a3b540754cb7e92b030c9aceffa7e0a4981e19bd628",
+              "j": 3,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j3"
+            },
+            {
+              "candidate_sha256": "2191561930cc58002c7b6373f452425ebcdabe9fec26efbdf81f35a3536028d9",
+              "j": 4,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m1-j4"
+            },
+            {
+              "candidate_sha256": "91cdb4fbe094b85ae864bd9a120e8317cfe9c284ed32ea01c15f329749b689bd",
+              "j": 4,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m1-j4"
+            },
+            {
+              "candidate_sha256": "0bd83240c39ab8ea121e23416d118ea0928fefd54797077bd9aba3bb75ae31a8",
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j1"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j1"
+            },
+            {
+              "candidate_sha256": "69eff147e59b0134f8f6e2935abab45300ad0fe403dcfb6a625f9a2bbaadbabe",
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j2"
+            },
+            {
+              "candidate_sha256": "4c95ea71210ad2242392055af58f2163ab310607b4fa70e46345e15c21f46ee2",
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j2"
+            },
+            {
+              "candidate_sha256": "23891af8a919bbf171de8658d50b4122fdeb500bad03c0f8830d17ac9865b021",
+              "j": 3,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j3"
+            },
+            {
+              "candidate_sha256": "6eeeeb1b22e0d647d4f35791c121ee57a1beca7da5dee76fd30104a7b5573fe0",
+              "j": 3,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j3"
+            },
+            {
+              "candidate_sha256": "082e8c15b88a8371969b2b4ae02231039015bda6e1ba1af66f6e6369c303df94",
+              "j": 4,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m2-j4"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 4,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "training-m2-j4"
+            },
+            {
+              "candidate_sha256": "9b74f463c5ef5336d6f4e5d0eccc1d8e31566aff07255ec2c9158d29c2a41f85",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j1"
+            },
+            {
+              "candidate_sha256": "05a0a15741605fcf849b5d9b0588f4eb645631eb08220bf9d3b443c0a61df581",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j1"
+            },
+            {
+              "candidate_sha256": "19d0794f99585e23d154226c51f91e6c8732145550f7c03980d5b5d5a02131a5",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j2"
+            },
+            {
+              "candidate_sha256": "87240b79e3855b15885c12703c02e8d69ce740b213ad2463cf8b4c0aad03d2ee",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j2"
+            },
+            {
+              "candidate_sha256": "76e1f2461b34b5ef508f481020c4b43820fb7bbe017b149ecd851542d6778df5",
+              "j": 3,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j3"
+            },
+            {
+              "candidate_sha256": "ef8a0bc3ff59f2c4839a448c79e9b3fcd17f238d3c09980d5e43bb26d448f280",
+              "j": 3,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j3"
+            },
+            {
+              "candidate_sha256": "32503de0061fad54ae083c67f71435a8c0ba486643d33f0784f35dda9ec285e3",
+              "j": 4,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "training-m3-j4"
+            },
+            {
+              "candidate_sha256": "302c698273b870a34d9904f351005aed0e12d060c8741dfd844a271c67cc651f",
+              "j": 4,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "training-m3-j4"
+            }
+          ],
+          "manifest_complete": true,
+          "manifest_present": true,
+          "planned_slots": 32,
+          "reserve_assignments": [
+            {
+              "filled": [
+                "RAT_KING:1"
+              ],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 1,
+              "source_id": "training-m2-j5",
+              "source_j": 5,
+              "source_sha256": "ab49acd58f9f07456c6a093633eabc60f149d52fdd2d52f9a42379ebe6257f0a"
+            },
+            {
+              "filled": [],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 4,
+              "source_id": "training-m2-j6",
+              "source_j": 6,
+              "source_sha256": "1bea19770728057cccc5fbd63540863189802cff60bf127b73ba9da60819eb4e"
+            },
+            {
+              "filled": [
+                "RAT_KING:0"
+              ],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 4,
+              "source_id": "training-m2-j8",
+              "source_j": 8,
+              "source_sha256": "c152345504cea5a2d02733fe8e709de4bebaff994d395b9acc757c86fa2ae251"
+            }
+          ],
+          "reserve_completed_source_games": 3,
+          "reserve_slots_added": 2,
+          "strata": [
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "tiny",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 0,
+              "qualified": 2,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 2,
+              "planned": 2,
+              "player": 1,
+              "qualified": 2,
+              "role": "RAT_KING"
+            }
+          ]
+        },
+        "validation": {
+          "final_accepted_slots": 16,
+          "initial_completed_source_games": 8,
+          "initial_observed_slots": 16,
+          "initial_planned_source_games": 8,
+          "initial_qualified_slots": 15,
+          "initial_slots": [
+            {
+              "candidate_sha256": "b69f45b37571a97df3855b56148286e440d353901861f7fe9af866adc24d09b4",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m0-j1"
+            },
+            {
+              "candidate_sha256": "8deea7cfab05f1eb8293fb092091a2eed3b9883e90d6e44ddf9d79b88f6c3fe9",
+              "j": 1,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m0-j1"
+            },
+            {
+              "candidate_sha256": "53c61b79aa4c52326100a285ebd3726d501c60c57e8acd892fff99199d3b5370",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m0-j2"
+            },
+            {
+              "candidate_sha256": "fb8aba2a4689bc81de9cfbac20f7f6805d6104887d6b279d8076e08fdac6c596",
+              "j": 2,
+              "map": "tiny",
+              "map_index": 0,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m0-j2"
+            },
+            {
+              "candidate_sha256": "c4548e1068d54c4411c652d1bf1ece13450111380a1d837427ab096ad8ced744",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m1-j1"
+            },
+            {
+              "candidate_sha256": "4359a9f05d39db6a9b5d92ca057a1bfa8d099eba4aa009fda7ee7f5225a71fc8",
+              "j": 1,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m1-j1"
+            },
+            {
+              "candidate_sha256": "ddf9c991be280955a708e07a2b0eaa92d7f156ae803f1ba61028590174520587",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m1-j2"
+            },
+            {
+              "candidate_sha256": "5c1a11a31950f93b26b4250f0c01ee9431f71bb893836a9df8c5a2232899dd09",
+              "j": 2,
+              "map": "DefaultSmall",
+              "map_index": 1,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m1-j2"
+            },
+            {
+              "candidate_sha256": "7d7885c9ec9880f6a11fc73dea5f96cbcbc45fca5ac0c747a0201b436bd4031d",
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m2-j1"
+            },
+            {
+              "candidate_sha256": "5c5dc4247ec3f252903e440aef1e13b3c00c2a873f7762658c046f0335e9dc20",
+              "j": 1,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m2-j1"
+            },
+            {
+              "candidate_sha256": "776bca3d599a33219dd795113fa7711c51ca8008bfcae127853abe33e08cae3f",
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m2-j2"
+            },
+            {
+              "candidate_sha256": null,
+              "j": 2,
+              "map": "closeup",
+              "map_index": 2,
+              "observed": true,
+              "player": 0,
+              "qualified": false,
+              "role": "RAT_KING",
+              "source_id": "validation-m2-j2"
+            },
+            {
+              "candidate_sha256": "742e1d50a27a0d3f0aee23b7624551e1b047ed27f3faa90946a45a84d9233203",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m3-j1"
+            },
+            {
+              "candidate_sha256": "e34120c7a520b14372c052387d470af46415d329fab4878482b1781540204601",
+              "j": 1,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m3-j1"
+            },
+            {
+              "candidate_sha256": "92b5a7cd8c50c39f797c62aa5fb38b3e8fc03f48cfc5b4b8eae1a67681c69a32",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 1,
+              "qualified": true,
+              "role": "BABY_RAT",
+              "source_id": "validation-m3-j2"
+            },
+            {
+              "candidate_sha256": "579a0de3c2248f52c475caa48186eee18c67989f46ae4ca3bcbca923206213ee",
+              "j": 2,
+              "map": "knifefight",
+              "map_index": 3,
+              "observed": true,
+              "player": 0,
+              "qualified": true,
+              "role": "RAT_KING",
+              "source_id": "validation-m3-j2"
+            }
+          ],
+          "manifest_complete": true,
+          "manifest_present": true,
+          "planned_slots": 16,
+          "reserve_assignments": [
+            {
+              "filled": [
+                "RAT_KING:0"
+              ],
+              "map": "closeup",
+              "map_index": 2,
+              "slot_group_j": 2,
+              "source_id": "validation-m2-j4",
+              "source_j": 4,
+              "source_sha256": "92b3f4a693b2073924bd1a38a2968feb7b20b7af03fe428ad7ced6ebcd0d2aca"
+            }
+          ],
+          "reserve_completed_source_games": 1,
+          "reserve_slots_added": 1,
+          "strata": [
+            {
+              "map": "tiny",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "tiny",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "tiny",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "DefaultSmall",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "closeup",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 0,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "closeup",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "BABY_RAT"
+            },
+            {
+              "map": "knifefight",
+              "observed": 1,
+              "planned": 1,
+              "player": 0,
+              "qualified": 1,
+              "role": "RAT_KING"
+            },
+            {
+              "map": "knifefight",
+              "observed": 1,
+              "planned": 1,
+              "player": 1,
+              "qualified": 1,
+              "role": "RAT_KING"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
