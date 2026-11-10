@@ -495,3 +495,22 @@ This is an input-integrity audit, not a final experiment audit or stronger-play
 claim. Completed source caches remain in the live run and will enter the separate
 verified recovery export after quiescence. V8 remains healthy in collection with
 its pinned identity unchanged; no model or experiment settings were changed.
+
+## V8 fits and first-action validation complete; broad benchmark active
+
+All 1,508 planned selection games completed validly. Both 2,048-update fixed
+heads fit all 32 targets. The terminal head changes 14/32 training actions and
+7/512 anchor actions; PUCT changes 0/32 and 1/512. A separate auditor rebuilt
+the deterministic batch stream, checked optimizer steps and byte-identical
+frozen tensors, and recomputed these actions from cached hidden features.
+
+All 64 physically shared first-action validation continuations are complete.
+Mean terminal-head advantage over cp2 and PUCT is zero; its mechanism criterion
+fails. The precommitted full 768-game benchmark remains running and cannot yet
+establish a playing-strength result. At the published review 190 games were
+valid, all fresh cp2 control games, with no errors. No outcome-dependent change
+to the candidate, training settings or benchmark schedule was made.
+
+New nonpinned reporting helpers derive dashboard views from canonical immutable
+benchmark attempts and plot saved fitting histories. They do not launch games
+or train. Final export/verification remains deferred until actor quiescence.

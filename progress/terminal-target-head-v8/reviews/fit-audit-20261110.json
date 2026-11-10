@@ -1,0 +1,30 @@
+{
+  "verified": true,
+  "scope": "Saved fitting state and training predictions only; not playing-strength improvement or final recovery verification",
+  "baseline_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "data_sha256": "fbcb1813a0d4511010c0a79aeb223d65f12609e1b096205c42442a950a6d24d6",
+  "shared_batches_sha256": "55f306bfb71de28c9563a65751a2f65db3be75ce46896e75d05c1ffd72997cdf",
+  "arms": {
+    "terminal_head": {
+      "checkpoint_sha256": "898d5f869fcc4aee2fe789fa921f09969dd6df5a17e21e80e8a176bbdcca3e8d",
+      "updates": 2048,
+      "only_policy_head_changed": true,
+      "training_matches": 32,
+      "training_roots": 32,
+      "changed_training_actions": 14,
+      "changed_anchor_actions": 7,
+      "anchors": 512
+    },
+    "puct_head": {
+      "checkpoint_sha256": "4c5b5470064bd8f7eeb3946b3a51e0d6481f779b1add726070b808924818bc38",
+      "updates": 2048,
+      "only_policy_head_changed": true,
+      "training_matches": 32,
+      "training_roots": 32,
+      "changed_training_actions": 0,
+      "changed_anchor_actions": 1,
+      "anchors": 512
+    }
+  },
+  "auditor_sha256": "34a0b86f74f07cef760430acc22f4e7884cfe9be672c75a8b824001eff0b4f5f"
+}

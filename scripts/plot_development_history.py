@@ -74,11 +74,11 @@ def generate(current, manifest):
     history.sort(key=lambda x: (x['started_at'], x['source']))
     ordered = sorted(manifest['bots'], key=lambda b: (b['historical_rating']['elo'], b['id']))
     fig, ax = plt.subplots(figsize=(15, 6.5))
-    labels = [datetime.fromisoformat(h['started_at'].replace('Z','+00:00')).astimezone(ZoneInfo('America/Vancouver')).strftime('%b %d %H:%M')+'\n'+h['checkpoint_sha256'][:8] for h in history]
+    labels = [datetime.fromisoformat(h['started_at'].replace('Z','+00:00')).astimezone(ZoneInfo('America/Vancouver')).strftime('%b %d %H:%M')+'\n'+Path(h['source']).parent.name+'\n'+h['checkpoint_sha256'][:8] for h in history]
     colors = plt.get_cmap('tab10').colors
     markers = ['o', 's', '^', 'D', 'v', 'P', 'X', '*']
     for index, bot in enumerate(ordered):
-        latest = history[-1]['bots'][bot['id']] if history else None
+        latest = next((h['bots'][bot['id']] for h in reversed(history) if h['bots'][bot['id']]['win_rate'] is not None), None)
         label = f"{bot['id']} · Elo {bot['historical_rating']['elo']:.1f}"
         if latest and latest['win_rate'] is not None:
             label += f" · {100*latest['win_rate']:.1f}% ({latest['wins']}/{latest['valid']})"
@@ -92,7 +92,7 @@ def generate(current, manifest):
             ax.plot(range(len(history)), ys, marker=markers[index % len(markers)],
                     color=colors[index % len(colors)], linewidth=2, markersize=8,
                     label=label if j == 0 else None)
-    latest_overall = history[-1]['overall'] if history else None
+    latest_overall = next((h['overall'] for h in reversed(history) if h['overall']['win_rate'] is not None), None)
     overall_label = 'Overall'
     if latest_overall and latest_overall['win_rate'] is not None:
         overall_label += f" · {100*latest_overall['win_rate']:.1f}% ({latest_overall['wins']}/{latest_overall['valid']})"
@@ -112,7 +112,7 @@ def generate(current, manifest):
     denominator_note = 'thewaxmango crashes excluded from bot and overall rates' if any(h['overall']['excluded_crashes'] for h in history) else 'complete valid games; incomplete panels remain pending'
     ax.set_title(f"Overall and per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · {denominator_note}",fontsize=13)
     ax.legend(loc='center left',bbox_to_anchor=(1.02,.5),frameon=False,fontsize=9,
-              title='Opponents by prior Elo · latest wins / valid games')
+              title='Opponents by prior Elo · latest available wins / valid games')
     fig.tight_layout()
     out=ROOT/'progress/overview';out.mkdir(exist_ok=True)
     fig.savefig(out/'development-history.png',dpi=160);plt.close(fig)
