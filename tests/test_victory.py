@@ -78,6 +78,11 @@ class VictoryTest(unittest.TestCase):
             count = len(gate['frozen_maps'])*len(gate['frozen_opponents'])*len(gate['stages'][stage]['seeds'])*2
             self.assertEqual(count, expected)
 
+    def test_unsupported_search_cannot_be_mislabeled_as_evaluation_policy(self):
+        for arguments in ({'search_mode': 'mcts'}, {'search_config': {'simulations': 32}}):
+            with self.subTest(arguments=arguments), self.assertRaisesRegex(ValueError, 'Only greedy'):
+                self.evaluate(execute=False, **arguments)
+
     def test_inventory_add_remove_modify_and_duplicate_fail_closed(self):
         V.verify_gate(self.manifest, self.gate, self.maps)
         path = self.maps/'extra.map26'; path.write_bytes(b'added')

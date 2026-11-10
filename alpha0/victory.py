@@ -424,6 +424,8 @@ def evaluate_victory(checkpoint: Path, *, stage: str = "standard", iteration: in
                      root: Path = ROOT) -> dict:
     if not 1 <= jobs <= 32 or not 1 <= max_attempts <= 5 or stage not in STAGES:
         raise ValueError("Require stage standard/confirmation, jobs 1..32 and max_attempts 1..5")
+    if search_mode != "greedy" or search_config:
+        raise ValueError("Only greedy evaluation is implemented; unsupported search policies cannot be relabeled as evidence")
     checkpoint, progress, maps_dir = Path(checkpoint).resolve(), Path(progress_dir).resolve(), Path(maps_dir).resolve()
     manifest = json.loads(Path(manifest_path).read_text())
     gate = json.loads(Path(gate_path).read_text())
