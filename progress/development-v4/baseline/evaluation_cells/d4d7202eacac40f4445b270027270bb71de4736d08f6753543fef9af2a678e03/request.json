@@ -1,0 +1,260 @@
+{
+  "bot": {
+    "archive_url": "https://codeload.github.com/IvanGeffner/BC26/tar.gz/70b3f40cebefcca9dc858771715d78088e7ae520",
+    "entrypoint": "basic51.RobotPlayer",
+    "files": [
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/BFS.java",
+        "sha256": "bf8d96a81f80b563d839d77d4821e85581161fc68c98b2a5b162510c8a58b79a",
+        "upstream_path": "basic51/BFS.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/BFSAdd.java",
+        "sha256": "948a733e126ebe0b5849f95c4455f8499d315b069a952dce02ada466d31a6714",
+        "upstream_path": "basic51/BFSAdd.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/BabyRat.java",
+        "sha256": "36ffdf393b9eb47e623ac1eb953ae444c76e181ba7e81eb394352d1b54c8c9eb",
+        "upstream_path": "basic51/BabyRat.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/BugNav.java",
+        "sha256": "f062567b06bb9695137883027ec5af134fc7fa26dbf524a45083a3d7ee057b5a",
+        "upstream_path": "basic51/BugNav.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/CatSurveillance.java",
+        "sha256": "7b72b9a1811d1361558aac2b1d0ee0c3d663a2ad15e5b17c9b041900e2cdb45c",
+        "upstream_path": "basic51/CatSurveillance.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/CollisionData.java",
+        "sha256": "1087525ca7c2deeaf31e86426523e617853c6af34d0108e4e07c032b3cbfb4fa",
+        "upstream_path": "basic51/CollisionData.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/CommunicationManager.java",
+        "sha256": "0d570b12cc5482d822efb99e94f4fc0b0f019a39953423b04980b76e71d032b4",
+        "upstream_path": "basic51/CommunicationManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/Constants.java",
+        "sha256": "7b4f34d8437e159f80ba8064d9d8923f0fb6455a208743ab0d7df16bce1f17e8",
+        "upstream_path": "basic51/Constants.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/DirtManager.java",
+        "sha256": "5876d63b14e995f77819ddb35323f13e1e34b3e23103d150ab508e69367fb13d",
+        "upstream_path": "basic51/DirtManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/DodgeManager.java",
+        "sha256": "346476807bd971f8ff3e38b14d16f94591d82e4b79c0b608429e65350f82dd64",
+        "upstream_path": "basic51/DodgeManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/ExplorationManager.java",
+        "sha256": "b7f44341b164c204ae59cadaab014f52cabe91a2da0b61d842df19a9afbc4e75",
+        "upstream_path": "basic51/ExplorationManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/FastIntSet.java",
+        "sha256": "4c3b3acefb977bc8ca28fe428f32eec5c87db5e6e6b89b97e240dd03c978c443",
+        "upstream_path": "basic51/FastIntSet.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/LocalBFS.java",
+        "sha256": "e456b1e757b7ed37122f641548ff4ed6e074109b272dc756294873f82599d835",
+        "upstream_path": "basic51/LocalBFS.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/MapData.java",
+        "sha256": "451b8ff9442576c5f7bf47895c5369d476fbc9c4d80347a6e17f306c9134b7fe",
+        "upstream_path": "basic51/MapData.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/MicroManager.java",
+        "sha256": "622779a65ba24a03d2ff73ea95c14e54bcee13b0112a700c6246c53882b21abb",
+        "upstream_path": "basic51/MicroManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/MovementManager.java",
+        "sha256": "3dbae31a158cc8bc16cb81fccaba31028dfb9825541cce77b591582e24b8d2d9",
+        "upstream_path": "basic51/MovementManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/MyUnit.java",
+        "sha256": "2709321778884febb01a3ae9b5d8aafa8c914017664b59da2439965a3006803f",
+        "upstream_path": "basic51/MyUnit.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/ObservationUtil.java",
+        "sha256": "5d4e04ed24a28d4ec82044815af33e71ab3940f05b7d99a5557d431159673809",
+        "upstream_path": "basic51/ObservationUtil.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/Pathfinder.java",
+        "sha256": "2c60be68de5a8d1af8f47b4037127a9626669854711c15262dbe1e4119d09fe8",
+        "upstream_path": "basic51/Pathfinder.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/RatKing.java",
+        "sha256": "c2793252860fb95fd5f60ad21fe738b4f54214a1037290cce8a84d0ca94bb4c5",
+        "upstream_path": "basic51/RatKing.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/RobotPlayer.java",
+        "sha256": "e1ebdf5ceb01b6cdfc1b671b24ba1fe74466f11f6bad0e63041e9e25aa8587c3",
+        "upstream_path": "basic51/RobotPlayer.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/SqueakManager.java",
+        "sha256": "1427144dc4a29f56378cdecf0f2d00f1b70af980b4cb05562db7d0d9a04bf152",
+        "upstream_path": "basic51/SqueakManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/SymmetryChecker.java",
+        "sha256": "c6c0cfc378676f5c955b9286603933e80cf5ea051267bfbd3925cee7a63a8726",
+        "upstream_path": "basic51/SymmetryChecker.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/Target.java",
+        "sha256": "fe7e40ee22285fe369111575d4a87792a145635c31a553a80b070729a2eafba2",
+        "upstream_path": "basic51/Target.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/ThrowHelper.java",
+        "sha256": "3a39ff8b89f0fd33550963d9e870a8ec549ef086962cbfbcb26171eaecc8832b",
+        "upstream_path": "basic51/ThrowHelper.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/ThrowManager.java",
+        "sha256": "76c84b5a631a1cfcbcf3feebb188fefaa2bd383ecefce9cd4833e22372232bc6",
+        "upstream_path": "basic51/ThrowManager.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/Util.java",
+        "sha256": "917ad53cef456ef3d533f9b170e6c6e0765eec0b2dcd8ed0828ea9283e905120",
+        "upstream_path": "basic51/Util.java"
+      },
+      {
+        "path": "benchmarks/bots/IvanGeffner_basic51/VisionManager.java",
+        "sha256": "76dbbd13e79bc1524756b406846478da49720a3d2badd18c6ec058d007db198d",
+        "upstream_path": "basic51/VisionManager.java"
+      }
+    ],
+    "historical_rating": {
+      "elo": 2183.4,
+      "expected_field_score": 0.9122,
+      "games": 2319,
+      "standard_error": 12.5
+    },
+    "id": "IvanGeffner_basic51",
+    "java_tree_sha256": "a1a0bef0fc4d5a640e1c8775e15271cf7dc531f405cac05811f843aca1f1b764",
+    "license": {
+      "source_path": null,
+      "status": "No license file found; sources remain downloaded local dependencies, not repository-distributed copies"
+    },
+    "package": "basic51",
+    "path": "benchmarks/bots/IvanGeffner_basic51",
+    "source_commit": "70b3f40cebefcca9dc858771715d78088e7ae520",
+    "source_commit_date": "2026-02-03T12:38:34+01:00",
+    "source_path": "basic51",
+    "source_repository": "https://github.com/IvanGeffner/BC26",
+    "stratum": "top historical external field endpoint",
+    "validation": {
+      "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee.",
+      "standalone_java21_compile": "passed against official 1.2.6.jar"
+    }
+  },
+  "checkpoint_path": "/workspace/battlecode26-alpha0/runs/warmstart-v3/checkpoint-0002.pt",
+  "evaluation_cell_id": "d4d7202eacac40f4445b270027270bb71de4736d08f6753543fef9af2a678e03",
+  "generation": 2,
+  "identity": {
+    "artifact_version": 2,
+    "benchmark_suite_id": "development-eight-v4",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "evaluation_config": {
+      "policy_random_seed": 0,
+      "policy_schema": {
+        "action_dim": 40,
+        "action_version": "macro_v2",
+        "feature_version": 2,
+        "model_version": "dual_scale_v2",
+        "network_config": {
+          "action_dim": 40,
+          "blocks": 2,
+          "global_channels": 33,
+          "global_width": 16,
+          "hidden_dim": 128,
+          "local_channels": 33,
+          "local_width": 24,
+          "scalar_dim": 64
+        }
+      },
+      "runtime": {
+        "bridge_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+        "compiled_classes": {
+          "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+          "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+          "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+          "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+          "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+          "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+          "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+          "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+          "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+          "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+          "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+          "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+          "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+          "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+          "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+          "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+          "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+        },
+        "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+        "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+        "engine_version": "1.2.6",
+        "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+        "numpy_version": "2.3.5",
+        "physics": {
+          "benchmark_bytecode_limit": 1000000000,
+          "engine_rules": "official-1.2.6",
+          "team_execution_timeout_disabled": true
+        },
+        "python_adapter_sha256": "797ee5634316b622dfa5f2e2ba63a885065ab0008e99230af9c17a7538ae1e7d",
+        "python_sources": {
+          "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+          "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+          "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+          "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+        },
+        "torch_version": "2.15.0+cpu"
+      },
+      "search_config": {},
+      "search_mode": "greedy",
+      "tie_break": "first-legal-action",
+      "timeout_seconds": 1800.0,
+      "torch_threads": 1
+    },
+    "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+    "map": "DefaultLarge",
+    "map_sha256": "64588be498e836522096cdaf6cb4c81e61ae17b042dbd711b2f976b7f456f648",
+    "opponent": "IvanGeffner_basic51",
+    "opponent_java_sha256": "a1a0bef0fc4d5a640e1c8775e15271cf7dc531f405cac05811f843aca1f1b764",
+    "opponent_source_commit": "70b3f40cebefcca9dc858771715d78088e7ae520",
+    "panel_fingerprint_sha256": "4eff03320f64d2c5216c0373888e779b419ba068d71a7a3bc6e0fc20b4265212",
+    "seed": 2026,
+    "side": "B",
+    "stage": "standard"
+  },
+  "iteration": 2,
+  "maps_dir": "/workspace/battlecode26-alpha0/maps",
+  "stage": "standard",
+  "suite": "standard"
+}

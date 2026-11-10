@@ -465,3 +465,17 @@ A bounded baseline-to-V8 handoff checks complete valid terminal evidence, runtim
 identity, STOPs and quiescence before starting the preregistered three-hour cycle.
 It stops for review on invalid baseline evidence or existing V8 state, and shifts
 to tournament-compatibility review if baseline wins already reach 70%.
+
+## Revised baseline completed; V8 handoff executed
+
+V4 cp2 completed all 256 games: 83W/173L/0D (32.421875%), zero errors.
+A separate read-only audit verified every terminal cell and frozen identities.
+The updated README now shows v4 coverage, opponent/map W/L/D and combined
+per-bot/overall history. This is a new baseline, not improvement over v3.
+
+The bounded coordinator automatically started V8 after validation and lock
+checks. V8 froze 32 training roots, 512 anchors, 16 input-disjoint validation
+roots and its PUCT comparators, then began the fixed 1,508-cell selection panel.
+At this publication review it was healthy in collect_selection with three
+workers; no SGD or V8 benchmark result was available. No pinned actor runtime
+was edited. Final counts and recovery must be reviewed after its bounded cycle.

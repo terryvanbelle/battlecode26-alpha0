@@ -7,14 +7,14 @@
 <!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
-**252/256 valid games; 4 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `20d9e8133490`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v3/baseline/evaluations.jsonl).
+**256/256 valid games; 0 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `20d9e8133490`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v4/baseline/evaluations.jsonl).
 
 ![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
 
-All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot). For `thewaxmango`, bot crashes are excluded: win rate is wins divided by valid games, with the excluded count shown; these crashes are also excluded from the overall rate. Other incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
+All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot).  Incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->
 
-**Revised baseline is running:** v4 replaces the crashing `collegejunior` with YokoOno, which passed 32/32 qualification games. A fresh 256-game cp2 evaluation is underway. A guarded handoff is queued to start the tested V8 self-play/training cycle after a complete valid baseline; it stops for review on errors or changed inputs. The graphs above currently show the prior v3 panel (four crashes excluded from displayed rates), not the new baseline. [Replacement evidence](progress/yokoono-qualification-v1/README.md) · [Current v4 protocol](docs/development-benchmarks-v4.md).
+**Revised baseline complete:** **83 wins / 173 losses / 0 draws (32.4%)**, all 256 games valid with zero errors. The graphs above show the current v4 panel, including qualified replacement YokoOno. [Verified baseline](progress/development-v4/baseline/README.md). V8 is actively collecting fresh self-play targets; no V8 playing-strength result is available yet.
 
 [Active benchmark and improvement rules](docs/development-benchmarks-v4.md) · [Benchmark configuration](configs/benchmarks-development-v4.json) · [Latest completed game research](docs/terminal-v6-results.md)
 

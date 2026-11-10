@@ -109,7 +109,8 @@ def generate(current, manifest):
     ax.set_yticks(range(0,101,10));ax.grid(alpha=.2)
     ax.set_xticks(range(len(history)),labels,fontsize=9)
     ax.set_ylabel('Win rate (%)');ax.set_xlabel('Evaluation start (America/Vancouver) · checkpoint SHA')
-    ax.set_title(f"Overall and per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · thewaxmango crashes excluded from bot and overall rates",fontsize=13)
+    denominator_note = 'thewaxmango crashes excluded from bot and overall rates' if any(h['overall']['excluded_crashes'] for h in history) else 'complete valid games; incomplete panels remain pending'
+    ax.set_title(f"Overall and per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · {denominator_note}",fontsize=13)
     ax.legend(loc='center left',bbox_to_anchor=(1.02,.5),frameon=False,fontsize=9,
               title='Opponents by prior Elo · latest wins / valid games')
     fig.tight_layout()

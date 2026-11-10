@@ -1,0 +1,382 @@
+{
+  "bot": {
+    "archive_url": "https://codeload.github.com/uravt/Battlecode26/tar.gz/fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+    "entrypoint": "Version41.RobotPlayer",
+    "files": [
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRat.java",
+        "sha256": "4dbc7e84c8b3a84c98aec0dafdc1cbe4bca12fa5086782e1896914f42400a0af",
+        "upstream_path": "src/Version41/BabyRat.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRCatMicro.java",
+        "sha256": "352ee64d4f31a8c52596abfe50234fc6ea6d63a0f31d8351bd215408f1dddfc9",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRCatMicro.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRExplore.java",
+        "sha256": "644cf8d9601e87c932c8026c5522036d390ca5f7d5388aff5920e53b6598c4e7",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRExplore.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRFormRatKing.java",
+        "sha256": "5e4bc970c695222f71dfee643d8c543b562d0c16956a9e38ecf67baa27ed3e6b",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRFormRatKing.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRHunt.java",
+        "sha256": "1d8fc6df88142cae6761566140eb80d74f8bad9ef4f36677a7de1dafe547e502",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRHunt.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRLure.java",
+        "sha256": "cb821ea8143802f8a33c4a43025c2a956bdeaddd3de3c84bd28575b478fdb654",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRLure.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRMicro.java",
+        "sha256": "60591f22ccd3179547e77db1bec513338c278eada0cf5cde62f12dd5b4bbc34e",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRMicro.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRReportSymmetry.java",
+        "sha256": "51f29dbc62b76a74fa592e1200ef2807fc6a48e5368fe48e618acd71b35cc7bc",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRReportSymmetry.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRRush.java",
+        "sha256": "7f94ebe672fe8b863089a0cca91b4947dbbb5b61811e45b5ea25b57bd91f0ac2",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRRush.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRScavenge.java",
+        "sha256": "eee9a02adb1b61fd8f46b7f05ad15c690b414dfa546b7b3fcad4b08e054d64b2",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRScavenge.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRScavengeRatPickup.java",
+        "sha256": "e6e60c785aad63f96cd158567aabfce404941cf0c1bd1510381aa35a112614ea",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRScavengeRatPickup.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRThrownCarried.java",
+        "sha256": "b3263af763c06cfb4a7fc23cecfabf50ea9242c82aa9f1b5e29bf0f83bafe44b",
+        "upstream_path": "src/Version41/BabyRatBehaviors/BRThrownCarried.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatStateUpdaters/CooperationStateUpdater.java",
+        "sha256": "9d95d2d7926ef9965728773ac8f6c828927ab3efc8b8e439aa812ef846248abf",
+        "upstream_path": "src/Version41/BabyRatStateUpdaters/CooperationStateUpdater.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/BabyRatStateUpdaters/DefectBRStateUpdater.java",
+        "sha256": "98fed92c08a4ca443a5e448ad6855dac661685ed832407c6b891f04ad6f63ab8",
+        "upstream_path": "src/Version41/BabyRatStateUpdaters/DefectBRStateUpdater.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Behavior.java",
+        "sha256": "7ce8fc3de89ae2e269414a3f527237bd24670b600d8cbdc1b8f726e0a875f7a0",
+        "upstream_path": "src/Version41/Behavior.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/CheeseMineInfo.java",
+        "sha256": "ad983d5a6198d77fdfcaf6939e50303e147a2d13fca7fbe93406192acb5aa807",
+        "upstream_path": "src/Version41/Communication/CheeseMineInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/CheeseMineSqueakInfo.java",
+        "sha256": "225316dbc5a45e42df0481a3cbf3c617086883ffc5753e75f186de796423f82b",
+        "upstream_path": "src/Version41/Communication/CheeseMineSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/Communicator.java",
+        "sha256": "0e57adb669ac3abba420589bcee570b4a47f385f3d57090358ee8ff111b42b54",
+        "upstream_path": "src/Version41/Communication/Communicator.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/EnemyRatKingSqueakInfo.java",
+        "sha256": "8a60dc2e67e5b931355713a99f052db38b1e7d94294b7ff32ed992100845b425",
+        "upstream_path": "src/Version41/Communication/EnemyRatKingSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/FormRatKingSqueakInfo.java",
+        "sha256": "15a88073d185c0a08790c3f9884f155ff545a1d88864228e04ed237c416e7b90",
+        "upstream_path": "src/Version41/Communication/FormRatKingSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/NearbyCatSqueakInfo.java",
+        "sha256": "ea81664e6e5637241348a747e0ecaa482b43095570d648f4d260610796ac5c99",
+        "upstream_path": "src/Version41/Communication/NearbyCatSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/PickupSqueakInfo.java",
+        "sha256": "a7deec6dc4260647f48637a62b33b2c50c57f9c24fae84532c303e803d025df8",
+        "upstream_path": "src/Version41/Communication/PickupSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/PresenceSqueakInfo.java",
+        "sha256": "b7e9b2c553d2d14c6ef850831636d6fb8c884009b3ce34c40cfea4856461438b",
+        "upstream_path": "src/Version41/Communication/PresenceSqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/RatKingInfo.java",
+        "sha256": "e6d14b8a776ebdbbd21d9928e08ee8792acd2a16a3200a69d8bc93036c4228a1",
+        "upstream_path": "src/Version41/Communication/RatKingInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/Squeak.java",
+        "sha256": "9425e7a75bb3227cbd5c5525296e91321d81de7f7371e8b0b325f3efeb49a2fd",
+        "upstream_path": "src/Version41/Communication/Squeak.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/SqueakInfo.java",
+        "sha256": "65f70741128f79127b15d63851bf2fad3c9b7afbbcd6092805af7bf9c256bebf",
+        "upstream_path": "src/Version41/Communication/SqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Communication/SymmetrySqueakInfo.java",
+        "sha256": "c821e5752c3da6503313cc7c9ff666021de82177ffb2ebe43662b484c094a5f8",
+        "upstream_path": "src/Version41/Communication/SymmetrySqueakInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DataStructures/FastBitMap.java",
+        "sha256": "897eb832fcd0defda8db1e009c6b4ea41655e4126ce31ff266c81fd7a03c59b5",
+        "upstream_path": "src/Version41/DataStructures/FastBitMap.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DataStructures/FastIntSet.java",
+        "sha256": "6d4c29ff293e3d4cb75012819098dd671130a3004912eed4101a7b802e301983",
+        "upstream_path": "src/Version41/DataStructures/FastIntSet.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DataStructures/FastIterableLocMap.java",
+        "sha256": "ed9ed74bb8a4b8fee8e4f9c5d9c019309ebe39380e70dd631a7e57954e2306a5",
+        "upstream_path": "src/Version41/DataStructures/FastIterableLocMap.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DataStructures/FastLocSet.java",
+        "sha256": "69e07f717aee64bd50a364bfbcccbc8d16b285c674a7fcc2c341cfb619f85092",
+        "upstream_path": "src/Version41/DataStructures/FastLocSet.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DataStructures/FastMath.java",
+        "sha256": "4f598af1d94430bab158a26351d1e00f37b5d9c2c66ddaee9aa429cf92f43898",
+        "upstream_path": "src/Version41/DataStructures/FastMath.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Debug.java",
+        "sha256": "bcdf4aa8b02c68f46b186598131e0c9e036919c4793926f51ee1121e1b377d7b",
+        "upstream_path": "src/Version41/Debug.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/DirectionHealthInfo.java",
+        "sha256": "8933f748058366424e642cd496bf9d5ef8685a065340871c00a9b715abe61c59",
+        "upstream_path": "src/Version41/DirectionHealthInfo.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/FastIterableLocSet.java",
+        "sha256": "25fb4946d635b3ab95c543f66f45b36729345d744288a0d29bbc5d9209ae68a9",
+        "upstream_path": "src/Version41/FastIterableLocSet.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFS.java",
+        "sha256": "702f191bb9b17d55e2dc621b37babcd742b6700b2ab9abae71ed315cf35a5901",
+        "upstream_path": "src/Version41/Pathfinding/BabyRatBFS.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSAvoidCat.java",
+        "sha256": "13c970170a4429cf33fd14ad6b44b7e73946e4b6ff09a3cd6c90ca8403c42303",
+        "upstream_path": "src/Version41/Pathfinding/BabyRatBFSAvoidCat.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSAvoidCatClearDirt.java",
+        "sha256": "5acd2b437412703e4920d879ba7be860a98e1e5b281e5fa6d2e562f4da3c444f",
+        "upstream_path": "src/Version41/Pathfinding/BabyRatBFSAvoidCatClearDirt.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSClearDirt.java",
+        "sha256": "5e777b122ffa1e042e4c8b66d030dd47c1f5dea667a9495b8aa792d252c3bd2e",
+        "upstream_path": "src/Version41/Pathfinding/BabyRatBFSClearDirt.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/Pathfinding.java",
+        "sha256": "6cc682abaa0d753a3644f27f00e3b30733bd289f5c4c105551e4be9577630786",
+        "upstream_path": "src/Version41/Pathfinding/Pathfinding.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Pathfinding/RatKingBFS.java",
+        "sha256": "d63b33a21dfd48350006d61c7496d3b3a426982a283edbe2254d66110e00382f",
+        "upstream_path": "src/Version41/Pathfinding/RatKingBFS.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RatKing.java",
+        "sha256": "35de48edd17d4ec46e5a27618d7060a8ef8548e695993f9e148dbc196bcfb275",
+        "upstream_path": "src/Version41/RatKing.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKExplore.java",
+        "sha256": "94a5aedac82c1958bd3562251b823753be4e216d8636dc81bb09bb4f7d5fa3e2",
+        "upstream_path": "src/Version41/RatKingBehaviors/RKExplore.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKFlee.java",
+        "sha256": "4d69d89ac8ec5f3c1c17024b3e54ec735db3b235406d9a6924b4609dc960d269",
+        "upstream_path": "src/Version41/RatKingBehaviors/RKFlee.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKHeadquarter.java",
+        "sha256": "4b3e8385865fc5cf62cb1c7de2f7e1ce687617fc5f5b9578fb5440fc298d08d1",
+        "upstream_path": "src/Version41/RatKingBehaviors/RKHeadquarter.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RatKingStateUpdaters/SimpleRKStateUpdater.java",
+        "sha256": "7a51ed61b18b64f0d2debfbdcedb9a0fd258fd976e4f667f760cc987af25c3e7",
+        "upstream_path": "src/Version41/RatKingStateUpdaters/SimpleRKStateUpdater.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Reachability.java",
+        "sha256": "cd45cc218397e2df4ca10683824b3173e572cdf62d4f0652abf2378b7cf60628",
+        "upstream_path": "src/Version41/Reachability.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/RobotPlayer.java",
+        "sha256": "72d663ab86af32bf17576bd6ce67e75810a71207ec9ccbaf84190ff6da122ff3",
+        "upstream_path": "src/Version41/RobotPlayer.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/StateUpdater.java",
+        "sha256": "47d1cf891209dd8539e420a71510a6e367c47f816cfa9e7ebb48e948ed613e56",
+        "upstream_path": "src/Version41/StateUpdater.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/SymmetryManager.java",
+        "sha256": "48e0d02fbb04e0da71be7fc4b3bf8c173072888fdc31f54c35ae6c7e46f2fc39",
+        "upstream_path": "src/Version41/SymmetryManager.java"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/UPSTREAM_LICENSE",
+        "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182",
+        "upstream_path": "LICENSE"
+      },
+      {
+        "path": "benchmarks/bots/uravt_Version41/Utilities.java",
+        "sha256": "46342d4d1d32343a55e3032e4192ccebe7d2f6a4fad37d96d5ddb3cc271f6433",
+        "upstream_path": "src/Version41/Utilities.java"
+      }
+    ],
+    "historical_rating": {
+      "elo": 2125.3,
+      "expected_field_score": 0.8859,
+      "games": 2163,
+      "player_id": "uravt_Version41",
+      "standard_error": 11.1
+    },
+    "id": "uravt_Version41",
+    "java_tree_sha256": "4f07fc2e9a43632125d01b37e400ddac2798eaaaf5eeac1ee8329be020c20679",
+    "license": {
+      "source_path": "LICENSE",
+      "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+    },
+    "package": "Version41",
+    "path": "benchmarks/bots/uravt_Version41",
+    "role": "external",
+    "source_commit": "fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+    "source_commit_date": "2026-06-30T18:36:21-04:00",
+    "source_path": "src/Version41",
+    "source_repository": "https://github.com/uravt/Battlecode26",
+    "stratum": "elite external field; second independent high-strength endpoint",
+    "validation": {
+      "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee.",
+      "standalone_java21_compile": "passed against official 1.2.6.jar"
+    }
+  },
+  "checkpoint_path": "/workspace/battlecode26-alpha0/runs/warmstart-v3/checkpoint-0002.pt",
+  "evaluation_cell_id": "687367c052170fb4bb3fc3d6b1eb9cfae839e3c3b303486fc495a8553fb25a92",
+  "generation": 2,
+  "identity": {
+    "artifact_version": 2,
+    "benchmark_suite_id": "development-eight-v4",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "evaluation_config": {
+      "policy_random_seed": 0,
+      "policy_schema": {
+        "action_dim": 40,
+        "action_version": "macro_v2",
+        "feature_version": 2,
+        "model_version": "dual_scale_v2",
+        "network_config": {
+          "action_dim": 40,
+          "blocks": 2,
+          "global_channels": 33,
+          "global_width": 16,
+          "hidden_dim": 128,
+          "local_channels": 33,
+          "local_width": 24,
+          "scalar_dim": 64
+        }
+      },
+      "runtime": {
+        "bridge_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+        "compiled_classes": {
+          "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+          "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+          "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+          "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+          "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+          "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+          "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+          "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+          "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+          "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+          "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+          "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+          "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+          "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+          "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+          "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+          "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+        },
+        "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+        "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+        "engine_version": "1.2.6",
+        "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+        "numpy_version": "2.3.5",
+        "physics": {
+          "benchmark_bytecode_limit": 1000000000,
+          "engine_rules": "official-1.2.6",
+          "team_execution_timeout_disabled": true
+        },
+        "python_adapter_sha256": "797ee5634316b622dfa5f2e2ba63a885065ab0008e99230af9c17a7538ae1e7d",
+        "python_sources": {
+          "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+          "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+          "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+          "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+        },
+        "torch_version": "2.15.0+cpu"
+      },
+      "search_config": {},
+      "search_mode": "greedy",
+      "tie_break": "first-legal-action",
+      "timeout_seconds": 1800.0,
+      "torch_threads": 1
+    },
+    "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+    "map": "wallsofparadis",
+    "map_sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28",
+    "opponent": "uravt_Version41",
+    "opponent_java_sha256": "4f07fc2e9a43632125d01b37e400ddac2798eaaaf5eeac1ee8329be020c20679",
+    "opponent_source_commit": "fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+    "panel_fingerprint_sha256": "4eff03320f64d2c5216c0373888e779b419ba068d71a7a3bc6e0fc20b4265212",
+    "seed": 2026,
+    "side": "A",
+    "stage": "standard"
+  },
+  "iteration": 2,
+  "maps_dir": "/workspace/battlecode26-alpha0/maps",
+  "stage": "standard",
+  "suite": "standard"
+}

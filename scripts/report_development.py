@@ -41,6 +41,7 @@ def generate(progress, manifest_path=None):
  sys.path.insert(0,str(ROOT))
  from scripts.plot_development_history import generate as history_graph
  history_graph(progress,manifest)
+ crash_note = (' For `thewaxmango`, bot crashes are excluded from bot and overall display rates, with the excluded count shown.' if 'thewaxmango_collegejunior' in bots else '')
  block=f'''<!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
@@ -48,7 +49,7 @@ def generate(progress, manifest_path=None):
 
 ![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
 
-All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot). For `thewaxmango`, bot crashes are excluded: win rate is wins divided by valid games, with the excluded count shown; these crashes are also excluded from the overall rate. Other incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
+All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot). {crash_note} Incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->''' 
  if not rows:block=block.replace(f' · [Raw evaluation]({data["source"]}/evaluations.jsonl)','').replace('Checkpoint `not-yet-eval`','Baseline evaluation pending')
  readme=ROOT/'README.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)
