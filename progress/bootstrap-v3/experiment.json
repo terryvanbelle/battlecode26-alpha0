@@ -1,0 +1,50 @@
+{
+  "experiment_id": "macro40-bootstrap-v3",
+  "candidate": "candidate-001",
+  "status": "complete",
+  "learning_method": "own-rule teacher distillation only; no MCTS continuation",
+  "checkpoint_sha256": "e4cefb74dae4f4547b87416142065dd9bb04fdc28e3a830275b55ba81de4b7fd",
+  "bootstrap_wall_seconds": 56.698875427246094,
+  "evaluation_wall_seconds_from_first_request": 240.0450119972229,
+  "evaluation_worker_seconds": 200.54830336500072,
+  "bootstrap_games": 6,
+  "bootstrap_decisions": 9257,
+  "bootstrap_positions": 1536,
+  "bootstrap_updates": 256,
+  "evaluation_games": 24,
+  "wins": 12,
+  "draws": 0,
+  "losses": 12,
+  "unresolved_errors": 0,
+  "holdout_used": false,
+  "production_activated": false,
+  "test_command": ".venv/bin/python -m unittest discover -s tests -p test_bootstrap_v2.py -v",
+  "tests_passed": 6,
+  "value_warning": "90.625% saturation on a fixed training sample; value calibration not established. Reset or validate before MCTS.",
+  "training_fit": {
+    "before": {
+      "loss": 3.2570834159851074,
+      "policy_loss": 3.083796739578247,
+      "value_loss": 0.6931471824645996,
+      "value_bce": 0.6931471824645996,
+      "value_mse": 1.0,
+      "value_mean": 0.0,
+      "value_saturated_fraction": 0.0,
+      "policy_entropy": 3.027008295059204,
+      "teacher_argmax_agreement": 0.03515625,
+      "teacher_selected_action_probability": 0.046192459762096405
+    },
+    "after": {
+      "loss": 0.21602247655391693,
+      "policy_loss": 0.2080932855606079,
+      "value_loss": 0.03171674162149429,
+      "value_bce": 0.03171674162149429,
+      "value_mse": 0.03899462893605232,
+      "value_mean": 0.1684603989124298,
+      "value_saturated_fraction": 0.90625,
+      "policy_entropy": 0.22301362454891205,
+      "teacher_argmax_agreement": 0.98828125,
+      "teacher_selected_action_probability": 0.9520758986473083
+    }
+  }
+}

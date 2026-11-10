@@ -1,0 +1,26 @@
+{
+  "experiment": "macro40-bootstrap-v3-winners",
+  "artifact_role": "optional winner-only teacher BC; no MCTS continuation or production activation",
+  "files": {
+    "config.json": "1333e4f89f6828be5be525516f4bec12e9e2557d873425fc2d6d6d7c4f766242",
+    "fit.jsonl": "472928db6d28bd20b393f0625c7b2f66e761ef40d1a7ec4d85b839a4c7850c54",
+    "neutral-initialization.pt": "a74c9837c196be2c2877eb857b0c3b2d50422a5ee1116c9eb43b607578523455",
+    "source/alpha0/bootstrap_v2.py": "cc5602f9bf60ea280c7a8bb5a0b5723627bffd19d139956d72169c1ac0559788",
+    "source/alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+    "source/alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "source/alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747",
+    "source/alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+    "source_dataset.json": "8b608a88e563c5998445ca0443001a3300d0162c77aaf631898bec2a79be3ac4",
+    "summary.json": "a7c443a992c7322c5f000c75d713721fd31e7fa1f5f7a6b2e822dbd7f431cd32",
+    "warmstart.pt": "c1473de81dda381c9f14868ea246c11f5bbd644fb59b0b0420e547598b26aa0e"
+  },
+  "source_dataset": "../candidate-001",
+  "python_source_sha256": {
+    "alpha0/bootstrap_v2.py": "cc5602f9bf60ea280c7a8bb5a0b5723627bffd19d139956d72169c1ac0559788",
+    "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+    "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+    "alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747"
+  },
+  "value_head": "exactly neutral zero; BCE weight zero during fitting"
+}

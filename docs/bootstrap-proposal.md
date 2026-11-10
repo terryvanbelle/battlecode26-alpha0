@@ -134,3 +134,53 @@ still has to qualify against every frozen opponent under the existing standard
 and untouched holdout rules. If initialization improves only early fitting or a
 single training map, keep that as a failed or limited experiment rather than
 silently promoting it.
+
+## Outcome-filtered candidate 002
+
+Candidate 001's full six-game initialization won **12/24** valid smoke games,
+with no unresolved errors. It won both seats against five opponents, split two,
+and lost both seats against five. This is a development result on `tiny`, not a
+victory-gate pass. The complete per-seat report and artifacts are in
+[`progress/bootstrap-v3`](../progress/bootstrap-v3/README.md).
+
+The next controlled variant reuses those exact six **own-teacher** game shards
+and verifies their checksums. It keeps policy examples only from the winning
+team in each complete game, selecting 917 of 1,536 retained positions. Assault
+was the winning own-teacher style in four games and guard in two. Losing forage
+or guard examples are excluded by the **own-game terminal result**, never by
+benchmark performance or an inspected benchmark action. No new teacher games
+are generated and no external opponent contributes training data.
+
+```bash
+.venv/bin/python -m alpha0.bootstrap_v2 \
+  --out runs/bootstrap-v3/candidate-002-winners \
+  --winner-only-from artifacts/bootstrap-v3/candidate-001 --steps 256
+```
+
+The initial student weights are tensor-identical to candidate 001's initial
+weights. Sampling remains uniform by source game and then by retained winning
+position. There are 256 policy-distillation updates. Value loss is disabled and
+the final value linear layer is explicitly reset to zero before export, so
+subsequent MCTS would begin with a useful-policy hypothesis and neutral values,
+not a confident value function fitted to six teacher episodes. The experiment
+is tagged `macro40-bootstrap-v3-winners`, with selection indices, source hashes,
+configuration and its own baseline/candidate checkpoints retained.
+
+Candidate 002 won 20/24 smoke games, versus candidate 001's 12/24, with all cells
+valid under identical runtime/evaluation settings. This is a **recipe
+comparison**, not an isolated causal test of winner filtering: both the policy
+example filter and value-training objective changed. Disabling the value loss
+also changes gradients in the shared trunk, even though greedy evaluation does
+not use the value output. A separate ablation would be required to assign the
+gain to either change alone.
+
+This is **winner-only behavior cloning**, not search supervision or an
+AlphaZero improvement result. The hypothesis is that conflicting and losing
+teacher policies diluted the first initialization. Filtering can also discard
+useful defensive behavior, favor lucky outcomes and reinforce map/seat
+correlations. The rule does not identify which individual actions caused a
+win. Those limitations require later diverse self-play and controlled
+evaluation. All twelve smoke opponents are evaluated in both seats under
+[`progress/bootstrap-v3-winners`](../progress/bootstrap-v3-winners/README.md),
+separately from candidate 001 and the unchanged neutral v2 campaign. Neither
+variant automatically replaces production or consumes the reserved holdout.

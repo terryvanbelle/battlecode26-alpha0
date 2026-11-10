@@ -1,0 +1,47 @@
+{
+  "status": "ok",
+  "experiment_id": "macro40-bootstrap-v3-winners",
+  "method": "winner-only BC from own teacher games; not MCTS targets",
+  "source_games": 6,
+  "source_positions": 1536,
+  "selected_positions": 917,
+  "steps": 256,
+  "winning_teachers": [
+    "assault",
+    "assault",
+    "assault",
+    "assault",
+    "guard",
+    "guard"
+  ],
+  "value_head_reset_to_zero": true,
+  "before": {
+    "loss": 3.0520873069763184,
+    "policy_loss": 3.0520873069763184,
+    "value_loss": 0.6931471824645996,
+    "value_bce": 0.6931471824645996,
+    "value_mse": 1.0,
+    "value_mean": 0.0,
+    "value_saturated_fraction": 0.0,
+    "policy_entropy": 2.993075370788574,
+    "teacher_argmax_agreement": 0.015625,
+    "teacher_selected_action_probability": 0.047615233808755875
+  },
+  "after": {
+    "loss": 0.15577666461467743,
+    "policy_loss": 0.15577666461467743,
+    "value_loss": 0.6931471824645996,
+    "value_bce": 0.6931471824645996,
+    "value_mse": 1.0,
+    "value_mean": 0.0,
+    "value_saturated_fraction": 0.0,
+    "policy_entropy": 0.16252873837947845,
+    "teacher_argmax_agreement": 1.0,
+    "teacher_selected_action_probability": 0.9783177375793457
+  },
+  "diagnostic_scope": "fixed training-data sample; not strength or calibration evaluation",
+  "seconds": 18.8661864959995,
+  "checkpoint_sha256": "c1473de81dda381c9f14868ea246c11f5bbd644fb59b0b0420e547598b26aa0e",
+  "checkpoint": "/workspace/battlecode26-alpha0/runs/bootstrap-v3/candidate-002-winners/warmstart.pt",
+  "production_activated": false
+}

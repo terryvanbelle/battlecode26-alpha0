@@ -4,7 +4,7 @@
 
 The archive includes:
 
-- `runs/campaign/v2`: all model checkpoints, latest checkpoint, config, plans, replay index/game arrays, and game outcomes needed to resume.
+- `runs/campaign/v2`: all model checkpoints, latest checkpoint, config, every plan/raw game JSON transcript, the published checkpoint's replay generation, and pending next-iteration game arrays needed to resume.
 - `progress/campaign-v2`: evaluation cells/reports, result ledgers, metrics and graphs.
 - `runs/gate-ledgers/*.json`: consumed holdout-gate records, required to preserve one-time holdout use.
 - `runs/campaign/status.json`, when present.
@@ -62,3 +62,12 @@ Release storage remains preferred. If GitHub specifically rejects release-upload
 The fallback uses a temporary isolated repository and index. It appends immutable archives/checksum manifests under `snapshots/`, updates that branch's `latest.json`, and pushes with normal fast-forward checks. It never force-pushes, deletes old archives, checks out a different branch in the source workspace, or changes credentials. Concurrent conflicting publication fails safely.
 
 The main progress pointer records `storage: git`, the exact storage commit, branch, archive path and full SHA-256. Download fetches that exact commit and verifies the archive, even if later snapshots have advanced the branch. `download --latest` considers both complete release pairs and the Git branch pointer. Push the small main-branch pointer after a successful publication so future executors have a direct durable reference.
+
+
+## Compact new archives
+
+New archives retain only the replay generation named by `latest.pt` plus game NPZ shards needed by its next-iteration plan. Original NPZ shards from already completed/consumed iterations and obsolete replay generations are omitted; all model checkpoints, plans, raw game JSON transcripts, progress and gate ledgers remain. Unclassified or future game shards are kept conservatively.
+
+The inner manifest records `omission_policy` and every omitted path, size and reason. The sidecar reports omitted file/byte counts and the retained replay path. Compaction changes archive membership only: it never deletes local files or rewrites old backups. Earlier full archives retain the original shards they contained, and earlier checkpoint snapshots retain their then-current replay samples. Recovering the current learner requires only its published replay generation; historical opponent selection uses the retained model checkpoints rather than old replay generations.
+
+A snapshot taken between games preserves finished shards from the partially collected next iteration, so continuation can reuse them without replaying those games. The fixed release and Git archive-size limits still apply: model/history growth can eventually require further storage changes, and exceeding the Git fallback's 90 MiB cap remains an explicit durability failure.

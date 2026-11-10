@@ -1,0 +1,336 @@
+{
+  "benchmark_suite_id": "field-twelve-v2",
+  "checkpoint_sha256": "e4cefb74dae4f4547b87416142065dd9bb04fdc28e3a830275b55ba81de4b7fd",
+  "complete": true,
+  "completed": 24,
+  "evaluation_config_sha256": "9d1a2068eb924371b02f0beaa2c7d6f8a61f92914ac541a5b3157be6584a612f",
+  "executed": true,
+  "exhausted_cells": 0,
+  "expected": 24,
+  "expected_cell_ids": [
+    "75839d4c58aac13f316c167689e2363daddedd94b38e92e363a6a4c47d8a5bae",
+    "65a71fce2226175f0123f670313c526576e3de932a343eb09bdb33aa2ec4cae0",
+    "259e1fee549cd96a756047218e501e2b60403f581ab081b5ff45dae44dfd84d0",
+    "d02ab04ea44fb07fd19cc96c144b75c98f34505fb79993d98f8451cbf9ae133c",
+    "20d2ff2781ddd68c025118fe85817c973c9265c92ed04155838640be9f17444e",
+    "db74fba10d909ec959744339fa5ea9ecc939bf1bfd87942a19de080f686dfdb4",
+    "d639c893c87da12b569ee04eea3e8fd7c9f93b91310ffb8e977bc009cfa01391",
+    "c80c665b24d3fd2a369dcdf542f35d76f87875c9207a3885214c40aa1893505e",
+    "51a07cfb15db4b07104ce016b87ca4fe41e9e4a69c3f4413b55b041ffa13b4ff",
+    "ba79640b2b8232b66c8f7103178d1f343681562b29a27b2b7af8b8b2b221d264",
+    "5218c3c8fbd3ce51a3335f5be7b34dc9c24e68d7c16335547b7024357ac49bf3",
+    "0c3b6ec4b8a12bde5039be40776f418833d45aa611535d2544312d4db750c9e8",
+    "cafdc62293491b0cc949d38b93f95b9d78d2e95702be910668e54747de353a19",
+    "17a3284af5c4eed840c2d7640ab57a0339f91326de40a94da0f7a56d9f1a5af4",
+    "a00dc26b44506248b124e42122db891e880cb6961958113ee4f473fff009a381",
+    "23e6b432ec0056ce2a8be500f8624d02735dee3be95547c9c422b51c4dee5163",
+    "81d6fcbd20e195ddf57e73c138b1370672eec34e32489c800bc27638bd6631c6",
+    "f1c141eab702487a75dc5776ee28ed726f3a90e34f34b697e26c909633f0832d",
+    "1170efd895c8a592bc5fefe9c4038ef4c3417ff081f4f858d4c497b023352650",
+    "c1e11bb4d43c4ef5f91e9221dbc16c4ccc720dabc30e5618498e478704c34111",
+    "ed2156c07dc6fd11507174ce09b5d348e049e850e1997ff9194be16561ae1ab0",
+    "a642f09020a805ee7ffda31595287553466fa8ac6ab432649aa46d9d5507ea81",
+    "6320c6f8b01e7d9612c2cb02345d8e05854b0c0996b3f379851cf0c9b03111cf",
+    "01cceed0c8c435110c359fc17b3d7c8ef56bb9170f7fe18dd0e97a2d24cde3ac"
+  ],
+  "full_panel": true,
+  "full_panel_complete": true,
+  "iteration": 1,
+  "opponents": {
+    "CS50Crab_rapierV1": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 0,
+      "mean_score": 1.0,
+      "score_sum": 2.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        }
+      },
+      "wins": 2
+    },
+    "Camleaf_mk1": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 0,
+      "mean_score": 1.0,
+      "score_sum": 2.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        }
+      },
+      "wins": 2
+    },
+    "HugoIngelsson_Xzibit": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 1,
+      "mean_score": 0.5,
+      "score_sum": 1.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 1
+    },
+    "IvanGeffner_basic51": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 2,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "Krak9n_robot": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 0,
+      "mean_score": 1.0,
+      "score_sum": 2.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        }
+      },
+      "wins": 2
+    },
+    "abcdezyxwv_bestsofar": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 2,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "bc26-example": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 0,
+      "mean_score": 1.0,
+      "score_sum": 2.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        }
+      },
+      "wins": 2
+    },
+    "seru9_TOTAL_AGGRO": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 0,
+      "mean_score": 1.0,
+      "score_sum": 2.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        }
+      },
+      "wins": 2
+    },
+    "spsquared_TSPAARK_QUALS": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 1,
+      "mean_score": 0.5,
+      "score_sum": 1.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 1.0,
+          "score_sum": 1.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 1
+    },
+    "thewaxmango_collegejunior": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 2,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "uravt_Version41": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 2,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    },
+    "vibe26b_zdb": {
+      "completed": 2,
+      "draws": 0,
+      "errors": 0,
+      "expected": 2,
+      "losses": 2,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 1,
+          "expected": 1,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    }
+  },
+  "pending": 0,
+  "pending_cell_ids": [],
+  "stage": "smoke",
+  "stop_reason": null,
+  "stopped_early": false,
+  "suite": "smoke",
+  "unresolved_errors": 0
+}

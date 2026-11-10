@@ -1,0 +1,3155 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-10T03:34:53.413575+00:00",
+  "snapshot_started_at": "2026-11-10T03:34:27.653939+00:00",
+  "audit_source_sha256": "38eac33d7dc8d46ccf7ce230b5ace02c8fb39b7345cf7f696879d660f3b3b6a1",
+  "inference_environment": {
+    "torch_version": "2.15.0+cpu",
+    "numpy_version": "2.3.5"
+  },
+  "run_dir": "/workspace/battlecode26-alpha0/runs/campaign/v2",
+  "method": "prequential own-self-play; each game scored only by its pre-game generation checkpoint",
+  "interpretation": "Future games relative to the scored checkpoint; these games may train later checkpoints. Not a permanently held-out final-model test.",
+  "metrics": {
+    "brier": "mean squared error of win probability against player-relative terminal win label",
+    "value_mse": "mean squared error on [-1,1] values; four times Brier",
+    "bce": "stable binary cross entropy of raw win logits, in nats",
+    "saturated_fraction": "fraction with abs(predicted value)>0.95",
+    "reliability_bins": "uniform probability bins, equal-game weighted; final bin includes p=1"
+  },
+  "weighting": "uniform games, uniform retained searched positions within each game",
+  "sample_scope": "retained searched positions only; not every robot turn",
+  "bins": 10,
+  "completed_games": 23,
+  "planned_games": 24,
+  "pending_or_invalid_game_ids": [
+    "iter-0003-game-007"
+  ],
+  "excluded": [],
+  "checkpoints": [
+    {
+      "checkpoint_iteration": 0,
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "historical_opponent_games": 0,
+      "planned_games": 8,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "mean_target_win_rate": 0.478515625,
+      "games": 8,
+      "positions": 4096,
+      "weighting": "uniform games, then uniform retained positions within each game",
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 4096,
+          "represented_games": 8,
+          "equal_game_weight": 1.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.478515625
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ],
+      "reliability_ece": 0.021484375,
+      "brier_skill_vs_neutral": 0.0
+    },
+    {
+      "checkpoint_iteration": 1,
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "historical_opponent_games": 4,
+      "planned_games": 8,
+      "brier": 0.25816126159633157,
+      "value_mse": 1.0326450463853263,
+      "bce": 0.7094761163578578,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.4840822786933567,
+      "mean_value": -0.03183544261328658,
+      "saturated_fraction": 0.0,
+      "mean_target_win_rate": 0.741943359375,
+      "games": 8,
+      "positions": 3492,
+      "weighting": "uniform games, then uniform retained positions within each game",
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 3492,
+          "represented_games": 8,
+          "equal_game_weight": 1.0,
+          "mean_prediction": 0.4840822786933567,
+          "observed_win_rate": 0.741943359375
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ],
+      "reliability_ece": 0.2578610806816433,
+      "brier_skill_vs_neutral": -0.03264504638532628
+    },
+    {
+      "checkpoint_iteration": 2,
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "historical_opponent_games": 0,
+      "planned_games": 8,
+      "brier": 0.2881799459102163,
+      "value_mse": 1.1527197836408651,
+      "bce": 0.7761680375152457,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.685124025124864,
+      "mean_value": 0.37024805024972773,
+      "saturated_fraction": 0.0,
+      "mean_target_win_rate": 0.490234375,
+      "games": 7,
+      "positions": 3584,
+      "weighting": "uniform games, then uniform retained positions within each game",
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 2341,
+          "represented_games": 7,
+          "equal_game_weight": 0.6531808035714286,
+          "mean_prediction": 0.6618876203502394,
+          "observed_win_rate": 0.4754378470739
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 1243,
+          "represented_games": 7,
+          "equal_game_weight": 0.34681919642857145,
+          "mean_prediction": 0.7288862323472259,
+          "observed_win_rate": 0.5181013676588897
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "represented_games": 0,
+          "equal_game_weight": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ],
+      "reliability_ece": 0.19488965012486398,
+      "brier_skill_vs_neutral": -0.15271978364086514
+    }
+  ],
+  "games": [
+    {
+      "game_id": "iter-0001-game-000",
+      "map": "tiny",
+      "seed": 1656982212,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "c96e7ddac0c85eacee51cea34057296462dbbd2ea43d6d01bae6165ac94834fc",
+      "game_npz_sha256": "33c8c5821c548282d980ee08bdc2e5e980a0d2f0659ebc03d46e9ae13ca78b88",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 232,
+      "negative_labels": 280,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.453125,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 232.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.453125
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-001",
+      "map": "DefaultSmall",
+      "seed": 1344494084,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "8cc6cd32f270521fcbfafd0e95a66fd97140280c42f59ebdc7bc23c96033245c",
+      "game_npz_sha256": "853f08da8cdf76e5b7a75593fbe8166adc98bd98cd2f35f0ec8dc049b22949af",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 222,
+      "negative_labels": 290,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.43359375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 222.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.43359375
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-002",
+      "map": "closeup",
+      "seed": 1769747038,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "fab612f5361c33beab74dedff4b9c3911bd0b0f9f8f8b4fb5b87b0d6cb21eeff",
+      "game_npz_sha256": "c12aa4fa2d019ea809fc084f093d3377f13e4e00894462db88c4e0ea0311c6cc",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 231,
+      "negative_labels": 281,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.451171875,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 231.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.451171875
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-003",
+      "map": "knifefight",
+      "seed": 305196229,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "5b8fd28b13ad43e9d33407100e425f61bf0f4dd3b9559b6c32e157a1bf893b8d",
+      "game_npz_sha256": "568be1deb078cd83816222c8ec5b9160301b5469598764a33be3088ae3206046",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 261,
+      "negative_labels": 251,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.509765625,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 261.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.509765625
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-004",
+      "map": "tiny",
+      "seed": 477670760,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "d360d45901d23a674cdf9fceeded5d3e381726834ff43f3d59d20cd75f10bebc",
+      "game_npz_sha256": "a84e4584bb414ef35fe556094915ccdbd4cad8a24332c21d22b8ec5134805063",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 279,
+      "negative_labels": 233,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.544921875,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 279.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.544921875
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-005",
+      "map": "DefaultSmall",
+      "seed": 1369528673,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "28804e41ba35b66920f5f7f610f959838d0053f928b933a6f47a5ce90f4af76b",
+      "game_npz_sha256": "7c577d79141d0f19eb1c209cbf9f484ed68bfa0caf3858a0b07ac69026965c36",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 224,
+      "negative_labels": 288,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.4375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 224.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.4375
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-006",
+      "map": "closeup",
+      "seed": 139961480,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "1f448ea259c5f2579598ca15c7af824a006826b4965fc0d1b61072c351860069",
+      "game_npz_sha256": "1138281c3adb68d891c216e60879919fecb26341bddd310b69a9f30edbe07c55",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 235,
+      "negative_labels": 277,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.458984375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 235.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.458984375
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0001-game-007",
+      "map": "knifefight",
+      "seed": 1126652752,
+      "game_iteration": 1,
+      "checkpoint_iteration": 0,
+      "checkpoint": "checkpoint-0000.pt",
+      "checkpoint_sha256": "936b66b3435dc42ba028225c7732fc32d4d769378530e3d8e14b79b00a30b963",
+      "game_json_sha256": "364dd4f1458e726be64d7d145627fff070073876a446fde9aa052be80e3d3629",
+      "game_npz_sha256": "c0e43694aad3d26247911a54dae280721ddcb8a98007fc1ef1c20f6c2a082c25",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25,
+      "value_mse": 1.0,
+      "bce": 0.6931471805599453,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.5,
+      "mean_value": 0.0,
+      "saturated_fraction": 0.0,
+      "positive_labels": 276,
+      "negative_labels": 236,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.5390625,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 512,
+          "prediction_sum": 256.0,
+          "outcome_sum": 276.0,
+          "mean_prediction": 0.5,
+          "observed_win_rate": 0.5390625
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-000",
+      "map": "tiny",
+      "seed": 138534073,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "eaa7d2ac460c76001037c924a46e08d2c558dff54a3a3ed35cbcd7083d15c112",
+      "game_npz_sha256": "a5cfe7a9b74c36113c06bfa55a7d426e200d909769cc20284211b049d33856e2",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": "/workspace/battlecode26-alpha0/runs/campaign/v2/checkpoint-0000.pt",
+      "positions": 239,
+      "brier": 0.2673132978137107,
+      "value_mse": 1.0692531912548429,
+      "bce": 0.7277882376933154,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.48298291834917656,
+      "mean_value": -0.03403416330164681,
+      "saturated_fraction": 0.0,
+      "positive_labels": 239,
+      "negative_labels": 0,
+      "draw_labels": 0,
+      "mean_target_win_rate": 1.0,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 239,
+          "prediction_sum": 115.4329174854532,
+          "outcome_sum": 239.0,
+          "mean_prediction": 0.48298291834917656,
+          "observed_win_rate": 1.0
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-001",
+      "map": "DefaultSmall",
+      "seed": 1719766769,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "8b85a6b62ba86156f05340ef563bf92bc5e336141cabaa4e87478b80aa193102",
+      "game_npz_sha256": "ca59ea783f6970dee2efcf17d9ebe77a2c136d6a71574b814ed7266aa1fa7e86",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.25023578240194194,
+      "value_mse": 1.0009431296077678,
+      "bce": 0.6936195009459429,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.48450493629073516,
+      "mean_value": -0.03099012741852973,
+      "saturated_fraction": 0.0,
+      "positive_labels": 250,
+      "negative_labels": 262,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.48828125,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 512,
+          "prediction_sum": 248.0665273808564,
+          "outcome_sum": 250.0,
+          "mean_prediction": 0.48450493629073516,
+          "observed_win_rate": 0.48828125
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-002",
+      "map": "closeup",
+      "seed": 1538892001,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "0931cb0f25ffd43bacf9ee856713174c20b1f99c02a9faa6957346a35f0f4113",
+      "game_npz_sha256": "0fe0fa70edad9ef5559c091e74e40e975be7dee898864587b0ba46c089596de0",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.24915938696939044,
+      "value_mse": 0.9966375478775618,
+      "bce": 0.6914647917532444,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.48385047806982334,
+      "mean_value": -0.032299043860353274,
+      "saturated_fraction": 0.0,
+      "positive_labels": 248,
+      "negative_labels": 264,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.484375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 512,
+          "prediction_sum": 247.73144477174955,
+          "outcome_sum": 248.0,
+          "mean_prediction": 0.48385047806982334,
+          "observed_win_rate": 0.484375
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-003",
+      "map": "knifefight",
+      "seed": 2002410741,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "1a0045f38faa3e9743842f00c81dd5baaa4e4959def9d7b5ef03e17615eef735",
+      "game_npz_sha256": "12e9d919712e7002144fda785da9d1a680ce8358be4ed185cd7ec2528c3aa462",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2504360487669237,
+      "value_mse": 1.0017441950676949,
+      "bce": 0.6940197479412862,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.4852773539418611,
+      "mean_value": -0.02944529211627781,
+      "saturated_fraction": 0.0,
+      "positive_labels": 259,
+      "negative_labels": 253,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.505859375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 512,
+          "prediction_sum": 248.4620052182329,
+          "outcome_sum": 259.0,
+          "mean_prediction": 0.4852773539418611,
+          "observed_win_rate": 0.505859375
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-004",
+      "map": "tiny",
+      "seed": 826709343,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "ce5ef44ef50deba4e45503f35c2b58ef02ed8b6f2a83654a90bc767c6fcd8840",
+      "game_npz_sha256": "1ee2ce04edb4c7c2d2ce3f6145362834cf0d2ab89a98c0a003fbed968a0fe538",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": "/workspace/battlecode26-alpha0/runs/campaign/v2/checkpoint-0000.pt",
+      "positions": 388,
+      "brier": 0.26664723813409996,
+      "value_mse": 1.0665889525363998,
+      "bce": 0.7264551091033518,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.483631565694807,
+      "mean_value": -0.03273686861038601,
+      "saturated_fraction": 0.0,
+      "positive_labels": 388,
+      "negative_labels": 0,
+      "draw_labels": 0,
+      "mean_target_win_rate": 1.0,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 388,
+          "prediction_sum": 187.64904748958512,
+          "outcome_sum": 388.0,
+          "mean_prediction": 0.483631565694807,
+          "observed_win_rate": 1.0
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-005",
+      "map": "DefaultSmall",
+      "seed": 1607359590,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "ef81e70fcc31db260bae82a402a351dfed4c61077e21e1bf74e39c18d889a087",
+      "game_npz_sha256": "40a07578fbbaae0a2a64270470c77d80cc95427500ea0ae9f60e9a959134d566",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": "/workspace/battlecode26-alpha0/runs/campaign/v2/checkpoint-0000.pt",
+      "positions": 512,
+      "brier": 0.26663500784905714,
+      "value_mse": 1.0665400313962285,
+      "bce": 0.72642994979784,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.48363833572352677,
+      "mean_value": -0.03272332855294645,
+      "saturated_fraction": 0.0,
+      "positive_labels": 512,
+      "negative_labels": 0,
+      "draw_labels": 0,
+      "mean_target_win_rate": 1.0,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 512,
+          "prediction_sum": 247.6228278904457,
+          "outcome_sum": 512.0,
+          "mean_prediction": 0.48363833572352677,
+          "observed_win_rate": 1.0
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-006",
+      "map": "closeup",
+      "seed": 268643973,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "f2889b0a74dbce6d92242476186ca334c24aa52b5904cc63624fa1987c5661e7",
+      "game_npz_sha256": "556873b9ad450b3c2eba0b4ebce69d9b734fff6d3fefd4037dce35c7f8fa59de",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2497215822976161,
+      "value_mse": 0.9988863291904644,
+      "bce": 0.6925914143158776,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.4836883152123607,
+      "mean_value": -0.03262336957527849,
+      "saturated_fraction": 0.0,
+      "positive_labels": 234,
+      "negative_labels": 278,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.45703125,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 512,
+          "prediction_sum": 247.6484173887287,
+          "outcome_sum": 234.0,
+          "mean_prediction": 0.4836883152123607,
+          "observed_win_rate": 0.45703125
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0002-game-007",
+      "map": "knifefight",
+      "seed": 1279310360,
+      "game_iteration": 2,
+      "checkpoint_iteration": 1,
+      "checkpoint": "checkpoint-0001.pt",
+      "checkpoint_sha256": "37f989790ddcb0768dafdc8fa3d887ec9504689646c99f73d047865dd2d58c90",
+      "game_json_sha256": "c90b2f823870d2d5f7429ba565e7b69cdaa9c75cd606c3cd9f208fd4a888fd9f",
+      "game_npz_sha256": "3e0a97cc9a2beb651051c2caa660769d3d13a042298cbf6b22892b8a34f07c4e",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": "/workspace/battlecode26-alpha0/runs/campaign/v2/checkpoint-0000.pt",
+      "positions": 305,
+      "brier": 0.26514174853791295,
+      "value_mse": 1.0605669941516518,
+      "bce": 0.7234401793120042,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.48508432626456294,
+      "mean_value": -0.02983134747087403,
+      "saturated_fraction": 0.0,
+      "positive_labels": 305,
+      "negative_labels": 0,
+      "draw_labels": 0,
+      "mean_target_win_rate": 1.0,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 305,
+          "prediction_sum": 147.9507195106917,
+          "outcome_sum": 305.0,
+          "mean_prediction": 0.48508432626456294,
+          "observed_win_rate": 1.0
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-000",
+      "map": "tiny",
+      "seed": 281909714,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "7d9781ded58d2ea13a6c491b4cf704e6defbb51f5991e5d65ae257358c19f00c",
+      "game_npz_sha256": "08d38d497acca584855cacd9269720ca2765c652dd2374b023eb8b82268379be",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.3106532924733198,
+      "value_mse": 1.2426131698932792,
+      "bce": 0.8279586046817844,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.727921632066199,
+      "mean_value": 0.45584326413239795,
+      "saturated_fraction": 0.0,
+      "positive_labels": 243,
+      "negative_labels": 269,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.474609375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 59,
+          "prediction_sum": 40.61390041095563,
+          "outcome_sum": 26.0,
+          "mean_prediction": 0.6883711934060276,
+          "observed_win_rate": 0.4406779661016949
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 453,
+          "prediction_sum": 332.0819752069383,
+          "outcome_sum": 217.0,
+          "mean_prediction": 0.7330727929512987,
+          "observed_win_rate": 0.47902869757174393
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-001",
+      "map": "DefaultSmall",
+      "seed": 458687432,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "062a407eb0da3d7b330cb356798b6ca1f77c4dbe7a741c0c260babec1f769216",
+      "game_npz_sha256": "17ae76f23d2adcaf46adce32d63e0d860e0ecaeb9f22f4ce0508c4fa7a2df0c9",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.24699834913119484,
+      "value_mse": 0.9879933965247794,
+      "bce": 0.6844748267824338,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.6765567644138075,
+      "mean_value": 0.3531135288276148,
+      "saturated_fraction": 0.0,
+      "positive_labels": 274,
+      "negative_labels": 238,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.53515625,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 385,
+          "prediction_sum": 255.18637084591418,
+          "outcome_sum": 153.0,
+          "mean_prediction": 0.6628217424569199,
+          "observed_win_rate": 0.3974025974025974
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 127,
+          "prediction_sum": 91.2106925339552,
+          "outcome_sum": 121.0,
+          "mean_prediction": 0.718194429401222,
+          "observed_win_rate": 0.952755905511811
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-002",
+      "map": "closeup",
+      "seed": 143476196,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "1d468e9e01c58c620177a0766fed765f75e195735829ce61f183c4558f8419b7",
+      "game_npz_sha256": "177ea48a1f8cb0f0b509e28b85668d900de623bcf092801d5a35852ab3b90af7",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.30383940915033336,
+      "value_mse": 1.2153576366013334,
+      "bce": 0.8090541797938966,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.6671432407333066,
+      "mean_value": 0.3342864814666132,
+      "saturated_fraction": 0.0,
+      "positive_labels": 235,
+      "negative_labels": 277,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.458984375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 458,
+          "prediction_sum": 303.0274321888595,
+          "outcome_sum": 233.0,
+          "mean_prediction": 0.6616319480106103,
+          "observed_win_rate": 0.5087336244541485
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 54,
+          "prediction_sum": 38.54990706659349,
+          "outcome_sum": 2.0,
+          "mean_prediction": 0.7138871678998795,
+          "observed_win_rate": 0.037037037037037035
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-003",
+      "map": "knifefight",
+      "seed": 378388913,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "8057f1720befaa83764fd9055110f8ee9bb9b3fa6efc72268a82f77cc371c882",
+      "game_npz_sha256": "767c9313cad0a9d2378afbf146926ca7e1ff2a49c58352e9443b648cabe6be78",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2947796922624165,
+      "value_mse": 1.179118769049666,
+      "bce": 0.7867777694447575,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.6568522432653591,
+      "mean_value": 0.31370448653071803,
+      "saturated_fraction": 0.0,
+      "positive_labels": 217,
+      "negative_labels": 295,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.423828125,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 478,
+          "prediction_sum": 312.1111608541254,
+          "outcome_sum": 205.0,
+          "mean_prediction": 0.652952219360095,
+          "observed_win_rate": 0.42887029288702927
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 34,
+          "prediction_sum": 24.19718769773845,
+          "outcome_sum": 12.0,
+          "mean_prediction": 0.7116819911099544,
+          "observed_win_rate": 0.35294117647058826
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-004",
+      "map": "tiny",
+      "seed": 627153583,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "97f5b668186273cf3b91239ff0fe915171bf5603f06a6cf4dc5985ca178d2645",
+      "game_npz_sha256": "ad5c8497de14286c7a9658ee9b24799f9368eb8ebbce94244bd86ec141549a9c",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2707404289380023,
+      "value_mse": 1.0829617157520093,
+      "bce": 0.743318789696988,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.7300763493441369,
+      "mean_value": 0.4601526986882738,
+      "saturated_fraction": 0.0,
+      "positive_labels": 292,
+      "negative_labels": 220,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.5703125,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 49,
+          "prediction_sum": 33.68237273146527,
+          "outcome_sum": 19.0,
+          "mean_prediction": 0.6873953618666382,
+          "observed_win_rate": 0.3877551020408163
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 463,
+          "prediction_sum": 340.11671813273284,
+          "outcome_sum": 273.0,
+          "mean_prediction": 0.734593343699207,
+          "observed_win_rate": 0.5896328293736501
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-005",
+      "map": "DefaultSmall",
+      "seed": 958558799,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "66d72619094b8d992abddc1a4d0913bf374ebf7a2fb096c692f4815ec705e991",
+      "game_npz_sha256": "92545dcc11a38e8e814b74ce8702a37781aa0ea3425a920481d444b93667bb14",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": 1.0,
+      "winner": 0,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2934237258393746,
+      "value_mse": 1.1736949033574984,
+      "bce": 0.7875919212752333,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.6742148038654365,
+      "mean_value": 0.34842960773087284,
+      "saturated_fraction": 0.0,
+      "positive_labels": 253,
+      "negative_labels": 259,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.494140625,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 435,
+          "prediction_sum": 290.43915778775806,
+          "outcome_sum": 236.0,
+          "mean_prediction": 0.6676762247994438,
+          "observed_win_rate": 0.542528735632184
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 77,
+          "prediction_sum": 54.75882179134535,
+          "outcome_sum": 17.0,
+          "mean_prediction": 0.7111535297577318,
+          "observed_win_rate": 0.22077922077922077
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    },
+    {
+      "game_id": "iter-0003-game-006",
+      "map": "closeup",
+      "seed": 2120088065,
+      "game_iteration": 3,
+      "checkpoint_iteration": 2,
+      "checkpoint": "checkpoint-0002.pt",
+      "checkpoint_sha256": "718f084375806ffd8be396f70c3584afffc59030a9ec166353975b75de88b5ff",
+      "game_json_sha256": "188194c96df080a83be2135f28dc38e89f90d6a7f93cbc13d8f0117cb830bf9a",
+      "game_npz_sha256": "af4dd004928de817e112e89fd470ec507c9cd9575276d600c6ab3c28db343920",
+      "training_runtime_sha256": "60baf63fb6e74aecbd4c3d93e77f264a32d7a963409ea326be90ec217c031d5c",
+      "terminal_value_a": -1.0,
+      "winner": 1,
+      "opponent_checkpoint": null,
+      "positions": 512,
+      "brier": 0.2968247235768726,
+      "value_mse": 1.1872988943074905,
+      "bce": 0.7940001709316271,
+      "neutral_brier": 0.25,
+      "neutral_value_mse": 1.0,
+      "neutral_bce": 0.6931471805599453,
+      "mean_win_probability": 0.663103142185802,
+      "mean_value": 0.3262062843716041,
+      "saturated_fraction": 0.0,
+      "positive_labels": 243,
+      "negative_labels": 269,
+      "draw_labels": 0,
+      "mean_target_win_rate": 0.474609375,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "positions": 477,
+          "prediction_sum": 314.41852442083245,
+          "outcome_sum": 241.0,
+          "mean_prediction": 0.6591583321191457,
+          "observed_win_rate": 0.5052410901467506
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "positions": 35,
+          "prediction_sum": 25.090284378298204,
+          "outcome_sum": 2.0,
+          "mean_prediction": 0.7168652679513773,
+          "observed_win_rate": 0.05714285714285714
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "positions": 0,
+          "prediction_sum": 0.0,
+          "outcome_sum": 0.0,
+          "mean_prediction": null,
+          "observed_win_rate": null
+        }
+      ]
+    }
+  ]
+}

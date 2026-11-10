@@ -9,13 +9,14 @@ import subprocess
 from pathlib import Path
 import tarfile
 import tempfile
+import time
 import unittest
 
 import numpy as np
 import torch
 from unittest.mock import patch
 
-SPEC = importlib.util.spec_from_file_location("campaign_snapshot", Path(__file__).with_name("campaign_snapshot.py"))
+SPEC = importlib.util.spec_from_file_location("campaign_snapshot", Path(__file__).resolve().parents[1] / "scripts/campaign_snapshot.py")
 snapshot = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(snapshot)
 
@@ -155,6 +156,75 @@ class SnapshotTests(unittest.TestCase):
             self.assertEqual(updated["identity"],bound["identity"])
             self.assertEqual(updated["config"],bound["config"])
             self.assertEqual(updated["checkpoint_path"],str(target/"movable"))
+
+    def test_compact_snapshot_preserves_trained_state_and_partial_next_iteration(self):
+        from alpha0.learn_v2 import Learner
+        cfg=json.loads((Path(__file__).resolve().parents[1]/"configs/campaign-v2.json").read_text())
+        cfg.update(games_per_iteration=2,workers=1,train_steps=1,batch_size=1,
+                   replay_capacity=8,replay_max_games=4,game_position_capacity=2)
+        cfg["model"].update(local_width=8,global_width=8,blocks=0,hidden_dim=16)
+        def complete_job(job):
+            output=Path(job["output"]); output.parent.mkdir(parents=True,exist_ok=True)
+            policy=np.zeros((1,40),np.float32); policy[0,0]=1
+            np.savez_compressed(output.with_suffix(".npz"),local=np.zeros((1,33,17,17),np.float16),
+                global_board=np.zeros((1,33,60,60),np.float16),scalars=np.zeros((1,64),np.float32),
+                policy=policy,legal_mask=np.ones((1,40),bool),player=np.array([0],np.int8))
+            row={"game_id":job["game_id"],"identity":job["identity"],"status":"ok","attempt":1,
+                 "failure_count":0,"terminal_value_a":1,"retained_positions":1,"searched_positions":1,
+                 "decisions":1,"data_sha256":snapshot.sha256(output.with_suffix(".npz"))}
+            output.write_text(json.dumps(row))
+            output.with_name(output.stem+".attempt-0001.json").write_text(json.dumps(row))
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory); source=base/"source"; target=base/"target"; target.mkdir()
+            learner=Learner(source/snapshot.RUN,cfg,source/snapshot.PROGRESS)
+            first=learner._plan()
+            for job in first["jobs"]: complete_job(job)
+            learner.train_iteration(time.monotonic()+60,source/"STOP")
+            self.assertEqual(learner.iteration,1)
+            next_plan=learner._plan()
+            complete_job(next_plan["jobs"][0])  # One finished game; the next still needs collection.
+            old_shards=[Path(job["output"]).with_suffix(".npz") for job in first["jobs"]]
+            shard_hashes={path:snapshot.sha256(path) for path in old_shards}
+            archive=Path(create(source)["archive"])
+            with tarfile.open(archive) as tar:
+                names=set(tar.getnames())
+                manifest=json.load(tar.extractfile(snapshot.MANIFEST))
+            omitted={entry["path"] for entry in manifest["omitted_files"]}
+            for path in old_shards:
+                self.assertNotIn(path.relative_to(source).as_posix(),names)
+                self.assertIn(path.relative_to(source).as_posix(),omitted)
+                self.assertEqual(snapshot.sha256(path),shard_hashes[path])  # No local pruning.
+                self.assertIn(path.with_suffix(".json").relative_to(source).as_posix(),names)
+            self.assertNotIn(snapshot.RUN+"/replay/iteration-0000/index.json",names)
+            self.assertIn(snapshot.RUN+"/replay/iteration-0001/index.json",names)
+            self.assertIn(snapshot.RUN+"/checkpoint-0000.pt",names)
+            self.assertIn(snapshot.RUN+"/checkpoint-0001.pt",names)
+            pending_npz=Path(next_plan["jobs"][0]["output"]).with_suffix(".npz")
+            self.assertIn(pending_npz.relative_to(source).as_posix(),names)
+            snapshot.restore_snapshot(target,archive)
+            resumed=Learner(target/snapshot.RUN,cfg,target/snapshot.PROGRESS)
+            self.assertEqual(resumed.iteration,1)
+            self.assertEqual(resumed.buffer.num_games,2)
+            restored_plan=resumed._plan()
+            cached=Path(restored_plan["jobs"][0]["output"]).with_suffix(".npz")
+            self.assertEqual(snapshot.sha256(cached),snapshot.sha256(pending_npz))
+            self.assertFalse(Path(restored_plan["jobs"][1]["output"]).exists())
+            self.assertIsNone(resumed.train_iteration(time.monotonic()-1,target/"STOP"))
+            complete_job(restored_plan["jobs"][1])
+            with patch("alpha0.learn_v2.ProcessPoolExecutor") as executor:
+                executor.return_value.__enter__.return_value.submit.side_effect=AssertionError("cached games must not rerun")
+                resumed.train_iteration(time.monotonic()+60,target/"STOP")
+            self.assertEqual(resumed.iteration,2)
+            self.assertEqual(resumed.buffer.num_games,4)
+
+    def test_missing_completed_next_iteration_shard_blocks_compact_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source=Path(directory); fixture(source)
+            output=source/snapshot.RUN/"games/a.json"
+            output.parent.mkdir(parents=True)
+            output.write_text('{"status":"ok","data_sha256":"missing"}')
+            with self.assertRaisesRegex(ValueError,"missing or corrupt resume shard"):
+                create(source)
 
     def test_git_and_release_progress_union_in_both_age_orders(self):
         for archive_newer in (True,False):

@@ -277,6 +277,131 @@ def run(config: BootstrapConfig, output: Path) -> dict:
     return summary
 
 
+def run_winner_only(source: Path, output: Path, *, steps: int = 256, batch_size: int = 32,
+                    seed: int = 20261111) -> dict:
+    """Fit a fresh policy on winners from checksum-verified OWN teacher games.
+
+Filtering uses only terminal outcomes of the teacher curriculum. Benchmark
+results and action histories are never opened. The value objective is disabled
+and the final value layer is explicitly reset, yielding neutral values for a
+later, separately configured MCTS experiment.
+    """
+    source, output = Path(source).resolve(), Path(output).resolve()
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("winner-only destination must be new/empty")
+    if steps < 1 or batch_size < 1:
+        raise ValueError("steps and batch size must be positive")
+    source_config = json.loads((source / "config.json").read_text())
+    reserved = set(json.loads((ROOT / "configs/victory_gate.json").read_text())["stages"]["holdout"]["maps"])
+    if reserved.intersection(source_config["maps"]):
+        raise ValueError("source teacher curriculum overlaps reserved holdout maps")
+    games, provenance = [], []
+    row_paths = sorted((source / "games").glob("teacher-*.json"))
+    if len(row_paths) != source_config["games"]:
+        raise ValueError("source curriculum is incomplete")
+    started = time.monotonic()
+    for path in row_paths:
+        row = json.loads(path.read_text())
+        terminal = row.get("terminal", {})
+        if (row.get("source") != "scripted_selfplay" or row.get("benchmark") is not False or
+                row.get("teacher_version") != TEACHER_VERSION or row.get("status") != "ok" or
+                terminal.get("terminal") is not True or terminal.get("winner") != row.get("winner") or
+                row.get("action_version") != ACTION_VERSION or row.get("map") not in source_config["maps"]):
+            raise ValueError("source must be completed own-rule self-play, never benchmark/evaluation data")
+        if row["winner"] not in (0, 1):
+            raise ValueError("a winner-only curriculum requires a decisive outcome in every source game")
+        expected_terminal = 1 if row["winner"] == 0 else -1
+        if row["terminal_value_a"] != expected_terminal:
+            raise ValueError("source terminal outcome is inconsistent")
+        data_path = path.with_suffix(".npz")
+        if _sha(data_path) != row["data_sha256"]:
+            raise ValueError("source teacher shard checksum mismatch")
+        with np.load(data_path, allow_pickle=False) as data:
+            arrays = {key: data[key] for key in data.files}
+        expected_values = expected_terminal * np.where(arrays["player"] == 0, 1, -1)
+        if (not np.isin(arrays["player"], (0, 1)).all() or
+                not np.array_equal(arrays["value"], expected_values) or
+                not np.isfinite(arrays["policy"]).all() or (arrays["policy"] < 0).any() or
+                not np.allclose(arrays["policy"].sum(-1), 1, atol=1e-5) or
+                np.any(arrays["policy"][~arrays["legal_mask"]])):
+            raise ValueError("source labels/policy legality are invalid")
+        selected = np.flatnonzero(arrays["player"] == row["winner"])
+        if not len(selected):
+            raise ValueError("source reservoir contains no winning-team examples")
+        games.append({key: value[selected] for key, value in arrays.items()})
+        provenance.append({"game_id": row["game_id"], "map": row["map"], "seed": row["seed"],
+                           "winner": row["winner"], "source_json_sha256": _sha(path),
+                           "source_data_sha256": row["data_sha256"],
+                           "source_positions": len(arrays["player"]), "selected_positions": selected.tolist(),
+                           "winning_teacher": row["teacher_A"] if row["winner"] == 0 else row["teacher_B"]})
+    config = {"experiment_id": "macro40-bootstrap-v3-winners", "source_curriculum": source_config,
+              "source_directory": str(source), "source_config_sha256": _sha(source / "config.json"),
+              "policy_filter": "only winning-team positions from completed own-rule self-play",
+              "value_objective_weight": 0.0, "reset_final_value_head": True,
+              "steps": steps, "batch_size": batch_size, "seed": seed,
+              "learning_rate": source_config["learning_rate"], "sampling": "uniform game then uniform winning position",
+              "fitting_source_sha256": _sha(Path(__file__))}
+    output.mkdir(parents=True, exist_ok=True)
+    _json(output / "config.json", config)
+    _json(output / "source_dataset.json", {"source": "scripted_selfplay", "games": provenance})
+    torch.set_num_threads(1)
+    torch.manual_seed(seed)
+    rng = np.random.default_rng(seed)
+    model = PolicyValueNetV2(NetworkConfig())
+    metadata = {"experiment_id": config["experiment_id"], "training_source": "scripted_selfplay-winning-team-only",
+                "teacher_version": TEACHER_VERSION, "benchmark_data_used": False,
+                "bootstrap_config": config, "policy_target_type": "winner-only own-rule behavior cloning",
+                "value_initialization": "zero final layer; value objective disabled",
+                "source_dataset_sha256": _sha(output / "source_dataset.json")}
+    torch.save(model.checkpoint(**metadata, training_stage="neutral-before-winner-only-bootstrap", bootstrap_steps=0),
+               output / "neutral-initialization.pt")
+    diagnostic = _sample(games, min(256, sum(len(g["value"]) for g in games)), np.random.default_rng(seed+1))
+    before = _measure(model, diagnostic, 0.0)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=config["learning_rate"], weight_decay=1e-4)
+    model.train()
+    for step in range(1, steps+1):
+        batch = _sample(games, batch_size, rng)
+        logits, values = model(batch["local"], batch["global_board"], batch["scalars"], batch["legal_mask"])
+        loss, metrics = policy_value_loss(logits, values, batch["policy"], batch["value"], value_weight=0.0)
+        if not torch.isfinite(loss):
+            raise FloatingPointError("nonfinite winner-only bootstrap objective")
+        optimizer.zero_grad(set_to_none=True)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
+        if step == 1 or step == steps or step % 32 == 0:
+            with (output / "fit.jsonl").open("a") as stream:
+                stream.write(json.dumps({"step": step, **metrics}, allow_nan=False)+"\n")
+    # The explicit reset is part of the artifact contract, even if a future
+    # optimizer or auxiliary objective has touched the value head during fitting.
+    torch.nn.init.zeros_(model.value[-1].weight)
+    torch.nn.init.zeros_(model.value[-1].bias)
+    model.eval()
+    after = _measure(model, diagnostic, 0.0)
+    if after["value_mean"] != 0 or after["value_saturated_fraction"] != 0:
+        raise AssertionError("MCTS-ready value head must be neutral")
+    checkpoint = output / "warmstart.pt"
+    temporary = checkpoint.with_suffix(".tmp")
+    torch.save(model.checkpoint(**metadata, training_stage="winner-only-own-rule-bootstrap",
+                               bootstrap_steps=steps, bootstrap_games=len(games),
+                               bootstrap_positions=sum(len(g["value"]) for g in games),
+                               optimizer_state_dict=optimizer.state_dict(), torch_rng=torch.get_rng_state(),
+                               numpy_rng=rng.bit_generator.state), temporary)
+    temporary.replace(checkpoint)
+    summary = {"status": "ok", "experiment_id": config["experiment_id"],
+               "method": "winner-only BC from own teacher games; not MCTS targets",
+               "source_games": len(games), "source_positions": sum(p["source_positions"] for p in provenance),
+               "selected_positions": sum(len(g["value"]) for g in games), "steps": steps,
+               "winning_teachers": [p["winning_teacher"] for p in provenance],
+               "value_head_reset_to_zero": True, "before": before, "after": after,
+               "diagnostic_scope": "fixed training-data sample; not strength or calibration evaluation",
+               "seconds": time.monotonic()-started, "checkpoint_sha256": _sha(checkpoint),
+               "checkpoint": str(checkpoint), "production_activated": False}
+    _json(output / "summary.json", summary)
+    print(json.dumps(summary, allow_nan=False), flush=True)
+    return summary
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True, help="New directory, separate from every current training run")
@@ -288,7 +413,13 @@ def main():
     parser.add_argument("--seed", type=int, default=20261111)
     parser.add_argument("--teacher-epsilon", type=float, default=0.02)
     parser.add_argument("--game-timeout", type=float, default=900)
+    parser.add_argument("--winner-only-from", type=Path,
+                        help="Reuse a verified own-teacher curriculum; filter only its winning-team policy examples")
     args = parser.parse_args()
+    if args.winner_only_from is not None:
+        run_winner_only(args.winner_only_from, args.out, steps=args.steps,
+                        batch_size=args.batch_size, seed=args.seed)
+        return
     config = BootstrapConfig(seed=args.seed, maps=tuple(args.maps.split(",")), games=args.games,
                              steps=args.steps, positions_per_game=args.positions_per_game,
                              batch_size=args.batch_size, teacher_epsilon=args.teacher_epsilon,

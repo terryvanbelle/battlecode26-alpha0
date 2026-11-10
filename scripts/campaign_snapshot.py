@@ -122,6 +122,58 @@ def source_files(root):
     return sorted(paths)
 
 
+def compact_selection(root, resume, paths):
+    """Retain resume state while omitting redundant historical training arrays."""
+    run = root/RUN
+    active_replay = run/resume["replay_path"]
+    iteration = resume["iteration"]
+    if type(iteration) is not int or iteration < 0:
+        raise ValueError("checkpoint iteration must be a nonnegative integer")
+    pending_shards = set()
+    next_plan = run/f"plan-{iteration+1:04d}.json"
+    if next_plan.exists():
+        plan = json.loads(next_plan.read_text())
+        for job in plan["jobs"]:
+            output = Path(job["output"])
+            output = output if output.is_absolute() else root/output
+            shard = output.with_suffix(".npz").resolve()
+            if not shard.is_relative_to((run/"games").resolve()):
+                raise ValueError("pending game plan output must stay inside this run's games directory")
+            pending_shards.add(shard)
+            if output.is_file():
+                row = json.loads(output.read_text())
+                if row.get("status") == "ok":
+                    if not shard.is_file() or sha256(shard) != row.get("data_sha256"):
+                        raise ValueError("completed next-iteration game has a missing or corrupt resume shard")
+    retained, omitted = [], []
+    for path in paths:
+        reason = None
+        if path.is_relative_to(run/"replay"):
+            # The original layout stores its files directly in replay/. A
+            # generation below that directory is not part of its legacy state.
+            in_active = path.parent == active_replay
+            if not in_active:
+                reason = "obsolete_replay_generation"
+        elif path.parent == run/"games" and path.suffix == ".npz" and path.resolve() not in pending_shards:
+            match = re.fullmatch(r"iter-([0-9]+)-game-[0-9]+", path.stem)
+            row_path = path.with_suffix(".json")
+            if match and int(match.group(1)) <= iteration and row_path.is_file():
+                row = json.loads(row_path.read_text())
+                if row.get("status") == "ok" and row.get("game_id") == path.stem:
+                    reason = "completed_game_shard_already_consumed_by_published_checkpoint"
+        if reason:
+            omitted.append({"path": path.relative_to(root).as_posix(), "size": path.stat().st_size,
+                            "reason": reason})
+        else:
+            retained.append(path)
+    policy = {"version": 1, "published_iteration": iteration, "retained_replay_path": resume["replay_path"],
+              "keep": ["all_model_checkpoints", "all_plans_and_raw_game_json", "published_replay_generation",
+                       "next_iteration_game_shards", "unclassified_or_future_game_shards", "all_progress_and_gate_ledgers"],
+              "omit": ["obsolete_replay_generations", "older_completed_game_npz_shards"],
+              "local_files_deleted": False, "older_archives_modified": False}
+    return retained, omitted, policy
+
+
 def file_identity(path):
     stat = path.stat()
     return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns
@@ -177,14 +229,16 @@ def create_snapshot(root, output_dir=None, at_boundary=False):
     with checkpoint_lock(root, at_boundary):
         resume = resume_reference(root)
         output.mkdir(parents=True, exist_ok=True)
-        paths = source_files(root)
-        identities = {p: file_identity(p) for p in paths}
-        if sum(identity[2] for identity in identities.values()) > MAX_EXPANDED_BYTES:
+        all_paths = source_files(root)
+        paths, omitted, omission_policy = compact_selection(root, resume, all_paths)
+        identities = {p: file_identity(p) for p in all_paths}
+        if sum(identities[path][2] for path in paths) > MAX_EXPANDED_BYTES:
             raise ValueError("snapshot exceeds expanded-size budget")
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
         manifest = {"format_version": FORMAT_VERSION, "created_at": datetime.now(timezone.utc).isoformat(),
                     "source_root": str(root), "repository": REPO, "git": git_identity(root),
-                    "boundary": "quiescent-campaign-checkpoint", "resume": resume, "files": []}
+                    "boundary": "quiescent-campaign-checkpoint", "resume": resume,
+                    "omission_policy": omission_policy, "omitted_files": omitted, "files": []}
         fd, temporary = tempfile.mkstemp(prefix=".campaign-snapshot-", suffix=".tar.gz", dir=output)
         os.close(fd)
         try:
@@ -200,7 +254,7 @@ def create_snapshot(root, output_dir=None, at_boundary=False):
                     if file_identity(path) != identities[path] or sha256(path) != digest:
                         raise RuntimeError(f"source changed during snapshot: {name}")
                     manifest["files"].append({"path": name, "size": info.size, "sha256": digest})
-                if source_files(root) != paths or any(file_identity(p) != identities[p] for p in paths):
+                if source_files(root) != all_paths or any(file_identity(p) != identities[p] for p in all_paths):
                     raise RuntimeError("campaign artifacts changed during snapshot; retry at a checkpoint boundary")
                 encoded = (json.dumps(manifest, sort_keys=True, indent=2, allow_nan=False) + "\n").encode()
                 info = tarfile.TarInfo(MANIFEST); info.size = len(encoded); info.mode = 0o600
@@ -215,7 +269,9 @@ def create_snapshot(root, output_dir=None, at_boundary=False):
             os.replace(temporary, destination)
             sidecar = {"format_version": FORMAT_VERSION, "archive": destination.name, "sha256": digest,
                        "size": size, "created_at": manifest["created_at"], "git": manifest["git"],
-                       "file_count": len(manifest["files"]), "repository": REPO, "release": TAG}
+                       "file_count": len(manifest["files"]), "omitted_file_count": len(omitted),
+                       "omitted_bytes": sum(entry["size"] for entry in omitted),
+                       "retained_replay_path": resume["replay_path"], "repository": REPO, "release": TAG}
             atomic_json(destination.with_name(destination.name + ".manifest.json"), sidecar)
             return {**sidecar, "archive": str(destination), "archive_name": destination.name,
                     "manifest": str(destination) + ".manifest.json"}
@@ -457,7 +513,7 @@ def download_snapshot(root, output_dir=None, repo=REPO, tag=TAG, latest=False):
 
 _PATH_KEYS = {"checkpoint", "opponent", "output", "stop_file", "checkpoint_path",
               "maps_dir", "opponent_checkpoint", "cell_artifact_dir", "holdout_ledger"}
-_PROTECTED_KEYS = {"identity", "config", "evaluation_config", "runtime", "network_config"}
+_PROTECTED_KEYS = {"identity", "config", "evaluation_config", "runtime", "training_runtime", "network_config"}
 
 
 def rebase_json(value, old_root, new_root):

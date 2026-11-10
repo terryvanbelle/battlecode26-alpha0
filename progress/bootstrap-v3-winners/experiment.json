@@ -1,0 +1,53 @@
+{
+  "experiment_id": "macro40-bootstrap-v3-winners",
+  "candidate": "candidate-002-winners",
+  "method": "winner-only behavior cloning from own-rule self-play; no MCTS continuation",
+  "checkpoint_sha256": "c1473de81dda381c9f14868ea246c11f5bbd644fb59b0b0420e547598b26aa0e",
+  "bootstrap_fitting_seconds": 18.8661864959995,
+  "source_games": 6,
+  "source_positions": 1536,
+  "selected_winning_positions": 917,
+  "optimizer_updates": 256,
+  "evaluation_games": 24,
+  "wins": 20,
+  "draws": 0,
+  "losses": 4,
+  "both_seat_winning_opponents": 10,
+  "unresolved_errors": 0,
+  "evaluation_wall_seconds_from_first_request": 165.06648898124695,
+  "evaluation_worker_seconds": 126.07304190400191,
+  "comparison_candidate_001_wins": 12,
+  "same_evaluation_config_sha256": "9d1a2068eb924371b02f0beaa2c7d6f8a61f92914ac541a5b3157be6584a612f",
+  "value_head": "exact zero; no value objective during fitting",
+  "initial_model_matches_candidate_001": true,
+  "holdout_used": false,
+  "production_activated": false,
+  "positive_tests_passed": 7,
+  "training_fit": {
+    "before": {
+      "loss": 3.0520873069763184,
+      "policy_loss": 3.0520873069763184,
+      "value_loss": 0.6931471824645996,
+      "value_bce": 0.6931471824645996,
+      "value_mse": 1.0,
+      "value_mean": 0.0,
+      "value_saturated_fraction": 0.0,
+      "policy_entropy": 2.993075370788574,
+      "teacher_argmax_agreement": 0.015625,
+      "teacher_selected_action_probability": 0.047615233808755875
+    },
+    "after": {
+      "loss": 0.15577666461467743,
+      "policy_loss": 0.15577666461467743,
+      "value_loss": 0.6931471824645996,
+      "value_bce": 0.6931471824645996,
+      "value_mse": 1.0,
+      "value_mean": 0.0,
+      "value_saturated_fraction": 0.0,
+      "policy_entropy": 0.16252873837947845,
+      "teacher_argmax_agreement": 1.0,
+      "teacher_selected_action_probability": 0.9783177375793457
+    }
+  },
+  "comparison_interpretation": "Recipe comparison, not isolated winner-filter causality: policy filtering and value-objective removal both changed; shared-trunk gradients differ."
+}

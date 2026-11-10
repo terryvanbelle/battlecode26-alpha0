@@ -1,0 +1,37 @@
+{
+  "experiment": "macro40-bootstrap-v3",
+  "artifact_role": "optional teacher-initialized candidate; no MCTS continuation or production activation",
+  "files": {
+    "config.json": "26340cfe64a115c6aabfc7fcab1065631d9d326e654b2a33f6f9cc1873c80795",
+    "fit.jsonl": "dabdace213ea4d4097595cf4fe4f7b4d7145c0b50b64c391a69295f2093ab8a3",
+    "games/teacher-0000.json": "51d2c3f68d0526cacae167498047e8f0f6d1caba93fffc244cef68e67682e003",
+    "games/teacher-0000.npz": "86c125b7ac42d54d88f900bb07bdd1025cfdc19d66f7600ef3c36e6cdf542a76",
+    "games/teacher-0001.json": "4ab4ccfe004976d2896f8ee3014ab5dcedd6a4c2d557c0a3ee0158f8d8edd6ce",
+    "games/teacher-0001.npz": "8bc9abc64e94992bf8d32e2ecbb92a9d3756adb0e0faaab91a49dfa2ceb10317",
+    "games/teacher-0002.json": "f875ab1c3ca1135f496fa3c07cce05b0d8a49c7fd5b3b96a49cc053799902def",
+    "games/teacher-0002.npz": "6f6c15e281e700d26c01d5d873a65e3df9995169b0525dc58da4027d4c392359",
+    "games/teacher-0003.json": "1d6600481345b08f3a151b6ee68587e2132e0d302e4047e8ff301dc335da1b44",
+    "games/teacher-0003.npz": "abf5dcd82d51b8c4fd1e23a6496c89051a2b2b2b29de9d52be4cc2b8ebff36ee",
+    "games/teacher-0004.json": "b274046eb4bb0486883eb9cd708ffc33e9a20538f2be4926ac924d4871d37158",
+    "games/teacher-0004.npz": "ec9b196b82f794e9c8edb7add3122855b2237a86b2df291228e323e705c2c913",
+    "games/teacher-0005.json": "8cb0ebf9fa9d0946429f46259ce2a69ababd56672010c70783133ebe18f94e5d",
+    "games/teacher-0005.npz": "ce80a7855a2ef44a200d5c8b6a3f554c3f95f7bd39f2f07562c6bd370fa627a0",
+    "neutral-initialization.pt": "8e5f67f7ec4060fd0b18c8500f4d13313e90c452ffe926e06e0a3833fd28972a",
+    "source/alpha0/bootstrap_v2.py": "7d8f8a4a3b45a5cb8c29dc4130eabd9db2a090ed5728e32730a080bd67fb8efe",
+    "source/alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+    "source/alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "source/alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747",
+    "source/alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+    "summary.json": "21a80ec65367212c0dedddfdc75f57bd06f653b136491d735d6d4c54ac54956f",
+    "warmstart.pt": "e4cefb74dae4f4547b87416142065dd9bb04fdc28e3a830275b55ba81de4b7fd"
+  },
+  "python_source_sha256": {
+    "alpha0/bootstrap_v2.py": "7d8f8a4a3b45a5cb8c29dc4130eabd9db2a090ed5728e32730a080bd67fb8efe",
+    "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+    "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+    "alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747"
+  },
+  "data_source": "own-rule scripted self-play only; no benchmark examples",
+  "observed_bootstrap_wall_seconds": 56.698875427246094
+}

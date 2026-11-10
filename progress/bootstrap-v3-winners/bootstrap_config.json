@@ -1,0 +1,48 @@
+{
+  "experiment_id": "macro40-bootstrap-v3-winners",
+  "source_curriculum": {
+    "experiment_id": "macro40-bootstrap-v3",
+    "seed": 20261111,
+    "maps": [
+      "tiny",
+      "closeup",
+      "knifefight"
+    ],
+    "games": 6,
+    "positions_per_game": 256,
+    "steps": 256,
+    "batch_size": 32,
+    "learning_rate": 0.0003,
+    "teacher_epsilon": 0.02,
+    "game_timeout_seconds": 900,
+    "max_decisions": 100000,
+    "value_weight": 0.25,
+    "identity": {
+      "teacher_source_sha256": "7d8f8a4a3b45a5cb8c29dc4130eabd9db2a090ed5728e32730a080bd67fb8efe",
+      "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+      "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+      "java_sources": {
+        "EngineBridge.java": "24dbeb34e552e49fee1cb23a614d1d1ab37508a5522fc038ba5b00186abe17b5",
+        "MacroV2.java": "2e419be54d7ea24c43223d0a060b47896854af958d50a9cda077b2c453a18cd4",
+        "NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+        "StateCopier.java": "fef9a83096398738fe174fb08d001948b6398fd881ead5832b186979bf1255ea"
+      },
+      "maps": {
+        "tiny": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e",
+        "closeup": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680",
+        "knifefight": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5"
+      }
+    }
+  },
+  "source_directory": "/workspace/battlecode26-alpha0/artifacts/bootstrap-v3/candidate-001",
+  "source_config_sha256": "26340cfe64a115c6aabfc7fcab1065631d9d326e654b2a33f6f9cc1873c80795",
+  "policy_filter": "only winning-team positions from completed own-rule self-play",
+  "value_objective_weight": 0.0,
+  "reset_final_value_head": true,
+  "steps": 256,
+  "batch_size": 32,
+  "seed": 20261111,
+  "learning_rate": 0.0003,
+  "sampling": "uniform game then uniform winning position",
+  "fitting_source_sha256": "cc5602f9bf60ea280c7a8bb5a0b5723627bffd19d139956d72169c1ac0559788"
+}
