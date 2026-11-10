@@ -5,7 +5,7 @@ from contextlib import ExitStack
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from alpha0 import evaluate as E
 from alpha0.constraint_v7 import active_actors
-p=argparse.ArgumentParser();p.add_argument('checkpoint',type=Path);p.add_argument('--progress-dir',required=True,type=Path);p.add_argument('--hours',type=float,default=3);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('checkpoint',type=Path);p.add_argument('--progress-dir',required=True,type=Path);p.add_argument('--config',type=Path,default=E.ROOT/'configs/improvement-v3.json');p.add_argument('--hours',type=float,default=3);a=p.parse_args()
 assert 0<a.hours<=3
 with ExitStack() as stack:
  stops=[]
@@ -15,7 +15,7 @@ with ExitStack() as stack:
   assert not (d/'STOP').exists(),f'STOP: {name}'
   h=stack.enter_context((d/('campaign.lock' if name=='campaign' else 'experiment.lock')).open('a+'));fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB)
  assert not active_actors(),'active actors'
- cfg=json.loads((E.ROOT/'configs/improvement-v3.json').read_text())
+ cfg=json.loads(a.config.read_text())
  for m in cfg['maps']:assert E.file_hash(E.ROOT/'maps'/f"{m['name']}.map26")==m['sha256']
  def watch():
   while True:
@@ -26,5 +26,5 @@ with ExitStack() as stack:
  report=E.evaluate_checkpoint(a.checkpoint,suite='standard',manifest_path=E.ROOT/cfg['manifest'],progress_dir=a.progress_dir,jobs=2,deadline=time.monotonic()+3600*a.hours,stop_file=E.ROOT/'runs/development-v3/STOP')
  E.atomic_json(a.progress_dir/'summary.json',report)
  from scripts.report_development import generate
- generate(a.progress_dir)
+ generate(a.progress_dir,E.ROOT/cfg['manifest'])
  print(json.dumps(report['opponents'],indent=2))

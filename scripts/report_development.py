@@ -3,12 +3,12 @@ from pathlib import Path
 import json,collections,re,os
 os.environ.setdefault('MPLCONFIGDIR','/tmp/battlecode-mpl')
 ROOT=Path(__file__).resolve().parents[1]
-def generate(progress):
+def generate(progress, manifest_path=None):
  import matplotlib
  matplotlib.use('Agg')
  import matplotlib.pyplot as plt
  import numpy as np
- manifest=json.loads((ROOT/'configs/benchmarks-development-v3.json').read_text());ordered=sorted(manifest['bots'],key=lambda b:(b['historical_rating']['elo'],b['id']));bots=[b['id'] for b in ordered];maps=manifest['evaluation_protocol']['standard']['maps']
+ manifest=json.loads((Path(manifest_path) if manifest_path else ROOT/'configs/benchmarks-development-v3.json').read_text());ordered=sorted(manifest['bots'],key=lambda b:(b['historical_rating']['elo'],b['id']));bots=[b['id'] for b in ordered];maps=manifest['evaluation_protocol']['standard']['maps']
  rows=[json.loads(l) for l in (Path(progress)/'evaluations.jsonl').read_text().splitlines()] if (Path(progress)/'evaluations.jsonl').exists() else []
  cells={};hashes=set()
  for r in rows:
@@ -46,4 +46,4 @@ def generate(progress):
  readme=ROOT/'README.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)
 if __name__=='__main__':
  import argparse
- p=argparse.ArgumentParser();p.add_argument('progress_dir',type=Path);generate(p.parse_args().progress_dir)
+ p=argparse.ArgumentParser();p.add_argument('progress_dir',type=Path);p.add_argument('--manifest',type=Path);a=p.parse_args();generate(a.progress_dir,a.manifest)

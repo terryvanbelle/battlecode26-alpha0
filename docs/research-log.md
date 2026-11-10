@@ -412,3 +412,22 @@ undefined plotting variable and unimplemented diagnostic metrics. These are
 being repaired in the unlaunched draft. The draft still needs its old 12-bot
 smoke evaluator and decision rule migrated to the new development protocol
 before it can be frozen or launched. No active evaluation runtime was changed.
+
+## Broader baseline crash review and recovery publication
+
+The v3 baseline exhausted its schedule with 252 valid games (78W/174L/0D)
+and four unscored collegejunior runtime errors, all on wallsofparadis. Two
+independent fresh reruns reproduced the same internal BugSim assertion. This
+is not a valid complete baseline and cannot support an improvement claim.
+All eight maps remain required. Rating-matched replacement qualification is
+recorded in diagnostics/collegejunior-wallsofparadis; candidate selection uses
+historical ratings and crash validity, not learner wins. Icarus already failed
+with repeated runtime errors; YokoOno is preregistered as the next candidate.
+
+V7 recovery was published and independently restored into an isolated directory;
+all 573 restored files and 264 checkpoint payloads verified. Its diagnostic heads
+remain excluded from benchmark evaluation. The unfinished V8 draft passed 65
+tests plus 41 subtests after the earlier metric/plot fixes, but its old smoke
+protocol still requires migration before freezing or launching. No V8 SGD or
+games have occurred. Version-selectable development reporting/evaluation keeps
+historical v3 evidence intact when a qualified replacement panel is adopted.

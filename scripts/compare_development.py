@@ -29,7 +29,7 @@ def compare(baseline,candidate,config,manifest):
  per={bot:float(np.mean([c[k]['score']-b[k]['score'] for k in expected if k[0]==bot])) for bot in bots}
  return {'complete':True,'games_per_checkpoint':len(expected),'mean_score_gain':gain,'paired_map_bootstrap_95_interval':[float(lo),float(hi)],'per_opponent_score_gain':per,'passes_development_improvement_rule':bool(gain>=config['minimum_absolute_score_gain'] and lo>0 and per['vibe26b_zdb']>=0),'automatic_promotion':False,'all_map_victory':False,'baseline_wins':sum(r['score']==1 for r in baseline),'candidate_wins':sum(r['score']==1 for r in candidate)}
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('baseline',type=Path);p.add_argument('candidate',type=Path);a=p.parse_args()
- cfg=json.loads((ROOT/'configs/improvement-v3.json').read_text());m=json.loads((ROOT/cfg['manifest']).read_text())
+ p=argparse.ArgumentParser();p.add_argument('baseline',type=Path);p.add_argument('candidate',type=Path);p.add_argument('--config',type=Path,default=ROOT/'configs/improvement-v3.json');a=p.parse_args()
+ cfg=json.loads(a.config.read_text());m=json.loads((ROOT/cfg['manifest']).read_text())
  read=lambda p:[json.loads(l) for l in p.read_text().splitlines()]
  print(json.dumps(compare(read(a.baseline),read(a.candidate),cfg,m),indent=2))
