@@ -1,0 +1,360 @@
+{
+  "bot": {
+    "archive_url": "https://codeload.github.com/AdamTan12/BattleCode2026/tar.gz/91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+    "entrypoint": "Icarus.RobotPlayer",
+    "files": [
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/AttackKing.java",
+        "sha256": "1f43521be0840074160963a4cfb55388ef56285ac240fd2a830fb01e833cfba6",
+        "upstream_path": "src/Icarus/Actions/AttackKing.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Cat.java",
+        "sha256": "8e53a4c8996973eb40d2f8c0838584b676b1a32a93d63c85a1fd2d348a74ecf2",
+        "upstream_path": "src/Icarus/Actions/Cat.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Cheese.java",
+        "sha256": "2d9ab0fab1d12dc979834dd41c5158d1c96b77b6a4c860e208273165dce565f4",
+        "upstream_path": "src/Icarus/Actions/Cheese.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Deliver.java",
+        "sha256": "aa1578ae104d0948dbc7696504649ac4813fe9933bb16463a5accc0c64ec72f8",
+        "upstream_path": "src/Icarus/Actions/Deliver.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/MergeKing.java",
+        "sha256": "362f86222d73d11c1555cf453fcf9af0e29abc5c29e19c17937a16ff33d4c249",
+        "upstream_path": "src/Icarus/Actions/MergeKing.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Save.java",
+        "sha256": "08ff8abbcc2082419d417516fc6b89e1275199538064ada1323813805c0cec2d",
+        "upstream_path": "src/Icarus/Actions/Save.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/Squeak.java",
+        "sha256": "06bcd872cfd1317797216e6854b329f4d21fc8d0f5e519835f54bff8a0bbe3df",
+        "upstream_path": "src/Icarus/Actions/Squeak.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Actions/ThrowOutsideCombat.java",
+        "sha256": "d63029a3f0c91687ffd0707190e4206a363937a41e8b0862d4b76d8795552068",
+        "upstream_path": "src/Icarus/Actions/ThrowOutsideCombat.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Bite.java",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "upstream_path": "src/Icarus/Codegen/Generated/Bite.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Carry.java",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "upstream_path": "src/Icarus/Codegen/Generated/Carry.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Fight.java",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "upstream_path": "src/Icarus/Codegen/Generated/Fight.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Throw.java",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "upstream_path": "src/Icarus/Codegen/Generated/Throw.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Codegen/Generated/Trap.java",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "upstream_path": "src/Icarus/Codegen/Generated/Trap.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/DEBUG/debug.java",
+        "sha256": "8335fe5e0313c9fa84c29324111cf4bce227f87543c4aea28a3d5e510778483f",
+        "upstream_path": "src/Icarus/DEBUG/debug.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/DataStructures/Gain.java",
+        "sha256": "af0ab56620434c7e8bcff987b02476ee111c7f993078b93e8775455270f9bb7e",
+        "upstream_path": "src/Icarus/DataStructures/Gain.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BellmanFordCheeseNavigator.java",
+        "sha256": "32a1bea67899d83ace0e8e4382ab0525ca4205553c38328e6dc419e9a2f1d6c1",
+        "upstream_path": "src/Icarus/Helpers/BellmanFordCheeseNavigator.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BellmanFordNavigator.java",
+        "sha256": "74d66b816948cde08dd920d80e817fb2f3557217259b9422a1ea0c2d553c0394",
+        "upstream_path": "src/Icarus/Helpers/BellmanFordNavigator.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/BugNavigator.java",
+        "sha256": "f464cac670f8499424c430837d0c8ca4220aa013343fa4678eef47a4be7e134c",
+        "upstream_path": "src/Icarus/Helpers/BugNavigator.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/ClosestUnseenEnemy.java",
+        "sha256": "ec976c36f089c9ea91f2e66f63ca2d9b4f9e91c31ab84b8b2e3f7d289df2788b",
+        "upstream_path": "src/Icarus/Helpers/ClosestUnseenEnemy.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Comms.java",
+        "sha256": "afaaf31bd9c0e5f76e23f40b285b2c532b9404ed6630a45f1d5104def1bff142",
+        "upstream_path": "src/Icarus/Helpers/Comms.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Constants.java",
+        "sha256": "59bf30e9c98c7c5bf20b6c5b43c1d860667f7f8ee489d712d5a59d9c362fce3d",
+        "upstream_path": "src/Icarus/Helpers/Constants.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Explore.java",
+        "sha256": "d0716db45d5b5a7364a52d9593c55adbbfa86b63c5edbbac78f04de2b13999e0",
+        "upstream_path": "src/Icarus/Helpers/Explore.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Mine.java",
+        "sha256": "8465c954fd63e41d1bca00946a5bdb6535b422d8bc1682fed5211620711172cf",
+        "upstream_path": "src/Icarus/Helpers/Mine.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Nav.java",
+        "sha256": "98a463746d005da3563b2ca2c7ff77df9434111400805e4984d14310d49a5a26",
+        "upstream_path": "src/Icarus/Helpers/Nav.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Target.java",
+        "sha256": "271ad431d159cc26ae788f28b74072953b77b51ff72802ff8b931a5f9674d397",
+        "upstream_path": "src/Icarus/Helpers/Target.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Helpers/Vision.java",
+        "sha256": "8e51d42d4737fe3ad168f434547d583a3c8068e5ef2ace9861342665a83a10c3",
+        "upstream_path": "src/Icarus/Helpers/Vision.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Managers/Global.java",
+        "sha256": "4a80a164f1994c1ac7e701f48cec6b77804c78421080554872cd5a9e40c427e6",
+        "upstream_path": "src/Icarus/Managers/Global.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Managers/MapData.java",
+        "sha256": "11b55174ba787d1ad86a3ad225870f4b8b32d582e8d865a91060cb66480972f2",
+        "upstream_path": "src/Icarus/Managers/MapData.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Managers/VisionManager.java",
+        "sha256": "e149335c2784bd89c89debde2ba081da3ae7301dd927be6413eb18dc14bbda08",
+        "upstream_path": "src/Icarus/Managers/VisionManager.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Bite.java",
+        "sha256": "076084e896a6e13ba1e3489709bfa6943f82d1568916c87024c609fa6b72cc06",
+        "upstream_path": "src/Icarus/Micro/Attack/Bite.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Carry.java",
+        "sha256": "670aac9d9643f2c41983fafc882d34171c6533fec614a47efe49696ad25bfe2c",
+        "upstream_path": "src/Icarus/Micro/Attack/Carry.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Decision.java",
+        "sha256": "c9a0b938ce4901c254391f0d42d7bd0290de03036e299c4f5f9a9d73d15f1d9f",
+        "upstream_path": "src/Icarus/Micro/Attack/Decision.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Fight.java",
+        "sha256": "304e3ce2c0d3990cf9880da326d07d7eab48ee84e97e28e3a6532b1ed3d34a36",
+        "upstream_path": "src/Icarus/Micro/Attack/Fight.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Throw.java",
+        "sha256": "c6ea1ff6ad00d4baeb1bf1bf96acc84f1ac3732d24f8a7085913859e747b7149",
+        "upstream_path": "src/Icarus/Micro/Attack/Throw.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/Attack/Trap.java",
+        "sha256": "b90ba27121a3477277247ea3ebb29949bc6189d1882bb9ae37db3d657a0a4613",
+        "upstream_path": "src/Icarus/Micro/Attack/Trap.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Micro/MicroBabyManager.java",
+        "sha256": "e9981ec70f9f712face54232c7ea97e8460c77ca39fbd5bbe63efc6b3ce007df",
+        "upstream_path": "src/Icarus/Micro/MicroBabyManager.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Rat.java",
+        "sha256": "51958f4e349ec001782957ccd478658e5de87aa754f1205c874b7c1f7629d6d0",
+        "upstream_path": "src/Icarus/Rat.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/CheeseMove.java",
+        "sha256": "eb40213f73d0eeed2f35db87bb0de2bc221ba9f53cd33069e8afdc47b5040591",
+        "upstream_path": "src/Icarus/RatKing/CheeseMove.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/Escape.java",
+        "sha256": "d466a6b882904090cac483b0825f0c30fcd89dc0ad2587a2c025bc3b1b228eb5",
+        "upstream_path": "src/Icarus/RatKing/Escape.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/KingManager.java",
+        "sha256": "5a020e2e1a16b9aa418d622fb8e0033011aba826ab8f2c8aad983cc1ce0030d8",
+        "upstream_path": "src/Icarus/RatKing/KingManager.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RatKing/Spawn.java",
+        "sha256": "cfd3f0eacc91994618d2ee68607aacf2dac3cfc821794be1ae6abfbc1f80ee25",
+        "upstream_path": "src/Icarus/RatKing/Spawn.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Rats/BabyRat.java",
+        "sha256": "4e5f79bc2b1da7c83e11f8a71f62251884e14e767646c90c7d2569f5767867d6",
+        "upstream_path": "src/Icarus/Rats/BabyRat.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Rats/RatKing.java",
+        "sha256": "1cb4aaefe17de4bba5ee2f525b3cb8ea2abca2878fc49d0de1812ecc8babc3bb",
+        "upstream_path": "src/Icarus/Rats/RatKing.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RobotPlayer.java",
+        "sha256": "63fd6ae7987d0112fe2040dcef4f6cc87bdef8feffb44d6131c8965c230256e0",
+        "upstream_path": "src/Icarus/RobotPlayer.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/RunRat.java",
+        "sha256": "e44693f8ceea38a2510a008f7841fe9499336c41b3534ba066f6971586041c1f",
+        "upstream_path": "src/Icarus/RunRat.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Utils/Calc.java",
+        "sha256": "55a0a3f6c13077eb248505aaaa9cf25b0e20976a584d63beadcb78b46d0a1229",
+        "upstream_path": "src/Icarus/Utils/Calc.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Utils/Encoder.java",
+        "sha256": "68857260ff315510dddb460ea11656c70ce6c8cc7ac04021efe7d0ed67cd596a",
+        "upstream_path": "src/Icarus/Utils/Encoder.java"
+      },
+      {
+        "path": "benchmarks/bots/AdamTan12_Icarus/Utils/RNG.java",
+        "sha256": "d9af6840fef2642727312d34a2509b0e0cc76d19ec8d0a78b16055c28de07242",
+        "upstream_path": "src/Icarus/Utils/RNG.java"
+      }
+    ],
+    "historical_rating": {
+      "elo": 1745.9,
+      "expected_field_score": 0.6496,
+      "games": 3021,
+      "standard_error": 6.6
+    },
+    "id": "AdamTan12_Icarus",
+    "java_tree_sha256": "a455477e0b8aecb87f49aa2b1bcf4d357503dade4dbce4840a03f163ecd598d7",
+    "license": {
+      "source_path": "LICENSE",
+      "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+    },
+    "package": "Icarus",
+    "path": "benchmarks/bots/AdamTan12_Icarus",
+    "role": "external",
+    "source_commit": "91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+    "source_commit_date": "2026-01-29T04:12:59-08:00",
+    "source_path": "src/Icarus",
+    "source_repository": "https://github.com/AdamTan12/BattleCode2026",
+    "stratum": "Nearest-rated available distinct-author replacement candidate; qualification pending",
+    "validation": {
+      "status": "pending full eight-map crash qualification"
+    }
+  },
+  "checkpoint_path": "/workspace/battlecode26-alpha0/runs/warmstart-v3/checkpoint-0002.pt",
+  "evaluation_cell_id": "4a4254b6a7c39b09d37a4fe71267ed6e2f3e039eb089dd00d9ab6b5e21aa8c8a",
+  "generation": 2,
+  "identity": {
+    "artifact_version": 2,
+    "benchmark_suite_id": "icarus-crash-qualification-v1",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "evaluation_config": {
+      "policy_random_seed": 0,
+      "policy_schema": {
+        "action_dim": 40,
+        "action_version": "macro_v2",
+        "feature_version": 2,
+        "model_version": "dual_scale_v2",
+        "network_config": {
+          "action_dim": 40,
+          "blocks": 2,
+          "global_channels": 33,
+          "global_width": 16,
+          "hidden_dim": 128,
+          "local_channels": 33,
+          "local_width": 24,
+          "scalar_dim": 64
+        }
+      },
+      "runtime": {
+        "bridge_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+        "compiled_classes": {
+          "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+          "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+          "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+          "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+          "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+          "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+          "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+          "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+          "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+          "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+          "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+          "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+          "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+          "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+          "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+          "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+          "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+          "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+        },
+        "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+        "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+        "engine_version": "1.2.6",
+        "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+        "numpy_version": "2.3.5",
+        "physics": {
+          "benchmark_bytecode_limit": 1000000000,
+          "engine_rules": "official-1.2.6",
+          "team_execution_timeout_disabled": true
+        },
+        "python_adapter_sha256": "797ee5634316b622dfa5f2e2ba63a885065ab0008e99230af9c17a7538ae1e7d",
+        "python_sources": {
+          "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+          "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+          "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+          "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+        },
+        "torch_version": "2.15.0+cpu"
+      },
+      "search_config": {},
+      "search_mode": "greedy",
+      "tie_break": "first-legal-action",
+      "timeout_seconds": 1800.0,
+      "torch_threads": 1
+    },
+    "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+    "map": "knifefight",
+    "map_sha256": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5",
+    "opponent": "AdamTan12_Icarus",
+    "opponent_java_sha256": "a455477e0b8aecb87f49aa2b1bcf4d357503dade4dbce4840a03f163ecd598d7",
+    "opponent_source_commit": "91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+    "panel_fingerprint_sha256": "dfada4aec6e6353f4a39aadc0b143acb7a90ef59be6cbe42cc6c3303518c6f02",
+    "seed": 0,
+    "side": "A",
+    "stage": "standard"
+  },
+  "iteration": 2,
+  "maps_dir": "/workspace/battlecode26-alpha0/maps",
+  "stage": "standard",
+  "suite": "standard"
+}

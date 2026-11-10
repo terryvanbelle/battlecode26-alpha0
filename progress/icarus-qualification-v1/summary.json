@@ -1,0 +1,90 @@
+{
+  "benchmark_suite_id": "icarus-crash-qualification-v1",
+  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "complete": false,
+  "completed": 23,
+  "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+  "executed": true,
+  "exhausted_cells": 9,
+  "expected": 32,
+  "expected_cell_ids": [
+    "0317097c14733093bf61b58ae151c958d3797f59aa4db525478ba8ef03276f75",
+    "c7a00d07a968ac19f78785290948439557960e222a4f7b8d8e5e861a0a9c4e5e",
+    "2bb4440d0fe873cc72922498c5c219c8bd927d54c39df7b52700cbedc847c05f",
+    "21a6c279bfbad27c3e2dfbbc6e81e5a9712f346e4bd89218090291c7c3ac3fe3",
+    "3956d54aefda311bd08058c8b4b1612ecb0dba74c8a9ddfb9f6b71f223a8eb68",
+    "f09d27816a2b3607c96544dc630ec5dd5d826bc2df120e10d91f74d9305bea79",
+    "19b5437bd704eac75ac4fb7ce5f164dd2dbf5f9735cba673295fef38adf0af25",
+    "cc608a695b37f91e9ca780c0f679bfa8c9c161fca5fbe91c07dbe9aa59867fb9",
+    "edb65ac40251243b2404929bcd08540894e9cdd69a5e58b2803275af00b97958",
+    "41e16d798a94bf017aa6be2a52d7d38dc52f3f87fdc09e19e423caddcf2c3207",
+    "22d1c0562c3ceb6d5c93887175991b310dba6ef83ac697475d0f4d6aed2992b8",
+    "3f30e88e64957e8f7f442e47fe9ddbeb4a33854bd86961aa3d8a342821964984",
+    "d82ce50af56266029457f187031c28c3fe8bdfe7214f67df3bb0003cf9a1663b",
+    "309ca01025db944b17325741e8df23fb314d8094ae8b26caf4145daacad6d3ee",
+    "7b111ad5c993c5172f8802d1153220c529667462f63eb372ca826f18b7b7717f",
+    "adc00279e247d8ebe09c694c3ec87ce58d8905d7c669217d0ac7afebb0c516b0",
+    "55ec6b4b51afd1590b3312ff5145b1a7cec44a0376ae58f48f58c8c84edad8e2",
+    "24b41c4434de3a54ec580f16de92e3ef9d7258d3dc1eb05a83dc1c4af363fb1e",
+    "f7b45958c9e4c67aa8d02f8f94185e8106bf8983188e89d7e2ff7181542d8b45",
+    "8199aebd6b1e3aad853ed55a5fa3dfca575bcd798c1f8d9abb413ce0e31a388a",
+    "4a4254b6a7c39b09d37a4fe71267ed6e2f3e039eb089dd00d9ab6b5e21aa8c8a",
+    "dc57f20b2f401f7703c6a27857c472071504276ff9b5165f1f2c38703810448d",
+    "dac1c0156479a0d121fd3e09b561712bbd600dd8e2740f44c038d0429dd55d44",
+    "25363b1e730ec1988fa8743d6692bdac9855919e6c211236309eb0038ab60681",
+    "06be6e9911dd86e8ac5fda3b80ed64e9ac1eda94b03b50183a9ba42f5d15f2f4",
+    "b88774d21b73b007441d5c5e610c3e9555231049e5aac8a54ae46d48aaac9f0a",
+    "5f5af03899f8e1a727f05633664045c51d60500053e98b1da967a94dbe5349d7",
+    "266665b60b86ab8c9b3ab3f277b7870119d7ad457d2b5f0c5403a870427eca2e",
+    "d64ed2001d7bb1f018e44ecd76f2a458fbddcb344b8d43855ad2bbde88e900da",
+    "10962d82864fa00f01cc5965f86b41da4581ac4fe1b10706dea382b4e884ba1b",
+    "bfd63570a7d9be40726e7f3b2fddac7791364d05393a68d4ea1306b651aa8e59",
+    "bf3a6270b39ee5e2496795f3c91d9e5f8692fcbac635f8d1b960c0bfdeb3a94d"
+  ],
+  "full_panel": true,
+  "full_panel_complete": false,
+  "iteration": 2,
+  "opponents": {
+    "AdamTan12_Icarus": {
+      "completed": 23,
+      "draws": 0,
+      "errors": 9,
+      "expected": 32,
+      "losses": 23,
+      "mean_score": 0.0,
+      "score_sum": 0.0,
+      "sides": {
+        "A": {
+          "completed": 12,
+          "expected": 16,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        },
+        "B": {
+          "completed": 11,
+          "expected": 16,
+          "mean_score": 0.0,
+          "score_sum": 0.0
+        }
+      },
+      "wins": 0
+    }
+  },
+  "pending": 9,
+  "pending_cell_ids": [
+    "0317097c14733093bf61b58ae151c958d3797f59aa4db525478ba8ef03276f75",
+    "c7a00d07a968ac19f78785290948439557960e222a4f7b8d8e5e861a0a9c4e5e",
+    "2bb4440d0fe873cc72922498c5c219c8bd927d54c39df7b52700cbedc847c05f",
+    "21a6c279bfbad27c3e2dfbbc6e81e5a9712f346e4bd89218090291c7c3ac3fe3",
+    "8199aebd6b1e3aad853ed55a5fa3dfca575bcd798c1f8d9abb413ce0e31a388a",
+    "dc57f20b2f401f7703c6a27857c472071504276ff9b5165f1f2c38703810448d",
+    "dac1c0156479a0d121fd3e09b561712bbd600dd8e2740f44c038d0429dd55d44",
+    "266665b60b86ab8c9b3ab3f277b7870119d7ad457d2b5f0c5403a870427eca2e",
+    "d64ed2001d7bb1f018e44ecd76f2a458fbddcb344b8d43855ad2bbde88e900da"
+  ],
+  "stage": "standard",
+  "stop_reason": null,
+  "stopped_early": false,
+  "suite": "standard",
+  "unresolved_errors": 9
+}

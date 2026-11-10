@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import pytest
 from scripts.compare_development import compare
+from alpha0.evaluate import panel_fingerprint
 ROOT=Path(__file__).resolve().parents[1]
 def fixture():
  c=json.loads((ROOT/'configs/improvement-v3.json').read_text());m=json.loads((ROOT/c['manifest']).read_text());rows=[]
@@ -9,7 +10,7 @@ def fixture():
   for mp in c['maps']:
    for seed in c['seeds']:
     for side in c['sides']:
-     rows.append(dict(opponent=bot['id'],map=mp['name'],seed=seed,side=side,status='ok',score=0,benchmark_suite_id=m['suite_id'],map_sha256=mp['sha256'],checkpoint_sha256=c['baseline_sha256'],evaluation_config_sha256='runtime',panel_fingerprint_sha256='panel',opponent_java_sha256=bot['java_tree_sha256']))
+     rows.append(dict(opponent=bot['id'],map=mp['name'],seed=seed,side=side,status='ok',score=0,benchmark_suite_id=m['suite_id'],map_sha256=mp['sha256'],checkpoint_sha256=c['baseline_sha256'],evaluation_config_sha256='runtime',panel_fingerprint_sha256=panel_fingerprint(m),opponent_source_commit=bot['source_commit'],opponent_java_sha256=bot['java_tree_sha256']))
  return c,m,rows
 
 def test_complete_improvement_and_tie():
@@ -21,3 +22,12 @@ def test_missing_duplicate_or_incompatible_results_rejected():
  c,m,b=fixture()
  for bad in [b[:-1],b+[b[0]],[dict(r,evaluation_config_sha256='changed') for r in b]]:
   with pytest.raises(ValueError):compare(b,bad,c,m)
+
+
+def test_equally_corrupted_panels_do_not_establish_comparability():
+ c,m,b=fixture()
+ for field,value in [('panel_fingerprint_sha256','forged'),('opponent_java_sha256','changed'),('opponent_source_commit','changed')]:
+  altered=[dict(r,**{field:value}) for r in b]
+  with pytest.raises(ValueError):compare(altered,altered,c,m)
+ mixed=[dict(r,evaluation_config_sha256=('first' if i<128 else 'second')) for i,r in enumerate(b)]
+ with pytest.raises(ValueError):compare(mixed,mixed,c,m)
