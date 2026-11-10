@@ -1,3 +1,5 @@
+**Next phase:** at **70% overall wins** on the complete benchmark suite, prioritize [tournament compatibility](tournament-transition.md) before further win-rate optimization: Java throughout the deployed bot, standard bytecode, memory, compile and wall-clock limits, and standard API calls only.
+
 # Development benchmark v3: broader maps and measured improvement
 
 The user replaced the all-opponent/all-map completion objective on November 10,

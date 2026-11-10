@@ -431,3 +431,13 @@ tests plus 41 subtests after the earlier metric/plot fixes, but its old smoke
 protocol still requires migration before freezing or launching. No V8 SGD or
 games have occurred. Version-selectable development reporting/evaluation keeps
 historical v3 evidence intact when a qualified replacement panel is adopted.
+
+## User priority: tournament conversion at 70% overall wins
+
+Recorded configs/research-roadmap.json and docs/tournament-transition.md. At least
+180 wins in a complete valid 256-game current panel triggers a focus switch to
+Java-only tournament play under all official limits and APIs. This does not
+reintroduce universal opponent/map wins. The current displayed original-panel
+rate is 78/252 valid games (30.95%), with four crashes excluded; it is not a
+complete valid milestone panel. The qualified replacement still needs a fresh
+full baseline.

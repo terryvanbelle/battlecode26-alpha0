@@ -1,3 +1,5 @@
+**Next phase:** at **70% overall wins** on the complete benchmark suite, prioritize [tournament compatibility](tournament-transition.md) before further win-rate optimization: Java throughout the deployed bot, standard bytecode, memory, compile and wall-clock limits, and standard API calls only.
+
 > **Current objective amendment (November 10, 2026):** the user replaced the
 > all-opponent/all-map success requirement with improvement on a broader-map,
 > smaller opponent panel. See [active protocol](development-benchmarks-v3.md). This supersedes conflicting historical

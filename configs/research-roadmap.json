@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "strength_phase_exit": {
+    "metric": "overall_win_rate",
+    "threshold": 0.70,
+    "aggregation": "wins divided by all scheduled games on the complete current frozen development suite",
+    "require_complete_valid_panel": true,
+    "require_same_checkpoint_policy_runtime": true,
+    "draw_counts_as_win": false,
+    "partial_or_crash_excluded_dashboard_rate_triggers_transition": false,
+    "current_schedule_games": 256,
+    "current_schedule_minimum_wins": 180,
+    "action": "freeze checkpoint and evidence; prioritize tournament compatibility before further win-rate optimization"
+  },
+  "tournament_compatibility": {
+    "bot_runtime_language": "Java",
+    "official_bytecode_limits": true,
+    "official_memory_limits": true,
+    "official_compile_limits": true,
+    "official_wall_clock_limits": true,
+    "official_api_only": true,
+    "privileged_observations_or_engine_access": false,
+    "external_python_or_model_server_at_play_time": false,
+    "verify_current_official_rules_before_implementation": true,
+    "validation": "compile and run the complete Java bot under the unmodified official submission restrictions; report compatibility and benchmark strength separately"
+  }
+}
