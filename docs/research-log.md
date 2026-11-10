@@ -228,3 +228,61 @@ remain insufficient. No newer local run was overwritten.
 The [recorded target audit and counterfactual probe](warmstart-plateau.md) completed without changing training state. Across 16 own self-play games, search visit argmax matched its source policy on 99.20%/98.41% of sampled states. Eight reconstructed tactical roots produced 48 completed terminal continuations; 48 searches spanning depth/budget and zero-critic controls kept the original preferred action. A retreat improved both sampled continuations at one king root and worsened another baby root, supporting context-dependent action ranking rather than a blanket heuristic. These are diagnostic observations, not benchmark gains.
 
 The approved next review cycle is the precommitted `terminal-root-ranking-v4` mechanism test in that report: new recorded roots, all legal first actions, separate fixed selection/validation seeds, one actor and a two-hour resumable limit. It must meet its declared research decision rule before any subsequent rollout-guided SGD pilot. The recurring continuation now prioritizes implementing and running that versioned test; it does not blindly repeat the unchanged target-3 warmstart. Both existing runs and the original champion remain preserved. The maintenance-owned gate migration STOP was removed only after migration checks passed; no user stop marker was removed.
+
+### Terminal-root-ranking-v4 completed; policy-transfer pilot selected
+
+The [versioned mechanism test](root-ranking-v4.md) was implemented and committed
+as `fd84126` before any scored continuation. Thirty-nine runner/renderer tests
+and 37 subtests passed, including process-tree cleanup, STOP/deadline handling,
+immutable recovery, exact action/seed coverage and rejection of premature passes.
+An independent official-engine replay matched all eight frozen root states,
+prefixes, actors and legal-action lists before scoring.
+
+One actor completed **374 selection continuations plus 44 unique validation
+continuations**, all valid, with zero errors, retries or incomplete attempts.
+The run took **2,752.86 seconds** (45 minutes 53 seconds), within its two-hour
+budget. All legal root actions received both fixed selection seeds. Five roots
+selected the same action as PUCT and shared their four validation games; no
+shared game was counted twice as independent evidence.
+
+The exact equal-root paired validation difference was **7/32 = 0.21875**,
+with **two improving roots** and worst difference **−0.25**. Deltas in frozen
+root order were `[0, 1, -0.25, 0, 1, 0, 0, 0]`, so the precommitted research
+rule passed. At `tiny` king round 8, build-west beat spawn-assault 1.00 to 0.00;
+at `closeup` baby round 49, southeast beat assault-king 1.00 to 0.00. The same
+southeast choice lost 0.00 to 0.25 at `DefaultSmall` baby round 20. That adverse
+result is retained and argues against a universal action rule.
+
+The [independent final audit](../progress/root-ranking-v4/independent-final-audit.json)
+held all three exclusion locks while checking quiescence, every cell identity
+and terminal proof, exact selection tie-breaking, separate validation seeds,
+chronology, source/checkpoint/runtime hashes and rational decision arithmetic.
+The audit SHA-256 is
+`b69616abb0bb802e386c7f5b00d5b7a061f188f4dccd8e7b5d1c09970bce1394`.
+Its archived standalone source was rerun successfully. Original chronology
+observations are hash-bound and preserved, so restoration does not mistake Git
+checkout modification times for experiment times. [Graphs, immutable cells,
+source snapshots and recovery records](../progress/root-ranking-v4/README.md)
+are tracked in the main branch; the unchanged cp2 dependency remains in its
+previously verified separate warmstart archive.
+
+This is evidence about eight selected own-self-play roots under a frozen
+continuation policy. It does not isolate action coverage from terminal horizon,
+establish compute efficiency, or show general playing strength. No weights
+changed and no benchmark games occurred. The prior and cp2 remain **20/24** in
+the existing smoke panel; neither all-map stage has passed. The separately
+published [benchmark terminal audit](warmstart-terminal-failures.md) found
+identical failure endpoints across cp0/1/2 and many captured surviving babies.
+Those descriptive evaluation states are not training examples or causal proof.
+
+The recorded research decision is to implement
+[terminal-target-head-v5](terminal-target-head-v5.md) in the next bounded cycle.
+It preregisters 32 fresh balanced training roots, exhaustive two-seed terminal
+targets, a matched PUCT selected-action control, and identical conservative
+updates to only the existing 5,160-parameter policy output layer. Sixteen fresh
+validation roots must exclude exact training-root and anchor input duplicates.
+Fresh complete all-12 smoke panels compare cp2 with both learned arms. No v4
+root, continuation or validation outcome enters fitting, and no benchmark data
+enter gradients. The original architecture, critic, champion, controls and
+888-pair all-map gate remain fixed. This protocol is selected for implementation;
+it has not yet been trained or evaluated, and no automatic promotion is implied.

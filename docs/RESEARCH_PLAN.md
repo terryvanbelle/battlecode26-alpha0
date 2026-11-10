@@ -181,13 +181,17 @@ checkpoint selection prevent a simultaneous 95% superiority claim.
 
 ## Finite, recoverable research cycles
 
-The current plateau response is the [terminal-root-ranking-v4 comparison](root-ranking-v4.md):
-fixed checkpoint 2, all legal actions at eight frozen own-self-play roots,
-separate selection/validation seeds, no gradients, and a two-hour resumable
-limit. Its [progress](../progress/root-ranking-v4/README.md) must satisfy the
-precommitted research decision rule before review of any subsequent SGD pilot.
-The cycle limits below do not authorize repeating the stagnant warmstart
-configuration while that test is unresolved.
+The [terminal-root-ranking-v4 comparison](root-ranking-v4.md) completed
+418 valid terminal continuations at eight frozen roots, with no gradients.
+Its independently verified mean paired validation advantage was 0.21875,
+with two improving roots and worst difference −0.25, passing the precommitted
+mechanism rule. This is not benchmark improvement.
+The recorded review selects [terminal-target-head-v5](terminal-target-head-v5.md):
+fresh symmetric self-play, matched terminal-ranking/PUCT labels, only the
+existing policy output layer trained, fresh validation inputs, and all-12-bot
+smoke checks. That protocol is published for implementation in the next cycle.
+The limits below do not authorize blindly repeating the stagnant warmstart
+configuration or treating the diagnostic's continuations as training data.
 
 Each cycle is bounded by four training iterations, eight complete games per
 iteration, and **three hours** under the user's current instruction. These are operational limits on one

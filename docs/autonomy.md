@@ -11,15 +11,24 @@ Confirmation uses four fresh seeds on all maps, not a disjoint map set. Lock one
 ## Current research boundary
 
 The neutral campaign is preserved at checkpoint 4 and warmstart at checkpoint 2.
-Neither is currently authorized to repeat unchanged SGD while the
-[terminal-root-ranking-v4 mechanism test](root-ranking-v4.md) is unresolved.
-Inspect `runs/root-ranking-v4/status.json`, the actual process commands and all
-three locks before launching anything. A healthy diagnostic owns its own lock
-and the neutral/warmstart locks; inspect its progress without starting another
-actor. Its [published evidence](../progress/root-ranking-v4/README.md) is separate
-from benchmark qualification.
+The [terminal-root-ranking-v4 mechanism test](root-ranking-v4.md) completed
+418 valid continuations and passed its precommitted rule, with an independent
+final audit and unchanged checkpoint/runtime. Its
+[published evidence](../progress/root-ranking-v4/README.md) is separate from
+benchmark qualification. No SGD or benchmark games occurred in that test.
 
-To resume missing diagnostic cells with unchanged source/configuration:
+The recorded review selects [terminal-target-head-v5](terminal-target-head-v5.md)
+for the next bounded cycle: implement the pinned fresh-self-play protocol,
+matched PUCT control, policy-head-only fits, independent validation and all-12
+smoke checks. At this review boundary the protocol is published but the pilot
+has not been implemented or run. Do not repeat unchanged target-3 warmstart or
+neutral training, or rerun the already complete diagnostic as new evidence.
+Preserve the existing champion and use the pilot's new run/progress paths.
+Inspect actual process commands, STOP markers and all applicable locks before
+starting; if a run is healthy, inspect progress without launching a duplicate.
+
+Only if recovery reveals missing v4 cells, resume them with unchanged
+source/configuration:
 
 ```bash
 .venv/bin/python -u -m alpha0.root_ranking_v4 --seconds 7200
@@ -29,10 +38,10 @@ It respects `runs/campaign/STOP`, `runs/warmstart-v3/STOP` and
 `runs/root-ranking-v4/STOP`, and enforces a two-hour wall deadline. Restore its
 tracked `progress/root-ranking-v4/` records and the separately verified warmstart
 checkpoint-2 dependency before resuming. Never replace current source/gate or
-newer progress with files from the historical warmstart archive. A completed
-diagnostic requires research review; a pass only permits a separately versioned
-training pilot, and a failure requires a reasoned new experiment rather than
-unchanged target-3 training.
+newer progress with files from the historical warmstart archive. Diagnostic
+completion does not authorize relabeling its outcomes as benchmark victories.
+Future pilot cycles are bounded by three hours and must preserve incomplete
+work rather than fit a completion-selected subset.
 
 ## Run one neutral campaign cycle
 

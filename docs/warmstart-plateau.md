@@ -8,12 +8,25 @@ how useful policy targets are produced before spending another identical
 training iteration. Checkpoint 2 and the original prior remain preserved;
 no new SGD run was started for this investigation.
 
+**Completed follow-up:** the preregistered terminal-root-ranking-v4 test below
+finished 418 valid continuations and passed its research rule, with mean paired
+validation advantage 0.21875 and an independent audit. See the
+[complete result](root-ranking-v4.md). The recorded next step is the separate
+[terminal-target-head-v5 learning pilot](terminal-target-head-v5.md), using fresh
+data and a matched control. The original diagnosis and preregistration below
+remain historical evidence; the checkpoint's 20/24 benchmark score is unchanged.
+
 The benchmark loss diagnostics are narrow but consistent: enemy king HP stayed
 470/590 against `bestsofar` and 600/600 against `basic51`, at rounds 42/54 and
 94/60 respectively. Three of those four terminal states still had 697–986
 cheese in the learned team's bank. These observations do not establish a
 particular opponent strategy or a universal economy failure. No benchmark
 trajectory, action or outcome was used as a training example.
+
+The later [terminal-state audit](warmstart-terminal-failures.md) records exact
+cross-checkpoint equality and observed enemy captures, with source hashes and
+the explicit limitation that these endpoints do not establish a causal failure
+sequence. Those evaluation observations remain excluded from training.
 
 ## Recorded search targets mostly repeat the prior
 

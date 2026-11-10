@@ -1,0 +1,26 @@
+{
+  "budget_seconds": 7200.0,
+  "decision": {
+    "complete": true,
+    "criteria_pass": true,
+    "improved_roots": 2,
+    "integrity_verified": true,
+    "mean_delta": 0.21875,
+    "passes": true,
+    "thresholds": {
+      "improved_roots_min": 2,
+      "mean_delta_min": 0.1,
+      "worst_root_delta_min": -0.25
+    },
+    "worst_root_delta": -0.25
+  },
+  "elapsed_seconds": 2752.855411423001,
+  "ended_at": "2026-11-10T06:19:59.620011+00:00",
+  "gradient_updates": 0,
+  "identity": "35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162",
+  "phase": "complete_review_required",
+  "pid": 52130,
+  "reason": null,
+  "runtime_and_checkpoint_unchanged": true,
+  "started_at": "2026-11-10T05:34:06.785044+00:00"
+}

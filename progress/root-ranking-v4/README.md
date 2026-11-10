@@ -1,10 +1,10 @@
 # Root-ranking mechanism test
 
-**Research decision: INCOMPLETE.** Phase: `running`.
+**Research decision: PASS.** Phase: `complete_review_required`.
 
 This is a bounded test of first-action ranking on frozen own-self-play roots. **No SGD updates and no benchmark data are used. It does not establish benchmark strength or authorize an automatic training promotion.**
 
-**5/8 roots have complete paired validation.** Selection: 252/374 valid cells. Validation: 32/32 valid scheduled unique cells.
+**8/8 roots have complete paired validation.** Selection: 374/374 valid cells. Validation: 44/44 valid scheduled unique cells.
 
 Selection uses seeds `103003, 103013` for every legal first action. The rollout action is chosen by mean terminal score, with the frozen original network prior breaking ties. The comparator is unchanged 32-simulation/depth-12 PUCT.
 
@@ -18,12 +18,12 @@ The conjunction below is evaluated only after every frozen root has complete val
 
 | Requirement | Observed | Outcome |
 |---|---:|---|
-| Every root complete | 5/8 | Incomplete |
-| Equal-root mean Δ ≥ +0.10 | — | Pending |
-| At least two distinct roots improve (Δ > 0) | — | Pending |
-| No root has mean Δ < −0.25 | — | Pending |
+| Every root complete | 8/8 | Met |
+| Equal-root mean Δ ≥ +0.10 | +0.219 | Met |
+| At least two distinct roots improve (Δ > 0) | 2 | Met |
+| No root has mean Δ < −0.25 | -0.250 | Met |
 
-Final evidence-integrity verification: **pending**. Complete score criteria alone cannot establish a pass; the runner must first stop its worker and verify the frozen experiment identity.
+Final evidence-integrity verification: **verified**. Complete score criteria alone cannot establish a pass; the runner must first stop its worker and verify the frozen experiment identity.
 
 The +0.10 threshold applies to the equal-root aggregate, not each individual root. The same four validation seeds are reused across roots, and source games are correlated. This is a small mechanism diagnostic, not a calibrated confidence interval or proof of general playing strength.
 
@@ -36,9 +36,9 @@ The +0.10 threshold applies to the equal-root aggregate, not each individual roo
 | `root-02` | DefaultSmall / BABY_RAT / 20 | 4 / 21 | Two actions × four cells | 8/8 | 0.000 | 0.250 | -0.250 | Complete |
 | `root-03` | DefaultSmall / RAT_KING / 63 | 21 / 21 | Shared four cells | 4/4 | 1.000 | 1.000 | +0.000 | Complete |
 | `root-04` | closeup / BABY_RAT / 49 | 4 / 21 | Two actions × four cells | 8/8 | 1.000 | 0.000 | +1.000 | Complete |
-| `root-05` | closeup / RAT_KING / 107 | — / 27 | Not scheduled | 0/0 | — | — | — | Incomplete |
-| `root-06` | knifefight / BABY_RAT / 6 | — / 20 | Not scheduled | 0/0 | — | — | — | Incomplete |
-| `root-07` | knifefight / RAT_KING / 8 | — / 26 | Not scheduled | 0/0 | — | — | — | Incomplete |
+| `root-05` | closeup / RAT_KING / 107 | 27 / 27 | Shared four cells | 4/4 | 1.000 | 1.000 | +0.000 | Complete |
+| `root-06` | knifefight / BABY_RAT / 6 | 20 / 20 | Shared four cells | 4/4 | 1.000 | 1.000 | +0.000 | Complete |
+| `root-07` | knifefight / RAT_KING / 8 | 26 / 26 | Shared four cells | 4/4 | 1.000 | 1.000 | +0.000 | Complete |
 
 ## Paired validation outcomes
 
@@ -66,6 +66,18 @@ Values below are root-player scores, in the fixed validation-seed order. The sam
 | `root-04` | 103043 | 1 | 0 | +1 |
 | `root-04` | 103067 | 1 | 0 | +1 |
 | `root-04` | 103091 | 1 | 0 | +1 |
+| `root-05` | 103021 | 1 | 1 | +0 |
+| `root-05` | 103043 | 1 | 1 | +0 |
+| `root-05` | 103067 | 1 | 1 | +0 |
+| `root-05` | 103091 | 1 | 1 | +0 |
+| `root-06` | 103021 | 1 | 1 | +0 |
+| `root-06` | 103043 | 1 | 1 | +0 |
+| `root-06` | 103067 | 1 | 1 | +0 |
+| `root-06` | 103091 | 1 | 1 | +0 |
+| `root-07` | 103021 | 1 | 1 | +0 |
+| `root-07` | 103043 | 1 | 1 | +0 |
+| `root-07` | 103067 | 1 | 1 | +0 |
+| `root-07` | 103091 | 1 | 1 | +0 |
 
 ![Measured selection and validation coverage](coverage.png)
 
@@ -75,9 +87,9 @@ Cumulative recorded error attempts: **0**.
 
 ## Source snapshot
 
-- Exact input report: [`1d657e77298100bf4db2d53ecf3c1aaccfd09c7cf4dbbac38f59c13b8b3f07ea.json`](report-snapshots/1d657e77298100bf4db2d53ecf3c1aaccfd09c7cf4dbbac38f59c13b8b3f07ea.json)
-- Report SHA-256: `1d657e77298100bf4db2d53ecf3c1aaccfd09c7cf4dbbac38f59c13b8b3f07ea`
+- Exact input report: [`5ff24a569500dd7f791f596ffc34f26ed88ab52fdc36e76bad8163d2eb924f45.json`](report-snapshots/5ff24a569500dd7f791f596ffc34f26ed88ab52fdc36e76bad8163d2eb924f45.json)
+- Report SHA-256: `5ff24a569500dd7f791f596ffc34f26ed88ab52fdc36e76bad8163d2eb924f45`
 - Experiment identity SHA-256: `35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162`
-- Generated at: `2026-11-10T06:04:40+00:00`
+- Generated at: `2026-11-10T06:21:11+00:00`
 
 Regenerate from the repository root with `.venv/bin/python scripts/plot_root_ranking.py`. The renderer performs no engine runs or parameter updates; it recomputes the reported research decision from complete paired validation scores.

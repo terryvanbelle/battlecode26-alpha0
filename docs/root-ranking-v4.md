@@ -7,6 +7,65 @@ frozen warmstart checkpoint 2. It does not train a network, change the engine,
 or test benchmark strength. The prior's 20/24 smoke score remains unchanged
 until a new learned checkpoint is separately evaluated.
 
+## Completed result and research decision
+
+The 2026-11-10 run completed **418 valid terminal continuations** in
+**45 minutes 53 seconds**, with zero errors, retries or incomplete attempts:
+374 selection cells and 44 unique validation cells. All eight roots have
+complete evidence. The [final graphs and cell records](../progress/root-ranking-v4/README.md)
+and [independent audit](../progress/root-ranking-v4/independent-final-audit.json)
+are published. The runner and independent auditor both verified unchanged
+checkpoint/runtime identities and the exact precommitted decision:
+
+| Requirement | Result |
+| --- | ---: |
+| Equal-root validation advantage ≥ 0.10 | **0.21875** |
+| At least two improving roots | **2** |
+| Worst root advantage ≥ −0.25 | **−0.25** |
+| Complete, valid roots | **8/8** |
+
+Five roots chose the same action as PUCT and therefore shared validation cells.
+The three changed choices were:
+
+| Position | Terminal-ranked / PUCT action | Validation scores | Difference |
+| --- | --- | --- | ---: |
+| `tiny` king, round 8 | Build west (15) / spawn assault (27) | 1.00 / 0.00 | +1.00 |
+| `DefaultSmall` baby, round 20 | Southeast (4) / assault king (21) | 0.00 / 0.25 | −0.25 |
+| `closeup` baby, round 49 | Southeast (4) / assault king (21) | 1.00 / 0.00 | +1.00 |
+
+The loss at the `DefaultSmall` root is retained. The same directional action
+helped one situation and harmed another, so the result supports state-dependent
+targets rather than a blanket action rule. Mean validation score was 0.875 for
+terminal ranking versus 0.65625 for PUCT. These are correlated measurements at
+eight selected roots with four shared continuation seeds, not a general
+strength estimate. Terminal ranking also spends substantially more compute;
+the experiment does not isolate action coverage from terminal horizon or show
+a compute-efficiency advantage.
+
+**The mechanism rule passed.** The recorded research review selects the
+separately versioned [terminal-target-head-v5 pilot](terminal-target-head-v5.md)
+as the next experiment. It will use fresh self-play, fresh validation inputs,
+and a matched PUCT control to test whether these targets transfer through a
+learned policy update. No v4 root or continuation enters that training.
+This run performed **zero SGD updates and zero benchmark games**. Warmstart
+checkpoint 2 remains the unchanged 20/24 smoke policy; neither the standard
+nor confirmation all-map gate has been passed.
+
+The implementation was committed before scoring (`fd84126`). The combined
+runner/renderer checks passed 39 tests and 37 subtests, including STOP/deadline
+cleanup, recovery, exact coverage, score integrity and premature-pass rejection.
+The standalone auditor was rerun from its archived source and reproduces the
+decision using persisted original chronology observations, rather than relying
+on Git checkout modification times.
+
+With the pinned dependencies restored, rerun that read-only check using:
+
+```bash
+.venv/bin/python progress/root-ranking-v4/source/independent_audit.py --root "$PWD"
+```
+
+Do not pass `--final` when final evidence already exists; it is immutable.
+
 ## Frozen comparison
 
 [`configs/root-ranking-v4.json`](../configs/root-ranking-v4.json) pins checkpoint

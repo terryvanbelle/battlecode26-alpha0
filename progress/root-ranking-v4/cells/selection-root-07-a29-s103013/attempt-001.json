@@ -1,0 +1,49 @@
+{
+  "action": 29,
+  "actions_sha256": "c3a82021e013ead91be72132ed4507ae1b39753cb9bb52b9435e9c8319e2bc0b",
+  "attempt": 1,
+  "benchmark_failures": [],
+  "decisions": 1161,
+  "elapsed_seconds": 5.868760489000124,
+  "ended_at": "2026-11-10T06:18:33.407792+00:00",
+  "experiment_identity": "35a940123eff29b1a4f01704c2f3e35a2540f2373232d0b16bd296dbf4929162",
+  "identity": "26e5e8b267837fd8f49c47ab6af0912d066c13aaccd21219f407641b78a25db8",
+  "root_id": "root-07",
+  "root_player": 1,
+  "root_prefix_sha256": "8dc70de06c6080867dfca3fea8fb28a36414e08021830b32a25fd4e984e72799",
+  "root_state_sha256": "5a866965dc649c9a36a74d33d13569689df3a345cc7ab5585ed10fafecf96c58",
+  "roots_sha256": "8acb333c8ecaec50cdbd5cc7a4637315e830dce792dd98c0bb3b40a6ad46a536",
+  "score": 1.0,
+  "seed": 103013,
+  "stage": "selection",
+  "started_at": "2026-11-10T06:18:27.539032+00:00",
+  "status": "ok",
+  "temperature": 0.35,
+  "terminal": true,
+  "terminal_round": 41,
+  "terminal_state_sha256": "8df4c296e46575860736049b5769cf443425dd0fce998bbb107e8120604c6600",
+  "terminal_summary": {
+    "bank": [
+      828,
+      643
+    ],
+    "cat_damage": [
+      0,
+      0
+    ],
+    "kings": [
+      0,
+      1
+    ],
+    "round": 41,
+    "terminal": true,
+    "transferred": [
+      0,
+      0
+    ],
+    "win_reason": "KILL_ALL_RAT_KINGS",
+    "winner": 1
+  },
+  "valid_game": true,
+  "winner": 1
+}

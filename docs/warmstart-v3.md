@@ -166,6 +166,12 @@ its source policy's preferred action about 98–99% of the time. A bounded own-s
 probe completed 48 terminal continuations and 48 search comparisons in 7.5 minutes;
 larger/deeper search and a zero-critic control changed none of its eight preferred
 actions. One local retreat improved the terminal outcome, while another harmed
-it. The proposed next cycle tests complete root-action coverage with terminal
-rollouts and separate validation seeds. **No target-3 SGD run was launched**;
-checkpoint 2 and the prior champion remain preserved pending that measured test.
+it. The subsequent [complete-root terminal comparison](root-ranking-v4.md)
+finished 418 valid continuations with zero errors and passed its precommitted
+research rule: mean validation difference 0.21875, two improving roots, worst
+difference −0.25. An independent final audit verified all evidence and unchanged
+runtime/checkpoint identities. **No target-3 SGD run was launched**; checkpoint 2
+and the prior champion remain preserved. The next selected experiment is the
+separate [terminal-target-head-v5 pilot](terminal-target-head-v5.md), using fresh
+own self-play, a matched PUCT control and independent validation. Its protocol
+is published, but it has not yet been implemented, trained or evaluated.
