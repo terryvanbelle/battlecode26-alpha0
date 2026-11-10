@@ -1,5 +1,8 @@
-# Selected external panel rows; original source: tools/galaxy26/field-teams.tsv
+# Selected panel rows; original source: tools/galaxy26/field-teams.tsv
+bc26-example	~/projects/vibe/reference/battlecode26-scaffold/src/examplefuncsplayer	The official examplefuncsplayer (battlecode26-scaffold).
+uravt_Version41	~/projects/vibe/bc26b-benchmarks/uravt_Battlecode26/src/Version41	Benchmark uravt_Battlecode26__Version41
 spsquared_TSPAARK_QUALS	~/projects/vibe/bc26b-benchmarks/spsquared_battlecode26/src/TSPAARK_QUALS	Benchmark spsquared_battlecode26__TSPAARK_QUALS
+thewaxmango_collegejunior	~/projects/vibe/bc26b-benchmarks/thewaxmango_bc26/src-archive/collegejunior	Benchmark thewaxmango_bc26__collegejunior
 HugoIngelsson_Xzibit	~/projects/vibe/bc26b-benchmarks/HugoIngelsson_podemice-Battlecode-2026/Xzibit	Benchmark HugoIngelsson_podemice-Battlecode-2026__Xzibit
 CS50Crab_rapierV1	~/projects/vibe/bc26b-benchmarks/CS50Crab_The-Blades-Battlecode-2026/src/rapierV1	Benchmark CS50Crab_The-Blades-Battlecode-2026__rapierV1
 IvanGeffner_basic51	~/projects/vibe/bc26b-benchmarks/IvanGeffner_BC26/basic51	Benchmark IvanGeffner_BC26__basic51

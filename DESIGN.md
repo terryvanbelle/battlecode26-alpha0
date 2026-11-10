@@ -26,13 +26,13 @@ Battlecode turn order follows spawn order, so the same team can act repeatedly. 
 
 Training minimizes visit-target cross entropy plus mean-squared error against the actual terminal winner, using AdamW, weight decay and gradient clipping. Search-depth cutoffs bootstrap the value network; wall-clock/decision-limit aborts never become fake draw labels. All retained positions from a completed game receive its final outcome in their team's perspective. There is no reward shaping, benchmark imitation or benchmark-game training.
 
-Replay is bounded. Position tensors use float16 storage and float32 computation. A per-game reservoir bounds memory even before a long game finishes; it samples uniformly when a game exceeds the buffer capacity. Checkpoints store network, optimizer, iteration, RNGs, game/sample counts and configuration. Replay is committed before the matching checkpoint. Continuation requires the same configuration; a different experiment belongs in a separate run/progress directory.
+Replay is bounded. Position tensors use float16 storage and float32 computation. A per-game reservoir bounds memory even before a long game finishes; it samples uniformly when a game exceeds its configured position capacity. The initial smoke run uses up to 10,000 retained positions per game and a 10,000-position replay, so a long game can displace earlier games; that is a limitation of the tiny integration run. The larger configuration caps each game at 5,000 positions in a 50,000-position replay to retain more game diversity. Checkpoints store network, optimizer, iteration, RNGs, game/sample counts and configuration. Replay is committed before the matching checkpoint. Continuation requires the same configuration; a different experiment belongs in a separate run/progress directory.
 
 ## Evaluation and interpretation
 
 The frozen external panel spans historical skill and different authors. Each map/seed is played from both seats. Baseline iteration 0 and trained checkpoints use identical greedy-network evaluation settings. Evaluation does not apply root noise or train on its games. Legacy opponent execution cannot be cloned safely, so benchmark games measure the network alone; they do not measure the full search-enhanced self-play player.
 
-The smoke panel is only 16 games per checkpoint and the training smoke maps overlap it. It establishes integration and exposes failures, not generalization or statistical strength. The standard panel has 128 games; it is still a development set, so reserve unseen maps/seeds for final claims. Error/timeout rows are reported separately and never quietly converted to game losses. Per-opponent Wilson intervals are descriptive; the aggregate paired bootstrap requires enough complete shared map-seed cells.
+The smoke panel is only 24 games per checkpoint and the training smoke maps overlap it. It establishes integration and exposes failures, not generalization or statistical strength. The standard panel has 192 games; it is still a development set, so reserve unseen maps/seeds for final claims. Error/timeout rows are reported separately and never quietly converted to game losses. Per-opponent Wilson intervals are descriptive; the aggregate paired bootstrap requires enough complete shared map-seed cells.
 
 Main research risks are sparse terminal feedback, short search horizons relative to 2000-round games, small CPU-scale data volume, action abstraction, privileged observations, and the difference between search self-play and network-only evaluation. These are visible limitations to improve in subsequent experiments, not evidence that a small initial loss reduction implies stronger play.
 
@@ -42,15 +42,15 @@ We pin official Java engine **1.2.6** because that is the version used for the s
 
 Search uses deep snapshots instead of replaying every prefix because prefix replay scales quadratically with episode length. Mutable world graphs, aliased references, turn order/cursor, random generators, mines and IDs are copied; immutable all-pairs cat pathfinding tables are shared. Search snapshots are released after every actual move. An independent reset-and-replay path validates branch restoration. Live benchmark bot threads are deliberately excluded from snapshotting.
 
-There are three explicit engine patches: raise legacy robot bytecodes to one billion per turn, disable the cumulative team execution timeout, and replace the untracked `Math.random()` final tie-break with the world's seeded RNG. The last change preserves a 50/50 tie-break but changes its reproducibility. Learned actions bypass instrumentation entirely. Instrumentation remains for external Java bots so `Clock.yield()` and per-robot static isolation still work. Five Java module-opening arguments are required by the official instrumented standard library on Java 21.
+Three patches govern local execution: raise legacy robot bytecodes to one billion per turn, disable the cumulative team execution timeout, and replace the untracked `Math.random()` final tie-break with the world's seeded RNG. The last change preserves a 50/50 tie-break but changes its reproducibility. Learned actions bypass instrumentation entirely. Instrumentation remains for external Java bots so `Clock.yield()` and per-robot static isolation still work. Five Java module-opening arguments are required by the official instrumented standard library on Java 21.
 
-The no-op replay recorder reduces allocation during search. This version records actions and terminal state instead of generating `.bc26` visual replays. A future replay exporter can reproduce action transcripts using the official engine. Automatic diagnostics distinguish unexpected sandbox termination or initialization errors from legitimate game deaths/resignations; infrastructure failures never become candidate wins.
+The no-op replay recorder reduces allocation during search. This version records actions and terminal state instead of generating `.bc26` visual replays. A future replay exporter can reproduce action transcripts using the official engine. A fourth, diagnostic-only patch records voluntary robot termination. Automatic diagnostics distinguish unexpected sandbox termination or initialization errors from legitimate game deaths/resignations; infrastructure failures never become candidate wins.
 
 The repository contains 74 hash-pinned maps from the source project: 43 match maps embedded in the official engine and 31 are additional corpus maps. Their origins are recorded in `docs/rules/PROVENANCE.md`. The source project's engine-checked rules digest is retained alongside the original rule text; actual engine behavior is authoritative when prose differs.
 
 ## Benchmark selection decisions
 
-The panel uses **eight external authors**, rather than successive versions of our own bot. It spans the source project's historical rating distribution and includes different strategic families:
+The 12-bot panel combines **ten external authors**, the official example player, and the source project's current accepted champion. It spans the source project's historical rating distribution and includes different strategic families:
 
 | Opponent | Historical Elo used for selection |
 | --- | ---: |
@@ -62,16 +62,22 @@ The panel uses **eight external authors**, rather than successive versions of ou
 | HugoIngelsson / Xzibit | 1695.8 |
 | abcdezyxwv / bestsofar | 2010.4 |
 | IvanGeffner / basic51 | 2183.4 |
+| thewaxmango / collegejunior | 1767.0 |
+| uravt / Version41 | 2125.3 |
+| Official examplefuncsplayer | Reference baseline |
+| battlecode26b-vibe / accepted zdb | Current accepted champion |
 
-Those numbers are **historical selection evidence**, not our measurements. Original downloaded VM artifacts are unavailable here. The named repositories/packages match the prior roster, and their newly pinned public commits predate the historical acquisition; exact equality with the original VM's bytes cannot be proven. The new panel is reproducible through commit IDs and per-file hashes in `configs/benchmarks.json`.
+Those numbers are **historical selection evidence**, not our measurements. Original downloaded VM artifacts are unavailable here. The named repositories/packages match the prior roster, and their newly pinned public commits predate the historical acquisition; exact equality with the original VM's bytes cannot be proven. The new panel is reproducible through commit IDs and per-file hashes in `configs/benchmarks.json`. The accepted champion was verified against the source project's latest handoff at commit `fc044c24c37d89d2581562e23439a2571bb2b300`: `zdb` remains the incumbent, while the working `ratbot` includes unaccepted changes. The official example comes from a pinned official scaffold commit.
+
+`AdamTan12/Finals` was retired after repeated uncaught off-map errors in its throwing code, confirmed on two seeds. It was replaced with `thewaxmango/collegejunior` at a similar historical skill level, creating suite `field-twelve-v2`. The retired manifest and raw failure evidence remain available, and the replacement is evaluated at every comparable checkpoint. Repeated genuine bot crashes trigger replacement; legal deaths and harness defects do not.
 
 Benchmark sources are downloaded into ignored directories, keeping third-party code separate from our training data and avoiding redistribution of repositories without explicit licenses. Available licenses and provenance are retained. Compilation and every-file hash checks run before evaluation. No benchmark code, game trajectory or target enters replay learning.
 
 ## Experiment, compute and persistence decisions
 
-The first run uses `configs/smoke.json`: two games per iteration on `tiny` and `DefaultSmall`, four simulations per decision, depth limit eight, 32 gradient steps of batch size32, AdamW learning rate0.001, and replay capacity10,000. Its purpose is to exercise the complete pipeline and obtain a measured starting point. The standard configuration increases model size, simulations, map diversity and training volume, but remains an unvalidated starting configuration.
+The first run uses `configs/smoke.json`: two games per iteration on `tiny` and `DefaultSmall`, four simulations per decision, depth limit eight, 32 gradient steps of batch size 32, AdamW learning rate 0.001, and replay capacity 10,000. Its purpose is to exercise the complete pipeline and obtain a measured starting point. The standard configuration increases model size, simulations, map diversity and training volume, but remains an unvalidated starting configuration.
 
-The attached executor has a four-core CPU quota and16GiB memory limit, with no detected GPU. PyTorch uses one thread for each training/inference process to avoid oversubscription with Java. Current game generation is serial inside an experiment; separate evaluation can run concurrently. Parallel actor workers and batched inference are future throughput improvements, not implemented capabilities.
+The attached executor has a four-core CPU quota and 16 GiB memory limit, with no detected GPU. PyTorch uses one thread for each training/inference process to avoid oversubscription with Java. Current game generation is serial inside an experiment; separate evaluation can run concurrently. Parallel actor workers and batched inference are future throughput improvements, not implemented capabilities.
 
 `battlecode-dev` is **not used**. It is historically an eight-vCPU/31GB machine with another active project, and this executor lacks its SSH/GCloud credentials. Moving to it requires working access and coordination with the owner before changing workloads. Nothing in this repository starts/stops VM services or submits to the Battlecode service.
 

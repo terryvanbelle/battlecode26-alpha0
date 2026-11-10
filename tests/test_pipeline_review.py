@@ -1,5 +1,6 @@
 """Independent end-to-end checks for checkpoint continuity and engine scheduling."""
 from pathlib import Path
+import os
 import shutil
 import subprocess
 
@@ -127,8 +128,8 @@ def test_manual_stepper_matches_native_official_round_loop(tmp_path, map_name, s
     """Compare full games and observations using the unmodified runRound scheduler."""
     source = tmp_path / "NativeStepEquivalence.java"
     source.write_text(NATIVE_EQUIVALENCE_SOURCE)
-    javac = ROOT / "vendor/jdk/bin/javac"
-    java = ROOT / "vendor/jdk/bin/java"
+    javac = Path(os.environ.get("JAVA_HOME", str(ROOT / "vendor/jdk"))) / "bin/javac"
+    java = Path(os.environ.get("JAVA_HOME", str(ROOT / "vendor/jdk"))) / "bin/java"
     classpath = f"{ROOT / 'build/java'}:{ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'}"
     subprocess.run([str(javac) if javac.exists() else "javac", "-cp", classpath,
                     "-d", str(tmp_path), str(source)], check=True, capture_output=True, text=True)

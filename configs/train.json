@@ -1,6 +1,13 @@
 {
   "seed": 20261109,
-  "maps": ["DefaultMedium", "arrows", "closeup", "dirtfulcat", "minimaze", "peaceinourtime"],
+  "maps": [
+    "DefaultMedium",
+    "arrows",
+    "closeup",
+    "dirtfulcat",
+    "minimaze",
+    "peaceinourtime"
+  ],
   "iterations": 100,
   "games_per_iteration": 8,
   "simulations": 32,
@@ -18,5 +25,6 @@
   "game_timeout_seconds": 14400,
   "torch_threads": 1,
   "eval_every": 5,
-  "eval_suite": "standard"
+  "eval_suite": "standard",
+  "game_position_capacity": 5000
 }

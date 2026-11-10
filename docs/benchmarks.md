@@ -1,108 +1,102 @@
-# Frozen external benchmark opponents
+# Frozen benchmark panel
 
-The panel contains **eight external field bots** used by
-[`terryvanbelle/battlecode26b-vibe` at `f4d6ec971b13a20f7f38fb56d249f62c0251ed05`](https://github.com/terryvanbelle/battlecode26b-vibe/tree/f4d6ec971b13a20f7f38fb56d249f62c0251ed05).
-They are listed in that repository's `tools/galaxy26/field-teams.tsv`,
-`research/field/FIELD.tsv`, and `research/field/candidates.txt`. **No version of
-battlecode26b-vibe's own bot is in this panel.** Selected original roster rows
-are retained under `benchmarks/evidence/`.
+**`field-twelve-v2` contains 12 opponents:** ten independent external field bots
+used by `battlecode26b-vibe`, official `examplefuncsplayer`, and the project's
+current accepted incumbent `zdb`. The original eight external IDs/hashes remain
+unchanged. V2 replaces the confirmed crashing `AdamTan12_Finals` with
+`thewaxmango_collegejunior`; the other eleven entries are unchanged.
 
-| External bot | Historical Elo | Approx. 95% interval | Recorded games | Selection rationale |
-|---|---:|---:|---:|---|
-| `Krak9n_robot` | 259.3 | ±33.7 | 1,218 | Weakest historical external-field endpoint. |
-| `seru9_TOTAL_AGGRO` | 788.0 | ±18.8 | 1,983 | Lower-tier aggressive package. |
-| `Camleaf_mk1` | 1006.2 | ±17.1 | 1,881 | Lower-middle field; bug-navigation implementation. |
-| `CS50Crab_rapierV1` | 1398.7 | ±16.5 | 2,367 | Middle field; trap-and-combat family. |
-| `spsquared_TSPAARK_QUALS` | 1584.6 | ±12.9 | 3,474 | Upper-middle qualifier strategy. |
-| `HugoIngelsson_Xzibit` | 1695.8 | ±13.1 | 2,979 | Strong field; small-map economy provides a distinct challenge. |
-| `abcdezyxwv_bestsofar` | 2010.4 | ±15.5 | 2,457 | Very strong grab/throw swarm, observed in historical replay analyses. |
-| `IvanGeffner_basic51` | 2183.4 | ±24.5 | 2,319 | Strongest historical external-field endpoint. |
+| Opponent ID | Role | Historical Elo ± approximate 95% interval | Recorded games | Selection rationale |
+|---|---|---:|---:|---|
+| `Krak9n_robot` | External | 259.3 ± 33.7 | 1,218 | weakest external field endpoint. |
+| `seru9_TOTAL_AGGRO` | External | 788.0 ± 18.8 | 1,983 | lower-tier aggressive package. |
+| `Camleaf_mk1` | External | 1006.2 ± 17.1 | 1,881 | lower-middle field; bug-navigation implementation. |
+| `CS50Crab_rapierV1` | External | 1398.7 ± 16.5 | 2,367 | middle field; trap-and-combat family. |
+| `spsquared_TSPAARK_QUALS` | External | 1584.6 ± 12.9 | 3,474 | upper-middle qualifier strategy. |
+| `HugoIngelsson_Xzibit` | External | 1695.8 ± 13.1 | 2,979 | strong field; lower-spawn small-map economy. |
+| `abcdezyxwv_bestsofar` | External | 2010.4 ± 15.5 | 2,457 | very strong field; grab/throw swarm. |
+| `IvanGeffner_basic51` | External | 2183.4 ± 24.5 | 2,319 | top historical external field endpoint. |
+| `bc26-example` | Official starter | 1038.6 ± 16.1 | 2,218 | official starter reference. |
+| `vibe26b_zdb` | Accepted incumbent | 1695.9 ± 52.9 | 213 | current accepted incumbent from battlecode26b-vibe. |
+| `thewaxmango_collegejunior` | External | 1767.0 ± 12.7 | 3,084 | strong external collegejunior strategy; near-strength replacement for confirmed crashing Finals. |
+| `uravt_Version41` | External | 2125.3 ± 21.8 | 2,163 | elite external field; second independent high-strength endpoint. |
 
-These span **1,924 historical Elo points** across eight separate authors. Elo and
-intervals come from the source repository's batch Bradley–Terry fit; intervals
-are 1.96 times its recorded standard errors. The fit mixes local score-share and
-replica wins, accounts for map effects, and caps pair weights. It is a relative
-historical scale, not official tournament Elo or a new measurement of this agent.
-Recorded rows are in `benchmarks/evidence/historical_ratings.csv`.
+Historical ratings are selection evidence, **not new results for this agent**.
+They come from the source project's map-adjusted Bradley–Terry fit, combining
+local score shares and replica wins; intervals are 1.96 times its recorded
+standard errors. The ten external authors span 1,924 historical Elo points.
+Exact rows and original roster excerpts are in `benchmarks/evidence/`, pinned to
+[`f4d6ec971b13a20f7f38fb56d249f62c0251ed05`](https://github.com/terryvanbelle/battlecode26b-vibe/tree/f4d6ec971b13a20f7f38fb56d249f62c0251ed05).
 
-## Acquisition and immutable identity
+## Current accepted bot and official starter
 
-`configs/benchmarks.json` records each public upstream repository, full immutable
-commit, package path, Java entry point, source-tree SHA-256, every downloaded file
-hash, license location, and historical evidence. All eight selected packages
-compile unchanged against Java 21 and the official engine 1.2.6. A limited static
-scan found no network/process/filesystem/reflection/native-library API signatures;
-this is a source check, not a claim of a security sandbox.
+The latest source HEAD checked was
+[`fc044c24c37d89d2581562e23439a2571bb2b300`](https://github.com/terryvanbelle/battlecode26b-vibe/tree/fc044c24c37d89d2581562e23439a2571bb2b300).
+Its November 9, 2026, 18:02 PST handoff states “Incumbent still **zdb**
+(resubmitted #332)”; `zgj` was rejected and newer experiments were pending.
+`zdb` was accepted November 8 over `z3x`: 96 paired cells, +4/−0, t = 2.00.
+We select frozen **`bots/zdb`**, not the differing working `bots/ratbot` or an
+unaccepted experiment with a high fitted rating. The checked Java bytes also
+match the older reference. See [incumbent evidence](../benchmarks/evidence/incumbent.md).
 
-The original compiled/source downloads on the old VM are unavailable. We
-reacquired the **same external bot names and source package paths** from their
-public upstreams, and every pinned upstream commit predates the historical field
-acquisition. However, the available historical repository does not record its
-original VM artifact hashes, so exact byte-for-byte identity with that VM cannot
-be proven. Historical ratings guide selection; new local results measure these
-precisely pinned copies.
+`bc26-example` is actual `examplefuncsplayer` from the official
+[`battlecode/battlecode26-scaffold`](https://github.com/battlecode/battlecode26-scaffold/tree/f69e2ab872a0061c9d4a684aa1dd798a0829da85/src/examplefuncsplayer)
+at `f69e2ab872a0061c9d4a684aa1dd798a0829da85`.
 
-| Bot | Upstream | Pinned commit |
-|---|---|---|
-| `Krak9n_robot` | [Krak9n/battlecode-2026 ](https://github.com/Krak9n/battlecode-2026) | [`8a4af4fe0329`](https://github.com/Krak9n/battlecode-2026/tree/8a4af4fe0329bc7b6039b59104492eb65888c0d8/src/robot) |
-| `seru9_TOTAL_AGGRO` | [seru9/BattleCode2026 ](https://github.com/seru9/BattleCode2026) | [`bf4823b6e049`](https://github.com/seru9/BattleCode2026/tree/bf4823b6e04912a3ceec38c56e1df1bb99d66f7f/src/TOTAL_AGGRO) |
-| `Camleaf_mk1` | [Camleaf/battlecode26 ](https://github.com/Camleaf/battlecode26) | [`061afddd1d3d`](https://github.com/Camleaf/battlecode26/tree/061afddd1d3da0d4bd43c99af2e11cc15d67d3a2/src/mk1) |
-| `CS50Crab_rapierV1` | [CS50Crab/The-Blades-Battlecode-2026 ](https://github.com/CS50Crab/The-Blades-Battlecode-2026) | [`f4b60966bb24`](https://github.com/CS50Crab/The-Blades-Battlecode-2026/tree/f4b60966bb2428e065e9d1781c9202b0a6da70e9/src/rapierV1) |
-| `spsquared_TSPAARK_QUALS` | [spsquared/battlecode26 ](https://github.com/spsquared/battlecode26) | [`64c3257a929f`](https://github.com/spsquared/battlecode26/tree/64c3257a929f52c9824e60a330a7acf5a3670ef1/src/TSPAARK_QUALS) |
-| `HugoIngelsson_Xzibit` | [HugoIngelsson/podemice-Battlecode-2026 ](https://github.com/HugoIngelsson/podemice-Battlecode-2026) | [`5414895a77f6`](https://github.com/HugoIngelsson/podemice-Battlecode-2026/tree/5414895a77f602d37034f06367223eb16a2e8ee6/Xzibit) |
-| `abcdezyxwv_bestsofar` | [abcdezyxwv/Parmesan-bc2026 ](https://github.com/abcdezyxwv/Parmesan-bc2026) | [`0a0b266dd010`](https://github.com/abcdezyxwv/Parmesan-bc2026/tree/0a0b266dd010d31a66f2b4942853e4445dc36ace/src/bestsofar) |
-| `IvanGeffner_basic51` | [IvanGeffner/BC26 ](https://github.com/IvanGeffner/BC26) | [`70b3f40cebef`](https://github.com/IvanGeffner/BC26/tree/70b3f40cebefcca9dc858771715d78088e7ae520/basic51) |
+## Immutable downloads
 
-Run `python scripts/fetch_benchmarks.py` after cloning this project. It downloads
-immutable GitHub archives, copies only manifest-listed files after SHA-256
-verification, and verifies existing downloads without network access. A hash
-mismatch fails loudly. Third-party sources stay under gitignored
-`benchmarks/bots/`; they are not republished as this project's code. Available
-upstream license documents are retained in `benchmarks/licenses/`, and originals
-are kept beside local downloaded sources. No license was found for the selected
-Krak9n, HugoIngelsson, or IvanGeffner upstreams; no license grant is inferred.
+Run `python scripts/fetch_benchmarks.py`. The [manifest](../configs/benchmarks.json)
+records full upstream commits, package paths, entry points, every file's SHA-256,
+Java-tree hashes, and license locations. Downloads copy only listed files after
+hash verification; existing verified files need no network. All 12 packages
+compile unchanged against Java 21/official engine 1.2.6.
+
+Sources remain in gitignored `benchmarks/bots/`. Available upstream licenses are
+retained in `benchmarks/licenses/`; no grant is inferred where none was found.
+The original VM downloads have no available historical hashes. External names
+and package paths match its roster, and pinned upstream commits predate its
+acquisition, but exact identity with the old VM artifacts cannot be proven.
+The own-project incumbent is directly pinned to its source commit.
 
 ## Evaluation protocol
 
-1. Run `python scripts/fetch_benchmarks.py` to fetch or verify the pinned local
-   dependencies, then compile each unchanged package against the official Battlecode 2026 Java
-   engine **1.2.6**. The entry point is `<package>.RobotPlayer.run(RobotController)`.
-   Keep package names unchanged: they are part of source identity, and renaming
-   a bot can alter identity-sensitive behavior.
-2. Run every opponent from **both A and B** on every selected map and seed. Use
-   deterministic candidate inference (no training exploration) and a fixed
-   search budget, recorded with checkpoint hash and engine hash.
-3. A smoke checkpoint uses `tiny`, seed `0`: **16 games**, two per opponent. This
-   proves integration and offers only a noisy initial learning signal.
-4. The standard suite uses `tiny`, `DefaultSmall`, `cheesefarm`, and
-   `wallsofparadis`, seeds `0` and `2026`: **128 games**, 16 per opponent. These
-   cover close combat, ordinary terrain, economy, and obstructed navigation.
-   Never describe a smaller completed subset as the entire suite.
-5. Store per-game opponent/source hash, map/hash, side, seed, checkpoint/hash,
-   engine/hash, compute mode, winner, end reason, rounds, final points, duration,
-   and failure status. Report wins/draws/losses and completion rate per opponent,
-   with a macro average so a frequently played weak bot cannot dominate.
-6. Use paired map–seed cells (both sides together) for uncertainty and checkpoint
-   comparisons. `scripts/plot_progress.py` implements a paired-cell bootstrap for
-   the panel mean when at least four shared map–seed cells have both sides against
-   all eight opponents. Per-opponent Wilson intervals are labelled descriptive,
-   not evidence of significance, because sides/maps are correlated. Do not treat
-   robot decisions, self-play positions, repeated
-   deterministic cells, or both seats as independent samples. A paired bootstrap
-   interval needs enough map–seed cells; the smoke suite cannot provide one.
-7. Benchmark games and benchmark code are **evaluation only**, never replay
-   training targets or imitation examples. If training shares evaluation maps,
-   label results in-distribution and use additional unseen maps for final claims.
-   Do not optimize a claimed final model repeatedly on a held-out test suite.
-8. Run candidate and benchmarks with identical engine limits. Local bytecode
-   relaxation can change behavior (especially bots with bytecode-aware branches),
-   so historical ratings are only selection evidence. Preserve a separately
-   labelled official-limit evaluation mode for later distillation work.
+- Keep package names unchanged. Benchmark source and games are **evaluation only**,
+  never imitation examples or replay training targets.
+- Use both sides at each map/seed, deterministic candidate inference, and a fixed
+  recorded search budget. Candidate and benchmark use the same documented engine
+  settings; relaxed limits can change historical benchmark behavior.
+- **Smoke:** `tiny`, seed `0`, both sides = **24 games/checkpoint**. This is an
+  integration and early-learning signal, insufficient for strength claims.
+- **Standard:** `tiny`, `DefaultSmall`, `cheesefarm`, `wallsofparadis`, seeds `0`
+  and `2026`, both sides = **192 games/checkpoint**. Keep schedules fixed. Label
+  shared training maps as in-distribution and reserve unseen maps for final claims.
+- Retain checkpoint/source/engine hashes, map/seed/side, outcome, end reason,
+  rounds, points, duration and failure status. Report per-opponent W/D/L,
+  completed counts and errors, plus an equal-weight opponent mean with coverage.
+- The plotter bootstraps shared map–seed cells, keeping both sides and all panel
+  opponents together; it needs at least four complete shared cells. Per-opponent
+  Wilson intervals are descriptive because sides/maps are correlated. Repeated
+  deterministic cells and robot decisions are not independent evidence.
+- Errors are reported separately, never silently dropped or scored as ordinary
+  losses. Legal deaths, disintegration, resignation and engine-rule forfeits are
+  distinguished from runtime faults. A forfeit remains a labelled game result.
 
-Record crashes, timeouts and illegal-action failures explicitly. Do not silently
-filter them out of graphs or present them as completed ordinary losses. Show
-completed-game win rate alongside its denominator and the separate failure
-count. An actual engine-rule forfeit is a result, labelled as a forfeit.
+## Runtime failures and replacement
 
-No engine-run strength results are claimed by this document. Live measurements
-belong to the experiment's result files and regenerated progress graphs.
+Confirm reproducible failures across independent cells after verifying the
+harness and excluding legal game events. Then choose a different external author
+at similar historical skill, freeze a new suite ID, retain failure/provenance
+evidence, and complete that panel for every checkpoint being compared. Unchanged
+cells may be reused only when their checkpoint, source, engine and schedule match;
+replacement games must be played for every comparable checkpoint. Never combine
+different panel aggregates into an unqualified progress trend.
+
+**V2 replacement:** Finals produced four failures in eight checkpoint/seat cells.
+Independent reproductions on tiny seeds 0 and 1 failed at rounds 54 and 40:
+`ThrowOutsideCombat.throwAtWall:58` senses an off-map square before its bounds
+check, causing an uncaught `GameActionException`. This was a genuine bot fault,
+separate from the corrected harness detector issue. The replacement
+`thewaxmango_collegejunior` has historical Elo 1767.0 versus Finals' 1779.7.
+[Retired provenance and concise failure evidence](../benchmarks/retired/AdamTan12_Finals/README.md)
+are retained; all Finals results, including completed games, are excluded from v2
+aggregates. No retired bot source is republished.

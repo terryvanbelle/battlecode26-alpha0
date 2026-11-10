@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "suite_id": "external-field-eight-v1",
+  "suite_id": "field-twelve-v2",
   "source_repository": "https://github.com/terryvanbelle/battlecode26b-vibe",
   "source_commit": "f4d6ec971b13a20f7f38fb56d249f62c0251ed05",
   "source_roster_paths": [
@@ -9,7 +9,7 @@
     "research/field/candidates.txt"
   ],
   "engine_version": "1.2.6",
-  "purpose": "Frozen EXTERNAL evaluation opponents used by battlecode26b-vibe; no versions of its own bot. Never add benchmark games or code to training targets.",
+  "purpose": "Frozen evaluation panel: ten external field bots used by battlecode26b-vibe, the official examplefuncsplayer, and its current accepted incumbent zdb. Benchmark games/code are evaluation only, never training targets.",
   "hash_algorithm": "SHA-256; tree hash concatenates sorted POSIX relative .java paths, NUL, and original file bytes.",
   "historical_rating_method": "Batch Bradley-Terry Elo fit, mixed local score-share and replica wins, map-adjusted; source progress/ELO.md. Ratings describe the source engine and compute limits, not this project.",
   "provenance_caveat": "The original VM downloads are unavailable. Roster names and source package paths match the historical field exactly; reacquired public upstream commits are pinned and all predate historical acquisition, but original VM source/compiled hashes were not recorded in the available repository, so exact artifact identity cannot be proven. Historical Elo describes the named historical bots, not freshly measured strength of these pinned copies.",
@@ -870,6 +870,641 @@
         "standalone_java21_compile": "passed against official 1.2.6.jar",
         "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
       }
+    },
+    {
+      "id": "bc26-example",
+      "package": "examplefuncsplayer",
+      "path": "benchmarks/bots/bc26-example",
+      "entrypoint": "examplefuncsplayer.RobotPlayer",
+      "role": "official",
+      "source_repository": "https://github.com/battlecode/battlecode26-scaffold",
+      "source_commit": "f69e2ab872a0061c9d4a684aa1dd798a0829da85",
+      "source_commit_date": "2026-01-23T19:01:11-05:00",
+      "source_path": "src/examplefuncsplayer",
+      "archive_url": "https://codeload.github.com/battlecode/battlecode26-scaffold/tar.gz/f69e2ab872a0061c9d4a684aa1dd798a0829da85",
+      "stratum": "official starter reference",
+      "java_tree_sha256": "31197617ef4384b6a2c81edb2832780151132060b1fc5b4aa0057c6ffad1f0ae",
+      "files": [
+        {
+          "path": "benchmarks/bots/bc26-example/RobotPlayer.java",
+          "upstream_path": "src/examplefuncsplayer/RobotPlayer.java",
+          "sha256": "06f1238381edaba9fa1a46d28e8ab2fa7c5ae657ceb87ebb6fc9c1cd11cb8fa4"
+        },
+        {
+          "path": "benchmarks/bots/bc26-example/UPSTREAM_LICENSE",
+          "upstream_path": "LICENSE",
+          "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182"
+        }
+      ],
+      "license": {
+        "source_path": "LICENSE",
+        "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+      },
+      "historical_rating": {
+        "player_id": "bc26-example",
+        "elo": 1038.6,
+        "standard_error": 8.2,
+        "games": 2218,
+        "expected_field_score": 0.2672
+      },
+      "validation": {
+        "standalone_java21_compile": "passed against official 1.2.6.jar",
+        "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
+      }
+    },
+    {
+      "id": "vibe26b_zdb",
+      "package": "zdb",
+      "path": "benchmarks/bots/vibe26b_zdb",
+      "entrypoint": "zdb.RobotPlayer",
+      "role": "incumbent",
+      "source_repository": "https://github.com/terryvanbelle/battlecode26b-vibe",
+      "source_commit": "fc044c24c37d89d2581562e23439a2571bb2b300",
+      "source_commit_date": "2026-11-10T02:03:02Z",
+      "source_path": "bots/zdb",
+      "archive_url": "https://codeload.github.com/terryvanbelle/battlecode26b-vibe/tar.gz/fc044c24c37d89d2581562e23439a2571bb2b300",
+      "stratum": "current accepted incumbent from battlecode26b-vibe",
+      "java_tree_sha256": "0c69409ceaad4e69e9f4763c547e2c5f83d9d8c05cfd98245a6a20240fcf485a",
+      "files": [
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Baby.java",
+          "upstream_path": "bots/zdb/Baby.java",
+          "sha256": "d1903f57edbb1baf4522d1c1760f3c174d2fa26a249d09e65bd262469263ae4e"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/BitFlow.java",
+          "upstream_path": "bots/zdb/BitFlow.java",
+          "sha256": "4875bf7891e5f8df27c4164e7ab758c310014bb7ec8f5183276c2577f75ced26"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/CatLane.java",
+          "upstream_path": "bots/zdb/CatLane.java",
+          "sha256": "e30e4919ad601989a6babfce08b8120d1c61a0f08ae63006f7d751e13efe7c87"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Cfg.java",
+          "upstream_path": "bots/zdb/Cfg.java",
+          "sha256": "3c7eee28c74b3be00db26a1250ff6f227d46cf51ef3f8117cee8f0a351e7077d"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Comms.java",
+          "upstream_path": "bots/zdb/Comms.java",
+          "sha256": "2c1aa4394e4a70ad4abfcb7623c0e6610eb8d1718533c5d6441c3e7c456d80df"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Debug.java",
+          "upstream_path": "bots/zdb/Debug.java",
+          "sha256": "d5511b900cd961407b7119b55e14c9dd4988bb3fb9087fe68d18d06791114393"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Econ.java",
+          "upstream_path": "bots/zdb/Econ.java",
+          "sha256": "31ddbc01dda0a39d03208acfbc26157c3604db2ad04b6c30705f211ea536150c"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Flow.java",
+          "upstream_path": "bots/zdb/Flow.java",
+          "sha256": "1d9d90dfb0b74770886cb7e3ff85ed39d57e5db53547f125dcc14a8b053afc15"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/G.java",
+          "upstream_path": "bots/zdb/G.java",
+          "sha256": "44e8283005c05f25b5dbd91be26cddeee108d3a5ad0bba57c277a5c5f785ce77"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/GrabMicro.java",
+          "upstream_path": "bots/zdb/GrabMicro.java",
+          "sha256": "64dbdaf14b851e814d260d96359d310a4c0dd32602387c357e8e3155f1567444"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/KPath.java",
+          "upstream_path": "bots/zdb/KPath.java",
+          "sha256": "e95a1849f9d1abe0817de8ec49a74f1469c1000247159cd8d9f92cac8be202c0"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/King.java",
+          "upstream_path": "bots/zdb/King.java",
+          "sha256": "066ed1568db750dfe208addcf3b53a0b6e1204f1974be6d5aaf886decf08cae4"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Micro.java",
+          "upstream_path": "bots/zdb/Micro.java",
+          "sha256": "361563b656803cf11d9021341c2bfcf948cd61ec5b8ebf4355070bc7ee41019c"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Moat.java",
+          "upstream_path": "bots/zdb/Moat.java",
+          "sha256": "5f5b46a05f80a6fafd194d4f7888f072af960721163b05f163a8de0433581832"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Nav.java",
+          "upstream_path": "bots/zdb/Nav.java",
+          "sha256": "9465d03dd09fd83dc924bbedef4db3891064371be4eee3df073fd9c1fbc79e0c"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/PathOracle.java",
+          "upstream_path": "bots/zdb/PathOracle.java",
+          "sha256": "483071896eede7879c237be51cfb9592939774e3f6abdc8c0dff3798539b7423"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/RobotPlayer.java",
+          "upstream_path": "bots/zdb/RobotPlayer.java",
+          "sha256": "ca278f1ab51ad39356593c62a1fca528acd18dd7388d271d6c5b1f2f777c5ed4"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/SNAPSHOT",
+          "upstream_path": "bots/zdb/SNAPSHOT",
+          "sha256": "86ea40cfcbcb7dcbb7aef805692a83f598482ee8fb7c967e2d2da8657562b8c2"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Seal.java",
+          "upstream_path": "bots/zdb/Seal.java",
+          "sha256": "17cd0eb7680e10ae4069af606e8511d895073f14ad6941fb0e5e9d2069bd6b12"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Sym.java",
+          "upstream_path": "bots/zdb/Sym.java",
+          "sha256": "52ddfb93228aba93b86cfe1ae1f1685e64f650f406f1881b1eaefe8c006873a1"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/Trail.java",
+          "upstream_path": "bots/zdb/Trail.java",
+          "sha256": "68204d0db0a170e504a0ea97dbf54ed60a234e8dccbf92e87d25843071b6ca51"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/TrapRisk.java",
+          "upstream_path": "bots/zdb/TrapRisk.java",
+          "sha256": "fed4f851dfdb88fe6fe469af1be50c4cc0ac2f3591b38842bf6859597e24c183"
+        },
+        {
+          "path": "benchmarks/bots/vibe26b_zdb/TrapRows.java",
+          "upstream_path": "bots/zdb/TrapRows.java",
+          "sha256": "3a9940b6b951ffbbc5f1f76c86387483e777b44b1e1aef5e728190a00e245929"
+        }
+      ],
+      "license": {
+        "source_path": null,
+        "status": "User-owned project source; no license file found; downloaded local dependency"
+      },
+      "historical_rating": {
+        "player_id": "us:zdb",
+        "elo": 1695.9,
+        "standard_error": 27.0,
+        "games": 213,
+        "expected_field_score": 0.616
+      },
+      "validation": {
+        "standalone_java21_compile": "passed against official 1.2.6.jar",
+        "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
+      },
+      "selection_evidence": {
+        "handoff": "HANDOFF.md, Now (18:02 11-09), explicitly states incumbent still zdb, resubmitted #332. zgj rejected at replica block 2; later builds pending.",
+        "acceptance": "progress/attempts.csv: zdb ACCEPTED 2026-11-08 09:05 PST over z3x; pooled 96 cells, +4/-0, t=2.00.",
+        "working_tree": "bots/ratbot differs from bots/zdb even after package normalization. The frozen accepted snapshot is selected, not the working development bot or a high-rated unaccepted experiment.",
+        "local_evidence": "benchmarks/evidence/incumbent.md"
+      }
+    },
+    {
+      "id": "thewaxmango_collegejunior",
+      "package": "collegejunior",
+      "path": "benchmarks/bots/thewaxmango_collegejunior",
+      "entrypoint": "collegejunior.RobotPlayer",
+      "role": "external",
+      "source_repository": "https://github.com/thewaxmango/bc26",
+      "source_commit": "f8f7864b5f12ac6c303339e89e06c4aa49102f8b",
+      "source_commit_date": "2026-02-12T12:24:13-05:00",
+      "source_path": "src-archive/collegejunior",
+      "archive_url": "https://codeload.github.com/thewaxmango/bc26/tar.gz/f8f7864b5f12ac6c303339e89e06c4aa49102f8b",
+      "stratum": "strong external collegejunior strategy; near-strength replacement for confirmed crashing Finals",
+      "java_tree_sha256": "104f9792b2c24cbeb44be392af0786a304884c2b65887494ad270bf7ce8bf782",
+      "files": [
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Attention.java",
+          "upstream_path": "src-archive/collegejunior/Attention.java",
+          "sha256": "4af2fccd04faf542df152318e7b47843767404da5668f0b714bb5f5009e4844e"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/BabyRat.java",
+          "upstream_path": "src-archive/collegejunior/BabyRat.java",
+          "sha256": "ec14fdbddfc5ec9bacc44eb13a2723f92c33a353670c7e76e392930e554de5ac"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/BabyRatMicro.java",
+          "upstream_path": "src-archive/collegejunior/BabyRatMicro.java",
+          "sha256": "9b44ebdd8637a8f2fb0336b28515ff38f4cee28bebac8c7261d28e27abda4e44"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/BugNav.java",
+          "upstream_path": "src-archive/collegejunior/BugNav.java",
+          "sha256": "28e61bde9cc29844fa005c5a3e990c1c31ae6083361c6f56de02311beceb66a8"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/BugSim.java",
+          "upstream_path": "src-archive/collegejunior/BugSim.java",
+          "sha256": "6ed883cee3d3c751c536537e60b4e9f81f6fb9d04b685f2d7079c0573135048a"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/BugSimKing.java",
+          "upstream_path": "src-archive/collegejunior/BugSimKing.java",
+          "sha256": "d7767ccfae048d7177c1b0cacb8a7e707beb60c70236eb46ecc7cf13c5f400e1"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/CERR_Random.java",
+          "upstream_path": "src-archive/collegejunior/CERR_Random.java",
+          "sha256": "ce04a7b8b6157f59b0fe848bbd92f981ca08d3346256ca84f2e777c53fdb3a15"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Comms.java",
+          "upstream_path": "src-archive/collegejunior/Comms.java",
+          "sha256": "eb108fbb03d4e64363709ade16de152091b9a32221c97474c6bc0c57874aac7e"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Debug.java",
+          "upstream_path": "src-archive/collegejunior/Debug.java",
+          "sha256": "c51f4d738a875515bf5b569cc134aeb4abacd8c3081f9bed43a2d902591d4dba"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Explore.java",
+          "upstream_path": "src-archive/collegejunior/Explore.java",
+          "sha256": "ee701dd8dfedcb845c3db841625f0ad329ab1e32d59b77299b5884ecff1c9408"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/MacroData.java",
+          "upstream_path": "src-archive/collegejunior/MacroData.java",
+          "sha256": "97c78dd36fe0ddc2a4a4d6e44c6d263b94f397de45b022485593dd7396bed96f"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Navigation.java",
+          "upstream_path": "src-archive/collegejunior/Navigation.java",
+          "sha256": "13ce44cc803c4ce43ebfa9122b74a2abd3dae7714436d1c77b9f24cc699c5f04"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/RatKing.java",
+          "upstream_path": "src-archive/collegejunior/RatKing.java",
+          "sha256": "c2262dd23c3c4c3a38331867f8f28b4558c1aabd5b8d68d6580ed4d26b1ed620"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/RatKingMicro.java",
+          "upstream_path": "src-archive/collegejunior/RatKingMicro.java",
+          "sha256": "881605abb7934922fe1d4c8d9b077c50c4074f3f3a066854bffb405b67a2cd67"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Robot.java",
+          "upstream_path": "src-archive/collegejunior/Robot.java",
+          "sha256": "fa45b11b8891d935a792ea818ab8ba089decd425156d72cb3dfdf9d333ad9423"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/RobotPlayer.java",
+          "upstream_path": "src-archive/collegejunior/RobotPlayer.java",
+          "sha256": "8ca7b6e67816979f8e0234d21172bcd6d7bbf6b2bdda549a64a6e08151245fce"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/Utils.java",
+          "upstream_path": "src-archive/collegejunior/Utils.java",
+          "sha256": "25b0de5a106ecc3a1b64225776568e1d2cb6ac625e16dccc9dd2e2040ef97f12"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastIntIntMap.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastIntIntMap.java",
+          "sha256": "fcca1cb35b03b24450884fe41976f7c43a87e29f2829f7be9a3b2ef4098754ac"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastIntSet.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastIntSet.java",
+          "sha256": "826147977a2cf2b4b608dae1dc4a341fdce1c47bcb6a793d0eea380ebd417beb"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastLocIntMap.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastLocIntMap.java",
+          "sha256": "bd1030c440e80a9cc61ef0d5eeb285035c72a9d7fb2c4308caac342dff47eabc"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastLocSet.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastLocSet.java",
+          "sha256": "04604a25889ccaad81676b72a0238d65c965a17cf28a722e39df451c1b806920"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastQueue.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastQueue.java",
+          "sha256": "b6a837ae115b59b3fd247bd3baafc8eedab22301f91419054478e82febb01430"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/fast/FastRecentLocSet.java",
+          "upstream_path": "src-archive/collegejunior/fast/FastRecentLocSet.java",
+          "sha256": "38907ec3ff6343521428036044c9f4eb03bede745e76758d396803ee683ecdb3"
+        },
+        {
+          "path": "benchmarks/bots/thewaxmango_collegejunior/UPSTREAM_LICENSE",
+          "upstream_path": "LICENSE",
+          "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182"
+        }
+      ],
+      "license": {
+        "source_path": "LICENSE",
+        "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+      },
+      "historical_rating": {
+        "player_id": "thewaxmango_collegejunior",
+        "elo": 1767.0,
+        "standard_error": 6.5,
+        "games": 3084,
+        "expected_field_score": 0.6631
+      },
+      "validation": {
+        "standalone_java21_compile": "passed against official 1.2.6.jar",
+        "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
+      }
+    },
+    {
+      "id": "uravt_Version41",
+      "package": "Version41",
+      "path": "benchmarks/bots/uravt_Version41",
+      "entrypoint": "Version41.RobotPlayer",
+      "role": "external",
+      "source_repository": "https://github.com/uravt/Battlecode26",
+      "source_commit": "fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+      "source_commit_date": "2026-06-30T18:36:21-04:00",
+      "source_path": "src/Version41",
+      "archive_url": "https://codeload.github.com/uravt/Battlecode26/tar.gz/fb5cc3c0f7bfb8cfa49c868e2bbd04597a7e9d25",
+      "stratum": "elite external field; second independent high-strength endpoint",
+      "java_tree_sha256": "4f07fc2e9a43632125d01b37e400ddac2798eaaaf5eeac1ee8329be020c20679",
+      "files": [
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRat.java",
+          "upstream_path": "src/Version41/BabyRat.java",
+          "sha256": "4dbc7e84c8b3a84c98aec0dafdc1cbe4bca12fa5086782e1896914f42400a0af"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRCatMicro.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRCatMicro.java",
+          "sha256": "352ee64d4f31a8c52596abfe50234fc6ea6d63a0f31d8351bd215408f1dddfc9"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRExplore.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRExplore.java",
+          "sha256": "644cf8d9601e87c932c8026c5522036d390ca5f7d5388aff5920e53b6598c4e7"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRFormRatKing.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRFormRatKing.java",
+          "sha256": "5e4bc970c695222f71dfee643d8c543b562d0c16956a9e38ecf67baa27ed3e6b"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRHunt.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRHunt.java",
+          "sha256": "1d8fc6df88142cae6761566140eb80d74f8bad9ef4f36677a7de1dafe547e502"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRLure.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRLure.java",
+          "sha256": "cb821ea8143802f8a33c4a43025c2a956bdeaddd3de3c84bd28575b478fdb654"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRMicro.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRMicro.java",
+          "sha256": "60591f22ccd3179547e77db1bec513338c278eada0cf5cde62f12dd5b4bbc34e"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRReportSymmetry.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRReportSymmetry.java",
+          "sha256": "51f29dbc62b76a74fa592e1200ef2807fc6a48e5368fe48e618acd71b35cc7bc"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRRush.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRRush.java",
+          "sha256": "7f94ebe672fe8b863089a0cca91b4947dbbb5b61811e45b5ea25b57bd91f0ac2"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRScavenge.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRScavenge.java",
+          "sha256": "eee9a02adb1b61fd8f46b7f05ad15c690b414dfa546b7b3fcad4b08e054d64b2"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRScavengeRatPickup.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRScavengeRatPickup.java",
+          "sha256": "e6e60c785aad63f96cd158567aabfce404941cf0c1bd1510381aa35a112614ea"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatBehaviors/BRThrownCarried.java",
+          "upstream_path": "src/Version41/BabyRatBehaviors/BRThrownCarried.java",
+          "sha256": "b3263af763c06cfb4a7fc23cecfabf50ea9242c82aa9f1b5e29bf0f83bafe44b"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatStateUpdaters/CooperationStateUpdater.java",
+          "upstream_path": "src/Version41/BabyRatStateUpdaters/CooperationStateUpdater.java",
+          "sha256": "9d95d2d7926ef9965728773ac8f6c828927ab3efc8b8e439aa812ef846248abf"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/BabyRatStateUpdaters/DefectBRStateUpdater.java",
+          "upstream_path": "src/Version41/BabyRatStateUpdaters/DefectBRStateUpdater.java",
+          "sha256": "98fed92c08a4ca443a5e448ad6855dac661685ed832407c6b891f04ad6f63ab8"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Behavior.java",
+          "upstream_path": "src/Version41/Behavior.java",
+          "sha256": "7ce8fc3de89ae2e269414a3f527237bd24670b600d8cbdc1b8f726e0a875f7a0"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/CheeseMineInfo.java",
+          "upstream_path": "src/Version41/Communication/CheeseMineInfo.java",
+          "sha256": "ad983d5a6198d77fdfcaf6939e50303e147a2d13fca7fbe93406192acb5aa807"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/CheeseMineSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/CheeseMineSqueakInfo.java",
+          "sha256": "225316dbc5a45e42df0481a3cbf3c617086883ffc5753e75f186de796423f82b"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/Communicator.java",
+          "upstream_path": "src/Version41/Communication/Communicator.java",
+          "sha256": "0e57adb669ac3abba420589bcee570b4a47f385f3d57090358ee8ff111b42b54"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/EnemyRatKingSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/EnemyRatKingSqueakInfo.java",
+          "sha256": "8a60dc2e67e5b931355713a99f052db38b1e7d94294b7ff32ed992100845b425"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/FormRatKingSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/FormRatKingSqueakInfo.java",
+          "sha256": "15a88073d185c0a08790c3f9884f155ff545a1d88864228e04ed237c416e7b90"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/NearbyCatSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/NearbyCatSqueakInfo.java",
+          "sha256": "ea81664e6e5637241348a747e0ecaa482b43095570d648f4d260610796ac5c99"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/PickupSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/PickupSqueakInfo.java",
+          "sha256": "a7deec6dc4260647f48637a62b33b2c50c57f9c24fae84532c303e803d025df8"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/PresenceSqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/PresenceSqueakInfo.java",
+          "sha256": "b7e9b2c553d2d14c6ef850831636d6fb8c884009b3ce34c40cfea4856461438b"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/RatKingInfo.java",
+          "upstream_path": "src/Version41/Communication/RatKingInfo.java",
+          "sha256": "e6d14b8a776ebdbbd21d9928e08ee8792acd2a16a3200a69d8bc93036c4228a1"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/Squeak.java",
+          "upstream_path": "src/Version41/Communication/Squeak.java",
+          "sha256": "9425e7a75bb3227cbd5c5525296e91321d81de7f7371e8b0b325f3efeb49a2fd"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/SqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/SqueakInfo.java",
+          "sha256": "65f70741128f79127b15d63851bf2fad3c9b7afbbcd6092805af7bf9c256bebf"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Communication/SymmetrySqueakInfo.java",
+          "upstream_path": "src/Version41/Communication/SymmetrySqueakInfo.java",
+          "sha256": "c821e5752c3da6503313cc7c9ff666021de82177ffb2ebe43662b484c094a5f8"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DataStructures/FastBitMap.java",
+          "upstream_path": "src/Version41/DataStructures/FastBitMap.java",
+          "sha256": "897eb832fcd0defda8db1e009c6b4ea41655e4126ce31ff266c81fd7a03c59b5"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DataStructures/FastIntSet.java",
+          "upstream_path": "src/Version41/DataStructures/FastIntSet.java",
+          "sha256": "6d4c29ff293e3d4cb75012819098dd671130a3004912eed4101a7b802e301983"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DataStructures/FastIterableLocMap.java",
+          "upstream_path": "src/Version41/DataStructures/FastIterableLocMap.java",
+          "sha256": "ed9ed74bb8a4b8fee8e4f9c5d9c019309ebe39380e70dd631a7e57954e2306a5"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DataStructures/FastLocSet.java",
+          "upstream_path": "src/Version41/DataStructures/FastLocSet.java",
+          "sha256": "69e07f717aee64bd50a364bfbcccbc8d16b285c674a7fcc2c341cfb619f85092"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DataStructures/FastMath.java",
+          "upstream_path": "src/Version41/DataStructures/FastMath.java",
+          "sha256": "4f598af1d94430bab158a26351d1e00f37b5d9c2c66ddaee9aa429cf92f43898"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Debug.java",
+          "upstream_path": "src/Version41/Debug.java",
+          "sha256": "bcdf4aa8b02c68f46b186598131e0c9e036919c4793926f51ee1121e1b377d7b"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/DirectionHealthInfo.java",
+          "upstream_path": "src/Version41/DirectionHealthInfo.java",
+          "sha256": "8933f748058366424e642cd496bf9d5ef8685a065340871c00a9b715abe61c59"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/FastIterableLocSet.java",
+          "upstream_path": "src/Version41/FastIterableLocSet.java",
+          "sha256": "25fb4946d635b3ab95c543f66f45b36729345d744288a0d29bbc5d9209ae68a9"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFS.java",
+          "upstream_path": "src/Version41/Pathfinding/BabyRatBFS.java",
+          "sha256": "702f191bb9b17d55e2dc621b37babcd742b6700b2ab9abae71ed315cf35a5901"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSAvoidCat.java",
+          "upstream_path": "src/Version41/Pathfinding/BabyRatBFSAvoidCat.java",
+          "sha256": "13c970170a4429cf33fd14ad6b44b7e73946e4b6ff09a3cd6c90ca8403c42303"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSAvoidCatClearDirt.java",
+          "upstream_path": "src/Version41/Pathfinding/BabyRatBFSAvoidCatClearDirt.java",
+          "sha256": "5acd2b437412703e4920d879ba7be860a98e1e5b281e5fa6d2e562f4da3c444f"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/BabyRatBFSClearDirt.java",
+          "upstream_path": "src/Version41/Pathfinding/BabyRatBFSClearDirt.java",
+          "sha256": "5e777b122ffa1e042e4c8b66d030dd47c1f5dea667a9495b8aa792d252c3bd2e"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/Pathfinding.java",
+          "upstream_path": "src/Version41/Pathfinding/Pathfinding.java",
+          "sha256": "6cc682abaa0d753a3644f27f00e3b30733bd289f5c4c105551e4be9577630786"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Pathfinding/RatKingBFS.java",
+          "upstream_path": "src/Version41/Pathfinding/RatKingBFS.java",
+          "sha256": "d63b33a21dfd48350006d61c7496d3b3a426982a283edbe2254d66110e00382f"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RatKing.java",
+          "upstream_path": "src/Version41/RatKing.java",
+          "sha256": "35de48edd17d4ec46e5a27618d7060a8ef8548e695993f9e148dbc196bcfb275"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKExplore.java",
+          "upstream_path": "src/Version41/RatKingBehaviors/RKExplore.java",
+          "sha256": "94a5aedac82c1958bd3562251b823753be4e216d8636dc81bb09bb4f7d5fa3e2"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKFlee.java",
+          "upstream_path": "src/Version41/RatKingBehaviors/RKFlee.java",
+          "sha256": "4d69d89ac8ec5f3c1c17024b3e54ec735db3b235406d9a6924b4609dc960d269"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RatKingBehaviors/RKHeadquarter.java",
+          "upstream_path": "src/Version41/RatKingBehaviors/RKHeadquarter.java",
+          "sha256": "4b3e8385865fc5cf62cb1c7de2f7e1ce687617fc5f5b9578fb5440fc298d08d1"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RatKingStateUpdaters/SimpleRKStateUpdater.java",
+          "upstream_path": "src/Version41/RatKingStateUpdaters/SimpleRKStateUpdater.java",
+          "sha256": "7a51ed61b18b64f0d2debfbdcedb9a0fd258fd976e4f667f760cc987af25c3e7"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Reachability.java",
+          "upstream_path": "src/Version41/Reachability.java",
+          "sha256": "cd45cc218397e2df4ca10683824b3173e572cdf62d4f0652abf2378b7cf60628"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/RobotPlayer.java",
+          "upstream_path": "src/Version41/RobotPlayer.java",
+          "sha256": "72d663ab86af32bf17576bd6ce67e75810a71207ec9ccbaf84190ff6da122ff3"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/StateUpdater.java",
+          "upstream_path": "src/Version41/StateUpdater.java",
+          "sha256": "47d1cf891209dd8539e420a71510a6e367c47f816cfa9e7ebb48e948ed613e56"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/SymmetryManager.java",
+          "upstream_path": "src/Version41/SymmetryManager.java",
+          "sha256": "48e0d02fbb04e0da71be7fc4b3bf8c173072888fdc31f54c35ae6c7e46f2fc39"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/UPSTREAM_LICENSE",
+          "upstream_path": "LICENSE",
+          "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182"
+        },
+        {
+          "path": "benchmarks/bots/uravt_Version41/Utilities.java",
+          "upstream_path": "src/Version41/Utilities.java",
+          "sha256": "46342d4d1d32343a55e3032e4192ccebe7d2f6a4fad37d96d5ddb3cc271f6433"
+        }
+      ],
+      "license": {
+        "source_path": "LICENSE",
+        "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+      },
+      "historical_rating": {
+        "player_id": "uravt_Version41",
+        "elo": 2125.3,
+        "standard_error": 11.1,
+        "games": 2163,
+        "expected_field_score": 0.8859
+      },
+      "validation": {
+        "standalone_java21_compile": "passed against official 1.2.6.jar",
+        "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
+      }
     }
   ],
   "evaluation_protocol": {
@@ -884,7 +1519,7 @@
       "seeds": [
         0
       ],
-      "games_per_checkpoint": 16,
+      "games_per_checkpoint": 24,
       "interpretation": "Integration/early learning only; insufficient for strength claims."
     },
     "standard": {
@@ -898,8 +1533,8 @@
         0,
         2026
       ],
-      "games_per_checkpoint": 128,
-      "interpretation": "128 scheduled games = 8 opponents x 4 maps x 2 seeds x 2 sides; paired map-seed cells are the uncertainty units."
+      "games_per_checkpoint": 192,
+      "interpretation": "192 scheduled games = 12 opponents x 4 maps x 2 seeds x 2 sides; paired map-seed cells are the uncertainty units."
     },
     "selection": "Freeze map and seed schedules across checkpoints; reserve an additional unseen-map suite for final claims. If evaluation maps are used for self-play, label these results in-distribution.",
     "metrics": [
@@ -911,5 +1546,15 @@
     ],
     "failure_policy": "Do not silently drop failures or count them as ordinary game losses. Publish completion rate and failure counts; report win rate on completed games with explicit denominator. A match forfeited under engine rules remains a game result, labelled forfeiture.",
     "compute_mode": "Evaluate candidate and benchmarks under the same documented local engine settings. Record engine binary hash and patches; bytecode relaxation changes historical baselines."
-  }
+  },
+  "incumbent_checked_source_commit": "fc044c24c37d89d2581562e23439a2571bb2b300",
+  "retired_opponents": [
+    {
+      "id": "AdamTan12_Finals",
+      "from_suite": "field-twelve-v1",
+      "replacement": "thewaxmango_collegejunior",
+      "reason": "Repeated genuine uncaught GameActionException in ThrowOutsideCombat.throwAtWall when sensing an off-map adjacent square; independently reproduced after harness validation.",
+      "archive": "benchmarks/retired/AdamTan12_Finals/README.md"
+    }
+  ]
 }

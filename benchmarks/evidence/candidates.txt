@@ -1,5 +1,7 @@
-# Selected external panel rows from research/field/candidates.txt
+# Selected external rows from research/field/candidates.txt
+uravt_Battlecode26	Version41
 spsquared_battlecode26	TSPAARK_QUALS
+thewaxmango_bc26	collegejunior
 HugoIngelsson_podemice-Battlecode-2026	Xzibit
 CS50Crab_The-Blades-Battlecode-2026	rapierV1
 IvanGeffner_BC26	basic51

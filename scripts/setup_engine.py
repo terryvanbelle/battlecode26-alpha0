@@ -64,7 +64,7 @@ def main():
         shutil.move(str(extracted), str(jdk))
     patched = ROOT / "build/patched"
     patched.mkdir(parents=True, exist_ok=True)
-    patched_names = ["battlecode/world/GameWorld.java", "battlecode/world/InternalRobot.java", "battlecode/world/control/PlayerControlProvider.java"]
+    patched_names = ["battlecode/world/GameWorld.java", "battlecode/world/InternalRobot.java", "battlecode/world/control/PlayerControlProvider.java", "battlecode/instrumenter/SandboxedRobotPlayer.java"]
     for name in patched_names:
         dest = patched / name
         dest.parent.mkdir(parents=True, exist_ok=True)

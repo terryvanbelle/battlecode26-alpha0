@@ -1,5 +1,6 @@
 """Pinned-engine integration checks; run after scripts/setup_engine.py."""
 from pathlib import Path
+import os
 import json
 import random
 import subprocess
@@ -13,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class EngineSnapshotTest(unittest.TestCase):
     def setUp(self):
         self.process = subprocess.Popen(
-            [str(ROOT / "vendor/jdk/bin/java"), "-cp", "build/java:vendor/engine/battlecode26-java-1.2.6.jar", "alpha0.EngineBridge"],
+            [str(Path(os.environ.get("JAVA_HOME", str(ROOT / "vendor/jdk"))) / "bin/java"), "-cp", "build/java:vendor/engine/battlecode26-java-1.2.6.jar", "alpha0.EngineBridge"],
             cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         )
 

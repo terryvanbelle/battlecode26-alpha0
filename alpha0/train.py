@@ -154,7 +154,12 @@ def evaluate_checkpoint(net, checkpoint: Path, iteration: int, suite: str, progr
                     row = {"iteration": iteration, "checkpoint": checkpoint.name,
                            "checkpoint_sha256": checkpoint_hash, "opponent": bot["id"], "map": map_name,
                            "seed": seed, "side": side, "suite": suite, "policy": "greedy-network-no-search",
-                           "engine_version": "1.2.6", "status": "error", "score": None, "rounds": None}
+                           "engine_version": "1.2.6", "benchmark_suite_id": manifest["suite_id"],
+                           "opponent_java_sha256": bot["java_tree_sha256"],
+                           "opponent_source_commit": bot.get("source_commit"),
+                           "benchmark_bytecode_limit": 1_000_000_000,
+                           "team_execution_timeout_disabled": True,
+                           "status": "error", "score": None, "rounds": None}
                     started = time.monotonic()
                     env = None
                     try:

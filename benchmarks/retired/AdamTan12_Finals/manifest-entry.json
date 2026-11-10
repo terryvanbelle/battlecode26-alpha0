@@ -1,0 +1,291 @@
+{
+  "id": "AdamTan12_Finals",
+  "package": "Finals",
+  "path": "benchmarks/bots/AdamTan12_Finals",
+  "entrypoint": "Finals.RobotPlayer",
+  "role": "external",
+  "source_repository": "https://github.com/AdamTan12/BattleCode2026",
+  "source_commit": "91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+  "source_commit_date": "2026-01-29T04:12:59-08:00",
+  "source_path": "src/Finals",
+  "archive_url": "https://codeload.github.com/AdamTan12/BattleCode2026/tar.gz/91fdddbb1c015a2e8cd7ebcb8eebc8319b7ce06d",
+  "stratum": "strong finals package; additional independent author",
+  "java_tree_sha256": "be873af389db808a30108f2c6d21e443105bd985eb79338d6bfeffab01e77719",
+  "files": [
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/AttackKing.java",
+      "upstream_path": "src/Finals/Actions/AttackKing.java",
+      "sha256": "99c729ba2f6ad7a36893ad9b0de8c5fe7b72a1dccac858b051855c89ae32c01b"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/Cat.java",
+      "upstream_path": "src/Finals/Actions/Cat.java",
+      "sha256": "9f3d44a49766ba669187c0c46208debca97dddcb79743c700b0726b5dbd591dc"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/MergeKing.java",
+      "upstream_path": "src/Finals/Actions/MergeKing.java",
+      "sha256": "930bd53795af644aca6ca8feb83f64fd7e75e68317c105778a8144ced157f30b"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/Save.java",
+      "upstream_path": "src/Finals/Actions/Save.java",
+      "sha256": "b1fefc6729b35a9f12efd3c7f85fc45f313823b6b39abba3e5152f796f99d346"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/Squeak.java",
+      "upstream_path": "src/Finals/Actions/Squeak.java",
+      "sha256": "5a4c79e82134f2d292a61e2d8aa9e538d9579920027f94d6885070b9f1a9201c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Actions/ThrowOutsideCombat.java",
+      "upstream_path": "src/Finals/Actions/ThrowOutsideCombat.java",
+      "sha256": "8e0456f367ba96fee9a0fb2bb9352be817c794882e96745b0ae1fdba8bd2e59c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Codegen/Generated/Bite.java",
+      "upstream_path": "src/Finals/Codegen/Generated/Bite.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Codegen/Generated/Carry.java",
+      "upstream_path": "src/Finals/Codegen/Generated/Carry.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Codegen/Generated/Fight.java",
+      "upstream_path": "src/Finals/Codegen/Generated/Fight.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Codegen/Generated/Throw.java",
+      "upstream_path": "src/Finals/Codegen/Generated/Throw.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Codegen/Generated/Trap.java",
+      "upstream_path": "src/Finals/Codegen/Generated/Trap.java",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/DataStructures/Gain.java",
+      "upstream_path": "src/Finals/DataStructures/Gain.java",
+      "sha256": "e33c1385b92956c00a5996737fe89bdbfe4955f79a4ff1792b3f590615f0b790"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Debug/debug.java",
+      "upstream_path": "src/Finals/Debug/debug.java",
+      "sha256": "6fdd26387a19388dffb93dc783260c0d29d085defeade049282e3dee2c90a5e4"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/BellmanFordCheeseNavigator.java",
+      "upstream_path": "src/Finals/Helpers/BellmanFordCheeseNavigator.java",
+      "sha256": "5b99968c8f5443a2084e917b2188e6ff13f743dbd81f98a21035bd56caf55525"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/BellmanFordNavigator.java",
+      "upstream_path": "src/Finals/Helpers/BellmanFordNavigator.java",
+      "sha256": "b8b063f5831d379450232d1a76f3f4496dccfa7af4275f570c182b1f0677e28d"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/BugNav.java",
+      "upstream_path": "src/Finals/Helpers/BugNav.java",
+      "sha256": "e3160d5500b82fa106a9dc478617cd9b2c614717cddcd43495e090d8c2443f3f"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/ClosestUnseenEnemy.java",
+      "upstream_path": "src/Finals/Helpers/ClosestUnseenEnemy.java",
+      "sha256": "7debefd13c0692f388e691b1c5a9448ed3b409f9b51b1cf5fb410ab5062347b5"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/Comms.java",
+      "upstream_path": "src/Finals/Helpers/Comms.java",
+      "sha256": "e7186fd45f2876bc4f742a982ae3490ce1b17fafda742f329f9621c8012647c3"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/Constants.java",
+      "upstream_path": "src/Finals/Helpers/Constants.java",
+      "sha256": "4db64a365be506b8325e1578a5c440b3c15e84ae763b2f6487215502ecfe4571"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/Nav.java",
+      "upstream_path": "src/Finals/Helpers/Nav.java",
+      "sha256": "0ef5b58227dc692899383f84e319254329a3fa9b11c86a8e086c8a22e3c5e1bc"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/Vision.java",
+      "upstream_path": "src/Finals/Helpers/Vision.java",
+      "sha256": "c3ffd4d24f850f02a21bbcf676169fb82f360e716fb876af8f92176fc3b004df"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Helpers/WallScan.java",
+      "upstream_path": "src/Finals/Helpers/WallScan.java",
+      "sha256": "b2036927ca5f91230fc449671f77c414fb5201b9c9d7015d1a45a90c3db45868"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Cheese.java",
+      "upstream_path": "src/Finals/Macro/Cheese.java",
+      "sha256": "f41e543abf05d22964eb4addffa74df45fed38d7c09b8e9faf4fac666aad4f1b"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Deliver.java",
+      "upstream_path": "src/Finals/Macro/Deliver.java",
+      "sha256": "ba1687d15829905c4a0e4d3934030b6d1a20667c280c05e400a807530f50c797"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Explore.java",
+      "upstream_path": "src/Finals/Macro/Explore.java",
+      "sha256": "583f9ed9e1d51a632d225dff5e727113f3a368e2080409e66664c4ceba044e27"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Guard.java",
+      "upstream_path": "src/Finals/Macro/Guard.java",
+      "sha256": "c9e75978698da4a501ff54a276910839e97c95d1b915a89b6c3c0df307c2a246"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/MacroManager.java",
+      "upstream_path": "src/Finals/Macro/MacroManager.java",
+      "sha256": "27d19d649f4f422ebe9f3b88e7e39feda1f4b3a26433e5d1fead5087d32516c4"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Mine.java",
+      "upstream_path": "src/Finals/Macro/Mine.java",
+      "sha256": "941eb0347700bfe68e4d37e81f436aaed4c8dd746a24c55a29156ef42b57cf11"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Macro/Target.java",
+      "upstream_path": "src/Finals/Macro/Target.java",
+      "sha256": "3abff8b63fb4f60ba2b32f1b77a6a3eceb52c87b949ee9fa854e742d915e2b7c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Managers/Global.java",
+      "upstream_path": "src/Finals/Managers/Global.java",
+      "sha256": "046a5d723f363eb1ed74eb8bed5f0aee1f7979e337c5484bd59d4ad9e31a566d"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Managers/MapData.java",
+      "upstream_path": "src/Finals/Managers/MapData.java",
+      "sha256": "ff9cd3fde50993257b215c8520d622f2f4434308426d141bb3b829d9f1d60056"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Managers/VisionManager.java",
+      "upstream_path": "src/Finals/Managers/VisionManager.java",
+      "sha256": "68a6d1332919423d424ba0cc5196a3eef31b5088b118bfc71a85378149b8d006"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Bite.java",
+      "upstream_path": "src/Finals/Micro/Attack/Bite.java",
+      "sha256": "768fd262698ee2fe9f188cadd65071aa21a730d53306323332da31e897227b69"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Carry.java",
+      "upstream_path": "src/Finals/Micro/Attack/Carry.java",
+      "sha256": "34eadd2674cf36594eb8f48004ed65029d9316bc10c25992a97e82aa096b09f2"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Decision.java",
+      "upstream_path": "src/Finals/Micro/Attack/Decision.java",
+      "sha256": "4c1b29072787a085fcbc25b4be1de4f3aafdae585ee39726282134d87f45e044"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Fight.java",
+      "upstream_path": "src/Finals/Micro/Attack/Fight.java",
+      "sha256": "e1585c8251a69e33386a8b7c4ba37a2176c144f61f38102686a37688e06509ac"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Throw.java",
+      "upstream_path": "src/Finals/Micro/Attack/Throw.java",
+      "sha256": "5a819addcf73346364e8029650d76eb3187afd368ef710038373758f668dea2c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/Attack/Trap.java",
+      "upstream_path": "src/Finals/Micro/Attack/Trap.java",
+      "sha256": "1a76a4dbff1d946565a9c2433dac53f2b6d9656503e20bef006d783f53106925"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Micro/MicroBabyManager.java",
+      "upstream_path": "src/Finals/Micro/MicroBabyManager.java",
+      "sha256": "b2329605c67b30a6c8e302774cb37e5c79b991ca7e112893f382744042c161bb"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Rat.java",
+      "upstream_path": "src/Finals/Rat.java",
+      "sha256": "3db74716ef9ce0532ec28b6db7fdf047323c9082b8b9041a6f937a0b479e6c15"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RatKing/CheeseMove.java",
+      "upstream_path": "src/Finals/RatKing/CheeseMove.java",
+      "sha256": "64409af11ab0d1b9ad27727219ea61d8bdd53a1a41d9a83547ba538dceffbf74"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RatKing/Escape.java",
+      "upstream_path": "src/Finals/RatKing/Escape.java",
+      "sha256": "62bcaaaf21d8b902ab89af73817fbc08319e5574a18966264e9e3ac0696559dc"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RatKing/KingManager.java",
+      "upstream_path": "src/Finals/RatKing/KingManager.java",
+      "sha256": "2cc194459e852e23d0aa4a42c53824d4451793c2ad00fd721616029c0a19a819"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RatKing/Spawn.java",
+      "upstream_path": "src/Finals/RatKing/Spawn.java",
+      "sha256": "16fe2747423bacfad04eec743ce0d40228f0bf23b01cbf0f618911c6cd5af426"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Rats/BabyRat.java",
+      "upstream_path": "src/Finals/Rats/BabyRat.java",
+      "sha256": "7f950fba9928b535ad8555a87abfa99dd2e0e35ade9ce1932e41cd2ae60e75be"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Rats/RatKing.java",
+      "upstream_path": "src/Finals/Rats/RatKing.java",
+      "sha256": "948c21033b858abbb070dbc411856095e901d443748d4c0281fce683a7bbc19b"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RobotPlayer.java",
+      "upstream_path": "src/Finals/RobotPlayer.java",
+      "sha256": "5422b25a226824b4aa5ce2a1a4bb9e933ab5ff5b2304c1d5f1bbbdb4a22edc2c"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/RunRat.java",
+      "upstream_path": "src/Finals/RunRat.java",
+      "sha256": "bedf516e26ad3c3ebc7f0df2218f120bb6f65144faca2fa25b26bede719532e1"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/UPSTREAM_LICENSE",
+      "upstream_path": "LICENSE",
+      "sha256": "76a97c878c9c7a8321bb395c2b44d3fe2f8d81314d219b20138ed0e2dddd5182"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Utils/Calc.java",
+      "upstream_path": "src/Finals/Utils/Calc.java",
+      "sha256": "b024022063f409f69d7c3a3c97610b69d8e453e8a517588528459c17647cb7b6"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Utils/Encoder.java",
+      "upstream_path": "src/Finals/Utils/Encoder.java",
+      "sha256": "234c17baa3e446b44a14d6de410e605bfcf71aa4711c8c43261b680b621ca387"
+    },
+    {
+      "path": "benchmarks/bots/AdamTan12_Finals/Utils/RNG.java",
+      "upstream_path": "src/Finals/Utils/RNG.java",
+      "sha256": "7e646c8f5fa683cf8f7218107c812d6a0783dfb706e0a2c1d64852a6c1a798c8"
+    }
+  ],
+  "license": {
+    "source_path": "LICENSE",
+    "status": "AGPL-3.0 upstream license retained; inspect upstream for scope"
+  },
+  "historical_rating": {
+    "player_id": "AdamTan12_Finals",
+    "elo": 1779.7,
+    "standard_error": 6.2,
+    "games": 3510,
+    "expected_field_score": 0.6713
+  },
+  "validation": {
+    "standalone_java21_compile": "passed against official 1.2.6.jar",
+    "sensitive_api_signature_scan": "No java.net, process execution, filesystem, reflection, Unsafe or native-library signature matches in selected Java sources; limited static check, not a sandbox guarantee."
+  }
+}

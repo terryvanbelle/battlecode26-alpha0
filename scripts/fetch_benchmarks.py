@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download the eight immutable external benchmark packages and verify every file.
+"""Download the twelve immutable benchmark packages and verify every file.
 
 Third-party source stays a local dependency under benchmarks/bots (gitignored).
 Only manifest-listed bytes are copied; archives are never extracted wholesale.

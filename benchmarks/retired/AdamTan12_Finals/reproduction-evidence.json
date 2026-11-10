@@ -1,0 +1,39 @@
+{
+  "opponent": "AdamTan12_Finals",
+  "diagnosis": "Uncaught off-map senseMapInfo call before bounds check; frozen source unchanged",
+  "reproduction_command": "PYTHONPATH=. .venv/bin/python /tmp/alpha0_reproduce_adamtan.py",
+  "cells": [
+    {
+      "map": "tiny",
+      "seed": 0,
+      "learned_side": "A",
+      "opponent_team": "B",
+      "checkpoint": "runs/initial/checkpoint-0001.pt",
+      "checkpoint_sha256": "135394715fff44e6fdb49bad708a4b26654580f8c4a5d150ee5e396aa4711bbf",
+      "status": "error",
+      "round": 54,
+      "robot_id": 11674,
+      "completed_decisions": 242,
+      "exception": "battlecode.common.GameActionException: Target location is not on the map",
+      "source_frame": "Finals.Actions.ThrowOutsideCombat.throwAtWall(ThrowOutsideCombat.java:58)",
+      "stack_trace": "Stack trace: \nbattlecode.common.GameActionException: Target location is not on the map\n\tat battlecode.world.RobotControllerImpl.assertCanSenseLocation(RobotControllerImpl.java:217)\n\tat battlecode.world.RobotControllerImpl.senseMapInfo(RobotControllerImpl.java:646)\n\tat Finals.Actions.ThrowOutsideCombat.throwAtWall(ThrowOutsideCombat.java:58)\n\tat Finals.Actions.ThrowOutsideCombat.throwPriorityList(ThrowOutsideCombat.java:42)\n\tat Finals.Actions.ThrowOutsideCombat.toss(ThrowOutsideCombat.java:29)\n\tat Finals.Rats.BabyRat.turn(BabyRat.java:102)\n\tat Finals.RunRat.run(RunRat.java:19)\n\tat Finals.RobotPlayer.run(RobotPlayer.java:38)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayerJava(SandboxedRobotPlayer.java:311)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayer(SandboxedRobotPlayer.java:273)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.lambda$new$2(SandboxedRobotPlayer.java:205)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n",
+      "seconds": 2.46
+    },
+    {
+      "map": "tiny",
+      "seed": 1,
+      "learned_side": "A",
+      "opponent_team": "B",
+      "checkpoint": "runs/initial/checkpoint-0001.pt",
+      "checkpoint_sha256": "135394715fff44e6fdb49bad708a4b26654580f8c4a5d150ee5e396aa4711bbf",
+      "status": "error",
+      "round": 40,
+      "robot_id": 10235,
+      "completed_decisions": 198,
+      "exception": "battlecode.common.GameActionException: Target location is not on the map",
+      "source_frame": "Finals.Actions.ThrowOutsideCombat.throwAtWall(ThrowOutsideCombat.java:58)",
+      "stack_trace": "Stack trace: \nbattlecode.common.GameActionException: Target location is not on the map\n\tat battlecode.world.RobotControllerImpl.assertCanSenseLocation(RobotControllerImpl.java:217)\n\tat battlecode.world.RobotControllerImpl.senseMapInfo(RobotControllerImpl.java:646)\n\tat Finals.Actions.ThrowOutsideCombat.throwAtWall(ThrowOutsideCombat.java:58)\n\tat Finals.Actions.ThrowOutsideCombat.throwPriorityList(ThrowOutsideCombat.java:42)\n\tat Finals.Actions.ThrowOutsideCombat.toss(ThrowOutsideCombat.java:29)\n\tat Finals.Rats.BabyRat.turn(BabyRat.java:102)\n\tat Finals.RunRat.run(RunRat.java:19)\n\tat Finals.RobotPlayer.run(RobotPlayer.java:38)\n\tat java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:580)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayerJava(SandboxedRobotPlayer.java:311)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayer(SandboxedRobotPlayer.java:273)\n\tat battlecode.instrumenter.SandboxedRobotPlayer.lambda$new$2(SandboxedRobotPlayer.java:205)\n\tat java.base/java.lang.Thread.run(Thread.java:1583)\n",
+      "seconds": 3.2
+    }
+  ]
+}

@@ -43,9 +43,10 @@ public final class EngineBridge {
         }
         @Override public void runRobot(InternalRobot robot) {
             super.runRobot(robot);
-            // Resign/disintegrate or physical death removes the robot first. A live robot
-            // whose sandbox terminated instead means an exception or an invalid return.
-            if(getTerminated(robot) && robot.getGameWorld().getObjectInfo().getRobotByID(robot.getID())!=null)
+            // disintegrate() throws RobotDeathException before the scheduler removes the
+            // robot. Use the sandbox's authoritative reason; a live entry alone is not
+            // evidence of a crash. Resign/physical death may remove the robot first.
+            if(getTerminated(robot) && !terminatedByRobotDeath(robot) && robot.getGameWorld().getObjectInfo().getRobotByID(robot.getID())!=null)
                 session.recordFailure(robot,"unexpected_sandbox_exit");
         }
     }
@@ -215,8 +216,15 @@ public final class EngineBridge {
                 s.put("valid_game",benchmarkFailures.isEmpty());
                 s.put("benchmark_failures",benchmarkFailures);
                 if(!benchmarkFailures.isEmpty()) {
-                    String diagnostics=ENGINE_DIAGNOSTICS.toString()+"\n"+botOutput.toString();
-                    if(diagnostics.length()>12000) diagnostics=diagnostics.substring(diagnostics.length()-12000);
+                    // Keep exception stacks separate: verbose bot chatter must not evict
+                    // the actual engine error when the combined diagnostic is bounded.
+                    String engineDiagnostics=ENGINE_DIAGNOSTICS.toString();
+                    String botDiagnostics=botOutput.toString();
+                    if(engineDiagnostics.length()>8000) engineDiagnostics=engineDiagnostics.substring(engineDiagnostics.length()-8000);
+                    if(botDiagnostics.length()>4000) botDiagnostics=botDiagnostics.substring(botDiagnostics.length()-4000);
+                    String diagnostics="ENGINE DIAGNOSTICS:\n"+engineDiagnostics+"\nBOT OUTPUT TAIL:\n"+botDiagnostics;
+                    s.put("engine_diagnostics",engineDiagnostics);
+                    s.put("bot_output_tail",botDiagnostics);
                     s.put("diagnostics",diagnostics);
                     s.put("error","Benchmark sandbox failure; game must not be scored: "+benchmarkFailures+"\n"+diagnostics);
                 }
@@ -231,6 +239,9 @@ public final class EngineBridge {
     }
     public static void main(String[] args) throws Exception {
         BufferedReader in=new BufferedReader(new InputStreamReader(System.in));PrintWriter out=new PrintWriter(System.out,true);
+        // stdout is the JSONL protocol, never a bot console. In particular, print()
+        // without a newline must not prefix and corrupt the next JSON response.
+        Config.getGlobalConfig().setBoolean("bc.server.robot-player-to-system-out",false);
         PrintStream originalError=System.err;
         System.setErr(new PrintStream(new OutputStream(){
             @Override public void write(int value) {originalError.write(value);ENGINE_DIAGNOSTICS.write(value);}

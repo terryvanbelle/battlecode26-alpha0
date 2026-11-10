@@ -40,3 +40,52 @@
                  ErrorReporter.warn("Team " + team + " has timed out!");
                  robot.getController().resign();
              }
+@@ -244,4 +244,9 @@
+             return true;
+         }
+     }
++
++    public boolean terminatedByRobotDeath(InternalRobot robot) {
++        final SandboxedRobotPlayer player = this.sandboxes.get(robot.getID());
++        return player != null && player.terminatedByRobotDeath();
++    }
+ }
+--- a/battlecode/instrumenter/SandboxedRobotPlayer.java
++++ b/battlecode/instrumenter/SandboxedRobotPlayer.java
+@@ -63,6 +63,9 @@
+      * Whether the robot player is terminated.
+      */
+     private boolean terminated;
++
++    // Diagnostic only: distinguish voluntary disintegration/engine death from crashes.
++    private boolean terminatedByRobotDeath;
+ 
+     /**
+      * The classloader used for this player.
+@@ -220,6 +223,7 @@
+                 ErrorReporter.report(e, true);
+             } catch (final InvocationTargetException e) {
+                 if (e.getCause() instanceof RobotDeathException) {
++                    terminatedByRobotDeath = true;
+                     return;
+                 }
+                 ErrorReporter.report(e.getCause(), false);
+@@ -230,6 +234,7 @@
+                         "Make sure the bc.game.team-a.url and bc.game.team-b.url are configured correctly." , false);
+ 
+             } catch (final RobotDeathException e) {
++                terminatedByRobotDeath = true;
+                 return;
+             } finally {
+                 // Ensure that we know we're terminated.
+@@ -426,6 +431,10 @@
+         return terminated;
+     }
+ 
++    public boolean terminatedByRobotDeath() {
++        return terminatedByRobotDeath;
++    }
++
+     /**
+      * Injected into RobotMonitor; used to synchronize it and the main thread.
+      */

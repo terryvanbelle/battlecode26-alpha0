@@ -1,5 +1,6 @@
 """A crashed or unloadable opponent must never become a scored policy win."""
 from pathlib import Path
+import os
 import subprocess
 
 import pytest
@@ -19,7 +20,9 @@ def fixture_bots(tmp_path):
     programs = {
         "badinit": "static int broken = 1 / Integer.parseInt(\"0\"); public static void run(RobotController rc) { while(true) Clock.yield(); }",
         "badreturn": "public static void run(RobotController rc) {}",
+        "noisycrash": "public static void run(RobotController rc) { for(int i=0;i<10000;i++) System.out.print(\"noise\"); throw new RuntimeException(\"DISTINCT_CRASH_CAUSE\"); }",
         "resigner": "public static void run(RobotController rc) { rc.resign(); while(true) Clock.yield(); }",
+        "disintegrator": "public static void run(RobotController rc) { rc.disintegrate(); while(true) Clock.yield(); }",
         "randomuser": "static java.util.Random rng = new java.util.Random(1); public static void run(RobotController rc) { while(true) { rng.nextInt(); Clock.yield(); } }",
     }
     sources = []
@@ -29,7 +32,7 @@ def fixture_bots(tmp_path):
         path.write_text(f"package {package}; import battlecode.common.*; public class RobotPlayer {{ {program} }}")
         sources.append(path)
     subprocess.run([
-        str(ROOT / "vendor/jdk/bin/javac"), "--release", "21", "-cp",
+        str(Path(os.environ.get("JAVA_HOME", str(ROOT / "vendor/jdk"))) / "bin/javac"), "--release", "21", "-cp",
         str(ROOT / "vendor/engine/battlecode26-java-1.2.6.jar"), "-d", str(tmp_path), *map(str, sources)
     ], check=True, capture_output=True, text=True)
     return tmp_path
@@ -44,8 +47,9 @@ def test_invalid_opponent_is_error_not_a_win(fixture_bots, package):
                 state = env.transition(state, 0)
 
 
-def test_legitimate_resignation_remains_a_game_result(fixture_bots):
-    with EngineEnv(opponent_package="resigner", opponent_classes=fixture_bots, learned_team=1) as env:
+@pytest.mark.parametrize("package", ["resigner", "disintegrator"])
+def test_legitimate_voluntary_death_remains_a_game_result(fixture_bots, package):
+    with EngineEnv(opponent_package=package, opponent_classes=fixture_bots, learned_team=1) as env:
         state = env.reset("tiny", 42)
         while not state.terminal:
             state = env.transition(state, 0)
@@ -55,7 +59,7 @@ def test_legitimate_resignation_remains_a_game_result(fixture_bots):
 
 
 def test_required_java_module_flags_and_missing_flag_detection(fixture_bots):
-    command = [str(ROOT / "vendor/jdk/bin/java"), "-cp",
+    command = [str(Path(os.environ.get("JAVA_HOME", str(ROOT / "vendor/jdk"))) / "bin/java"), "-cp",
                f"{ROOT / 'build/java'}:{ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'}", "alpha0.EngineBridge"]
     with EngineEnv(command=command, opponent_package="randomuser", opponent_classes=fixture_bots, learned_team=1) as env:
         with pytest.raises(RuntimeError, match="Benchmark sandbox failure"):
@@ -68,3 +72,9 @@ def test_required_java_module_flags_and_missing_flag_detection(fixture_bots):
             state = env.transition(state, 0)
         assert state.raw["round"] > 1
         assert state.raw["valid_game"] is True
+
+
+def test_verbose_bot_cannot_hide_engine_exception_diagnostics(fixture_bots):
+    with EngineEnv(opponent_package="noisycrash", opponent_classes=fixture_bots, learned_team=1) as env:
+        with pytest.raises(RuntimeError, match="DISTINCT_CRASH_CAUSE"):
+            env.reset("tiny", 42)

@@ -3,7 +3,7 @@
 `python scripts/setup_engine.py` downloads the official Battlecode 2026 Java
 engine **1.2.6**, source and Javadoc JARs with fixed SHA-256 checksums. It installs
 a hash-pinned Temurin Java 21 JDK under ignored `vendor/jdk` if needed, applies
-`patches/local-research.patch`, and compiles the bridge plus three patched engine
+`patches/local-research.patch`, and compiles the bridge plus four patched engine
 classes under `build/java`. `JAVA_HOME` can select an existing Java 21 JDK.
 The runtime classpath puts these classes before the unmodified engine JAR.
 The GPL-3.0 upstream engine is fetched rather than committed; the patch and
@@ -66,11 +66,18 @@ at class initialization; compiling a benchmark alone is insufficient validation.
 The bridge monitors initialization and unexpected sandbox exits while a robot
 is still alive. A failure produces `valid_game:false`, `benchmark_failures`, a
 bounded diagnostic tail and a top-level `error`, causing the runner to exclude
-the game from scores. A legitimate `resign()`/`disintegrate()` or physical death
-removes the robot first and remains a normal game event. Returning from a bot's
+the game from scores. A diagnostic-only sandbox flag records termination via
+`RobotDeathException`, including `disintegrate()` before the scheduler removes
+the robot. This distinguishes normal voluntary death from an exception or
+invalid return. A legitimate `resign()` or physical death also remains a normal
+game event. Returning from a bot's
 `run()` method is treated as a failed benchmark rather than evidence of policy
 strength. Induced initialization/return/module failures and legitimate resigns
 are covered by `tests/test_benchmark_failures.py`.
+Engine exception diagnostics and bot output have separate bounded tails, so
+verbose bot chatter cannot hide a crash stack. Bot console mirroring to stdout
+is disabled; stdout belongs exclusively to the JSONL protocol, including when
+a bot prints text without a trailing newline.
 
 ## Initial 17-action abstraction
 
