@@ -1,0 +1,95 @@
+{
+  "suite_id": "development-eight-v3",
+  "aggregation": "wins / all scheduled games; equal map weights; draws are not wins",
+  "evaluations": [
+    {
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+      "started_at": "2026-11-10T14:33:13.804587+00:00",
+      "bots": {
+        "CS50Crab_rapierV1": {
+          "wins": 27,
+          "losses": 5,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.84375
+        },
+        "spsquared_TSPAARK_QUALS": {
+          "wins": 14,
+          "losses": 18,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.4375
+        },
+        "HugoIngelsson_Xzibit": {
+          "wins": 17,
+          "losses": 15,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.53125
+        },
+        "abcdezyxwv_bestsofar": {
+          "wins": 2,
+          "losses": 30,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.0625
+        },
+        "IvanGeffner_basic51": {
+          "wins": 1,
+          "losses": 31,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.03125
+        },
+        "vibe26b_zdb": {
+          "wins": 4,
+          "losses": 28,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.125
+        },
+        "thewaxmango_collegejunior": {
+          "wins": 6,
+          "losses": 22,
+          "draws": 0,
+          "valid": 28,
+          "expected": 32,
+          "errors": 4,
+          "complete": false,
+          "win_rate": null
+        },
+        "uravt_Version41": {
+          "wins": 7,
+          "losses": 25,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "win_rate": 0.21875
+        }
+      },
+      "source": "progress/development-v3/baseline/evaluations.jsonl",
+      "source_sha256": "ee8fdd13f9bcbd1d01c1a8cbe156ff720fa77d016cba3a80577fa920b9f6068b"
+    }
+  ]
+}

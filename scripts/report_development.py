@@ -37,11 +37,19 @@ def generate(progress, manifest_path=None):
  fig.tight_layout();out=ROOT/'progress/overview';out.mkdir(exist_ok=True);fig.savefig(out/'development-current.png',dpi=150);plt.close(fig)
  data={'checkpoint_sha256':sha,'source':str(Path(progress).resolve().relative_to(ROOT)),'completed':n,'unresolved_errors':sum(errors.values()),'expected':256,'cells':[{'opponent':b,'map':m,**dict(counts[b,m])} for b in bots for m in maps]}
  (out/'development-current.json').write_text(json.dumps(data,indent=2)+'\n')
+ import sys
+ sys.path.insert(0,str(ROOT))
+ from scripts.plot_development_history import generate as history_graph
+ history_graph(progress,manifest)
  block=f'''<!-- CURRENT_BENCHMARK_START -->
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
 **{n}/256 valid games; {sum(errors.values())} unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `{sha[:12]}`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation]({data['source']}/evaluations.jsonl).
-<!-- CURRENT_BENCHMARK_END -->'''
+
+![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
+
+Each point aggregates all eight maps for one bot (32 games). Incomplete bot panels show coverage instead of a win rate. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
+<!-- CURRENT_BENCHMARK_END -->''' 
  if not rows:block=block.replace(f' · [Raw evaluation]({data["source"]}/evaluations.jsonl)','').replace('Checkpoint `not-yet-eval`','Baseline evaluation pending')
  readme=ROOT/'README.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)
 if __name__=='__main__':

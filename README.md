@@ -6,6 +6,10 @@
 ![Current wins, losses and draws by opponent and map](progress/overview/development-current.png)
 
 **252/256 valid games; 4 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `20d9e8133490`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v3/baseline/evaluations.jsonl).
+
+![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
+
+Each point aggregates all eight maps for one bot (32 games). Incomplete bot panels show coverage instead of a win rate. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->
 
 **Baseline status:** collection ended with four reproducible `collegejunior` bot errors on `wallsofparadis`; this panel cannot establish improvement. [Crash review and replacement qualification](diagnostics/collegejunior-wallsofparadis/README.md) preserves the evidence. All eight maps remain required.
