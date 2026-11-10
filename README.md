@@ -8,6 +8,8 @@
 **252/256 valid games; 4 unresolved errors.** Each cell shows wins / losses / draws from our player's perspective; missing games are not losses. Checkpoint `20d9e8133490`. [Dashboard data](progress/overview/development-current.json) · [Raw evaluation](progress/development-v3/baseline/evaluations.jsonl).
 <!-- CURRENT_BENCHMARK_END -->
 
+**Baseline status:** collection ended with four reproducible `collegejunior` bot errors on `wallsofparadis`; this panel cannot establish improvement. [Crash review and replacement qualification](diagnostics/collegejunior-wallsofparadis/README.md) preserves the evidence. All eight maps remain required.
+
 [Active benchmark and improvement rules](docs/development-benchmarks-v3.md) · [Benchmark configuration](configs/benchmarks-development-v3.json) · [Latest completed game research](docs/terminal-v6-results.md)
 
 The goal is verified improvement, not winning against every bot or on every map.
