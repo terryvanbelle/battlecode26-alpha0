@@ -1,3 +1,8 @@
+> **Current objective amendment (November 10, 2026):** the user replaced the
+> all-opponent/all-map success requirement with improvement on a broader-map,
+> smaller opponent panel. See [active protocol](development-benchmarks-v3.md). This supersedes conflicting historical
+> instructions below. Publish opponent-by-map W/L/D and coverage in the README.
+
 # Research plan: qualify against every opponent on every map
 
 The target is a single frozen learned policy that beats each member of the

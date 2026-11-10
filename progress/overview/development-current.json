@@ -1,0 +1,264 @@
+{
+  "checkpoint_sha256": "not-yet-evaluated",
+  "source": "progress/development-v3/baseline",
+  "completed": 0,
+  "expected": 256,
+  "cells": [
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "tiny"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "closeup"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "CS50Crab_rapierV1",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "tiny"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "closeup"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "spsquared_TSPAARK_QUALS",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "tiny"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "closeup"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "tiny"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "closeup"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "tiny"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "closeup"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "tiny"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "closeup"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "tiny"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "closeup"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "thewaxmango_collegejunior",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "tiny"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "closeup"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "wallsofparadis"
+    }
+  ]
+}

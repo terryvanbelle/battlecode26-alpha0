@@ -1,3 +1,8 @@
+> **Current objective amendment (November 10, 2026):** the user replaced the
+> all-opponent/all-map success requirement with improvement on a broader-map,
+> smaller opponent panel. See [active protocol](docs/development-benchmarks-v3.md). This supersedes conflicting historical
+> instructions below. Publish opponent-by-map W/L/D and coverage in the README.
+
 # Design decisions
 
 ## Versioned experiments and evidence
@@ -188,6 +193,13 @@ update budget from anchoring using the same fixed 32/512 inputs, two KL settings
 and fixed snapshots, with no validation/benchmark tuning or automatic model
 selection. It changes no architecture or engine and provides no playing-strength
 claim on its own.
+
+The [completed v7 diagnostic](docs/cached-head-v7-results.md) supplies budget
+evidence: both fixed arms first fitted all 32 targets at 2,048 updates. Keeping
+anchor KL changed only 3/512 anchor actions, versus 73/512 without it. The exact
+128-step reproduction passed. This motivates a separately reviewed fresh-data
+transfer test with a larger fixed fitting budget and anchoring retained; it is
+not a playing-strength result or permission to promote a diagnostic head.
 
 ## Decisions to revisit after measurement
 

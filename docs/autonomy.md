@@ -1,3 +1,8 @@
+> **Current objective amendment (November 10, 2026):** the user replaced the
+> all-opponent/all-map success requirement with improvement on a broader-map,
+> smaller opponent panel. See [active protocol](development-benchmarks-v3.md). This supersedes conflicting historical
+> instructions below. Publish opponent-by-map W/L/D and coverage in the README.
+
 # Resumable campaign operation
 
 The goal is one learned policy that beats all twelve frozen opponents on **every one of the 74 available maps**. The user permits small map subsets for routine evaluations, with occasional full-map checks. Each campaign invocation has a **maximum three-hour budget**. Checkpoints, replay data, evaluation rows, and machine-readable status allow later cycles to resume. A cycle, smoke result or partial map panel cannot establish success.

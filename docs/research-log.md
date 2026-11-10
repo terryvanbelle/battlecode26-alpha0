@@ -374,3 +374,29 @@ stream and fixed 128/512/2,048 snapshots. The 128-step KL=1 result must exactly
 reproduce v6 before interpretation. It is a 15-minute, training-only mechanism
 diagnostic: no new games, held validation or benchmark tuning, and no automatic
 promotion. All v6 artifacts remain preserved in their separate recovery export.
+
+
+## 2026-11-10: v7 fitting-budget diagnostic completed
+
+Preregistration and implementation were published at `fe407fb` before real SGD.
+The fixed two-arm diagnostic completed in 20.99 seconds, with all six snapshots
+and all recovery generations retained. KL=1 at 128 updates reproduced v6 exactly.
+Both arms reached all 32 selected training actions only at the fixed 2,048
+snapshot, giving the preregistered budget classification. Anchoring limited
+final changed anchor actions to 3/512 versus 73/512 for KL=0. No validation,
+benchmark or engine games were run, and no policy was promoted.
+
+[Results and resource measurements](cached-head-v7-results.md) separate fitting
+from playing strength. Independent audit and separate verified recovery are
+being finalized before selecting the next real-game transfer protocol.
+
+
+## User amendment: broader development evaluation and improvement
+
+The user replaced all-opponent/all-map success with measured improvement. New
+suite development-eight-v3 uses eight retained mid/strong opponents and eight
+maps (256 games per checkpoint). Original twelve-bot history is preserved.
+Cp2 needs a fresh full baseline; no tiny-only score is reused. The new rule and
+paired map bootstrap are documented in development-benchmarks-v3.md. The README
+now leads with the opponent-by-map W/L/D dashboard, and evaluation refreshes it.
+The stopped all-map zdb run remains stopped: 0W/60L/0D, incomplete, no errors.
