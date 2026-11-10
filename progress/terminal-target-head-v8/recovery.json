@@ -1,0 +1,7 @@
+{
+  "archive": "artifacts/terminal-target-head-v8/recovery-20261110T222407096141Z-5c19fe28088d.tar.gz",
+  "benchmark_completed": 414,
+  "partial": true,
+  "sha256": "5c19fe28088d2e394d58197180344f9ca44042ec2735dd6c131d372a28655adc",
+  "verification": "artifacts/terminal-target-head-v8/recovery-20261110T222407096141Z-5c19fe28088d.tar.gz.verification.json"
+}
