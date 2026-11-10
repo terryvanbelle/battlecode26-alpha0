@@ -1,0 +1,780 @@
+{
+  "actor_status_file": {
+    "mtime_ns": 1794298193720946406,
+    "observed_at": "2026-11-10T08:10:03.016413+00:00",
+    "sha256": "e953019dfd41cd456cda9399cda680745ee148945dacdcd8a4980a52b1454b54"
+  },
+  "auditor_source_sha256": "b201e4b71a1a3c4b9822aa664f6839c44123b9c20258ed94fe933c45d34f7e1a",
+  "comparator_journals": [
+    {
+      "completed_at": "2026-11-10T07:53:45.657153+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-000.json",
+      "root_id": "training-000",
+      "sha256": "c4ae8b7785c0ae00f678c14ada1c579a8acad90f2325d08d6c6d064bfa972af6"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:45.094113+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-001.json",
+      "root_id": "training-001",
+      "sha256": "9e76cd3f765df86f8a1459fed9a0c884f49f22601dce2a4b62fb5e351aa4256f"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:45.291689+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-002.json",
+      "root_id": "training-002",
+      "sha256": "fca3cf813a38873847bb351d8fe3affa35a55fea8b976383e14c01b8ae57c215"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:48.475102+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-003.json",
+      "root_id": "training-003",
+      "sha256": "1a633fb7b7e6f907bcb42362022945b0de131e6c09873e871824d7fdebc6ec83"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:49.154555+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-004.json",
+      "root_id": "training-004",
+      "sha256": "dda81fb992ce9b17d42d81c1b255b13a0587e2ace64a5e7b12e92a65fe46d15c"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:49.954371+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-005.json",
+      "root_id": "training-005",
+      "sha256": "7e95b3de8af03928bd91a1f6ddad106a35e95b0ea593beb9c91660835219f28f"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:52.818865+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-006.json",
+      "root_id": "training-006",
+      "sha256": "ac57991fe994e51867b334ec6c5de5a520bed727d67333b1d4a116e2dfe3ea65"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:53.297627+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-007.json",
+      "root_id": "training-007",
+      "sha256": "de482da688ddcb474e7ae764c76675821282bc6acd19a293c544f147cfdc0c25"
+    },
+    {
+      "completed_at": "2026-11-10T07:53:54.768052+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-008.json",
+      "root_id": "training-008",
+      "sha256": "6a23f943ae0b51eba16de15c984ba4a1709334d8baab3dbeb3c61526b10d831b"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:14.202753+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-009.json",
+      "root_id": "training-009",
+      "sha256": "47ef795389f59c6d8340f6f94a2381ee2e140cfe8e144c3a730d320b422cb9e6"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:01.157604+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-010.json",
+      "root_id": "training-010",
+      "sha256": "0603ecb983193cd7404685698d40d7b5b9341d37402075b32d59a659a61a2a50"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:11.755066+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-011.json",
+      "root_id": "training-011",
+      "sha256": "71e7bff075d934a4e3f3c07c2fb483b3afc8b45a464089f2e2774877d83fb643"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:06.956063+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-012.json",
+      "root_id": "training-012",
+      "sha256": "a2ef7917b3c885536e916af188bee0aea2d9e49d7c155c91d116f5a93eff4f81"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:20.267490+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-013.json",
+      "root_id": "training-013",
+      "sha256": "7857d47384406312458759d25a3c9f73603d7d388f666d1a5233d1da1012583e"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:17.518720+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-014.json",
+      "root_id": "training-014",
+      "sha256": "ba0d2365b3e6619386a8e6fc0774fa2d542d660f4b9ff89d6fffc2b30aab1773"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:34.445922+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-015.json",
+      "root_id": "training-015",
+      "sha256": "e0f06b5dd9f29b7ba022681377b33e25975fd8785d4536ca6dadd6c16ef097a4"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:24.202123+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-016.json",
+      "root_id": "training-016",
+      "sha256": "3a840a2332841ed9b72a91192eca67ca780b052853e1a01fecf775de331721e1"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:37.462738+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-017.json",
+      "root_id": "training-017",
+      "sha256": "69d0458bfd22da4f7851cf2fd2c3b063c18a9f2b88ef8cd35e7c4ce78cad3386"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:30.305374+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-018.json",
+      "root_id": "training-018",
+      "sha256": "b9f420fefacb44b211e185c5f4f7364b5909d6505466c45122fc3a8e77d7571d"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:48.811767+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-019.json",
+      "root_id": "training-019",
+      "sha256": "d11f0cfef009e2e5884d6469cc5ce253b875b637eccbbac6d1ea157905a63f4c"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:41.507572+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-020.json",
+      "root_id": "training-020",
+      "sha256": "735fef2a60d2d605892339eefb77cabb1d1073d2161155fcc03b5e81393cb349"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:56.890344+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-021.json",
+      "root_id": "training-021",
+      "sha256": "1de3cee7e922959ef7ff8191b4f13e9fcf592c4269d03ecceb94737ea473f57c"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:48.031027+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-022.json",
+      "root_id": "training-022",
+      "sha256": "8153257e401ba6ab411614d8036eefb8040a4fa301d4983592e5827585e6ac98"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:07.452256+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-023.json",
+      "root_id": "training-023",
+      "sha256": "da838db346eb557f585149ec04e0dace22aa1a17ab77238c56e4f655d9e6da14"
+    },
+    {
+      "completed_at": "2026-11-10T07:54:55.719833+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-024.json",
+      "root_id": "training-024",
+      "sha256": "b393e457447697ba414e9462b56e465d31d917175f9508f6f6e8285ec6ec41ed"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:03.058720+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-025.json",
+      "root_id": "training-025",
+      "sha256": "1af6eb75ef6873e3e84b251525ed68eeea5545e7cd96d3291b84493eda09a72b"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:02.476637+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-026.json",
+      "root_id": "training-026",
+      "sha256": "45f9270d0ebba054c6e91d14d08008ce72b4dc5bfcb87ccdf75c60afc5a72e69"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:08.965633+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-027.json",
+      "root_id": "training-027",
+      "sha256": "8b577c0c75689807ed675a837cb502e0e84e5cbaef858ca8a5b133a5d4b6fdf5"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:09.814628+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-028.json",
+      "root_id": "training-028",
+      "sha256": "b25de440aa2dd84f2a6fbfa71446162543fdec3b9b769fdd87c141466b400d89"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:14.406834+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-029.json",
+      "root_id": "training-029",
+      "sha256": "44bc8c65d8495ec1f8ffbcdcdd64d7b5348a5d3da5001ab786e9ddbcc35a0c67"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:13.386143+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-030.json",
+      "root_id": "training-030",
+      "sha256": "189fcc07bd247af6ae40d58f89339d6cd500a3db48994b453ae33a8b86905a5c"
+    },
+    {
+      "completed_at": "2026-11-10T07:55:15.506777+00:00",
+      "path": "progress/terminal-target-head-v6/comparators/training-031.json",
+      "root_id": "training-031",
+      "sha256": "686305d93de99cd26b66e53c1bbfce00283ecb10a4ed6be8df3e8ba5375bc546"
+    }
+  ],
+  "completed_source_count": 28,
+  "created_at": "2026-11-10T08:10:03.132126+00:00",
+  "experiment_id": "terminal-target-head-v6",
+  "experiment_identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+  "first_observed_selection_start": {
+    "path": "progress/terminal-target-head-v6/cells/selection-training-001-a00-s203003/attempt-001-start.json",
+    "record": {
+      "action": 0,
+      "attempt": 1,
+      "experiment_identity": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+      "identity": "4c12e8aaf3b74250b36d3607f327502e0cc170cca11b69b781a26a8a94bb951e",
+      "root_id": "training-001",
+      "root_input_hash": "be9fa875c151c0d315ea68c6fb64c7dcb0e7f3153de65e196e1db60ef025b06f",
+      "root_player": 1,
+      "root_prefix_sha256": "7ef45966dbae8228f6a8a864e1a5138d5ec766f31132043ab39af7f4d9acb26f",
+      "root_state_sha256": "7c66820664f4c87b4f8fef903543e494196252af61ea920030c418d47fcb09a6",
+      "score": null,
+      "seed": 203003,
+      "source_sha256": "40134e7c0d0ffae2cb177457b63cd9bd1c0a6a6da63ce54ec0c96dbce4a7335d",
+      "stage": "selection",
+      "started_at": "2026-11-10T07:55:18.819892+00:00",
+      "status": "incomplete",
+      "temperature": 0.35,
+      "terminal": false
+    },
+    "sha256": "e5ec6681adeb419966df76bdf9bf97c1c3bc7e7b0650154cf92317c8499c910e"
+  },
+  "frozen_comparator_count": 32,
+  "identity_file": {
+    "mtime_ns": 1794296899448144232,
+    "observed_at": "2026-11-10T08:10:03.016249+00:00",
+    "sha256": "1cd46fdc649c072e7ab0d736afd8960522d6db30c194375edef513feb4db608c"
+  },
+  "limitations": "These are hash-bound observations of original-run local filesystem mtimes and embedded timestamps captured after selection started. They are not cryptographic proof of creation time. Restore audits must reuse these observations, never Git checkout mtimes. All roots/G/allocation were independently checked earlier in this session, but that earlier interactive check has no separately published timestamp attestation.",
+  "observations": {
+    "progress/terminal-target-head-v6/anchors.json": {
+      "mtime_ns": 1794297128743162741,
+      "observed_at": "2026-11-10T08:10:03.021149+00:00",
+      "sha256": "57a30846bf78a1d00773e80b0f98c0e207cbe000f1a0d291afb420992924f05a"
+    },
+    "progress/terminal-target-head-v6/cells/selection-training-001-a00-s203003/attempt-001-start.json": {
+      "mtime_ns": 1794297318820348119,
+      "observed_at": "2026-11-10T08:10:03.076056+00:00",
+      "sha256": "e5ec6681adeb419966df76bdf9bf97c1c3bc7e7b0650154cf92317c8499c910e"
+    },
+    "progress/terminal-target-head-v6/comparators/training-000.json": {
+      "mtime_ns": 1794297225657730780,
+      "observed_at": "2026-11-10T08:10:03.055728+00:00",
+      "sha256": "c4ae8b7785c0ae00f678c14ada1c579a8acad90f2325d08d6c6d064bfa972af6"
+    },
+    "progress/terminal-target-head-v6/comparators/training-001.json": {
+      "mtime_ns": 1794297225094533324,
+      "observed_at": "2026-11-10T08:10:03.055843+00:00",
+      "sha256": "9e76cd3f765df86f8a1459fed9a0c884f49f22601dce2a4b62fb5e351aa4256f"
+    },
+    "progress/terminal-target-head-v6/comparators/training-002.json": {
+      "mtime_ns": 1794297225292221923,
+      "observed_at": "2026-11-10T08:10:03.055933+00:00",
+      "sha256": "fca3cf813a38873847bb351d8fe3affa35a55fea8b976383e14c01b8ae57c215"
+    },
+    "progress/terminal-target-head-v6/comparators/training-003.json": {
+      "mtime_ns": 1794297228475513184,
+      "observed_at": "2026-11-10T08:10:03.056013+00:00",
+      "sha256": "1a633fb7b7e6f907bcb42362022945b0de131e6c09873e871824d7fdebc6ec83"
+    },
+    "progress/terminal-target-head-v6/comparators/training-004.json": {
+      "mtime_ns": 1794297229154901733,
+      "observed_at": "2026-11-10T08:10:03.056088+00:00",
+      "sha256": "dda81fb992ce9b17d42d81c1b255b13a0587e2ace64a5e7b12e92a65fe46d15c"
+    },
+    "progress/terminal-target-head-v6/comparators/training-005.json": {
+      "mtime_ns": 1794297229954737984,
+      "observed_at": "2026-11-10T08:10:03.056159+00:00",
+      "sha256": "7e95b3de8af03928bd91a1f6ddad106a35e95b0ea593beb9c91660835219f28f"
+    },
+    "progress/terminal-target-head-v6/comparators/training-006.json": {
+      "mtime_ns": 1794297232819541190,
+      "observed_at": "2026-11-10T08:10:03.056265+00:00",
+      "sha256": "ac57991fe994e51867b334ec6c5de5a520bed727d67333b1d4a116e2dfe3ea65"
+    },
+    "progress/terminal-target-head-v6/comparators/training-007.json": {
+      "mtime_ns": 1794297233298244613,
+      "observed_at": "2026-11-10T08:10:03.056337+00:00",
+      "sha256": "de482da688ddcb474e7ae764c76675821282bc6acd19a293c544f147cfdc0c25"
+    },
+    "progress/terminal-target-head-v6/comparators/training-008.json": {
+      "mtime_ns": 1794297234769834793,
+      "observed_at": "2026-11-10T08:10:03.056413+00:00",
+      "sha256": "6a23f943ae0b51eba16de15c984ba4a1709334d8baab3dbeb3c61526b10d831b"
+    },
+    "progress/terminal-target-head-v6/comparators/training-009.json": {
+      "mtime_ns": 1794297254204237687,
+      "observed_at": "2026-11-10T08:10:03.056486+00:00",
+      "sha256": "47ef795389f59c6d8340f6f94a2381ee2e140cfe8e144c3a730d320b422cb9e6"
+    },
+    "progress/terminal-target-head-v6/comparators/training-010.json": {
+      "mtime_ns": 1794297241158102676,
+      "observed_at": "2026-11-10T08:10:03.056559+00:00",
+      "sha256": "0603ecb983193cd7404685698d40d7b5b9341d37402075b32d59a659a61a2a50"
+    },
+    "progress/terminal-target-head-v6/comparators/training-011.json": {
+      "mtime_ns": 1794297251755452127,
+      "observed_at": "2026-11-10T08:10:03.056630+00:00",
+      "sha256": "71e7bff075d934a4e3f3c07c2fb483b3afc8b45a464089f2e2774877d83fb643"
+    },
+    "progress/terminal-target-head-v6/comparators/training-012.json": {
+      "mtime_ns": 1794297246956481641,
+      "observed_at": "2026-11-10T08:10:03.056701+00:00",
+      "sha256": "a2ef7917b3c885536e916af188bee0aea2d9e49d7c155c91d116f5a93eff4f81"
+    },
+    "progress/terminal-target-head-v6/comparators/training-013.json": {
+      "mtime_ns": 1794297260267867750,
+      "observed_at": "2026-11-10T08:10:03.056772+00:00",
+      "sha256": "7857d47384406312458759d25a3c9f73603d7d388f666d1a5233d1da1012583e"
+    },
+    "progress/terminal-target-head-v6/comparators/training-014.json": {
+      "mtime_ns": 1794297257519147048,
+      "observed_at": "2026-11-10T08:10:03.056862+00:00",
+      "sha256": "ba0d2365b3e6619386a8e6fc0774fa2d542d660f4b9ff89d6fffc2b30aab1773"
+    },
+    "progress/terminal-target-head-v6/comparators/training-015.json": {
+      "mtime_ns": 1794297274446444780,
+      "observed_at": "2026-11-10T08:10:03.056940+00:00",
+      "sha256": "e0f06b5dd9f29b7ba022681377b33e25975fd8785d4536ca6dadd6c16ef097a4"
+    },
+    "progress/terminal-target-head-v6/comparators/training-016.json": {
+      "mtime_ns": 1794297264202617101,
+      "observed_at": "2026-11-10T08:10:03.057014+00:00",
+      "sha256": "3a840a2332841ed9b72a91192eca67ca780b052853e1a01fecf775de331721e1"
+    },
+    "progress/terminal-target-head-v6/comparators/training-017.json": {
+      "mtime_ns": 1794297277463450193,
+      "observed_at": "2026-11-10T08:10:03.057087+00:00",
+      "sha256": "69d0458bfd22da4f7851cf2fd2c3b063c18a9f2b88ef8cd35e7c4ce78cad3386"
+    },
+    "progress/terminal-target-head-v6/comparators/training-018.json": {
+      "mtime_ns": 1794297270302141600,
+      "observed_at": "2026-11-10T08:10:03.057160+00:00",
+      "sha256": "b9f420fefacb44b211e185c5f4f7364b5909d6505466c45122fc3a8e77d7571d"
+    },
+    "progress/terminal-target-head-v6/comparators/training-019.json": {
+      "mtime_ns": 1794297288812061975,
+      "observed_at": "2026-11-10T08:10:03.057256+00:00",
+      "sha256": "d11f0cfef009e2e5884d6469cc5ce253b875b637eccbbac6d1ea157905a63f4c"
+    },
+    "progress/terminal-target-head-v6/comparators/training-020.json": {
+      "mtime_ns": 1794297281507918777,
+      "observed_at": "2026-11-10T08:10:03.058832+00:00",
+      "sha256": "735fef2a60d2d605892339eefb77cabb1d1073d2161155fcc03b5e81393cb349"
+    },
+    "progress/terminal-target-head-v6/comparators/training-021.json": {
+      "mtime_ns": 1794297296890683195,
+      "observed_at": "2026-11-10T08:10:03.058955+00:00",
+      "sha256": "1de3cee7e922959ef7ff8191b4f13e9fcf592c4269d03ecceb94737ea473f57c"
+    },
+    "progress/terminal-target-head-v6/comparators/training-022.json": {
+      "mtime_ns": 1794297288031504599,
+      "observed_at": "2026-11-10T08:10:03.059041+00:00",
+      "sha256": "8153257e401ba6ab411614d8036eefb8040a4fa301d4983592e5827585e6ac98"
+    },
+    "progress/terminal-target-head-v6/comparators/training-023.json": {
+      "mtime_ns": 1794297307452667028,
+      "observed_at": "2026-11-10T08:10:03.059121+00:00",
+      "sha256": "da838db346eb557f585149ec04e0dace22aa1a17ab77238c56e4f655d9e6da14"
+    },
+    "progress/terminal-target-head-v6/comparators/training-024.json": {
+      "mtime_ns": 1794297295720326282,
+      "observed_at": "2026-11-10T08:10:03.059231+00:00",
+      "sha256": "b393e457447697ba414e9462b56e465d31d917175f9508f6f6e8285ec6ec41ed"
+    },
+    "progress/terminal-target-head-v6/comparators/training-025.json": {
+      "mtime_ns": 1794297303059252167,
+      "observed_at": "2026-11-10T08:10:03.059311+00:00",
+      "sha256": "1af6eb75ef6873e3e84b251525ed68eeea5545e7cd96d3291b84493eda09a72b"
+    },
+    "progress/terminal-target-head-v6/comparators/training-026.json": {
+      "mtime_ns": 1794297302473908222,
+      "observed_at": "2026-11-10T08:10:03.059396+00:00",
+      "sha256": "45f9270d0ebba054c6e91d14d08008ce72b4dc5bfcb87ccdf75c60afc5a72e69"
+    },
+    "progress/terminal-target-head-v6/comparators/training-027.json": {
+      "mtime_ns": 1794297308965931198,
+      "observed_at": "2026-11-10T08:10:03.059471+00:00",
+      "sha256": "8b577c0c75689807ed675a837cb502e0e84e5cbaef858ca8a5b133a5d4b6fdf5"
+    },
+    "progress/terminal-target-head-v6/comparators/training-028.json": {
+      "mtime_ns": 1794297309814976860,
+      "observed_at": "2026-11-10T08:10:03.059547+00:00",
+      "sha256": "b25de440aa2dd84f2a6fbfa71446162543fdec3b9b769fdd87c141466b400d89"
+    },
+    "progress/terminal-target-head-v6/comparators/training-029.json": {
+      "mtime_ns": 1794297314407286329,
+      "observed_at": "2026-11-10T08:10:03.059618+00:00",
+      "sha256": "44bc8c65d8495ec1f8ffbcdcdd64d7b5348a5d3da5001ab786e9ddbcc35a0c67"
+    },
+    "progress/terminal-target-head-v6/comparators/training-030.json": {
+      "mtime_ns": 1794297313386525100,
+      "observed_at": "2026-11-10T08:10:03.059692+00:00",
+      "sha256": "189fcc07bd247af6ae40d58f89339d6cd500a3db48994b453ae33a8b86905a5c"
+    },
+    "progress/terminal-target-head-v6/comparators/training-031.json": {
+      "mtime_ns": 1794297315507272759,
+      "observed_at": "2026-11-10T08:10:03.059762+00:00",
+      "sha256": "686305d93de99cd26b66e53c1bbfce00283ecb10a4ed6be8df3e8ba5375bc546"
+    },
+    "progress/terminal-target-head-v6/roots-training.json": {
+      "mtime_ns": 1794297127014938238,
+      "observed_at": "2026-11-10T08:10:03.016956+00:00",
+      "sha256": "0ed150534c8c60155bcfe33f0a5cfe0a24ef283cf8ce18b3c011e9d45500a36f"
+    },
+    "progress/terminal-target-head-v6/roots-validation.json": {
+      "mtime_ns": 1794297222127064217,
+      "observed_at": "2026-11-10T08:10:03.017372+00:00",
+      "sha256": "14552424f106bf83ffac3f98265c5f5f859e111a854c573e34b3d283f3e4be1d"
+    },
+    "progress/terminal-target-head-v6/target-budget.json": {
+      "mtime_ns": 1794297127016989118,
+      "observed_at": "2026-11-10T08:10:03.026975+00:00",
+      "sha256": "4af259be9158fbd4a1b6539b294ef43b46a47c193b03da9721ba157d543405cd"
+    },
+    "runs/terminal-target-head-v6/sources/training-m0-j1.json": {
+      "mtime_ns": 1794296910900721111,
+      "observed_at": "2026-11-10T08:10:03.027372+00:00",
+      "sha256": "40134e7c0d0ffae2cb177457b63cd9bd1c0a6a6da63ce54ec0c96dbce4a7335d"
+    },
+    "runs/terminal-target-head-v6/sources/training-m0-j2.json": {
+      "mtime_ns": 1794296909408796489,
+      "observed_at": "2026-11-10T08:10:03.028034+00:00",
+      "sha256": "cf2563dd892cbd2846760501ed5ad4a536f64e7e3b4fe4c78c5de97a3481b5ac"
+    },
+    "runs/terminal-target-head-v6/sources/training-m0-j3.json": {
+      "mtime_ns": 1794296906620908626,
+      "observed_at": "2026-11-10T08:10:03.028685+00:00",
+      "sha256": "65a9bb00f94e24964e59b2d00c90d8991ee4544595d2e58dc205a7fc052f42bc"
+    },
+    "runs/terminal-target-head-v6/sources/training-m0-j4.json": {
+      "mtime_ns": 1794296914196697326,
+      "observed_at": "2026-11-10T08:10:03.029260+00:00",
+      "sha256": "fa6bb30488671bb2f98d11047a826b9bdfcc30f5de2dbf738994c12da14de64f"
+    },
+    "runs/terminal-target-head-v6/sources/training-m1-j1.json": {
+      "mtime_ns": 1794296948541680629,
+      "observed_at": "2026-11-10T08:10:03.030331+00:00",
+      "sha256": "f322908fa96af8545e0dde767a603ed085cb474fee6a4a3e6d2fa015529997d8"
+    },
+    "runs/terminal-target-head-v6/sources/training-m1-j2.json": {
+      "mtime_ns": 1794296946912466602,
+      "observed_at": "2026-11-10T08:10:03.031263+00:00",
+      "sha256": "6e9f5bed567d8b81620d954381720fc7079317bfcfd960dc2c3c7d156fc0a057"
+    },
+    "runs/terminal-target-head-v6/sources/training-m1-j3.json": {
+      "mtime_ns": 1794296947824991908,
+      "observed_at": "2026-11-10T08:10:03.032052+00:00",
+      "sha256": "f0aeba0c0988c8ec92f08d5c2147dca71c6104cb7c1c1d73ffb4350f20bb5384"
+    },
+    "runs/terminal-target-head-v6/sources/training-m1-j4.json": {
+      "mtime_ns": 1794296980584472666,
+      "observed_at": "2026-11-10T08:10:03.032842+00:00",
+      "sha256": "d446398b74be28a5bfd5b33847037573a47b1d1892989de6221b449a540c1197"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j1.json": {
+      "mtime_ns": 1794296984552209648,
+      "observed_at": "2026-11-10T08:10:03.033655+00:00",
+      "sha256": "4622d41bf45b6c2b87422b87ba8021a03c870072697aae0bbfd3061c1edcc682"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j2.json": {
+      "mtime_ns": 1794296987588187387,
+      "observed_at": "2026-11-10T08:10:03.034473+00:00",
+      "sha256": "71a1e3c65b80630fdf9c82c9f38ec5a4409d4bd818aa4cfc24393e57db65ae7c"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j3.json": {
+      "mtime_ns": 1794297015839973474,
+      "observed_at": "2026-11-10T08:10:03.035281+00:00",
+      "sha256": "3334b0c773f3f4c316a1e8c83a85cab9f25a176e05621e32907acf8d9e8d75f6"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j4.json": {
+      "mtime_ns": 1794297018261258451,
+      "observed_at": "2026-11-10T08:10:03.036056+00:00",
+      "sha256": "4e4cb6159cea860df0a58a894993ecd632389d1044358dd1e01db6e5e5a5a4d4"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j5.json": {
+      "mtime_ns": 1794297067307606826,
+      "observed_at": "2026-11-10T08:10:03.036878+00:00",
+      "sha256": "ab49acd58f9f07456c6a093633eabc60f149d52fdd2d52f9a42379ebe6257f0a"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j6.json": {
+      "mtime_ns": 1794297096492407582,
+      "observed_at": "2026-11-10T08:10:03.037728+00:00",
+      "sha256": "1bea19770728057cccc5fbd63540863189802cff60bf127b73ba9da60819eb4e"
+    },
+    "runs/terminal-target-head-v6/sources/training-m2-j8.json": {
+      "mtime_ns": 1794297126255641433,
+      "observed_at": "2026-11-10T08:10:03.038547+00:00",
+      "sha256": "c152345504cea5a2d02733fe8e709de4bebaff994d395b9acc757c86fa2ae251"
+    },
+    "runs/terminal-target-head-v6/sources/training-m3-j1.json": {
+      "mtime_ns": 1794297014515982857,
+      "observed_at": "2026-11-10T08:10:03.039415+00:00",
+      "sha256": "19385af8ea8e28270004eb49ea34b74c01a62602c84a519b750c89a4e9e5841f"
+    },
+    "runs/terminal-target-head-v6/sources/training-m3-j2.json": {
+      "mtime_ns": 1794297036743826087,
+      "observed_at": "2026-11-10T08:10:03.040356+00:00",
+      "sha256": "8c39a8dbfbaecd1983a1354368d695603a5c0d0e1e12f5a02a27a0f80c776a45"
+    },
+    "runs/terminal-target-head-v6/sources/training-m3-j3.json": {
+      "mtime_ns": 1794297040744019964,
+      "observed_at": "2026-11-10T08:10:03.044269+00:00",
+      "sha256": "8fd5954d199db54246beda4d5b0a3b4cd60e33e8143f9c09fb965f8cdef32f98"
+    },
+    "runs/terminal-target-head-v6/sources/training-m3-j4.json": {
+      "mtime_ns": 1794297034484948816,
+      "observed_at": "2026-11-10T08:10:03.045420+00:00",
+      "sha256": "e431c7a0ea88809c310280d2b05be98c45eacdd80b742b93701a88f935759685"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m0-j1.json": {
+      "mtime_ns": 1794297136819104346,
+      "observed_at": "2026-11-10T08:10:03.046320+00:00",
+      "sha256": "e7bb68295908c9fc0d46b8c8dbb8eeaf6e5fee88a15aef7aa4d3c1672015c417"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m0-j2.json": {
+      "mtime_ns": 1794297137885123932,
+      "observed_at": "2026-11-10T08:10:03.047066+00:00",
+      "sha256": "0ccb3d1f85bc44ef4741ee16fc220ffb89bd1a1b0b0d98157d245de3be77af42"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m1-j1.json": {
+      "mtime_ns": 1794297162248328744,
+      "observed_at": "2026-11-10T08:10:03.047485+00:00",
+      "sha256": "59183c9ce1e5454009374cf552b56a7702b118a0d296021e861c52b6426a2078"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m1-j2.json": {
+      "mtime_ns": 1794297167003185905,
+      "observed_at": "2026-11-10T08:10:03.048072+00:00",
+      "sha256": "f2e9cd4028470f8beb32c0cfae2c6741e60ea41613818485398887d9d7eb2761"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m2-j1.json": {
+      "mtime_ns": 1794297175952058243,
+      "observed_at": "2026-11-10T08:10:03.048657+00:00",
+      "sha256": "45546e6a6fccbb6cf44c66acab08e35a417f460842cd5dd9208733357e359e88"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m2-j2.json": {
+      "mtime_ns": 1794297198595886825,
+      "observed_at": "2026-11-10T08:10:03.049333+00:00",
+      "sha256": "11dcbb815511ecb3bf32857f421a04d75ee9422e81a1a684072e384dc2135f6c"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m2-j4.json": {
+      "mtime_ns": 1794297221316498386,
+      "observed_at": "2026-11-10T08:10:03.052511+00:00",
+      "sha256": "92b3f4a693b2073924bd1a38a2968feb7b20b7af03fe428ad7ced6ebcd0d2aca"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m3-j1.json": {
+      "mtime_ns": 1794297193153800515,
+      "observed_at": "2026-11-10T08:10:03.053214+00:00",
+      "sha256": "2bacae4df386a24f1e419984ded5e40b0182de94a4bb6362159818e1b69248db"
+    },
+    "runs/terminal-target-head-v6/sources/validation-m3-j2.json": {
+      "mtime_ns": 1794297199159231998,
+      "observed_at": "2026-11-10T08:10:03.055030+00:00",
+      "sha256": "a12d52db8fd073e53ba305f4d475daaf1b67220ee2aaaf88fca5fb168b183fe6"
+    }
+  },
+  "observed_actor_status": {
+    "active_jobs": [
+      "cb28a1a7b04497bb2d86b5366a26dda79c00ef9bd570780ca8409124ae8fc49d",
+      "f08e1800991b6833be49e0341d049e30c7798c89bff84bca9d426bd096ba12c0",
+      "672b8898e116403d7c32c521caec305952274ab14b12b5636642ddfa30b7711e"
+    ],
+    "completed_jobs_this_cycle": 70,
+    "experiment_id": "terminal-target-head-v6",
+    "identity_sha256": "8ca3b86522d9c7a4d794bb8ab62a1f1173f4fd780350a244fda1f78b4e8a5a26",
+    "phase": "collect_selection",
+    "pid": 59402,
+    "resources": {
+      "aggregate_rss_bytes": 3221168128,
+      "live_process_group_cpu_seconds": 1192.81,
+      "processes": 6
+    },
+    "updated_at": "2026-11-10T08:09:53.720822+00:00"
+  },
+  "schema_version": 1,
+  "source_journals": [
+    {
+      "ended_at": "2026-11-10T07:48:30.893853+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m0-j1.json",
+      "sha256": "40134e7c0d0ffae2cb177457b63cd9bd1c0a6a6da63ce54ec0c96dbce4a7335d",
+      "source_id": "training-m0-j1",
+      "started_at": "2026-11-10T07:48:20.801801+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:48:29.400423+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m0-j2.json",
+      "sha256": "cf2563dd892cbd2846760501ed5ad4a536f64e7e3b4fe4c78c5de97a3481b5ac",
+      "source_id": "training-m0-j2",
+      "started_at": "2026-11-10T07:48:20.769354+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:48:26.617564+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m0-j3.json",
+      "sha256": "65a9bb00f94e24964e59b2d00c90d8991ee4544595d2e58dc205a7fc052f42bc",
+      "source_id": "training-m0-j3",
+      "started_at": "2026-11-10T07:48:20.909554+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:48:34.191887+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m0-j4.json",
+      "sha256": "fa6bb30488671bb2f98d11047a826b9bdfcc30f5de2dbf738994c12da14de64f",
+      "source_id": "training-m0-j4",
+      "started_at": "2026-11-10T07:48:28.612735+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:08.537099+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m1-j1.json",
+      "sha256": "f322908fa96af8545e0dde767a603ed085cb474fee6a4a3e6d2fa015529997d8",
+      "source_id": "training-m1-j1",
+      "started_at": "2026-11-10T07:48:31.618306+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:06.898369+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m1-j2.json",
+      "sha256": "6e9f5bed567d8b81620d954381720fc7079317bfcfd960dc2c3c7d156fc0a057",
+      "source_id": "training-m1-j2",
+      "started_at": "2026-11-10T07:48:33.397266+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:07.817831+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m1-j3.json",
+      "sha256": "f0aeba0c0988c8ec92f08d5c2147dca71c6104cb7c1c1d73ffb4350f20bb5384",
+      "source_id": "training-m1-j3",
+      "started_at": "2026-11-10T07:48:36.284126+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:40.579988+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m1-j4.json",
+      "sha256": "d446398b74be28a5bfd5b33847037573a47b1d1892989de6221b449a540c1197",
+      "source_id": "training-m1-j4",
+      "started_at": "2026-11-10T07:49:09.438945+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:44.542226+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j1.json",
+      "sha256": "4622d41bf45b6c2b87422b87ba8021a03c870072697aae0bbfd3061c1edcc682",
+      "source_id": "training-m2-j1",
+      "started_at": "2026-11-10T07:49:09.924882+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:49:47.582296+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j2.json",
+      "sha256": "71a1e3c65b80630fdf9c82c9f38ec5a4409d4bd818aa4cfc24393e57db65ae7c",
+      "source_id": "training-m2-j2",
+      "started_at": "2026-11-10T07:49:10.912765+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:15.832523+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j3.json",
+      "sha256": "3334b0c773f3f4c316a1e8c83a85cab9f25a176e05621e32907acf8d9e8d75f6",
+      "source_id": "training-m2-j3",
+      "started_at": "2026-11-10T07:49:42.650485+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:18.256382+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j4.json",
+      "sha256": "4e4cb6159cea860df0a58a894993ecd632389d1044358dd1e01db6e5e5a5a4d4",
+      "source_id": "training-m2-j4",
+      "started_at": "2026-11-10T07:49:46.619305+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:51:07.304368+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j5.json",
+      "sha256": "ab49acd58f9f07456c6a093633eabc60f149d52fdd2d52f9a42379ebe6257f0a",
+      "source_id": "training-m2-j5",
+      "started_at": "2026-11-10T07:50:42.616342+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:51:36.488062+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j6.json",
+      "sha256": "1bea19770728057cccc5fbd63540863189802cff60bf127b73ba9da60819eb4e",
+      "source_id": "training-m2-j6",
+      "started_at": "2026-11-10T07:51:09.154646+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:06.250377+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m2-j8.json",
+      "sha256": "c152345504cea5a2d02733fe8e709de4bebaff994d395b9acc757c86fa2ae251",
+      "source_id": "training-m2-j8",
+      "started_at": "2026-11-10T07:51:38.235738+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:14.506744+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m3-j1.json",
+      "sha256": "19385af8ea8e28270004eb49ea34b74c01a62602c84a519b750c89a4e9e5841f",
+      "source_id": "training-m3-j1",
+      "started_at": "2026-11-10T07:49:49.843665+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:36.736216+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m3-j2.json",
+      "sha256": "8c39a8dbfbaecd1983a1354368d695603a5c0d0e1e12f5a02a27a0f80c776a45",
+      "source_id": "training-m3-j2",
+      "started_at": "2026-11-10T07:50:16.578246+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:40.738506+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m3-j3.json",
+      "sha256": "8fd5954d199db54246beda4d5b0a3b4cd60e33e8143f9c09fb965f8cdef32f98",
+      "source_id": "training-m3-j3",
+      "started_at": "2026-11-10T07:50:18.297916+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:50:34.478048+00:00",
+      "path": "runs/terminal-target-head-v6/sources/training-m3-j4.json",
+      "sha256": "e431c7a0ea88809c310280d2b05be98c45eacdd80b742b93701a88f935759685",
+      "source_id": "training-m3-j4",
+      "started_at": "2026-11-10T07:50:20.497563+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:16.818076+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m0-j1.json",
+      "sha256": "e7bb68295908c9fc0d46b8c8dbb8eeaf6e5fee88a15aef7aa4d3c1672015c417",
+      "source_id": "validation-m0-j1",
+      "started_at": "2026-11-10T07:52:10.156620+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:17.880545+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m0-j2.json",
+      "sha256": "0ccb3d1f85bc44ef4741ee16fc220ffb89bd1a1b0b0d98157d245de3be77af42",
+      "source_id": "validation-m0-j2",
+      "started_at": "2026-11-10T07:52:10.154826+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:42.241418+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m1-j1.json",
+      "sha256": "59183c9ce1e5454009374cf552b56a7702b118a0d296021e861c52b6426a2078",
+      "source_id": "validation-m1-j1",
+      "started_at": "2026-11-10T07:52:09.903823+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:46.999384+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m1-j2.json",
+      "sha256": "f2e9cd4028470f8beb32c0cfae2c6741e60ea41613818485398887d9d7eb2761",
+      "source_id": "validation-m1-j2",
+      "started_at": "2026-11-10T07:52:18.833733+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:52:55.947889+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m2-j1.json",
+      "sha256": "45546e6a6fccbb6cf44c66acab08e35a417f460842cd5dd9208733357e359e88",
+      "source_id": "validation-m2-j1",
+      "started_at": "2026-11-10T07:52:20.543690+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:53:18.592269+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m2-j2.json",
+      "sha256": "11dcbb815511ecb3bf32857f421a04d75ee9422e81a1a684072e384dc2135f6c",
+      "source_id": "validation-m2-j2",
+      "started_at": "2026-11-10T07:52:44.643474+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:53:41.312538+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m2-j4.json",
+      "sha256": "92b3f4a693b2073924bd1a38a2968feb7b20b7af03fe428ad7ced6ebcd0d2aca",
+      "source_id": "validation-m2-j4",
+      "started_at": "2026-11-10T07:53:21.142397+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:53:13.149402+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m3-j1.json",
+      "sha256": "2bacae4df386a24f1e419984ded5e40b0182de94a4bb6362159818e1b69248db",
+      "source_id": "validation-m3-j1",
+      "started_at": "2026-11-10T07:52:49.167687+00:00"
+    },
+    {
+      "ended_at": "2026-11-10T07:53:19.154942+00:00",
+      "path": "runs/terminal-target-head-v6/sources/validation-m3-j2.json",
+      "sha256": "a12d52db8fd073e53ba305f4d475daaf1b67220ee2aaaf88fca5fb168b183fe6",
+      "source_id": "validation-m3-j2",
+      "started_at": "2026-11-10T07:52:58.318714+00:00"
+    }
+  ]
+}
