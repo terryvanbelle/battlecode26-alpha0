@@ -514,3 +514,16 @@ to the candidate, training settings or benchmark schedule was made.
 New nonpinned reporting helpers derive dashboard views from canonical immutable
 benchmark attempts and plot saved fitting histories. They do not launch games
 or train. Final export/verification remains deferred until actor quiescence.
+
+## Fresh cp2 control shows timing-dependent variation
+
+A partial repeatability check found one changed outcome (rapierV1, knifefight,
+seed 2026, learned seat B) with identical evaluation identity and opponent
+class hashes: original cp2 win in 57 rounds, fresh control loss in 33. The
+frozen opponent initializes its RNG from Clock.getTimeElapsed(), which exposes
+accumulated execution nanoseconds. Fixed game seeds therefore do not promise
+identical opponent randomness. This is an observed nondeterministic mechanism,
+not a traced proof of the exact divergent action. Both valid outcomes remain;
+no opponent/harness patch, outcome-selected rerun or threshold change is made.
+Use the preregistered fresh matched control and retain the original baseline
+comparison too; fresh-seed confirmation remains required.

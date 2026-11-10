@@ -1,0 +1,34 @@
+{
+  "scope": "Partial control repeatability check, not a complete strength comparison",
+  "cells_compared": 235,
+  "outcome_differences": [
+    {
+      "cell": [
+        "CS50Crab_rapierV1",
+        "knifefight",
+        2026,
+        "B"
+      ],
+      "identity_equal": true,
+      "baseline": {
+        "score": 1.0,
+        "rounds": 57,
+        "winner": 1,
+        "evaluation_cell_id": "dc58512e44446d44d243f769e98f02dda76103bc5694585729ee13958ec5f4e7",
+        "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+        "opponent_classes_sha256": "39a7b5fef7c3dbcee74b17128fc2346887ff573e407f9262d2a5043586bb414b"
+      },
+      "fresh_control": {
+        "score": 0.0,
+        "rounds": 33,
+        "winner": 0,
+        "evaluation_cell_id": "dc58512e44446d44d243f769e98f02dda76103bc5694585729ee13958ec5f4e7",
+        "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+        "opponent_classes_sha256": "39a7b5fef7c3dbcee74b17128fc2346887ff573e407f9262d2a5043586bb414b"
+      },
+      "fresh_record": "progress/terminal-target-head-v8/benchmarks/cells/09f1e8528b20e640515faacf278d9b16deeb0a192fa302a91f506b4fd7718035/attempt-001.json"
+    }
+  ],
+  "observed_mechanism": "CS50Crab_rapierV1 RobotPlayer.java:28 initializes Random from Clock.getTimeElapsed(); official Clock exposes accumulated execution nanoseconds. Game seed alone does not pin this source of randomness.",
+  "interpretation": "Timing-dependent randomness is present; no claim that the exact divergent action was traced. Keep both outcomes. No bot or harness changes and no additional outcome-selected reruns."
+}
