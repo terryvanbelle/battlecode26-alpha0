@@ -105,8 +105,14 @@ class TerminalV6ExportTest(unittest.TestCase):
         self.baseline_hash = fixture(self.root)
         self.pin = mock.patch.object(E, "CP2_SHA256", self.baseline_hash)
         self.pin.start()
+        # Offline fixture exports must not inspect or interfere with real actors.
+        self.fake_proc = Path(self.temp.name) / "proc"
+        self.fake_proc.mkdir()
+        self.proc_patch = mock.patch.object(E, "PROC", self.fake_proc)
+        self.proc_patch.start()
 
     def tearDown(self):
+        self.proc_patch.stop()
         self.pin.stop()
         self.temp.cleanup()
 
@@ -174,6 +180,25 @@ class TerminalV6ExportTest(unittest.TestCase):
             (process / "cwd").symlink_to(self.root, target_is_directory=True)
         with mock.patch.object(E, "PROC", fake_proc):
             self.assertEqual(E.active_actor_pids(self.root), [900001, 900002, 900003])
+
+    def test_matching_actor_with_unreadable_cwd_blocks_even_without_locks(self):
+        for number, arguments in enumerate((
+                ["python", "-m", "alpha0.terminal_v6", "--worker", "job.json"],
+                ["java", "alpha0.EngineBridge"],
+                ["python", "-m", "pytest"]), start=900011):
+            process = self.fake_proc / str(number); process.mkdir()
+            (process / "cmdline").write_bytes(b"\0".join(arg.encode() for arg in arguments) + b"\0")
+            (process / "cwd").symlink_to(self.root, target_is_directory=True)
+        real_resolve = Path.resolve
+        def resolve(path, *args, **kwargs):
+            if path.parent.parent == self.fake_proc and path.name == "cwd":
+                raise PermissionError("sandbox namespace hides cwd")
+            return real_resolve(path, *args, **kwargs)
+        with mock.patch.object(Path, "resolve", autospec=True, side_effect=resolve):
+            self.assertEqual(E.active_actor_pids(self.root), [900011, 900012])
+            with self.assertRaisesRegex(RuntimeError, "orphan engine"):
+                with E.experiment_locks(self.root):
+                    self.fail("an unattributable matching actor must block export")
 
     def test_all_four_stops_are_preserved_by_quiescent_export(self):
         self.assertEqual(len(E.LOCKS), 4)

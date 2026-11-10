@@ -121,3 +121,20 @@ after a deadline; a completed or failed research decision is reviewed before
 any new experiment. Use `scripts/export_terminal_v6.py` for its separate
 verified export; do not restore over existing/newer work. None of these subset
 pilots satisfies the all-map victory gate.
+
+
+On the managed host, `/proc/PID/cwd` can be unreadable across sandbox namespaces
+even when the command line is readable. The frozen v6 runner's internal actor
+scan can therefore return an empty list while real actors are running. Do not
+interpret that as quiescence: inspect actual command lines and flock ownership
+as required above. The separate v6 exporter now conservatively blocks matching
+actor/EngineBridge commands with unreadable working directories. Its read-only
+scan can be used before any manual launch:
+
+```bash
+.venv/bin/python -c 'from pathlib import Path; from scripts.export_terminal_v6 import active_actor_pids; print(active_actor_pids(Path.cwd()))'
+```
+
+Any returned PID requires process inspection before proceeding. Existing actor
+code remains frozen; the four exclusion locks still prevent overlapping normal
+launches. The next versioned supervisor should adopt the conservative scan.

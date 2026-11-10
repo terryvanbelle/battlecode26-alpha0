@@ -335,3 +335,14 @@ fit recovery and process-tree deadline cleanup. An operational-only rendering
 fix regenerates final graphs; rendering failure still publishes durable final
 status. The independent reviewer found no change to optimizer math or frozen
 engine, network, inference and PUCT behavior.
+
+
+During v6 collection, an operational check reproduced a managed-sandbox issue:
+`/proc/PID/cwd` was denied for live actors whose command lines remained readable.
+The pinned runner's scan could falsely return no actors; actual process commands
+and all four flocks confirmed the existing run, and no duplicate was started.
+The separate, unpinned v6 recovery helper now blocks matching processes when
+cwd is unreadable; its 17 offline tests pass, including a PermissionError
+regression. No learner, collector, inference, engine or pinned runtime changed.
+The operator instructions require command/lock inspection and the corrected
+external scan; future supervisors should adopt that behavior.

@@ -103,7 +103,7 @@ def file_identity(path):
 
 
 def active_actor_pids(root):
-    """Detect repository actors/orphan engines without exposing their command lines."""
+    """Fail closed when a matching actor's cwd cannot be inspected across namespaces."""
     actors = []
     proc = PROC
     if not proc.is_dir():
@@ -114,15 +114,26 @@ def active_actor_pids(root):
         try:
             arguments = (process / "cmdline").read_bytes().split(b"\0")
             args = [arg.decode(errors="replace") for arg in arguments if arg]
-            kinds = [arg for arg in args if arg in {"alpha0.EngineBridge", "alpha0.campaign", "alpha0.evaluate"}
-                     or arg.startswith(("alpha0.terminal_v5", "alpha0.terminal_v6")) or
-                     (Path(arg).name.startswith("run_") and Path(arg).name.endswith(".py") and
-                      ("warmstart" in Path(arg).name or ("terminal" in Path(arg).name and
-                       any(version in Path(arg).name for version in ("v5", "v6")))))]
-            if kinds and (process / "cwd").resolve() == root:
-                actors.append(int(process.name))
         except (FileNotFoundError, ProcessLookupError, PermissionError):
             continue
+        kinds = [arg for arg in args if arg in {"alpha0.EngineBridge", "alpha0.campaign", "alpha0.evaluate"}
+                 or arg.startswith(("alpha0.terminal_v5", "alpha0.terminal_v6")) or
+                 (Path(arg).name.startswith("run_") and Path(arg).name.endswith(".py") and
+                  ("warmstart" in Path(arg).name or ("terminal" in Path(arg).name and
+                   any(version in Path(arg).name for version in ("v5", "v6")))))]
+        if not kinds:
+            continue
+        try:
+            process_root = (process / "cwd").resolve()
+        except PermissionError:
+            # Cross-exec sandbox namespaces may expose cmdline while denying cwd.
+            # A matching process cannot then be safely attributed elsewhere.
+            actors.append(int(process.name))
+            continue
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        if process_root == root:
+            actors.append(int(process.name))
     return sorted(actors)
 
 
