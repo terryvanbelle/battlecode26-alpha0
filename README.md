@@ -16,8 +16,10 @@ The goal is one frozen learned checkpoint that beats **each of the twelve oppone
 
 Most evaluations use cheap small map subsets. The campaign automatically opens the expensive standard stage only after a complete smoke evaluation scores at least 50% against **every** opponent; an explicit periodic research review can also schedule an occasional all-map check. That screen is not qualification: the prior and its 20/24 checkpoints still fail it against two opponents. Confirmation locks one candidate per gate version; a failed confirmation consumes its four-seed set. A later attempt needs a new version and four unused seeds across all maps. `Stash`, `Hike`, `heart` and `ratsareants` remain excluded from gradient training, while all benchmark trajectories remain evaluation-only. See the [full protocol](docs/all-maps-victory.md).
 
-![V2 benchmark progress and completion counts](progress/campaign-v2/evaluation.png)
-![V2 value fitting, replay diversity and search coverage](progress/campaign-v2/learning-health.png)
+![Warmstart benchmark progress and completion counts](progress/warmstart-v3/evaluation.png)
+![Frozen-checkpoint terminal ranking: selection and separate validation](progress/root-ranking-v4/comparison.png)
+
+The second figure is a search-mechanism diagnostic, not a benchmark score. The [neutral control graphs](progress/campaign-v2/README.md) and all earlier experiments remain available separately.
 
 ```bash
 bash scripts/bootstrap.sh
