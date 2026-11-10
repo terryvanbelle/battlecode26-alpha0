@@ -1,6 +1,6 @@
 # Training progress
 
-Generated from repository JSONL measurements at `2026-11-10T01:59:55+00:00`.
+Generated from repository JSONL measurements at `2026-11-10T02:27:34+00:00`.
 
 Run `python scripts/plot_progress.py` to regenerate these figures and this report.
 
@@ -8,21 +8,42 @@ Run `python scripts/plot_progress.py` to regenerate these figures and this repor
 
 | Measurement | Observed value |
 |---|---:|
-| `iteration` | 1 |
-| `games_total` | 2 |
-| `positions_total` | 14610 |
-| `policy_loss` | 1.59189 |
-| `value_loss` | 0.568617 |
-| `total_loss` | 2.16051 |
-| `entropy` | 1.56233 |
-| `games_per_hour` | 19.3268 |
-| `wall_seconds` | 372.545 |
+| `iteration` | 3 |
+| `games_total` | 6 |
+| `positions_total` | 43779 |
+| `policy_loss` | 1.33459 |
+| `value_loss` | 2.74076 |
+| `total_loss` | 4.07535 |
+| `entropy` | 1.36712 |
+| `games_per_hour` | 19.8616 |
+| `wall_seconds` | 1082.27 |
 
 ![Training loss, entropy, data volume and throughput](training.png)
 
 ## Latest benchmark checkpoint
 
-No benchmark games have been recorded. Historical opponent ratings are selection evidence, not results for this agent.
+Iteration **3**, checkpoint `checkpoint-0003.pt`.
+
+**24 completed games; 0 errors; 12/12 panel opponents represented.**
+
+Equal-weight mean game score: **20.8%** across all frozen panel opponents. This is not an Elo estimate.
+
+Paired-map bootstrap interval unavailable: 1 shared map–seed cells have both sides completed against every panel opponent; at least 4 are required. A small smoke suite is insufficient for a strength claim.
+
+| Opponent | Completed | W–D–L | Mean score | Descriptive 95% Wilson interval | Errors | Sides A/B |
+|---|---:|---:|---:|---:|---:|---:|
+| `Krak9n_robot` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
+| `seru9_TOTAL_AGGRO` | 2 | 1–0–1 | 50.0% | 9.5%–90.5% | 0 | 1/1 |
+| `Camleaf_mk1` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `CS50Crab_rapierV1` | 2 | 2–0–0 | 100.0% | 34.2%–100.0% | 0 | 1/1 |
+| `spsquared_TSPAARK_QUALS` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `HugoIngelsson_Xzibit` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `abcdezyxwv_bestsofar` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `IvanGeffner_basic51` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `bc26-example` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `vibe26b_zdb` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `thewaxmango_collegejunior` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
+| `uravt_Version41` | 2 | 0–0–2 | 0.0% | 0.0%–65.8% | 0 | 1/1 |
 
 ![Benchmark scores and completion counts](evaluation.png)
 
@@ -36,3 +57,7 @@ No benchmark games have been recorded. Historical opponent ratings are selection
 - The panel bootstrap resamples complete shared map–seed cells, keeping both sides and every opponent together (2,000 resamples, fixed RNG seed). It uses the balanced intersection of completed cells; this can differ from the all-completed-game mean. Four cells is the calculation minimum, not a guarantee of adequate power. Bootstrap intervals can collapse when every observed cell has the same outcome.
 - Distinct checkpoints are never pooled. Duplicate checkpoint/opponent/map/seed/side cells keep their final recorded outcome and do not increase sample size.
 - Loss reductions describe fitting to self-play targets; benchmark outcomes measure playing performance. Neither a small smoke suite nor self-play win balance establishes strength against the wider field.
+
+## Data notices
+
+- Evaluation: kept the latest outcome for 1 repeated checkpoint cells; repeats are not extra evidence.
