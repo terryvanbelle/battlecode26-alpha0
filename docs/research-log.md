@@ -286,3 +286,52 @@ root, continuation or validation outcome enters fitting, and no benchmark data
 enter gradients. The original architecture, critic, champion, controls and
 888-pair all-map gate remain fixed. This protocol is selected for implementation;
 it has not yet been trained or evaluated, and no automatic promotion is implied.
+
+
+### Terminal-target-head-v5 coverage review (2026-11-10)
+
+The preregistered pilot was implemented and committed as `aadc029` before real
+source games. The integrated checks passed 78 tests and 32 subtests. Its bounded
+invocation completed **20 own-self-play games** (16 initial plus four prescribed
+reserves) in **188.42 seconds**, with zero failed or incomplete source attempts
+and unchanged cp2/runtime. It froze **24 of 32 required training roots**; all
+eight missing slots were on `closeup`. The coverage barrier correctly ended
+the invocation as `review_required`: no target continuation, SGD, validation
+or benchmark game ran. Missing roots were not discarded from the denominator.
+
+[Coverage graphs and exact manifests](../progress/terminal-target-head-v5/README.md)
+retain every reserve assignment. The separate [verified recovery archive](../artifacts/terminal-target-head-v5/README.md)
+contains all completed source transcripts, lossless cached inputs and the unchanged
+cp2 dependency. No candidate was produced and no benchmark improvement is claimed.
+This is a pre-target coverage failure, requiring an explicit versioned source-policy
+review before further learning; repeating the same seed schedule cannot fill the
+frozen missing slots. V4 and both earlier learning campaigns remain unchanged.
+
+
+The independent coverage audit verified all 20 terminal worlds and transcripts,
+684 lossless cached positions and their canonical input hashes, current model/
+runtime/map hashes, and the exact reserve allocation while holding all exclusion
+locks. [Passive diagnosis](terminal-v5-coverage.md) found an assault-intent loop
+behind impassable king geometry. Seven sources never created a baby; the eighth
+did produce combat states but only for the opposite role/team parity from its
+assigned slots. Retaining those slots as unavailable was correct.
+
+A separately versioned [terminal-target-head-v6](terminal-target-head-v6.md) is
+selected before any new source games: source temperature 1.0 symmetrically on
+all maps/teams, continuation temperature 0.35 unchanged. The full source/reserve
+seed inventory is retained for a paired coverage comparison; every data artifact
+is generated anew in v6. Sampled stalled inputs assign assault mean probability
+99.9775% at T=.35 versus 77.2487% at T=1. This is a coverage hypothesis, not proof
+that the planned roots will exist. Both matched arms still require exactly
+32 training roots, 512 anchors, 16 input-disjoint validation roots, the 1,600-cell
+ceiling and 72 complete fresh smoke games. All fitting and decision rules stay
+fixed; another shortfall returns to review without SGD. V5 source, config and
+preregistered protocol remain byte-identical.
+
+The v6 implementation passed **92 tests and 32 subtests** before collection,
+including separate source/continuation temperature call sites, immutable v5
+hashes, the complete paired seed inventory, all four locks/STOP markers, exact
+fit recovery and process-tree deadline cleanup. An operational-only rendering
+fix regenerates final graphs; rendering failure still publishes durable final
+status. The independent reviewer found no change to optimizer math or frozen
+engine, network, inference and PUCT behavior.

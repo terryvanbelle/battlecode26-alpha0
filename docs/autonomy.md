@@ -95,3 +95,29 @@ The continuing agent should respect `runs/campaign/STOP`, the campaign lock, and
 `battlecode-dev` is an optional future execution host. Its recorded access information and current credential limitation are in [compute.md](compute.md). This campaign does not connect to it, alter its services, or provision paid infrastructure. Notify the user before using that VM, as requested.
 
 Durable snapshots and recovery commands are documented in [campaign-snapshots.md](campaign-snapshots.md).
+
+
+## Current policy-transfer research boundary
+
+V4 completed and passed its small mechanism rule; do not repeat it as new evidence.
+[V5](terminal-target-head-v5.md) correctly stopped with 24/32 roots before SGD;
+its separate [verified archive](../artifacts/terminal-target-head-v5/README.md)
+preserves the coverage failure. The next [v6](terminal-target-head-v6.md) uses
+symmetric source temperature 1.0, unchanged continuation temperature .35, and
+the complete same seed inventory with newly generated data.
+
+Inspect processes, status and all locks before a bounded invocation:
+
+```bash
+.venv/bin/python -u -m alpha0.terminal_v6 --seconds 10800
+```
+
+This supervisor owns campaign, warmstart, v5 and v6 exclusion locks and honors
+all four corresponding STOP files. Its own paths are
+`runs/terminal-target-head-v6` and `progress/terminal-target-head-v6`. Never
+edit its recorded runtime while active. A coverage/budget failure requires
+research review, not a smaller fitting set. Completed immutable work is reused
+after a deadline; a completed or failed research decision is reviewed before
+any new experiment. Use `scripts/export_terminal_v6.py` for its separate
+verified export; do not restore over existing/newer work. None of these subset
+pilots satisfies the all-map victory gate.

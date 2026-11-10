@@ -1,0 +1,377 @@
+{
+  "anchors": {
+    "complete": false,
+    "completed": 0,
+    "planned": 512,
+    "unique_gradient_inputs": 0
+  },
+  "benchmark_data_used_for_training": false,
+  "benchmarks": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed": 0,
+    "expected": 72,
+    "historical_cp2_score": {
+      "fresh": false,
+      "games": 24,
+      "wins": 20
+    },
+    "identity_verified": false,
+    "opponent_comparisons": {},
+    "panels": {},
+    "per_opponent_nonregression": false,
+    "unresolved_errors": 0
+  },
+  "collection": {
+    "training": {
+      "attempt_errors_or_interruptions": 0,
+      "attempted_source_games": 20,
+      "completed_source_games": 20,
+      "frozen_roots": 24,
+      "manifest_complete": false,
+      "planned_roots": 32,
+      "reserve_assignments": [
+        {
+          "filled": [],
+          "map_index": 2,
+          "slot_group_j": 1,
+          "source_id": "training-m2-j5",
+          "source_j": 5
+        },
+        {
+          "filled": [],
+          "map_index": 2,
+          "slot_group_j": 1,
+          "source_id": "training-m2-j7",
+          "source_j": 7
+        },
+        {
+          "filled": [],
+          "map_index": 2,
+          "slot_group_j": 2,
+          "source_id": "training-m2-j6",
+          "source_j": 6
+        },
+        {
+          "filled": [],
+          "map_index": 2,
+          "slot_group_j": 2,
+          "source_id": "training-m2-j8",
+          "source_j": 8
+        }
+      ],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 20,
+      "source_games_represented_by_roots": 12,
+      "start_only_attempts": 0,
+      "task_elapsed_seconds_sum": 368.9245842440032,
+      "unavailable_slots": [
+        {
+          "j": 1,
+          "map_index": 2,
+          "player": 0,
+          "role": "BABY_RAT"
+        },
+        {
+          "j": 1,
+          "map_index": 2,
+          "player": 1,
+          "role": "RAT_KING"
+        },
+        {
+          "j": 2,
+          "map_index": 2,
+          "player": 1,
+          "role": "BABY_RAT"
+        },
+        {
+          "j": 2,
+          "map_index": 2,
+          "player": 0,
+          "role": "RAT_KING"
+        },
+        {
+          "j": 3,
+          "map_index": 2,
+          "player": 0,
+          "role": "BABY_RAT"
+        },
+        {
+          "j": 3,
+          "map_index": 2,
+          "player": 1,
+          "role": "RAT_KING"
+        },
+        {
+          "j": 4,
+          "map_index": 2,
+          "player": 1,
+          "role": "BABY_RAT"
+        },
+        {
+          "j": 4,
+          "map_index": 2,
+          "player": 0,
+          "role": "RAT_KING"
+        }
+      ],
+      "unresolved_source_games": 0,
+      "worker_cpu_seconds": 191.00902839399998
+    },
+    "validation": {
+      "attempt_errors_or_interruptions": 0,
+      "attempted_source_games": 0,
+      "completed_source_games": 0,
+      "frozen_roots": 0,
+      "manifest_complete": false,
+      "planned_roots": 16,
+      "reserve_assignments": [],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 0,
+      "source_games_represented_by_roots": 0,
+      "start_only_attempts": 0,
+      "task_elapsed_seconds_sum": 0,
+      "unavailable_slots": [],
+      "unresolved_source_games": 0,
+      "worker_cpu_seconds": 0
+    }
+  },
+  "complete": false,
+  "created_at": "2026-11-10T07:28:47.975506+00:00",
+  "decision": {
+    "all_map_victory": false,
+    "automatic_promotion": false,
+    "complete": false,
+    "criteria_pass": false,
+    "integrity_verified": true,
+    "review_for_expansion": false,
+    "scope": "Precommitted research review rule; no model promotion or all-map victory claim."
+  },
+  "experiment_id": "terminal-target-head-v5",
+  "fit": {
+    "checkpoints": {},
+    "complete": false,
+    "reason": "Both completed fixed candidate heads are not yet published"
+  },
+  "identity_sha256": "f28ce105ff9c6e9da536aef14e1686ef70c401739c5bdceb24a5d596928d1313",
+  "schema_version": 1,
+  "selection": {
+    "attempt_errors": 0,
+    "cell_ceiling": 1600,
+    "complete": false,
+    "completed_cells": 0,
+    "completed_roots": 0,
+    "expected_cells": null,
+    "frozen_roots": 24,
+    "planned_roots": 32,
+    "roots": [
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 42,
+        "root_id": "training-000",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 56,
+        "root_id": "training-001",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 38,
+        "root_id": "training-002",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-003",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 42,
+        "root_id": "training-004",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-005",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 36,
+        "root_id": "training-006",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-007",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-008",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-009",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-010",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-011",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 46,
+        "root_id": "training-012",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-013",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-014",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-015",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-016",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-017",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 40,
+        "root_id": "training-018",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-019",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 44,
+        "root_id": "training-020",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 60,
+        "root_id": "training-021",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 42,
+        "root_id": "training-022",
+        "unresolved_errors": 0
+      },
+      {
+        "complete": false,
+        "completed": 0,
+        "expected": 58,
+        "root_id": "training-023",
+        "unresolved_errors": 0
+      }
+    ],
+    "unresolved_errors": 0,
+    "within_collection_ceiling": true
+  },
+  "validation": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed_roots": 0,
+    "completed_unique_cells": 0,
+    "criteria_pass": false,
+    "distinct_source_games_represented": 0,
+    "distinct_validation_inputs": 0,
+    "expected_roots": 16,
+    "expected_unique_cells": null,
+    "frozen_roots": 0,
+    "groups": {
+      "map": {},
+      "role": {},
+      "team": {}
+    },
+    "improved_roots": null,
+    "maximum_unique_cells": 192,
+    "mean_delta_vs_cp2": null,
+    "mean_delta_vs_puct": null,
+    "roots": [],
+    "scope": "One candidate first action followed by frozen cp2 on both teams; not full-policy deployment.",
+    "seeds": [
+      203021,
+      203043,
+      203067,
+      203091
+    ],
+    "thresholds": {
+      "improved_roots_min": 2,
+      "mean_delta_vs_cp2_min": 0.0,
+      "mean_delta_vs_puct_min": 0.1,
+      "worst_root_delta_vs_puct_min": -0.25
+    },
+    "unresolved_errors": 0,
+    "worst_root_delta_vs_puct": null
+  }
+}

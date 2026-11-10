@@ -1,0 +1,130 @@
+{
+  "anchors": {
+    "complete": false,
+    "completed": 0,
+    "planned": 512,
+    "unique_gradient_inputs": 0
+  },
+  "benchmark_data_used_for_training": false,
+  "benchmarks": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed": 0,
+    "expected": 72,
+    "historical_cp2_score": {
+      "fresh": false,
+      "games": 24,
+      "wins": 20
+    },
+    "identity_verified": false,
+    "opponent_comparisons": {},
+    "panels": {},
+    "per_opponent_nonregression": false,
+    "unresolved_errors": 0
+  },
+  "collection": {
+    "training": {
+      "attempt_errors_or_interruptions": 1,
+      "attempted_source_games": 18,
+      "completed_source_games": 17,
+      "frozen_roots": 0,
+      "manifest_complete": false,
+      "planned_roots": 32,
+      "reserve_assignments": [],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 18,
+      "source_games_represented_by_roots": 0,
+      "start_only_attempts": 1,
+      "task_elapsed_seconds_sum": 319.9988885010025,
+      "unavailable_slots": [],
+      "unresolved_source_games": 1,
+      "worker_cpu_seconds": 161.500518178
+    },
+    "validation": {
+      "attempt_errors_or_interruptions": 0,
+      "attempted_source_games": 0,
+      "completed_source_games": 0,
+      "frozen_roots": 0,
+      "manifest_complete": false,
+      "planned_roots": 16,
+      "reserve_assignments": [],
+      "skipped_exact_input_duplicates": 0,
+      "source_attempts": 0,
+      "source_games_represented_by_roots": 0,
+      "start_only_attempts": 0,
+      "task_elapsed_seconds_sum": 0,
+      "unavailable_slots": [],
+      "unresolved_source_games": 0,
+      "worker_cpu_seconds": 0
+    }
+  },
+  "complete": false,
+  "created_at": "2026-11-10T07:27:59.325268+00:00",
+  "decision": {
+    "all_map_victory": false,
+    "automatic_promotion": false,
+    "complete": false,
+    "criteria_pass": false,
+    "integrity_verified": false,
+    "review_for_expansion": false,
+    "scope": "Precommitted research review rule; no model promotion or all-map victory claim."
+  },
+  "experiment_id": "terminal-target-head-v5",
+  "fit": {
+    "checkpoints": {},
+    "complete": false,
+    "reason": "Both completed fixed candidate heads are not yet published"
+  },
+  "identity_sha256": "f28ce105ff9c6e9da536aef14e1686ef70c401739c5bdceb24a5d596928d1313",
+  "schema_version": 1,
+  "selection": {
+    "attempt_errors": 0,
+    "cell_ceiling": 1600,
+    "complete": false,
+    "completed_cells": 0,
+    "completed_roots": 0,
+    "expected_cells": null,
+    "frozen_roots": 0,
+    "planned_roots": 32,
+    "roots": [],
+    "unresolved_errors": 0,
+    "within_collection_ceiling": true
+  },
+  "validation": {
+    "attempt_errors": 0,
+    "complete": false,
+    "completed_roots": 0,
+    "completed_unique_cells": 0,
+    "criteria_pass": false,
+    "distinct_source_games_represented": 0,
+    "distinct_validation_inputs": 0,
+    "expected_roots": 16,
+    "expected_unique_cells": null,
+    "frozen_roots": 0,
+    "groups": {
+      "map": {},
+      "role": {},
+      "team": {}
+    },
+    "improved_roots": null,
+    "maximum_unique_cells": 192,
+    "mean_delta_vs_cp2": null,
+    "mean_delta_vs_puct": null,
+    "roots": [],
+    "scope": "One candidate first action followed by frozen cp2 on both teams; not full-policy deployment.",
+    "seeds": [
+      203021,
+      203043,
+      203067,
+      203091
+    ],
+    "thresholds": {
+      "improved_roots_min": 2,
+      "mean_delta_vs_cp2_min": 0.0,
+      "mean_delta_vs_puct_min": 0.1,
+      "worst_root_delta_vs_puct_min": -0.25
+    },
+    "unresolved_errors": 0,
+    "worst_root_delta_vs_puct": null
+  }
+}

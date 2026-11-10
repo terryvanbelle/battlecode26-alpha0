@@ -163,7 +163,16 @@ The [implemented experiment](docs/root-ranking-v4.md) uses eight state-hashed ro
 
 V4 completed 374 selection and 44 unique validation continuations with zero errors. Its independently audited mean paired advantage was 0.21875, two roots improved, and the worst root difference was −0.25: the mechanism rule passed. Five roots retained the PUCT action. The three changed actions produced two improvements and one regression, supporting state-dependent targets while retaining evidence of selection noise. This small, substantially more expensive comparison establishes neither general playing strength nor compute efficiency. The unchanged checkpoint still has its prior 20/24 smoke result.
 
-The next [terminal-target-head-v5 pilot](docs/terminal-target-head-v5.md) tests whether target quality transfers through learning. Both arms start at cp2, use the same 32 fresh balanced root contexts, optimizer and prior-preservation anchors, and differ only in the action selector supplying a prior-smoothed policy target. Only the existing 5,160-parameter policy output layer is trained; encoders, fusion and critic stay byte-identical. This isolates policy transfer from representation or value changes. Sixteen separately generated validation roots exclude exact gradient-input duplicates, and fresh complete 12-bot smoke panels compare cp2 with both arms. The pilot has its own data, seeds, run paths and bounded recovery protocol; no v4 continuation or benchmark trajectory enters gradients. At this review boundary the protocol is approved for implementation, not yet trained or evaluated.
+The next [terminal-target-head-v5 pilot](docs/terminal-target-head-v5.md) tests whether target quality transfers through learning. Both arms start at cp2, use the same 32 fresh balanced root contexts, optimizer and prior-preservation anchors, and differ only in the action selector supplying a prior-smoothed policy target. Only the existing 5,160-parameter policy output layer is trained; encoders, fusion and critic stay byte-identical. This isolates policy transfer from representation or value changes. Sixteen separately generated validation roots exclude exact gradient-input duplicates, and fresh complete 12-bot smoke panels compare cp2 with both arms. The pilot has its own data, seeds, run paths and bounded recovery protocol; no v4 continuation or benchmark trajectory enters gradients. Its first implemented cycle completed 20 source games but supplied only 24 of the required 32 training roots. All eight missing slots were on `closeup`; the fixed matching-parity reserves were exhausted. The coverage guard stopped before target scoring or SGD. [The retained evidence](progress/terminal-target-head-v5/README.md) motivates a separately versioned source-exploration review; it does not justify dropping a map, root stratum or denominator.
+
+The [v6 coverage amendment](docs/terminal-target-head-v6.md) changes only the
+source behavior temperature to 1.0 for both teams on all four maps; terminal
+continuations remain at 0.35. This addresses a measured source-policy deadlock
+without changing the engine or action abstraction. All seeds, allocations,
+fit settings and research thresholds remain fixed. Sources are regenerated
+in separate v6 paths, with no v5 trajectory reuse. The paired seed design
+is explicit and does not constitute an independent replication. The full
+coverage and input-exclusion guards must still pass before fitting.
 
 ## Decisions to revisit after measurement
 
