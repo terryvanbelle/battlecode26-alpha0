@@ -78,7 +78,15 @@ def main():
                 row=json.loads(path.read_text())
                 if row['status']!='ok':
                     if row.get('error_kind')!='worker_timeout' or row.get('attempt')!=1:
-                        raise ValueError('non-boundary benchmark failure requires review')
+                        from scripts.recover_v8_deadline_cells import MANIFEST, approved
+                        recovery=json.loads(MANIFEST.read_text()) if MANIFEST.exists() else {}
+                        pin=recovery.get('cells',{}).get(row.get('cell_id'),{})
+                        second=path.parent/'attempt-002.json'
+                        from alpha0.terminal_v8_report import valid_benchmark_result
+                        spec=json.loads((path.parent/'request.json').read_text())
+                        if not (approved(row) and C.sha256(path)==pin.get('original_sha256') and second.exists()
+                                and valid_benchmark_result(spec,json.loads(second.read_text()))):
+                            raise ValueError('non-boundary benchmark failure requires review')
                     failures.append(str(path.relative_to(C.ROOT)))
             if len(failures)>2:raise ValueError('unexpected failure count')
             if audit_fits()!=json.loads((C.PROGRESS/'reviews/fit-audit-20261110.json').read_text()):
