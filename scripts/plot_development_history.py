@@ -1,4 +1,4 @@
-"""Per-bot, equal-map win-rate history on one frozen development suite."""
+"""Per-bot win-rate history on one frozen development suite."""
 from pathlib import Path
 import hashlib
 import json
@@ -35,9 +35,13 @@ def summarize(rows, manifest):
         complete = len(valid) == len(expected)
         counts = {name: sum(r['score'] == score for r in valid)
                   for name, score in [('wins', 1), ('losses', 0), ('draws', .5)]}
+        crash_exclusion = (bot == 'thewaxmango_collegejunior' and len(rr) == len(expected)
+                           and all(r['status'] == 'ok' or r.get('error_kind') == 'opponent_runtime_error' for r in rr))
+        rate_available = bool(valid) and (complete or crash_exclusion)
         result[bot] = {**counts, 'valid': len(valid), 'expected': len(expected),
                        'errors': len(rr)-len(valid), 'complete': complete,
-                       'win_rate': counts['wins']/len(expected) if complete else None}
+                       'excluded_crashes': len(rr)-len(valid) if crash_exclusion else 0,
+                       'win_rate': counts['wins']/len(valid) if rate_available else None}
     return {'checkpoint_sha256': rows[0]['checkpoint_sha256'],
             'evaluation_config_sha256': rows[0]['evaluation_config_sha256'],
             'started_at': min(r['started_at'] for r in rows), 'bots': result}
@@ -64,26 +68,33 @@ def generate(current, manifest):
         history.append(item)
     history.sort(key=lambda x: (x['started_at'], x['source']))
     ordered = sorted(manifest['bots'], key=lambda b: (b['historical_rating']['elo'], b['id']))
-    fig, axes = plt.subplots(2, 4, figsize=(15, 7), sharex=True, sharey=True)
+    fig, ax = plt.subplots(figsize=(15, 6.5))
     labels = [datetime.fromisoformat(h['started_at'].replace('Z','+00:00')).astimezone(ZoneInfo('America/Vancouver')).strftime('%b %d %H:%M')+'\n'+h['checkpoint_sha256'][:8] for h in history]
-    for ax, bot in zip(axes.flat, ordered):
-        # Separate lines per runtime; gaps remain gaps, never estimated rates.
-        for runtime in sorted({h['evaluation_config_sha256'] for h in history}):
-            ys = [100*h['bots'][bot['id']]['win_rate'] if h['evaluation_config_sha256']==runtime and h['bots'][bot['id']]['complete'] else float('nan') for h in history]
-            ax.plot(range(len(history)), ys, 'o-', color='#2374AB', linewidth=2)
-        for i,h in enumerate(history):
-            c=h['bots'][bot['id']]
-            if c['complete']:
-                y=100*c['win_rate'];ax.annotate(f"{y:.1f}%\n{c['wins']}W/{c['losses']}L/{c['draws']}D",(i,y),xytext=(0,10 if y<80 else -30),textcoords='offset points',ha='center',fontsize=8)
-            else:
-                ax.text(i,50,f"Pending\n{c['valid']}/{c['expected']} valid\n{c['errors']} errors",ha='center',va='center',fontsize=9,color='#8c5318')
-        ax.set_title(f"{bot['id']}\nPrior Elo {bot['historical_rating']['elo']:.1f}",fontsize=10)
-        ax.set_ylim(-5,110);ax.set_xlim(-.6,max(.6,len(history)-.4));ax.set_yticks([0,25,50,75,100]);ax.grid(alpha=.2)
-        ax.set_xticks(range(len(history)),labels,fontsize=8)
-        ax.tick_params(axis='x',labelbottom=True)
-    fig.supylabel('Win rate (%) · all eight maps');fig.supxlabel('Evaluation start (America/Vancouver) · checkpoint SHA')
-    fig.suptitle(f"Per-bot win rate over time · {manifest['suite_id']}\n32 games per point: 8 maps × 2 seeds × both seats. Incomplete bot panels have no rate.",fontsize=13)
-    fig.tight_layout(rect=(.015,.03,1,.92))
+    colors = plt.get_cmap('tab10').colors
+    markers = ['o', 's', '^', 'D', 'v', 'P', 'X', '*']
+    for index, bot in enumerate(ordered):
+        latest = history[-1]['bots'][bot['id']] if history else None
+        label = f"{bot['id']} · Elo {bot['historical_rating']['elo']:.1f}"
+        if latest and latest['win_rate'] is not None:
+            label += f" · {100*latest['win_rate']:.1f}% ({latest['wins']}/{latest['valid']})"
+            if latest['excluded_crashes']:
+                label += f" · {latest['excluded_crashes']} crashes excluded"
+        else:
+            label += ' · pending'
+        # Never connect measurements across different runtimes.
+        for j, runtime in enumerate(sorted({h['evaluation_config_sha256'] for h in history})):
+            ys = [100*h['bots'][bot['id']]['win_rate'] if h['evaluation_config_sha256']==runtime and h['bots'][bot['id']]['win_rate'] is not None else float('nan') for h in history]
+            ax.plot(range(len(history)), ys, marker=markers[index % len(markers)],
+                    color=colors[index % len(colors)], linewidth=2, markersize=8,
+                    label=label if j == 0 else None)
+    ax.set_ylim(-3,103);ax.set_xlim(-.5,max(.5,len(history)-.5))
+    ax.set_yticks(range(0,101,10));ax.grid(alpha=.2)
+    ax.set_xticks(range(len(history)),labels,fontsize=9)
+    ax.set_ylabel('Win rate (%)');ax.set_xlabel('Evaluation start (America/Vancouver) · checkpoint SHA')
+    ax.set_title(f"Per-bot win rate over time · {manifest['suite_id']}\nEight-map schedule · thewaxmango crashes excluded from its denominator",fontsize=13)
+    ax.legend(loc='center left',bbox_to_anchor=(1.02,.5),frameon=False,fontsize=9,
+              title='Opponents by prior Elo · latest wins / valid games')
+    fig.tight_layout()
     out=ROOT/'progress/overview';out.mkdir(exist_ok=True)
     fig.savefig(out/'development-history.png',dpi=160);plt.close(fig)
-    (out/'development-history.json').write_text(json.dumps({'suite_id':manifest['suite_id'],'aggregation':'wins / all scheduled games; equal map weights; draws are not wins','evaluations':history},indent=2)+'\n')
+    (out/'development-history.json').write_text(json.dumps({'suite_id':manifest['suite_id'],'aggregation':'wins / valid games; thewaxmango opponent crashes excluded; other incomplete panels have no rate; draws are not wins','evaluations':history},indent=2)+'\n')

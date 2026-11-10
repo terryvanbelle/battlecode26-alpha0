@@ -9,7 +9,7 @@
 
 ![Per-bot win rate over time, aggregated across eight maps](progress/overview/development-history.png)
 
-Each point aggregates all eight maps for one bot (32 games). Incomplete bot panels show coverage instead of a win rate. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
+All bots share one graph, ordered by prior Elo in the legend. Each point aggregates the eight-map schedule (32 games per bot). For `thewaxmango`, bot crashes are excluded: win rate is wins divided by valid games, with the excluded count shown. Other incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->
 
 **Baseline status:** collection ended with four reproducible `collegejunior` bot errors on `wallsofparadis`; this panel cannot establish improvement. [Crash review and replacement qualification](diagnostics/collegejunior-wallsofparadis/README.md) preserves the evidence. All eight maps remain required.

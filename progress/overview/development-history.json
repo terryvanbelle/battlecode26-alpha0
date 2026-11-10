@@ -1,6 +1,6 @@
 {
   "suite_id": "development-eight-v3",
-  "aggregation": "wins / all scheduled games; equal map weights; draws are not wins",
+  "aggregation": "wins / valid games; thewaxmango opponent crashes excluded; other incomplete panels have no rate; draws are not wins",
   "evaluations": [
     {
       "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
@@ -15,6 +15,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.84375
         },
         "spsquared_TSPAARK_QUALS": {
@@ -25,6 +26,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.4375
         },
         "HugoIngelsson_Xzibit": {
@@ -35,6 +37,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.53125
         },
         "abcdezyxwv_bestsofar": {
@@ -45,6 +48,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.0625
         },
         "IvanGeffner_basic51": {
@@ -55,6 +59,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.03125
         },
         "vibe26b_zdb": {
@@ -65,6 +70,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.125
         },
         "thewaxmango_collegejunior": {
@@ -75,7 +81,8 @@
           "expected": 32,
           "errors": 4,
           "complete": false,
-          "win_rate": null
+          "excluded_crashes": 4,
+          "win_rate": 0.21428571428571427
         },
         "uravt_Version41": {
           "wins": 7,
@@ -85,6 +92,7 @@
           "expected": 32,
           "errors": 0,
           "complete": true,
+          "excluded_crashes": 0,
           "win_rate": 0.21875
         }
       },
