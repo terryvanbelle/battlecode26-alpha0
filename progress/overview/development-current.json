@@ -1,7 +1,7 @@
 {
-  "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
-  "source": "progress/development-v4/baseline",
-  "completed": 256,
+  "checkpoint_sha256": "898d5f869fcc4aee2fe789fa921f09969dd6df5a17e21e80e8a176bbdcca3e8d",
+  "source": "progress/development-v4/v8-terminal_head",
+  "completed": 86,
   "unresolved_errors": 0,
   "expected": 256,
   "cells": [
@@ -33,8 +33,7 @@
     {
       "opponent": "CS50Crab_rapierV1",
       "map": "knifefight",
-      "L": 2,
-      "W": 2
+      "L": 4
     },
     {
       "opponent": "CS50Crab_rapierV1",
@@ -54,296 +53,241 @@
     {
       "opponent": "spsquared_TSPAARK_QUALS",
       "map": "DefaultSmall",
-      "L": 2,
-      "W": 2
-    },
-    {
-      "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "DefaultMedium",
-      "L": 2,
-      "W": 2
-    },
-    {
-      "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "DefaultLarge",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "closeup",
-      "L": 4
-    },
-    {
-      "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "knifefight",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "cheesefarm",
       "W": 4
     },
     {
       "opponent": "spsquared_TSPAARK_QUALS",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "tiny",
-      "W": 4
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultSmall",
-      "W": 3,
-      "L": 1
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultMedium",
-      "W": 4
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "DefaultLarge",
-      "W": 3,
-      "L": 1
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "closeup",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "cheesefarm",
-      "L": 2,
-      "W": 2
-    },
-    {
-      "opponent": "HugoIngelsson_Xzibit",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "tiny",
-      "W": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "DefaultSmall",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "DefaultMedium",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "DefaultLarge",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "closeup",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "cheesefarm",
-      "L": 4
-    },
-    {
-      "opponent": "vibe26b_zdb",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "tiny",
-      "W": 4
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultSmall",
-      "L": 4
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultMedium",
-      "L": 2,
-      "W": 2
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultLarge",
-      "L": 1,
-      "W": 3
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "closeup",
-      "L": 2,
-      "W": 2
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "cheesefarm",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "HugoIngelsson_YokoOno",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "tiny",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultSmall",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultMedium",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultLarge",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "closeup",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "cheesefarm",
-      "L": 4
-    },
-    {
-      "opponent": "abcdezyxwv_bestsofar",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "uravt_Version41",
-      "map": "tiny",
-      "W": 3,
-      "L": 1
-    },
-    {
-      "opponent": "uravt_Version41",
-      "map": "DefaultSmall",
-      "L": 3,
-      "W": 1
-    },
-    {
-      "opponent": "uravt_Version41",
       "map": "DefaultMedium",
       "W": 1,
       "L": 3
     },
     {
-      "opponent": "uravt_Version41",
+      "opponent": "spsquared_TSPAARK_QUALS",
       "map": "DefaultLarge",
-      "W": 2,
-      "L": 2
+      "L": 1,
+      "W": 3
     },
     {
-      "opponent": "uravt_Version41",
+      "opponent": "spsquared_TSPAARK_QUALS",
       "map": "closeup",
-      "L": 4
+      "W": 1,
+      "L": 3
     },
     {
-      "opponent": "uravt_Version41",
+      "opponent": "spsquared_TSPAARK_QUALS",
       "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "uravt_Version41",
-      "map": "cheesefarm",
-      "L": 4
-    },
-    {
-      "opponent": "uravt_Version41",
-      "map": "wallsofparadis",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "tiny",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultSmall",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultMedium",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "DefaultLarge",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
-      "map": "closeup",
       "L": 3,
       "W": 1
     },
     {
-      "opponent": "IvanGeffner_basic51",
-      "map": "knifefight",
-      "L": 4
-    },
-    {
-      "opponent": "IvanGeffner_basic51",
+      "opponent": "spsquared_TSPAARK_QUALS",
       "map": "cheesefarm",
-      "L": 4
+      "W": 4
     },
     {
-      "opponent": "IvanGeffner_basic51",
+      "opponent": "spsquared_TSPAARK_QUALS",
       "map": "wallsofparadis",
       "L": 4
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "tiny",
+      "W": 4
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultSmall",
+      "W": 1,
+      "L": 3
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultMedium",
+      "W": 4
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "DefaultLarge",
+      "W": 4
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "closeup",
+      "L": 2,
+      "W": 1
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "knifefight",
+      "L": 3
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "HugoIngelsson_Xzibit",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "tiny"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "closeup"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "vibe26b_zdb",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "tiny"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "closeup"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "HugoIngelsson_YokoOno",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "tiny"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "closeup"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "abcdezyxwv_bestsofar",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "tiny"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "closeup"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "uravt_Version41",
+      "map": "wallsofparadis"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "tiny"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultSmall"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultMedium"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "DefaultLarge"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "closeup"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "knifefight"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "cheesefarm"
+    },
+    {
+      "opponent": "IvanGeffner_basic51",
+      "map": "wallsofparadis"
     }
   ]
 }
