@@ -21,9 +21,16 @@ def main():
         try:
             # Acquire/release the eight locks to ensure the last actor has exited.
             from contextlib import ExitStack
-            with ExitStack() as stack:
-                for path in (*C.LOCKS,R/'experiment.lock'):
-                    h=stack.enter_context(path.open('a+'));fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            quiescent_deadline=time.monotonic()+60
+            while True:
+                try:
+                    with ExitStack() as stack:
+                        for path in (*C.LOCKS,R/'experiment.lock'):
+                            h=stack.enter_context(path.open('a+'));fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if stopped() or time.monotonic()>quiescent_deadline:raise
+                    time.sleep(1)
             state('auditing')
             result=audit();s=summary();assert result['complete'] and s['complete'] and result['verified_cells']==184
             for key in ('mean_advantage','source_cluster_bootstrap_95','review_for_expansion'):assert result[key]==s[key]
