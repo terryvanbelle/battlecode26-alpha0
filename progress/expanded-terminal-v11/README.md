@@ -1,6 +1,6 @@
 # V11 expanded terminal-head learning experiment
 
-**Current stage (November11,11:14 Vancouver /18:14 UTC): target collection,2916/2974 independently verified (98.0%).** Two reviewed chunk workers are healthy. Use `runs/expanded-terminal-v11/chunk-recovery-20261111/status.json` and `chunk-handoff-status.json` for this stage; the old main `status.json` retains the prior reviewed watchdog stop until the handoff resumes the pipeline. [Latest audit](reviews/selection-audit-20261111T1815.json). No V11 benchmark result yet.
+**Current stage (November11,11:53 Vancouver /18:53 UTC): matched policy-head training.** All2974/2974 target continuations and64comparators passed the [complete saved-record audit](reviews/recovered-chunk-audit-20261111.json). The handoff exported and isolated-restored6511files, published `0c6f221`, and launched the unchanged bounded pipeline. Live status is now `runs/expanded-terminal-v11/status.json`; handoff status remains `chunk-handoff-status.json`. No V11 benchmark result yet.
 
 Active bounded research cycle. Frozen identity `94d03e8b4bfa3582dd2129aa1723c541e8b48fbe5c5c0112417d5e732284e200`. All64 training roots/1024 anchors and32 disjoint validation roots were audited; all96 physical roots reconstructed exactly before launch.
 
