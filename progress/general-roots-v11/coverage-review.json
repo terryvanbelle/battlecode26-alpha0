@@ -1,0 +1,12 @@
+{
+  "anchor_shortfalls": [],
+  "budget_pass": true,
+  "complete": true,
+  "missing_root_slots": [],
+  "planned_selection_cells": 2974,
+  "reviewer_sha256": "286b2bb7a489b490684f3a670b40c8f0b4fd741ec64d3def7eb1f7a0dc36031f",
+  "sgd_updates": 0,
+  "source_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+  "target_continuations": 0,
+  "unique_gradient_inputs": 1077
+}

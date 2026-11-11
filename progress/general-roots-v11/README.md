@@ -1,7 +1,9 @@
-# V11 full-transcript input extraction
+# V11 full-transcript extraction complete
 
-Active: replaying all64 recorded V10 source games, rebuilding general-decision inputs, and verifying original terminal hashes and every anchor input/state hash. These are replays, not fresh self-play games. No targets or SGD have started.
+All64 recorded self-play transcripts replayed and terminal/anchor equivalence verified. No fresh self-play games generated. No target scoring, SGD, validation or benchmark games were run in this phase.
 
-[Protocol](../../docs/general-roots-v11.md) · [Current summary](summary.json) · [Frozen identity](identity.json) · [Prior eligibility result](../v10-eligibility-probe/RESULTS.md)
+Coverage complete: **True**. Planned selection cells: **2974 / 3200 ceiling**. Missing root slots: 0; anchor shortfalls: 0.
 
-The original V10 coverage failure (59/64 combat-only roots) remains unchanged. V11 requires64 balanced roots,1024 anchors and at most3200 planned selection cells before proceeding. Fresh validation and separately frozen downstream implementation are still required.
+[Coverage review](coverage-review.json) · [Frozen input plan](training-input-plan.json) · [Verified recovery](recovery.json) · [Protocol](../../docs/general-roots-v11.md)
+
+A complete tested downstream implementation and a fresh validation-source preregistration are required before target outcomes or gradients. Source completion is not playing-strength improvement.
