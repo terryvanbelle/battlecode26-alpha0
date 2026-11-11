@@ -544,10 +544,10 @@
     },
     {
       "overall": {
-        "wins": 55,
-        "losses": 66,
+        "wins": 64,
+        "losses": 109,
         "draws": 0,
-        "valid": 121,
+        "valid": 173,
         "expected": 256,
         "errors": 0,
         "excluded_crashes": 0,
@@ -593,31 +593,31 @@
         },
         "vibe26b_zdb": {
           "wins": 4,
-          "losses": 21,
+          "losses": 28,
           "draws": 0,
-          "valid": 25,
+          "valid": 32,
           "expected": 32,
           "errors": 0,
-          "complete": false,
+          "complete": true,
           "excluded_crashes": 0,
-          "win_rate": null
+          "win_rate": 0.125
         },
         "HugoIngelsson_YokoOno": {
-          "wins": 0,
-          "losses": 0,
+          "wins": 9,
+          "losses": 23,
           "draws": 0,
-          "valid": 0,
+          "valid": 32,
           "expected": 32,
           "errors": 0,
-          "complete": false,
+          "complete": true,
           "excluded_crashes": 0,
-          "win_rate": null
+          "win_rate": 0.28125
         },
         "abcdezyxwv_bestsofar": {
           "wins": 0,
-          "losses": 0,
+          "losses": 13,
           "draws": 0,
-          "valid": 0,
+          "valid": 13,
           "expected": 32,
           "errors": 0,
           "complete": false,
@@ -648,7 +648,7 @@
         }
       },
       "source": "progress/development-v4/v11-terminal_head/evaluations.jsonl",
-      "source_sha256": "6b894e4b4a2ae67599bbe8af9fd8159289dc3db438eb29d17587e4b80c5c8bbc"
+      "source_sha256": "72c977cd5ed3666e02165267b7d86dce67a99eb0eb7e1c5a07f5e9a77948928b"
     }
   ]
 }

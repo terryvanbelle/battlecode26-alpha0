@@ -1,7 +1,7 @@
 {
   "checkpoint_sha256": "c6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb",
   "source": "progress/development-v4/v11-terminal_head",
-  "completed": 121,
+  "completed": 173,
   "unresolved_errors": 0,
   "expected": 256,
   "cells": [
@@ -169,59 +169,76 @@
     {
       "opponent": "vibe26b_zdb",
       "map": "cheesefarm",
-      "L": 1
+      "L": 4
     },
     {
       "opponent": "vibe26b_zdb",
-      "map": "wallsofparadis"
+      "map": "wallsofparadis",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "tiny"
+      "map": "tiny",
+      "W": 4
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultSmall"
+      "map": "DefaultSmall",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultMedium"
+      "map": "DefaultMedium",
+      "L": 3,
+      "W": 1
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "DefaultLarge"
+      "map": "DefaultLarge",
+      "W": 2,
+      "L": 2
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "closeup"
+      "map": "closeup",
+      "L": 3,
+      "W": 1
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "knifefight"
+      "map": "knifefight",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "cheesefarm"
+      "map": "cheesefarm",
+      "L": 4
     },
     {
       "opponent": "HugoIngelsson_YokoOno",
-      "map": "wallsofparadis"
+      "map": "wallsofparadis",
+      "W": 1,
+      "L": 3
     },
     {
       "opponent": "abcdezyxwv_bestsofar",
-      "map": "tiny"
+      "map": "tiny",
+      "L": 4
     },
     {
       "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultSmall"
+      "map": "DefaultSmall",
+      "L": 4
     },
     {
       "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultMedium"
+      "map": "DefaultMedium",
+      "L": 4
     },
     {
       "opponent": "abcdezyxwv_bestsofar",
-      "map": "DefaultLarge"
+      "map": "DefaultLarge",
+      "L": 1
     },
     {
       "opponent": "abcdezyxwv_bestsofar",
