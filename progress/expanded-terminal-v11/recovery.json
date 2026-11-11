@@ -1,0 +1,47 @@
+{
+  "archive_sha256": "86b3ed03ad0ea107d0b7d475ae9ada0cf0735ea524c2316172d925b548e4f3b8",
+  "dependencies": [
+    {
+      "archive": "artifacts/general-roots-v11/recovery-20261111T063948.518350_0000.tar.gz",
+      "manifest": "artifacts/general-roots-v11/recovery-20261111T063948.518350_0000.tar.gz.json",
+      "partial": false,
+      "sha256": "12573420be852857fc6541302a488051cea0ff7f92c25d91261534388c38184d",
+      "v8_dependency": {
+        "archive": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz",
+        "benchmark_completed": 768,
+        "partial": false,
+        "sha256": "1bfb038a6daaa97fb4d7b64e546f94782277b5544c0c6a6feef904cb8afff8d6",
+        "verification": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz.verification.json"
+      }
+    },
+    {
+      "archive": "artifacts/validation-v11/recovery-20261111T073908.134528_0000.tar.gz",
+      "manifest": "artifacts/validation-v11/recovery-20261111T073908.134528_0000.tar.gz.json",
+      "partial": false,
+      "sha256": "0b68780ff622d7a058247c1b9271c89470da16f6d3689c304084dcb2d10a5ea6",
+      "v8_dependency": {
+        "archive": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz",
+        "benchmark_completed": 768,
+        "partial": false,
+        "sha256": "1bfb038a6daaa97fb4d7b64e546f94782277b5544c0c6a6feef904cb8afff8d6",
+        "verification": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz.verification.json"
+      }
+    },
+    {
+      "archive": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz",
+      "benchmark_completed": 768,
+      "partial": false,
+      "sha256": "1bfb038a6daaa97fb4d7b64e546f94782277b5544c0c6a6feef904cb8afff8d6",
+      "verification": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz.verification.json"
+    }
+  ],
+  "manifest": "artifacts/expanded-terminal-v11/recovery-20261111T111838.072516_0000.tar.gz.json",
+  "partial": true,
+  "parts": [
+    {
+      "bytes": 5546975,
+      "path": "artifacts/expanded-terminal-v11/recovery-20261111T111838.072516_0000.tar.gz",
+      "sha256": "86b3ed03ad0ea107d0b7d475ae9ada0cf0735ea524c2316172d925b548e4f3b8"
+    }
+  ]
+}

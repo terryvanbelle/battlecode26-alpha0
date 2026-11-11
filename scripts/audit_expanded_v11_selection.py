@@ -30,14 +30,14 @@ def require(condition, message):
         raise ValueError(message)
 
 
-def verify_cell(row, root, identity, action, seed):
+def verify_cell(row, root, identity, action, seed, attempt=1):
     expected = dict(experiment_identity=digest(identity), root_id=root['root_id'],
         root_player=root['player'], root_state_sha256=root['state_sha256'],
         root_prefix_sha256=root['prefix_sha256'], root_input_hash=root['input_hash'],
         source_sha256=root['source_sha256'], stage='selection', action=action,
         seed=seed, temperature=identity['config']['temperature'])
     require(row.get('identity') == digest(expected) and all(row.get(k) == v for k,v in expected.items()), 'cell identity/schedule mismatch')
-    require(row.get('attempt') == 1 and row.get('status') == 'ok', 'failed or repeated attempt requires review')
+    require(row.get('attempt') == attempt and row.get('status') == 'ok', 'failed or repeated attempt requires review')
     require(row.get('terminal') is True and row.get('valid_game') is True and row.get('benchmark_failures') == [], 'invalid terminal record')
     raw = row['terminal_state']; winner = row['winner']
     require(type(winner) is int and winner in (-1,0,1) and type(raw.get('winner')) is int and raw['winner'] == winner, 'winner mismatch')
@@ -63,11 +63,26 @@ def audit(base=ROOT):
     schedule={f"selection-{r['root_id']}-a{a:02d}-s{s}":(r,a,s) for r in roots for a in r['legal_actions'] for s in identity['config']['selection_seeds']}
     require(len(schedule)==2974,'changed selection schedule')
     files=sorted((progress/'cells').glob('selection-*/attempt-[0-9][0-9][0-9].json'))
-    proofs=[]; seen=set(); counts=Counter()
+    proofs=[]; seen=set(); counts=Counter(); reviewed_interruptions=[]
+    review_path=progress/'reviews/deadline-recovery-20261111.json'
+    review=read(review_path) if review_path.exists() else None
+    allowed=set(review['interrupted_cells']) if review else set()
+    if review:
+        require(review['identity_sha256']==digest(identity), 'foreign recovery review')
+        # Verify original cells/logs/descriptors; status is allowed to advance later.
+        for name, expected in review['preserved_files'].items():
+            if name.endswith('/status.json'):continue
+            require(sha(base/name)==expected, 'changed pre-recovery evidence')
     for path in files:
         name=path.parent.name
         require(name in schedule and name not in seen, 'unexpected or repeated scheduled cell')
-        root,action,seed=schedule[name]; verify_cell(read(path),root,identity,action,seed)
+        root,action,seed=schedule[name]; row=read(path)
+        original=str(path.with_name('attempt-001.json').relative_to(base))
+        if str(path.relative_to(base)) in allowed:
+            require(row['status']=='incomplete' and row['score'] is None and row['terminal'] is False and row['error']=='Interrupted: STOP or deadline', 'invalid reviewed interruption')
+            reviewed_interruptions.append({'path':str(path.relative_to(base)),'sha256':sha(path)})
+            continue
+        verify_cell(row,root,identity,action,seed,attempt=2 if original in allowed else 1)
         seen.add(name); counts[root['map']]+=1
         proofs.append({'path':str(path.relative_to(base)),'sha256':sha(path)})
     comparators=0
@@ -94,7 +109,7 @@ def audit(base=ROOT):
         experiment_identity=digest(identity), scope='saved-record snapshot; no independent engine replay or recovery certification',
         selection_valid=len(seen),selection_expected=len(schedule),selection_complete=len(seen)==len(schedule),
         comparators_valid=comparators,completed_jobs=dict(jobs),hashed_job_outputs=output_files,
-        per_map_valid=dict(counts),terminal_records=proofs,playing_strength_claim=False)
+        per_map_valid=dict(counts),terminal_records=proofs,reviewed_interruptions=reviewed_interruptions,playing_strength_claim=False)
 
 
 if __name__=='__main__':

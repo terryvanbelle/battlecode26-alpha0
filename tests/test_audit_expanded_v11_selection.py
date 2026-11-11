@@ -28,3 +28,9 @@ def test_tampering_rejected(change):
     elif change=='failed':row['status']='error'
     with pytest.raises(ValueError):
         A.verify_cell(row,root,identity,original['action'],original['seed'])
+
+
+def test_second_attempt_requires_explicit_review():
+    row,root,identity=fixture();row=deepcopy(row);row['attempt']=2
+    with pytest.raises(ValueError):A.verify_cell(row,root,identity,row['action'],row['seed'])
+    A.verify_cell(row,root,identity,row['action'],row['seed'],attempt=2)
