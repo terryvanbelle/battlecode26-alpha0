@@ -1,10 +1,10 @@
-# V8 completed candidate panel; matched control still running
+# V8 completed comparison
 
 The fixed terminal candidate completed all 256 development-v4 games with **81 wins, 175 losses, no draws** (31.640625%). The fresh cp2 control has82 wins (32.03125%); the original baseline has83 (32.421875%). Every candidate terminal result was checked against its canonical frozen request. Two deadline-interrupted first attempts remain preserved; their reviewed second attempts completed validly. There are no unresolved candidate errors.
 
 The improvement rule fails against both controls. Against fresh cp2, mean game-score change is **−0.390625 percentage points**, with paired map-bootstrap95% interval **[−2.734375,+1.953125] points**. Against the original baseline it is **−0.78125 points**, interval **[−3.125,+1.953125]**. Aggregate zdb change is zero. No confirmation or promotion is warranted. These results do not establish a meaningful regression either; the uncertainty interval spans zero.
 
-[Completed-panel terminal audit and both comparisons](../progress/terminal-target-head-v8/reviews/completed-panels-20261110T2313.json). The PUCT control must still finish its full256 games. The experiment-wide audit and final recovery export remain pending; this document reports completed panels only.
+[Completed-panel terminal audit and both comparisons](../progress/terminal-target-head-v8/reviews/completed-panels-20261110T2313.json). The PUCT control subsequently completed all256 games at79W/177L, also failing the improvement rule. The final terminal-panel audit and complete verified/isolated-restored recovery are now published.
 
 ## Diagnostic interpretation and next review
 
@@ -12,7 +12,7 @@ V8 resolves the earlier underfitting problem: both heads match32/32 training lab
 
 Two explanations remain unresolved: the two-seed exhaustive maximum may select noisy terminal targets; alternatively, useful targets may fit the32 roots but transfer poorly to new states. The next proposed bounded mechanism test is to re-evaluate the **already frozen32 training-root selected actions against cp2 greedy actions**, on fresh continuation seeds, with no SGD. This tests target reliability directly before paying for a larger training corpus. It is not fresh model-validation evidence and must never be described as benchmark improvement.
 
-Draft protocol for review after the matched PUCT panel completes:
+The following proposal was selected after the full PUCT panel failed to improve; the final preregistration is [target-recheck-v9.md](target-recheck-v9.md):
 
 - Retain all32 roots and their existing fixed selected actions, including unchanged-action roots. Freeze exact input/source hashes and action pairs before collection. No root selection by outcome.
 - Four proposed new continuation seeds219003,219013,219029,219041; verify disjointness against all recorded source/continuation/confirmation inventories before freezing. No seed selection based on outcomes.

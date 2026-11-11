@@ -1,0 +1,60 @@
+{
+  "proposed_seeds": [
+    219003,
+    219013,
+    219029,
+    219041
+  ],
+  "matches": [],
+  "read_errors": [],
+  "scanned_files": 16153,
+  "unique_observed_seed_integers": 456,
+  "inventory_sha256": "f46b564e337329cbf49dab2c98e0da7469936228c193cdab39e5c9f4fd7981dd",
+  "scope": "Local recorded JSON/JSONL seed fields only. Active journals may advance. Rerun after V8 quiescence and review reserved formula ranges and historical archives before final preregistration.",
+  "final_preregistration": false,
+  "archive_checks": [
+    {
+      "path": "artifacts/cached-head-constraint-v7/recovery-20261110T095144883025Z-bcd84dbf2d18.tar.gz",
+      "sha256": "bcd84dbf2d18bc749f217c42ad2b33f5c4b9734f40bd25a34c995fd5c7ea6d5f",
+      "json_files": 286,
+      "matches": []
+    },
+    {
+      "path": "artifacts/terminal-target-head-v5/recovery-20261110T073626027858Z-26bdc0f95343.tar.gz",
+      "sha256": "26bdc0f953439b05b534d459f2e7e2ba11e5eb02fb451dc042f931b2cf8dc0f3",
+      "json_files": 135,
+      "matches": []
+    },
+    {
+      "path": "artifacts/terminal-target-head-v6/recovery-20261110T092723489573Z-b5f724bb879e.tar.gz",
+      "sha256": "b5f724bb879e9a36b816c29c2ac306070d1657b418f2fd25960f2478c2fe3c38",
+      "json_files": 3910,
+      "matches": []
+    },
+    {
+      "path": "artifacts/terminal-target-head-v8/recovery-20261110T222407096141Z-5c19fe28088d.tar.gz",
+      "sha256": "5c19fe28088d2e394d58197180344f9ca44042ec2735dd6c131d372a28655adc",
+      "json_files": 5982,
+      "matches": []
+    },
+    {
+      "path": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz",
+      "sha256": "1bfb038a6daaa97fb4d7b64e546f94782277b5544c0c6a6feef904cb8afff8d6",
+      "json_files": 8753,
+      "matches": []
+    },
+    {
+      "path": "artifacts/warmstart-v3/iteration-001/resume.tar.gz",
+      "sha256": "c94e6fef95645ae06426a7ecf9993b72f92ffeef0f3452eeaf6ed3a98a5adaa5",
+      "json_files": 135,
+      "matches": []
+    },
+    {
+      "path": "artifacts/warmstart-v3/iteration-002/resume.tar.gz",
+      "sha256": "6ad3af33a098e60825ada827d2711eb37388bba7ba4d0db319f21834ca26e760",
+      "json_files": 203,
+      "matches": []
+    }
+  ],
+  "reserved_formulas_review": "Reviewed V4/V5/V6/V7/V8 protocol and victory/development configs: proposed four seeds outside explicit lists and source/policy/root formula ranges."
+}
