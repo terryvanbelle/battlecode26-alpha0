@@ -16,3 +16,13 @@ def test_independent_full_batchstream_and_corruption():
     with pytest.raises(AssertionError):verify_batches(d,changed)
     changed={k:v[:2048] for k,v in batches.items()}
     with pytest.raises(AssertionError):verify_batches(d,changed)
+
+
+def test_conflicting_identical_inputs_preserve_slot_denominator():
+    from scripts.audit_expanded_v11_fits import target_ambiguity
+    result=target_ambiguity(['a','a','a','b'],[1,1,2,3])
+    assert result['slots']==4 and result['unique_inputs']==2
+    assert result['maximum_consistent_label_matches']==3
+    assert result['conflicting_input_groups'][0]['slot_indices']==[0,1,2]
+    assert target_ambiguity(['a','a','b'],[1,1,3])['maximum_consistent_label_matches']==3
+    with pytest.raises(ValueError):target_ambiguity(['a','b'],[1])

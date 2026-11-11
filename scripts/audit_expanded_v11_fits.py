@@ -27,6 +27,25 @@ def verify_batches(d,batches):
             assert batches['anchor'][step,col]==group[int(rng.integers(len(group)))]
     return rng
 
+def target_ambiguity(input_hashes, labels):
+    """Equal-slot exact-label ceiling; diagnostic only, never deduplicates data."""
+    from collections import Counter, defaultdict
+    if len(input_hashes)!=len(labels) or not input_hashes:
+        raise ValueError('complete equally sized slot/label lists required')
+    groups=defaultdict(list)
+    for index,(key,label) in enumerate(zip(input_hashes,labels)):
+        groups[key].append((index,int(label)))
+    conflicts=[];maximum=0
+    for key,rows in groups.items():
+        counts=Counter(label for _,label in rows);maximum+=max(counts.values())
+        if len(counts)>1:
+            conflicts.append({'input_hash':key,'slot_indices':[i for i,_ in rows],
+                              'label_counts':dict(sorted(counts.items()))})
+    return {'slots':len(labels),'unique_inputs':len(groups),
+            'maximum_consistent_label_matches':maximum,
+            'conflicting_input_groups':conflicts,
+            'scope':'Equal-slot training-label ceiling for a deterministic policy; not playing strength; all original slots retained'}
+
 def audit():
     torch.set_num_threads(1)
     run=ROOT/'runs/expanded-terminal-v11';baseline=ROOT/'runs/warmstart-v3/checkpoint-0002.pt'
@@ -53,6 +72,12 @@ def audit():
     with np.load(run/'dataset/training.npz',allow_pickle=False) as f:d={k:f[k] for k in f.files}
     with np.load(run/'fit/batches.npz',allow_pickle=False) as f:batches={k:f[k] for k in f.files}
     assert set(batches)=={'root','anchor'} and all(x.shape==(4096,32) for x in batches.values())
+    training_pin=identity['input_plans']['training']
+    assert sha(ROOT/training_pin['path'])==training_pin['sha256']
+    training=json.loads((ROOT/training_pin['path']).read_text())
+    assert len(training['roots'])==64
+    ambiguity={arm:target_ambiguity([r['input_hash'] for r in training['roots']],d[key])
+               for arm,key in [('terminal_head','terminal_actions'),('puct_head','puct_actions')]}
     rng=verify_batches(d,batches)
     models={};counts={}
     for arm,target in [('terminal_head','terminal_actions'),('puct_head','puct_actions')]:
@@ -97,7 +122,7 @@ def audit():
     assert torch.equal(models['terminal_head']['torch_rng'],models['puct_head']['torch_rng'])
     return {'verified':True,'scope':'Saved fitting state and training predictions only; not playing-strength improvement or final recovery verification',
             'baseline_sha256':expected,'data_sha256':sha(run/'dataset/training.npz'),'shared_batches_sha256':sha(run/'fit/batches.npz'),
-            'arms':counts,'auditor_sha256':sha(Path(__file__))}
+            'arms':counts,'target_ambiguity':ambiguity,'auditor_sha256':sha(Path(__file__))}
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',required=True,type=Path);a=p.parse_args()
