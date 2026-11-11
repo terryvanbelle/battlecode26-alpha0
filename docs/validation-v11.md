@@ -1,0 +1,13 @@
+# V11 fresh validation discovery, frozen before source games
+
+V11 full extraction completed64 transcripts,64 training roots and1024 anchors,2974 target cells below3200. Preserve its input plan and verified recovery12573420be852857fc6541302a488051cea0ff7f92c25d91261534388c38184d. No targets or gradients yet.
+
+Generate ALL48 fresh symmetric cp2 self-play validation sources, same eight-map order as V11, m0..7,j1..6, temperature1.0 both teams. Engine20267500+100*m+j; team policy2*(470000+100*m+j)+team. Seeds checked against local JSON/JSONL and all available archives; formula ranges reviewed. These source games are for validation discovery only, never gradients/benchmark training. Every source retained; no selection by terminal outcome. No anchors sampled in validation sources.
+
+Freeze exclusions BEFORE games: union of all V6 training roots/anchors/validation roots, V8 training roots/anchors/validation roots, and all V11 training roots/anchors. Pin exact input files and canonical input hashes in configs/validation-v11-exclusions.json. Eligibility is first chronological >=2-legal-action position per role/team whose canonical model input is outside that full union; excluded positions are logged and scan continues. Same general eligibility as training, no combat requirement. Validation source candidates may repeat each other; report duplicates explicitly and require32 unique selected inputs before downstream work. Do not silently skip selected duplicate inputs or change seeds/slots to pass.
+
+After all48 complete, allocate exactly32 validation roots: each map groupj1=(babyA,kingB),j2=(babyB,kingA). Matching-parity reservesj3..6 in ascending order, exclusive to the earliest missing group, never replace filled slots. Missing/duplicate slots require review, not reduced denominators or extra unregistered sources. All48 sources run even if primary slots suffice. No outcomes influence allocation. Freeze candidate manifest before target scoring.
+
+Two one-thread workers/isolatedJava,30sresponse,1800ssource,10800sinvocation/process-group watchdog, own lock/STOP plus allV11 locks/STOPs. Identity pins runtime/config/protocol/exclusion registry/seed inventory. All scheduled work required; failures preserve journals and require review, no automatic retries. Fresh validation source phase is not model evaluation or learned improvement.
+
+No target continuations, SGD, or benchmark games here. Full downstream implementation and runtime freeze still required before targets/SGD. Fixed terminal-versus-PUCT comparison and development-v4/confirmation gates unchanged. Never fit this validation corpus or use future confirmation outcomes/seeds for choices.
