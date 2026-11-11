@@ -1,0 +1,10 @@
+{
+  "map": "DefaultLarge",
+  "seed": 20265701,
+  "response_timeout_seconds": 30,
+  "elapsed_seconds": 10.360595474005095,
+  "round": 1,
+  "terminal": false,
+  "policy_decisions": 0,
+  "scope": "Reset-only infrastructure check; no terminal outcome or training data"
+}

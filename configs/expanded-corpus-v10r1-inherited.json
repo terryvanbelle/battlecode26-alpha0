@@ -1,0 +1,260 @@
+{
+  "sources": {
+    "training-m0-j1": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j1.json",
+      "sha256": "e802157634ce5e71e395b4747d2e9c18e917bf335497785f35e87201de9a374c",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j1.npz",
+      "cache_sha256": "3dae832d4798e7e97063bf4273c032013334ae98977b3809254cdbdb7a953ef1"
+    },
+    "training-m0-j2": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j2.json",
+      "sha256": "3b6ff8a647c5b3030f808c6cc95cc4ef0628b56d468a644eb2483f82dbf070cd",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j2.npz",
+      "cache_sha256": "c026e3f1f44ec60eda524145e59c8beec770f9fbf08a401a5558a18cfae60797"
+    },
+    "training-m0-j3": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j3.json",
+      "sha256": "c8989620e80b26fb226b8b8f2bff2d0bfdb182174add1af0cb8b411fd8cf1288",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j3.npz",
+      "cache_sha256": "552965c34c00e829e06370603f0397a872cc8a4da1eddc078103345966aa7add"
+    },
+    "training-m0-j4": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j4.json",
+      "sha256": "76e57aefcbc82fc0773743a6e8f8e7524ca10c82087a2c90892ae6e709f02b7e",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j4.npz",
+      "cache_sha256": "d4091dc6b23277197cee1cc9dcd01edb828904c3cec8d9b8fc30d052e53c5ea0"
+    },
+    "training-m0-j5": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j5.json",
+      "sha256": "dd099bbc8c26fa8379993223d8564c895bdcdc10379f0e996acaaca532f9e5d0",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j5.npz",
+      "cache_sha256": "a961fd0f857e2f56121151426740284679ba19561027e281ae718ef9bbaa157f"
+    },
+    "training-m0-j6": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j6.json",
+      "sha256": "5f8f092832b42789fd8bdd8f67dbb8ac3e599d956d2c867fef8c83c0dc165035",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j6.npz",
+      "cache_sha256": "6b890ae13c9905467f33d3e72cf97442b9ad8d917feeb2b7330d62a2c80b69f7"
+    },
+    "training-m0-j7": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j7.json",
+      "sha256": "5257c03e010112cddb196bbd97e36a322e49dbc8ca40269dd55ba2cdd7ffaa2c",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j7.npz",
+      "cache_sha256": "55ee90675e49ddbc7f7fd215b627b32092f5e6a6a234c88e92536f7be9f2e383"
+    },
+    "training-m0-j8": {
+      "path": "runs/expanded-corpus-v10/sources/training-m0-j8.json",
+      "sha256": "81d8afc5e7f75dbdab51abe96738d3435210804e7b59389cb9613e111cf85770",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m0-j8.npz",
+      "cache_sha256": "7860fdd052d54697842efd1e379ad2a53bfad9e7439fb7cd92461941758b9cab"
+    },
+    "training-m1-j1": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j1.json",
+      "sha256": "da8ea6f66ad7fb401f55805a80f86ccf3599c6061c10a7e65da6f473ac24df4e",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j1.npz",
+      "cache_sha256": "c3d7e02ce266949fb4acfb9aa12a93f07abad8df4966ac87a8ddd6955be1b023"
+    },
+    "training-m1-j2": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j2.json",
+      "sha256": "43d15e6f1b660e2fed2624046bcce32a69149f950cd61e39cfc6137e0eaee862",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j2.npz",
+      "cache_sha256": "898412e6292eeb69fcfb156e12944e42d00671a2fb5019b90a2be190e45f4389"
+    },
+    "training-m1-j3": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j3.json",
+      "sha256": "0026e1df5fde61f3f1c04e5e82c5a5dffe01defeea732a9b3e7b2f1c3d4c5c91",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j3.npz",
+      "cache_sha256": "4f678788f3b0bfbf31a4142e864a9269a12fd8aa03fcfa91c0e99368344bba40"
+    },
+    "training-m1-j4": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j4.json",
+      "sha256": "f19404691a07f516353760e7159a0dff426ec00c65d8a11e29c936c5d7dcba07",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j4.npz",
+      "cache_sha256": "570bb413ef01acee26cdc86d49c958184d8a6b38fa258deaa17844d345f39173"
+    },
+    "training-m1-j5": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j5.json",
+      "sha256": "171f1b6f66430329ceaf304a452b1d60e679c58b02facfaf68e10dfde12fe067",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j5.npz",
+      "cache_sha256": "21166cf33ce5c4167ae1c6b1c48b62cb161cb48d7d6845121dc24f8c36033fd9"
+    },
+    "training-m1-j6": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j6.json",
+      "sha256": "50e9c1b193ad6bdc73692294a5c0fd16f564a3ec090f159659dfdbc3a299966f",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j6.npz",
+      "cache_sha256": "ef5dc428d1d05aa5cb6d30ac7d06f2660b35d2d2cfab18bd494c8da2e7542c4f"
+    },
+    "training-m1-j7": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j7.json",
+      "sha256": "17c61fe66494fba8e87fed045019d7087051a9498a317cedbedc851705c6b059",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j7.npz",
+      "cache_sha256": "b6e22bcfd2e1f2ec72a68476148a438aae2bc43b6ebb060546739cea6166c1ad"
+    },
+    "training-m1-j8": {
+      "path": "runs/expanded-corpus-v10/sources/training-m1-j8.json",
+      "sha256": "7f67b230e4d275d9ed512d79de9144cf96065ddd436eb9602240d8247cf97354",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m1-j8.npz",
+      "cache_sha256": "b33731b273f00d869e21ddf416fb8544e28297a0316b914f759243364ae32d68"
+    },
+    "training-m2-j1": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j1.json",
+      "sha256": "ca8614985df178c98e185e798f892687cf30f070d180a8bda520c57b961b3e50",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j1.npz",
+      "cache_sha256": "c206fc8e22d887ec2f2f0290e0c0c5bcbe116eb99f9f587649f1e41cdb704835"
+    },
+    "training-m2-j2": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j2.json",
+      "sha256": "884e8fced382480c103fe177d523d67e2fcd3a49e162a285cb163fb92b351509",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j2.npz",
+      "cache_sha256": "b05cd23a913539bf627967d59a18c2c2f83398e4274328a1e24be97cc17f202a"
+    },
+    "training-m2-j3": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j3.json",
+      "sha256": "4d586a7cb24ca89c2e679add5af2678dc65af82d4a620be6cae925b2e862e286",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j3.npz",
+      "cache_sha256": "7438662436dd643f0f9026e5083a4eabe964979f7a05471fb147f7d463c2d1ff"
+    },
+    "training-m2-j4": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j4.json",
+      "sha256": "debe4112b2add006284357e6d2575548e7d741f3bb6ffc85de104bd3c266c8b8",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j4.npz",
+      "cache_sha256": "84517ee4894c7f4a1067616ebc489823e654c3b595b9220df925613126fb6cc2"
+    },
+    "training-m2-j5": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j5.json",
+      "sha256": "3b3ccded9e92e90ad232bff648cda69a9bcc9b08928de6ee4620dde71f41eb5d",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j5.npz",
+      "cache_sha256": "78d744b1bf19ad5589353a59d237c5998639389c17c90dc5d394019d6bad05d8"
+    },
+    "training-m2-j6": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j6.json",
+      "sha256": "59617c695a7ad7c84f774e8a02e70bd9870e3c8a540e3c08946c7fd119d9b7fe",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j6.npz",
+      "cache_sha256": "799f86f1cbc496c31dc569822c37915dbf683aef43deabfd3214eafadd3e2bd7"
+    },
+    "training-m2-j7": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j7.json",
+      "sha256": "6f01d89ae790e99741368a49fc3e6cf50efc50e79e0c95a49f4ea5e83deb4c7f",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j7.npz",
+      "cache_sha256": "ace494d02b88cbff24c6c5f36966aded0d3f72dbdbeaebc1b82a8821276ec60c"
+    },
+    "training-m2-j8": {
+      "path": "runs/expanded-corpus-v10/sources/training-m2-j8.json",
+      "sha256": "c3d16fd7e36e5bcc45626e6a3ca3dfa73d8e510725638862258d6c3135a3f7a7",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m2-j8.npz",
+      "cache_sha256": "a0930168cc1eeecfd6a754003f33785c9dde6aebbfe693a7c3432dc6cc774701"
+    },
+    "training-m3-j1": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j1.json",
+      "sha256": "fa9915afcbfabc0c14cb78c96c9a81664ce300cd2fe7278b57a9e1bcb9b0d6c5",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j1.npz",
+      "cache_sha256": "66c252a3bb9fcd369aafa49dded0e408ccf3a4aeda8371e20a4af249a75080b0"
+    },
+    "training-m3-j2": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j2.json",
+      "sha256": "23cf85e87d34d15b63128315463d3e2da2f5fa0da0a8dfc81a93ed1456280c1f",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j2.npz",
+      "cache_sha256": "ee467ab16a381bf308935994194eeea445646e6bd40c46618c718b1c1739810b"
+    },
+    "training-m3-j3": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j3.json",
+      "sha256": "e86bfe988fe78c7bec4522f71cde83f56eda9a161dc6ae94c3ff5ef43d965532",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j3.npz",
+      "cache_sha256": "d94c1fd776a6e33eae4bf63601aaafd51641bd36fb4875fb50c9e70a9e1efed4"
+    },
+    "training-m3-j4": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j4.json",
+      "sha256": "0e62827ab37a158ac17aa36fe98e198f6adbfdb9c9cc8310312412ac2009c329",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j4.npz",
+      "cache_sha256": "e3eac024ea0fe9be262adbba7159457a5907b82cf0642c09815a08b5e8401266"
+    },
+    "training-m3-j5": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j5.json",
+      "sha256": "ba6b58bc84b6ff2a31a37639cd0974b24a024a5b0eaf5aa80535606714bec021",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j5.npz",
+      "cache_sha256": "b11b9359f383ba108d49533fe30ae94e17604b8e721bb94fc94387ae465a7cbe"
+    },
+    "training-m3-j6": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j6.json",
+      "sha256": "9dc003c73c26b5c5965c65d24c91066d04eb29020c6dd992c52eab19dba28aef",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j6.npz",
+      "cache_sha256": "00266b6959f71b90ce7011183621202a5cdf2eabef40f6400ac0a95d47a88b78"
+    },
+    "training-m3-j7": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j7.json",
+      "sha256": "1ea1cefec14c786f24f306cf07eeb9365ab0caffae0ebb831bc01c114eb1ed0b",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j7.npz",
+      "cache_sha256": "4142aa1ea1df8db5186b22a7438c02f14499376027c75d9d858313af43052306"
+    },
+    "training-m3-j8": {
+      "path": "runs/expanded-corpus-v10/sources/training-m3-j8.json",
+      "sha256": "5096cb89724cc9818f536d66377069e99ea229edbd7b222f287a8be8a1576215",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m3-j8.npz",
+      "cache_sha256": "c9a2745f1fa24289e8848fbff8c4d3318cd14c992a4b3d9ea43468a63c58deca"
+    },
+    "training-m4-j1": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j1.json",
+      "sha256": "2dc8bdac092b434120ea441efb115a09281e934e8271f3fe98917ae36807396f",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j1.npz",
+      "cache_sha256": "ef3b3e4e839b92025b4469a9dbede176eba44b80a2c492d380819521449f4758"
+    },
+    "training-m4-j2": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j2.json",
+      "sha256": "aeed9a5cadf0fe42829d802b29d207b000070c4ffd4b28ed7ee4ebe0bfd3561f",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j2.npz",
+      "cache_sha256": "fad9edc735f06499704d49045711adb91e85d22d9684f7a8f8705ff80b829678"
+    },
+    "training-m4-j3": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j3.json",
+      "sha256": "4bba1e2f93e0e62c5f7d9f958d934f97c5121449532c1d96028ae6da6ee34aab",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j3.npz",
+      "cache_sha256": "88d1cde3d2b288f5784a19c9f7e552405cf3c29ae70c56be5e31213bd8fdd58e"
+    },
+    "training-m4-j4": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j4.json",
+      "sha256": "61bbf272299e8f76fe703be714b8c67488d8e1f476883cd9d2d55203faa811b6",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j4.npz",
+      "cache_sha256": "1581b2dc2db1dac5f759e152c0d10fcc00417e691bf573303e35f725a67c6006"
+    },
+    "training-m4-j5": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j5.json",
+      "sha256": "a85ee2ba9ce111e6b378542a04abad52030c24683f18831e16ba24d4bb828a02",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j5.npz",
+      "cache_sha256": "1fa7df61fe640e39cc410928a348dae0d2f1df4a5a171be6b87b3f2a09aafe3a"
+    },
+    "training-m4-j6": {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j6.json",
+      "sha256": "570195ebf7481751a2e026d704e6aa8aad3c930d09a3d69da4cdd1dcc2ce3f69",
+      "cache_npz": "runs/expanded-corpus-v10/sources/training-m4-j6.npz",
+      "cache_sha256": "bcb4c87737ee88afbc324fe5b27b9ea09a7d2d1f54049d89e9388c7b948094ec"
+    }
+  },
+  "retained_failed_attempts": [
+    {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j7.attempts/attempt-001.json",
+      "sha256": "1524660e829b6ffbb6cedd505b9ae247343fc4206abb2484864db5602300de2d",
+      "source_id": "training-m4-j7",
+      "status": "incomplete",
+      "error": "Interrupted: supervisor interrupt",
+      "decisions": 2649
+    },
+    {
+      "path": "runs/expanded-corpus-v10/sources/training-m4-j8.attempts/attempt-001.json",
+      "sha256": "aed2abcad2f8830d177df7cfdb57490541fbd84cd423a587c9decb07c930addf",
+      "source_id": "training-m4-j8",
+      "status": "incomplete",
+      "error": "Interrupted: supervisor interrupt",
+      "decisions": 2091
+    },
+    {
+      "path": "runs/expanded-corpus-v10/sources/training-m5-j1.attempts/attempt-001.json",
+      "sha256": "1993fe1138f86ecebefbd8122699b6d7f5efb169254db33ea783116f72f6fa4f",
+      "source_id": "training-m5-j1",
+      "status": "error",
+      "error": "TimeoutError: engine response exceeded 10s: ",
+      "decisions": 0
+    }
+  ],
+  "original_identity_path": "progress/expanded-corpus-v10/identity.json",
+  "original_identity_sha256": "b8178de5645322d386039d273b20892724e9f625f97485c8121c9f32b95af770"
+}

@@ -26,3 +26,12 @@ def test_matching_parity_reserves_cannot_be_reused(tmp_path):
     for j in (5,7):del rows[f'training-m0-j{j}']['root_candidates']['BABY_RAT:0']
     r=select(rows);assert not r['complete'] and len(r['missing_root_slots'])==2
     assert len(r['anchors'])==1024
+
+def test_revision_keeps_allocation_and_adds_source_identity(tmp_path):
+    from scripts.review_expanded_sources_v10r1 import select as revised
+    rows=corpus(tmp_path)
+    for r in rows.values():r['experiment_identity']='frozen-source'
+    baseline=select(rows);actual=revised(rows)
+    for field in ('roots','anchors'):
+        for r in actual[field]:assert r.pop('source_experiment_identity')=='frozen-source'
+    assert actual==baseline
