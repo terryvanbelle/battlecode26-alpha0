@@ -550,3 +550,8 @@ V8 remains active with its original runtime. Read-only planning reconstructed al
 ### V8 complete; V9 selected — 2026-11-11
 
 All768 benchmark cells are valid: cp2 82W174L, terminal81W175L, PUCT79W177L. Both learned arms fail the frozen improvement rule against original and fresh cp2. Final terminal audit is `reviews/completed-panels-final-20261111.json`; complete recovery export was verified and isolated-restored before further actors. No confirmation or promotion. Select the preregistered V9 no-SGD target-reliability recheck:32fixed roots, four disjoint continuation seeds,184shared-action cells. Comprehensive seed scan covered16153localJSON files and7available recovery archives without collisions; reserved formulas reviewed. One-thread serial collection keeps the bounded diagnostic simple. Implementation/protocol are frozen before preflight and launch.
+
+
+### V9 wrapper repairs and retained-game continuation
+
+V9 stopped before a game because `worker_task_path` was absent. V9r1 fixed that in a separate namespace and completed eight valid terminal continuations; reporting then rejected missing redundant `decisions` metadata. V9r2 uses an exact SHA-pinned compatibility reader deriving only the count from retained action lists, passes full terminal/action-hash validation (including corruption-rejection tests), and imports all eight without rerunning them. Both prior versions and raw journals remain preserved. New records explicitly include decisions. V9r2 preflight passed and its bounded three-hour cycle is live under identity289f0b1eb06f27fe1c6afe5c28dfe53a49d054c1954b7a79eed5046ca874d35c, owner175428, with actual new continuations and no SGD. Early coverage was16/184; no mechanism decision yet.

@@ -8,4 +8,4 @@ All1,508 selection continuations, both2,048-update fits, and64 physically shared
 
 The complete archive is verified and isolated-restored separately from the earlier414-game generation. Both generations remain preserved. Final fitting and input audits passed again. No completed fit or successful game was rerun.
 
-The next version is a [fresh-seed target-reliability recheck](../../docs/target-recheck-v9.md), without SGD, to distinguish noisy selected targets from poor transfer. Its outputs are separate from V8. Historical snapshots remain in [reviews](reviews/).
+The next version is a [fresh-seed target-reliability recheck](../../docs/target-recheck-v9r2.md), without SGD, to distinguish noisy selected targets from poor transfer. Its outputs are separate from V8. Historical snapshots remain in [reviews](reviews/).
