@@ -1,0 +1,7 @@
+{
+  "all_four_roles": 64,
+  "complete": true,
+  "limitations": "Saved-record and provenance audit; not independent engine replay or terminal equivalence. No training authorization from this audit alone.",
+  "missing_roles": {},
+  "sources": 64
+}

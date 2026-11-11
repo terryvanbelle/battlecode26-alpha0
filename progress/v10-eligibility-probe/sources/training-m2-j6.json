@@ -1,0 +1,107 @@
+{
+  "complete": true,
+  "eligible_roles": {
+    "BABY_RAT:0": {
+      "decision_index": 52,
+      "legal_actions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        17,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        32,
+        38,
+        39
+      ],
+      "round": 17,
+      "state_sha256": "51de4ffd57c06523c800eba997fd549dcee49eeffe3b1bb510ab86b9214becba"
+    },
+    "BABY_RAT:1": {
+      "decision_index": 18,
+      "legal_actions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        17,
+        19,
+        20,
+        21,
+        23,
+        24,
+        38,
+        39
+      ],
+      "round": 9,
+      "state_sha256": "1783cc60b9b329bbb64ba73304ff2be4eba4c5ebe1c35f2d05ba797fac8cc974"
+    },
+    "RAT_KING:0": {
+      "decision_index": 0,
+      "legal_actions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        19,
+        21,
+        23,
+        24,
+        25,
+        38,
+        39
+      ],
+      "round": 1,
+      "state_sha256": "ae0be5ecef6934540457bdd4dca111b25fb09a99f44b16139fab81795e8d0675"
+    },
+    "RAT_KING:1": {
+      "decision_index": 1,
+      "legal_actions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        19,
+        21,
+        23,
+        24,
+        25,
+        38,
+        39
+      ],
+      "round": 1,
+      "state_sha256": "782d4d119c5a823aee549eee85b5c2537233a2f720cf5f6968be2ce07cad5c54"
+    }
+  },
+  "map": "closeup",
+  "new_terminal_games": 0,
+  "replayed_actions": 52,
+  "sgd_updates": 0,
+  "source_id": "training-m2-j6",
+  "source_sha256": "59617c695a7ad7c84f774e8a02e70bd9870e3c8a540e3c08946c7fd119d9b7fe"
+}
