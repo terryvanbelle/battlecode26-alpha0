@@ -1,3 +1,7 @@
+# V11 downstream implementation — frozen and launched
+
+The full pipeline was frozen at c067d47 after17 tests, independent validation audit and96 successful real-engine root reconstructions. See [protocol](expanded-terminal-v11.md) and [live progress](../progress/expanded-terminal-v11/README.md). The notes below record the earlier implementation boundary and are superseded by that freeze.
+
 # V11 downstream implementation status — unlaunched
 
 Validation source collection remains active under its frozen identity; no existing actor/engine/model/protocol files were modified. New module alpha0/expanded_v11_support.py is preparation only, not a complete or frozen learning experiment.

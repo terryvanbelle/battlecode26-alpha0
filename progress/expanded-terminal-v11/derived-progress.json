@@ -1,0 +1,16 @@
+{
+  "benchmark": null,
+  "counts": {
+    "selection": {
+      "complete": 0,
+      "expected": 2974
+    },
+    "validation": {
+      "complete": 0,
+      "expected": 0
+    }
+  },
+  "mechanism": null,
+  "playing_strength_claim": false,
+  "updated_at": "2026-11-11T08:14:10.379201+00:00"
+}
