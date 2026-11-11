@@ -2,7 +2,7 @@
   "benchmark": null,
   "counts": {
     "selection": {
-      "complete": 524,
+      "complete": 1173,
       "expected": 2974
     },
     "validation": {
@@ -12,5 +12,5 @@
   },
   "mechanism": null,
   "playing_strength_claim": false,
-  "updated_at": "2026-11-11T08:45:22.144082+00:00"
+  "updated_at": "2026-11-11T09:54:26.822490+00:00"
 }
