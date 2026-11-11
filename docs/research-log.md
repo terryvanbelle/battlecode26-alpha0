@@ -568,3 +568,8 @@ V10r1 changes only response timeout10→30 and worker concurrency3→2. It pins 
 
 ### V10 loader repair and bounded continuation
 V10r1 failed before engine/game startup due to an invalid backend import signature. V10r2 preserves its logs and identity, repairs the loader, and adds a real backend-load/storage-isolation preflight. Five relevant tests passed. The unchanged source schedule resumed under eleven locks, retaining the 38 original successes and collecting only 26 missing sources; no SGD or benchmark improvement is claimed. The original partial recovery is verified and published at 311a521.
+
+### V10 complete source corpus, failed root coverage — 2026-11-11
+All64 source games completed with 1024 anchors. The frozen selector yielded59/64 roots, missing five king slots (one closeup, four wallsofparadis), so target collection/SGD remain blocked. Independent source audit verifies every terminal/action/cache hash and seed schedule. Recovery SHA7d39da0b33aa9c8723321652fe4fa56150916dcaa92aaeb9209605a7ab28ec9e was verified and isolated-restored, published174370d.
+
+Action37 is a cheese-funded attack requiring an available target, not generic assault intent. All eight wallsofparadis sources lack eligible king roots. A separately frozen bounded prefix-replay diagnostic checks first positions with at least two legal actions across all64 original transcripts. It generates no new policy actions, labels or gradients, and cannot make V10 coverage pass retroactively. Full coverage is required before selecting any new extraction/learning version.

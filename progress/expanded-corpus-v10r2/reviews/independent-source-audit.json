@@ -1,0 +1,672 @@
+{
+  "complete_source_proofs": 64,
+  "source_hashes": [
+    {
+      "source": "training-m0-j1",
+      "sha256": "e802157634ce5e71e395b4747d2e9c18e917bf335497785f35e87201de9a374c",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j2",
+      "sha256": "3b6ff8a647c5b3030f808c6cc95cc4ef0628b56d468a644eb2483f82dbf070cd",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j3",
+      "sha256": "c8989620e80b26fb226b8b8f2bff2d0bfdb182174add1af0cb8b411fd8cf1288",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j4",
+      "sha256": "76e57aefcbc82fc0773743a6e8f8e7524ca10c82087a2c90892ae6e709f02b7e",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j5",
+      "sha256": "dd099bbc8c26fa8379993223d8564c895bdcdc10379f0e996acaaca532f9e5d0",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j6",
+      "sha256": "5f8f092832b42789fd8bdd8f67dbb8ac3e599d956d2c867fef8c83c0dc165035",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j7",
+      "sha256": "5257c03e010112cddb196bbd97e36a322e49dbc8ca40269dd55ba2cdd7ffaa2c",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m0-j8",
+      "sha256": "81d8afc5e7f75dbdab51abe96738d3435210804e7b59389cb9613e111cf85770",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j1",
+      "sha256": "da8ea6f66ad7fb401f55805a80f86ccf3599c6061c10a7e65da6f473ac24df4e",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j2",
+      "sha256": "43d15e6f1b660e2fed2624046bcce32a69149f950cd61e39cfc6137e0eaee862",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j3",
+      "sha256": "0026e1df5fde61f3f1c04e5e82c5a5dffe01defeea732a9b3e7b2f1c3d4c5c91",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j4",
+      "sha256": "f19404691a07f516353760e7159a0dff426ec00c65d8a11e29c936c5d7dcba07",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j5",
+      "sha256": "171f1b6f66430329ceaf304a452b1d60e679c58b02facfaf68e10dfde12fe067",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j6",
+      "sha256": "50e9c1b193ad6bdc73692294a5c0fd16f564a3ec090f159659dfdbc3a299966f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j7",
+      "sha256": "17c61fe66494fba8e87fed045019d7087051a9498a317cedbedc851705c6b059",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m1-j8",
+      "sha256": "7f67b230e4d275d9ed512d79de9144cf96065ddd436eb9602240d8247cf97354",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j1",
+      "sha256": "ca8614985df178c98e185e798f892687cf30f070d180a8bda520c57b961b3e50",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ]
+    },
+    {
+      "source": "training-m2-j2",
+      "sha256": "884e8fced382480c103fe177d523d67e2fcd3a49e162a285cb163fb92b351509",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j3",
+      "sha256": "4d586a7cb24ca89c2e679add5af2678dc65af82d4a620be6cae925b2e862e286",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j4",
+      "sha256": "debe4112b2add006284357e6d2575548e7d741f3bb6ffc85de104bd3c266c8b8",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j5",
+      "sha256": "3b3ccded9e92e90ad232bff648cda69a9bcc9b08928de6ee4620dde71f41eb5d",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j6",
+      "sha256": "59617c695a7ad7c84f774e8a02e70bd9870e3c8a540e3c08946c7fd119d9b7fe",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m2-j7",
+      "sha256": "6f01d89ae790e99741368a49fc3e6cf50efc50e79e0c95a49f4ea5e83deb4c7f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ]
+    },
+    {
+      "source": "training-m2-j8",
+      "sha256": "c3d16fd7e36e5bcc45626e6a3ca3dfa73d8e510725638862258d6c3135a3f7a7",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j1",
+      "sha256": "fa9915afcbfabc0c14cb78c96c9a81664ce300cd2fe7278b57a9e1bcb9b0d6c5",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j2",
+      "sha256": "23cf85e87d34d15b63128315463d3e2da2f5fa0da0a8dfc81a93ed1456280c1f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j3",
+      "sha256": "e86bfe988fe78c7bec4522f71cde83f56eda9a161dc6ae94c3ff5ef43d965532",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j4",
+      "sha256": "0e62827ab37a158ac17aa36fe98e198f6adbfdb9c9cc8310312412ac2009c329",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j5",
+      "sha256": "ba6b58bc84b6ff2a31a37639cd0974b24a024a5b0eaf5aa80535606714bec021",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j6",
+      "sha256": "9dc003c73c26b5c5965c65d24c91066d04eb29020c6dd992c52eab19dba28aef",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j7",
+      "sha256": "1ea1cefec14c786f24f306cf07eeb9365ab0caffae0ebb831bc01c114eb1ed0b",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m3-j8",
+      "sha256": "5096cb89724cc9818f536d66377069e99ea229edbd7b222f287a8be8a1576215",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j1",
+      "sha256": "2dc8bdac092b434120ea441efb115a09281e934e8271f3fe98917ae36807396f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j2",
+      "sha256": "aeed9a5cadf0fe42829d802b29d207b000070c4ffd4b28ed7ee4ebe0bfd3561f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j3",
+      "sha256": "4bba1e2f93e0e62c5f7d9f958d934f97c5121449532c1d96028ae6da6ee34aab",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j4",
+      "sha256": "61bbf272299e8f76fe703be714b8c67488d8e1f476883cd9d2d55203faa811b6",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j5",
+      "sha256": "a85ee2ba9ce111e6b378542a04abad52030c24683f18831e16ba24d4bb828a02",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j6",
+      "sha256": "570195ebf7481751a2e026d704e6aa8aad3c930d09a3d69da4cdd1dcc2ce3f69",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j7",
+      "sha256": "2c17412fbd7681e2bd8c4a5b5a93de03ba933fdeb53bddd22dbaac14a2ee72d0",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m4-j8",
+      "sha256": "afa931dcd8b152bb41c2c18d6d09b4d0ea7d91222d55c12e65101e46bc3d139e",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j1",
+      "sha256": "35e8083bddb0cb5ce3fee54951ee8d05164cdd3c3742967b426fc0bd5b20121f",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j2",
+      "sha256": "df86d3192715471b699f63608b1db1556c59928dc9aa39014f59921ffd22c7e5",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ]
+    },
+    {
+      "source": "training-m5-j3",
+      "sha256": "7fdff8dec2974c8e5139e0e1ef909ec1f1ffc86b401216e83baf68e6d3f1f3c1",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j4",
+      "sha256": "47ea2652f108430ef61a99b9911d2a0ca99524a3d3ebb93327b474af71975116",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j5",
+      "sha256": "ff6e4c12e98d118ec7c94d21fa3b1d25554d89898699944b544178a7e05415a5",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ]
+    },
+    {
+      "source": "training-m5-j6",
+      "sha256": "7441c9995833a55da41943517b8334f96d6b6b2745d55ea1904de3ae9c47e73e",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j7",
+      "sha256": "929195ed882d07c2fb9fcf02a72f984527b917abc9b4250aa40aea85d34b1e2d",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m5-j8",
+      "sha256": "9641aa35cead30bd64d56b6662919707712c406a602fb4d5ee923173a4dc8be6",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j1",
+      "sha256": "fed7f1b4b88da7bbc87689ab60ca6a844ec0c7ea638a66b17913575551f73ab5",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j2",
+      "sha256": "05520ad1742286ba39570f6560219197e828100c725750b3acc24f3dade12507",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j3",
+      "sha256": "010b4d707b43ab82ddaceac20c7b93c2c7755b6545f827c8d4e63dbf4ebc4800",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j4",
+      "sha256": "f0eaf7f81bde974eaa44d1ec75a7edc053a8dd12e4a92666db2331de660e9b7b",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j5",
+      "sha256": "e74c7d7e64ad3c7d356ecd76b724cb97f7d1a7bf28956d2074e08ce8eddc04fa",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j6",
+      "sha256": "d26be5f7b639dbed854f12647487119549459e6b80486f4c288e6b402ba2c5f1",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m6-j7",
+      "sha256": "8142f0ebff359f90baea1d86068eb717596d57c3745d3a13977597b730d84361",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ]
+    },
+    {
+      "source": "training-m6-j8",
+      "sha256": "fcb420593f99b7c977080f73aa0e03bfb00e7740eb14ce7b2151ad585c4ed97c",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ]
+    },
+    {
+      "source": "training-m7-j1",
+      "sha256": "a8bb003a1d0d149ccd89bd3c75a1c36745af6fd4ba57d62c954662a5c5597ecc",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j2",
+      "sha256": "07b4a65068ab949c3417c3a7766a767d53c011624e1f5c868630e2ad93342441",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j3",
+      "sha256": "053734d488c35a74c8fe54afb9d90ab35f56ef40d46827d38d98226b7365df10",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j4",
+      "sha256": "f9c9c77fe939a2cae1d9624cffb99538a604a5ef245d6ee3957dacf82b912a67",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j5",
+      "sha256": "00fd659139bf9b323a1f0728011bb7e265e88a8f69b9dc5f4b4712ea8a298d01",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j6",
+      "sha256": "a2fa57a5c9711ee5694bd44bae150441334278ed3835554550c82a0c8aefa867",
+      "root_roles": [
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j7",
+      "sha256": "19407521c2f3a0c6d5cbf005553bec6e65d9a15946ce0118b5dfb6b6fb369848",
+      "root_roles": [
+        "BABY_RAT:1"
+      ]
+    },
+    {
+      "source": "training-m7-j8",
+      "sha256": "d477b0610f1ec47d529fd15d1734bd4ad91392662ee287021c53190e8083308c",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1"
+      ]
+    }
+  ],
+  "role_availability_by_map": {
+    "tiny": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "DefaultSmall": [
+      8,
+      8,
+      7,
+      8
+    ],
+    "closeup": [
+      8,
+      8,
+      4,
+      6
+    ],
+    "knifefight": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "DefaultMedium": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "DefaultLarge": [
+      8,
+      8,
+      7,
+      6
+    ],
+    "cheesefarm": [
+      8,
+      8,
+      8,
+      7
+    ],
+    "wallsofparadis": [
+      6,
+      8,
+      0,
+      0
+    ]
+  },
+  "training_roots": 59,
+  "required_training_roots": 64,
+  "anchors": 1024,
+  "coverage_pass": false,
+  "sgd_updates": 0,
+  "target_continuations": 0
+}
