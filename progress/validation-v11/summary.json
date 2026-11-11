@@ -1,9 +1,9 @@
 {
   "benchmark_games": 0,
-  "complete": false,
-  "completed_sources": 6,
+  "complete": true,
+  "completed_sources": 48,
   "expected_sources": 48,
-  "fresh_validation_source_games": 6,
+  "fresh_validation_source_games": 48,
   "sgd_updates": 0,
   "sources": [
     {
@@ -107,6 +107,720 @@
       "source_id": "validation-m0-j6",
       "source_json": "runs/validation-v11/sources/validation-m0-j6.json",
       "source_sha256": "bfa7bf0e88e58b41f717942b77e32adecb3a04bfc456c1cb030c8a481171f9df"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j1",
+      "source_json": "runs/validation-v11/sources/validation-m1-j1.json",
+      "source_sha256": "16504f43b9f8dd295132e439469242e6858e1eabb9666c2e9c791904b7e28bd5"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j2",
+      "source_json": "runs/validation-v11/sources/validation-m1-j2.json",
+      "source_sha256": "838c5f390a2cb8b15870be13dbbadfb91d7b37dabf8372c1e695f01026ce9ea5"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j3",
+      "source_json": "runs/validation-v11/sources/validation-m1-j3.json",
+      "source_sha256": "5f91997e21876e5de1633672670e8ac35a14bd09dda968ba9c4998c800ae62ab"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j4",
+      "source_json": "runs/validation-v11/sources/validation-m1-j4.json",
+      "source_sha256": "590c53e7ca97b987b9b8001e27be1409953270e0cb06b60be5155ee81601fc5a"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j5",
+      "source_json": "runs/validation-v11/sources/validation-m1-j5.json",
+      "source_sha256": "6f4efedecda7e92e8c08e3d10286c08ef354e65151f03758322e3b370f7e1c1c"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m1-j6",
+      "source_json": "runs/validation-v11/sources/validation-m1-j6.json",
+      "source_sha256": "d07e2066870b2ad1c10bf45a2bb651114e5a29536bdbfbf90680726f0bbbf8ce"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j1",
+      "source_json": "runs/validation-v11/sources/validation-m2-j1.json",
+      "source_sha256": "3e2a899f97c34844e2a16e50b9348ff1eb841a1648fbc23a67ba34f8bc63eda3"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j2",
+      "source_json": "runs/validation-v11/sources/validation-m2-j2.json",
+      "source_sha256": "27f227e63e6ceb3a30ac832ca8ad3fa9ac0678512a793f4dc428740a1f082e33"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j3",
+      "source_json": "runs/validation-v11/sources/validation-m2-j3.json",
+      "source_sha256": "0e28db164083235150fa66f64f598e0726586990c4cb57a0379dba05837573f0"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j4",
+      "source_json": "runs/validation-v11/sources/validation-m2-j4.json",
+      "source_sha256": "c18ff3364d50411f55936307b541e6953a87f2bc49f86178ed7e47efe9e98c5d"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j5",
+      "source_json": "runs/validation-v11/sources/validation-m2-j5.json",
+      "source_sha256": "f492beaa5cc28bf4978166df97ed718432c65de209626e373e4f7e741667e3a5"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m2-j6",
+      "source_json": "runs/validation-v11/sources/validation-m2-j6.json",
+      "source_sha256": "4ce5d9292b8a129fcc1b7a8bbe78aaf2b0f41c0d032a50cf2d8769c125a6553d"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j1",
+      "source_json": "runs/validation-v11/sources/validation-m3-j1.json",
+      "source_sha256": "dba4b92418743e30a1aa3ece3e830f3b1e274d28c5c90d519891ce8d2fdcc366"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j2",
+      "source_json": "runs/validation-v11/sources/validation-m3-j2.json",
+      "source_sha256": "9a375951affd51fb4fa51035d419f8ac98f50983b1019789c7bdd9a692a0010b"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j3",
+      "source_json": "runs/validation-v11/sources/validation-m3-j3.json",
+      "source_sha256": "46628eaa9b821a1fb6150daea3b515eaf64eb61bf4eb15c9a6cf94fcc09a2042"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j4",
+      "source_json": "runs/validation-v11/sources/validation-m3-j4.json",
+      "source_sha256": "6d808710ece49a4dad0c3adeaedb1f29f0ac4210a93e90575ce07382324a61af"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j5",
+      "source_json": "runs/validation-v11/sources/validation-m3-j5.json",
+      "source_sha256": "4e30ad72fbc9b21c52d4cc73a3ef48af15a3a94cd7033e43b7ed41b273095aad"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m3-j6",
+      "source_json": "runs/validation-v11/sources/validation-m3-j6.json",
+      "source_sha256": "673c55a9c66df7e7f9a5ee02c325f5226f39e0419de5f64e6b207f492a2e3b82"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j1",
+      "source_json": "runs/validation-v11/sources/validation-m4-j1.json",
+      "source_sha256": "935f0a752351047b18160e19af603d642b01d25de90756b8ff4c3d2ff3bd5347"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j2",
+      "source_json": "runs/validation-v11/sources/validation-m4-j2.json",
+      "source_sha256": "dba86f7f224e5d0e31b1e229fb940d0c15ee62cddeac8318a934e4f7d77a8109"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j3",
+      "source_json": "runs/validation-v11/sources/validation-m4-j3.json",
+      "source_sha256": "d2ec1fd336e0a9c56cad6f6f9bcfbda9fef976776f43f0971e48d0d36cc94fde"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j4",
+      "source_json": "runs/validation-v11/sources/validation-m4-j4.json",
+      "source_sha256": "9bcc81f75080084cf808d75b2987000c3394968e48f933e6e82f7392b46dd136"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j5",
+      "source_json": "runs/validation-v11/sources/validation-m4-j5.json",
+      "source_sha256": "762e2b56c346c745d28006cd01171cd5dff6084927e636ccf9c3306ac6722295"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m4-j6",
+      "source_json": "runs/validation-v11/sources/validation-m4-j6.json",
+      "source_sha256": "af08b3b282a6e602c1b4c47bc5d2d9bf4dd2bf083f73bf7ae31667aaedd5c8f9"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j1",
+      "source_json": "runs/validation-v11/sources/validation-m5-j1.json",
+      "source_sha256": "f32ed816a93a40d19956239907e2c1140bc1087cf416981606c320c93579f52a"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j2",
+      "source_json": "runs/validation-v11/sources/validation-m5-j2.json",
+      "source_sha256": "77be0e307ba60079615e672dff8bc6ac5a3c99bcf895f50a4571d304886d8c02"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j3",
+      "source_json": "runs/validation-v11/sources/validation-m5-j3.json",
+      "source_sha256": "c53b4f6704183eb9456a344e7089bdaa35e6f4e132ca3a1a37ce864459e7e1e6"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j4",
+      "source_json": "runs/validation-v11/sources/validation-m5-j4.json",
+      "source_sha256": "89a7aa3fd0b481a2b428bbb4ad2718d6e928aaba549bbd96a39e2375d2209ef8"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j5",
+      "source_json": "runs/validation-v11/sources/validation-m5-j5.json",
+      "source_sha256": "8c89c2286cc31c12bd5b006443b300d18b53636f1db51e88057a603db78a588c"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "DefaultLarge",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m5-j6",
+      "source_json": "runs/validation-v11/sources/validation-m5-j6.json",
+      "source_sha256": "e06596ce4f53bd1fbfa629cabbe768e3653bd9b4175a18832632bd798a8d363e"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j1",
+      "source_json": "runs/validation-v11/sources/validation-m6-j1.json",
+      "source_sha256": "37f47e50f59bdbdfa1295f87de7f0e879761fedb0529461653915a110dd34f41"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j2",
+      "source_json": "runs/validation-v11/sources/validation-m6-j2.json",
+      "source_sha256": "3ca2d2776228a35dba81e0872bfb00c6803a44814230cf15e42b525850c15f86"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j3",
+      "source_json": "runs/validation-v11/sources/validation-m6-j3.json",
+      "source_sha256": "ac66e499a1205d56528885bd330aba194928a0be97802ef6cee2c6254ed85f20"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j4",
+      "source_json": "runs/validation-v11/sources/validation-m6-j4.json",
+      "source_sha256": "9fb37ce79575762c60bb509c8b826b513f11e93a23687fc574fafd2686e5bacc"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j5",
+      "source_json": "runs/validation-v11/sources/validation-m6-j5.json",
+      "source_sha256": "9ff910a76f426403204da0dda73032d7daebb9c562b207043c0bea2cecf938ab"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "cheesefarm",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m6-j6",
+      "source_json": "runs/validation-v11/sources/validation-m6-j6.json",
+      "source_sha256": "a19ec9cc102bdb3343aa03f136a5fcecb8aeeb22770ccb1e71af373ad28de90b"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j1",
+      "source_json": "runs/validation-v11/sources/validation-m7-j1.json",
+      "source_sha256": "8d5817eddbecb65b03d726e46899d3928f4f54ffa566cec805b18d551f143b64"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j2",
+      "source_json": "runs/validation-v11/sources/validation-m7-j2.json",
+      "source_sha256": "6af270759dc3a59d8a28291959bf649303b8e6e7879d0148627e7efcd69bac93"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j3",
+      "source_json": "runs/validation-v11/sources/validation-m7-j3.json",
+      "source_sha256": "1c58dd83c1130d601e69584abe8b078b5e64ab59355d7d2e2327483f5f7c3dec"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j4",
+      "source_json": "runs/validation-v11/sources/validation-m7-j4.json",
+      "source_sha256": "ca0a92b3e0a8f79b48b53263df9b2704e37a17ee3555d2ebbff9557d3c4a1621"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j5",
+      "source_json": "runs/validation-v11/sources/validation-m7-j5.json",
+      "source_sha256": "1f531c7d69bc70f3f0a7b6e145b32b80fe053713298743375bff9f3656116f4e"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "wallsofparadis",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m7-j6",
+      "source_json": "runs/validation-v11/sources/validation-m7-j6.json",
+      "source_sha256": "87d9b1e3b1537f746e55e6f67b825f703c7512de0488463979ca7b1c671af6fc"
     }
   ],
   "target_continuations": 0

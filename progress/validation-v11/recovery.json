@@ -1,0 +1,13 @@
+{
+  "archive": "artifacts/validation-v11/recovery-20261111T073908.134528_0000.tar.gz",
+  "manifest": "artifacts/validation-v11/recovery-20261111T073908.134528_0000.tar.gz.json",
+  "partial": false,
+  "sha256": "0b68780ff622d7a058247c1b9271c89470da16f6d3689c304084dcb2d10a5ea6",
+  "v8_dependency": {
+    "archive": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz",
+    "benchmark_completed": 768,
+    "partial": false,
+    "sha256": "1bfb038a6daaa97fb4d7b64e546f94782277b5544c0c6a6feef904cb8afff8d6",
+    "verification": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz.verification.json"
+  }
+}

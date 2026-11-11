@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "duplicate_inputs": [],
+  "exclusion_sha256": "f6b6c52f68c112487f7ce068abe157d4398867196cd108489c76af0d53d9ba31",
+  "gradient_overlap": [],
+  "missing_root_slots": [],
+  "reviewer_sha256": "322c5a7126f08eaf6c666f16be4a2f66ca917812dcb9b30ca4e7d02a6cef396c",
+  "sgd_updates": 0,
+  "source_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+  "target_continuations": 0,
+  "unique_validation_inputs": 32
+}
