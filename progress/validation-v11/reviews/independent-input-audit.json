@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "complete_sources": 48,
+  "candidate_cache_positions": 192,
+  "selected_roots": 32,
+  "unique_selected_inputs": 32,
+  "excluded_input_count": 2197,
+  "skipped_excluded_positions": 81,
+  "gradient_overlap": 0,
+  "sgd_updates": 0,
+  "limitation": "Saved-record/cache audit, not independent engine replay or candidate evaluation."
+}

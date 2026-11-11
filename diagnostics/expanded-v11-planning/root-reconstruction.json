@@ -1,0 +1,659 @@
+{
+  "identity": {
+    "adapter_sha256": "52cea12a0cd28370b70ed8fb65ad7f97ec307f2e187f9a2d495a50635ad95de1",
+    "collector_sha256": "2ab5a82851d203cc1386af009a07f92fad6984909908767b26e9ed3b2abd71e6",
+    "config": {
+      "anchor_seed": 223151,
+      "benchmark_data_used_for_training": false,
+      "benchmark_games": 0,
+      "benchmark_manifest": "configs/benchmarks-development-v4.json",
+      "cell_timeout_seconds": 180,
+      "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "experiment_id": "validation-v11-source-discovery",
+      "improvement_config": "configs/improvement-v4.json",
+      "maps": [
+        "tiny",
+        "DefaultSmall",
+        "closeup",
+        "knifefight",
+        "DefaultMedium",
+        "DefaultLarge",
+        "cheesefarm",
+        "wallsofparadis"
+      ],
+      "max_decisions": 100000,
+      "max_error_attempts": 1,
+      "new_selfplay_games": 48,
+      "phase": "fresh_validation_only",
+      "planned_sources": 48,
+      "response_timeout_seconds": 30,
+      "root_eligibility": "first >=2 legal actions per role/team not in frozen historical+gradient exclusion union",
+      "schema_version": 1,
+      "selection_cell_ceiling": 3200,
+      "selection_seeds": [
+        223003,
+        223013
+      ],
+      "sgd_updates": 0,
+      "source_j": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "source_temperature": 1.0,
+      "source_timeout_seconds": 1800,
+      "target_continuations": 0,
+      "temperature": 0.35,
+      "torch_threads": 1,
+      "validation_seeds": [
+        223021,
+        223043,
+        223067,
+        223091
+      ],
+      "wall_budget_seconds": 10800,
+      "workers": 2
+    },
+    "input_plans": {
+      "exclusions": {
+        "path": "configs/validation-v11-exclusions.json",
+        "sha256": "20302f07a7235a4d74b593c0cc6428d94ded26941f97c968c1eee64286a6d218"
+      },
+      "training": {
+        "path": "progress/general-roots-v11/training-input-plan.json",
+        "sha256": "24f3feb69250e380e3299a1c4618e4fb92194523d9b1e8f48f310507613f1bd4"
+      },
+      "validation": {
+        "path": "progress/validation-v11/validation-input-plan.json",
+        "sha256": "4be0ab0591268411c0fadee1dcbf3e7df8df7022a1e6b4e19a672c50cc3ef15a"
+      }
+    }
+  },
+  "passed": true,
+  "roots": [
+    {
+      "cache_fields_equal": true,
+      "input_hash": "3f3f8c1cc1cfc851926b85bd512a6befcaf702c5f6fa66cfdc84606df8c4f53f",
+      "root_id": "training-000",
+      "state_sha256": "d4a0802805e72447eac31ac3ee91e80c6716cb27cd421ca03662aa0301e46aa1"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "7509924f1648cff879c55d5ecf236c5362ac917044bff2207225eb122c9ed84e",
+      "root_id": "training-001",
+      "state_sha256": "1492eec9ac453b988388478bf129af2fe9c0ccb0b55111500fa9e496eb22236e"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "5d927b6ef331f924b4491b551b91d0d01d08aa6154b2d809ba50cdaa52e54f8d",
+      "root_id": "training-002",
+      "state_sha256": "2c488b51d709f00584c7da6a939377f938f69e8ef4c67af56956872187a9c736"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "228bad626917b825ca5f6f0838d66a8507811f55c7ac26cb604e2e22d719274f",
+      "root_id": "training-003",
+      "state_sha256": "490d9cb034aee1538b0ab7d04c558076d29d2cb6557fdef3ec87c7a6bbde3f24"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e396bcd49e63c7e5df73892d57f264f360c8f653c0e0f4f2b474dac88791649e",
+      "root_id": "training-004",
+      "state_sha256": "c2ffbcdd043651874f9140988a64d66f0e9156b6b76741b8cc18ae3f6acd29c6"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "9a89d199f5807873da674b271461607d4c354039de0caa4ef77e1637269fe337",
+      "root_id": "training-005",
+      "state_sha256": "810b8301421c036e414c86fb15ed600d602f4eefdbca2bee4a479b3bced70c71"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f836a212af7a79a796188ca50975e406423417b57d1b8adcfbfc5ef169357fea",
+      "root_id": "training-006",
+      "state_sha256": "85c4cd4f9164eec35ea6b0b5d481be744d325e63ba26c75f7f27e6a4b8103711"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "228bad626917b825ca5f6f0838d66a8507811f55c7ac26cb604e2e22d719274f",
+      "root_id": "training-007",
+      "state_sha256": "5537878ac2a403cf5e2c7adbd398b95b27e4259cdb7a009cc4788549a9b1f571"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "21f8019191788e434a85a69ebf5648daba4ca35d4bc567c8f998c0a72ad4756f",
+      "root_id": "training-008",
+      "state_sha256": "1b0f6e73214369345464e1a75956e4347a01ce28130e1b19084d8099fed73a1b"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d184baf7d88af834d8a3e674a13371b9a14b9595cb9428558eb2396ab29c12ea",
+      "root_id": "training-009",
+      "state_sha256": "dc67ca2ec396487105835b352da4b3901117427cd90a6afff51dffb18669d76f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "dd8bf4f2ca21de33c0ccc9297870238cb8852986b535e0d5dae139b081df3a34",
+      "root_id": "training-010",
+      "state_sha256": "f5b57b6a74fcb1c7f614ecee1f416b0180a84b952a38eca51fd105cab0035feb"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "fb85cfb022781e1e2c4ef73edae0d62b1283e884f49d14b769571a84a151112b",
+      "root_id": "training-011",
+      "state_sha256": "f318f41938769b77af9a4565128f2fa2c8825e69f182f23754663156ec981314"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "ac29ca4886cbcfd7c0d001afad50334cb57d69936a2583ea9050121b1795b60d",
+      "root_id": "training-012",
+      "state_sha256": "e845a20d1c2ddcb3e152027423c38d3db1490a2e49c10e9c94aa620ae2f6f43d"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d184baf7d88af834d8a3e674a13371b9a14b9595cb9428558eb2396ab29c12ea",
+      "root_id": "training-013",
+      "state_sha256": "a6054694768c0abe78f69828885aca955a35dfbb9b1e14b09b16ac84bec94352"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "c0c6db5d78ee4b1ce73050db2884a4a7cf88748f27e83f1e10b9535bb654715b",
+      "root_id": "training-014",
+      "state_sha256": "9f12378d371eb73402e724e5af7e67742e6cdd69c1088ec0bd071b6e29774770"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "fb85cfb022781e1e2c4ef73edae0d62b1283e884f49d14b769571a84a151112b",
+      "root_id": "training-015",
+      "state_sha256": "290300e0762f3520ad44ec349c10b0910d9002816cef1f5894d61362edceb1ff"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "0cadb7ec77ccfa753551dea3eff6b1dce859b7dcfcfffc487a4e241c542270fd",
+      "root_id": "training-016",
+      "state_sha256": "91c7c2d6c8a9fa2b0246b9f257d06e7157fc6035abe14a48751f39f2e13357ed"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "a8294d4e091090361472174071349f8243d4d7eefc56a0b4a31de6ca1aa19bbf",
+      "root_id": "training-017",
+      "state_sha256": "d86854c378b43b56634e205cf5bf1e9c6d5b17b142e2aa1a480cabb133b3ba5f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "7c33f93dd2db8e480126616e3f28f41264bd10e65b84690b55b86a53b4febab0",
+      "root_id": "training-018",
+      "state_sha256": "3a6df83a4b48ffde1b3efee69ecbd50e8bd9284c1ea9494cda21ae241fa6b573"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "825cc74a06cf5c043eb469fa31ec93c98bed155abdb6c0b97a93bdef2ee953eb",
+      "root_id": "training-019",
+      "state_sha256": "669e79e8cbe9d773583363dd156a7c8b6efbf40e7f3b71d67f33d648bbb16b36"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e85625fe45f648f3faf03b92562813116d57c2b7d012cfda7b7a171a854f3595",
+      "root_id": "training-020",
+      "state_sha256": "3fd97d31866f596d2bb121d2124be2c4a6ef6d9226402e5527641bf2241e0ff2"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "154dce16c6d3734de73e95a7964ecb68944a2b07360700ed3c5b88240ff48a8c",
+      "root_id": "training-021",
+      "state_sha256": "a85ba4323f762ae31c2cbf3fc7f6a010d3db1f59f499bb1bd2618c6a0f318110"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f69d942f776aa0cf5ac0ca0f59584ef074b68da7743d9e98a582dc63373b98f9",
+      "root_id": "training-022",
+      "state_sha256": "f0acb2561009e2cac8c86b66746857b31c514eb1eec9f9e99a5829fa25c5f51b"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "825cc74a06cf5c043eb469fa31ec93c98bed155abdb6c0b97a93bdef2ee953eb",
+      "root_id": "training-023",
+      "state_sha256": "282e5511fdfd59d61995e97890bf6d6cfcbeebc10b61e58b263ad3a3ed55b29d"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "96846c8dba9f4cfd4bd28e996eefa183c76161a2b573931dfd5f54d0fcd16417",
+      "root_id": "training-024",
+      "state_sha256": "b02988ec255a03e362e82ede8aca4019858185c12ab64c25a8f4b5d205744322"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "ed8ab8a720f86a830102e3a633218e5717e83efa4d09180af60e9f82d70a645a",
+      "root_id": "training-025",
+      "state_sha256": "ac489b03972d32a28f038e5e3aca2cd55d4197bf03a27c821d51986e6a791c62"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "635c785e56d2b27b4dba644323b14231921937dec26ae025fc8b4b5d4fea5b75",
+      "root_id": "training-026",
+      "state_sha256": "b982614711dc802257dcf440532141ad603e7a0e8a3a8e1c1da435ce55351098"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "df6573206277bbae56d78d675793a3fd911dd9f6713c00665818667959a0d560",
+      "root_id": "training-027",
+      "state_sha256": "d54587b53b25062cb44910dbb5d37a28ff48922c0015eea039180d121419abd5"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "627173432f375628521744810e56f92af00af8118313ebf8550bac1561358b8a",
+      "root_id": "training-028",
+      "state_sha256": "f71863c22ade10e2eae435a8c87bd9a4443c178ce06a53774b29877753973237"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "9f601d2dbf8f656b5fd1b1cec0f3ec39c33af0411ce6cf7647cc515bf4ae053c",
+      "root_id": "training-029",
+      "state_sha256": "71044a7c135d84fa6cc55181f53d09dd763106cb8b9e4e282181151dd7c4e9b9"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "de726eccfd33ffddfc77846e5762ebf094183ab876fcbaf4eac323ff5a4df023",
+      "root_id": "training-030",
+      "state_sha256": "f3b2f7a3874a6e852eccab59beed8bdfb6a290d2d637632f3b71f27d561933cc"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "df6573206277bbae56d78d675793a3fd911dd9f6713c00665818667959a0d560",
+      "root_id": "training-031",
+      "state_sha256": "4cf97c4b2adc38fed421228e911122646997ec3030f8bc93f42fe528b7be88d1"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "bb5c9d4146f78fe1bdd02b7b52e8dfddbb516d3ea854be5c864382caa6162f6a",
+      "root_id": "training-032",
+      "state_sha256": "25a233c3ec4ec1b4bf129ec3c0baca5ced74f43c45fa0b525c8588f1c2dc706e"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "5e4382639fb2a288a74eab994d9be33fbe97bcedcdf1336733211fcb435c77a9",
+      "root_id": "training-033",
+      "state_sha256": "cb9bf19b2ce438b5300cf2d849b3c376ca2e78693455d6d0ae2c2adcbab421f7"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "ee11399993f05e4c873f02703076dc0ac146151c88d535d0c02f786ce5ace09e",
+      "root_id": "training-034",
+      "state_sha256": "7fdc649b50489eb516bf4aeda3e98827f7ae70f17e1f71618b82e9e4b45bed66"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f8a4e06710f359ed2c736371e5c4ccd5d6155c468ed6a1ef0602a6f58f193897",
+      "root_id": "training-035",
+      "state_sha256": "352011473ca6551e053fc28509000823fea084883fa14f55941ae524b455b8e9"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e74cf7b5caaa9822145534533b7db5fa0cc745dc837c8590ad167649a7b2b81b",
+      "root_id": "training-036",
+      "state_sha256": "e3a24423c8a2cdea27d262f79e40fcfb1a80cc74af1e4f8a52c9e9d1b65c9928"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "469e7c6c400f7a9ed498ee96aee88b73626b32314d87245ecdf1e48bdd30aea5",
+      "root_id": "training-037",
+      "state_sha256": "6858093228fcb44d893dfb58822dde3b83fa9c650284fa8dabab62b4c6559f01"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "0682cc32e4773de2e0affc44a3bd25d3a9f47071c9aa581409a46400d3e9c895",
+      "root_id": "training-038",
+      "state_sha256": "e7230d4956dcc446a8668466b68836e3bd8624bd6603263aec10d19468001bcb"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f8a4e06710f359ed2c736371e5c4ccd5d6155c468ed6a1ef0602a6f58f193897",
+      "root_id": "training-039",
+      "state_sha256": "85416a651029b1b97cf0f40914ab7c381f3d5b8e25156a5635eeef2354b7f56e"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "4f8a3154040797c776c953e20390e92c2f46413d5f31fda64bcc46b4d517a720",
+      "root_id": "training-040",
+      "state_sha256": "4b27f5ea70f0f57245c016a98e1314550faf006780c8c7ed82b847c0f8bcc1bc"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d5e01ab66b351e46b63bb9d52e23e4b30d893fe4138b9e600f806261a74490cf",
+      "root_id": "training-041",
+      "state_sha256": "14106f30e5bafd3afb501ee5174f4715041b8f3a96a01808ad8085f85126fa36"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "b423ebdb64e1191c79b8bb0ca8fcfdfe6c8bc2bd19ca2c3da23000b575d11518",
+      "root_id": "training-042",
+      "state_sha256": "18c33811f5ea1ae2815ff3c90c811eeaf35c752d0de5d78920c41c09f0f68437"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "158a7f448d09470561f71e7aba4b941b017cb62a94daef51a0677e5c2ab5eba9",
+      "root_id": "training-043",
+      "state_sha256": "574b17b91e4c4a0c3e0c0ae56681ba8ee943170663251c2d325f970db1bc87fc"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "84198cc01ce863f969135f3cf8405fc8e8ace786026c167ef25e145886e0c584",
+      "root_id": "training-044",
+      "state_sha256": "17eede5c16c04312fd181837fef142cc134ca1a9b29a73d77c9222b0c19ebda3"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e0022081c6292204b7954a7404297f91286c6c96d80d7e650f80a3f04c61364f",
+      "root_id": "training-045",
+      "state_sha256": "96b84bdd47ab860fdcd82e1f2ed490d979ad82a9f61d62cd9d2313b98915ec91"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "72711b79c4dab1c3e8c0c0650ea9f8ee59026f226a5bdf17f72cf8135d7e9b9e",
+      "root_id": "training-046",
+      "state_sha256": "d755736cb40703868aa316006a71ac5f5d93727700593e30179c5bbccf66db88"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "158a7f448d09470561f71e7aba4b941b017cb62a94daef51a0677e5c2ab5eba9",
+      "root_id": "training-047",
+      "state_sha256": "388be27575d98b3c59e0e9f81c5da8fc9fc22f0cbbe247cdd7a18be68bc17305"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "ec90f29064aeb934d00f647fba0069993ef842a8bd9f4732fe87cd530b867015",
+      "root_id": "training-048",
+      "state_sha256": "9c63190d1ccbdb261759308c5dd66bdaa3e7b14f8ce75fe5d18753c8f45ebd03"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "7ae3acde11f930d2a4614c2b7a82bcb87bcc8f7086ee55f5e36cc4f8a2e5c559",
+      "root_id": "training-049",
+      "state_sha256": "03753012819b57f10546281e9f84d5324cc60f0ea39e0901ff37408bb6a92dde"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "79bfdf8532a5cf92832bacf727fefe67dd9230f065499f5bf502997fef0ac371",
+      "root_id": "training-050",
+      "state_sha256": "7ad6a5d0d3db5a7c64f2507b5435073aa6db0ae9c7d5a921262ee89e482b3663"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "4031dbaff430633ee4049a3c5e624cd995d6c179872e8fd56858b94519e2cc8b",
+      "root_id": "training-051",
+      "state_sha256": "04c63d964084ea4b3ef411a6e18f7b452942c3c656da0154fc73792d9786b77e"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "2a646ba546f3821b515c3b5d4be5a28b3aba85e84f26180a1d389b0e89276565",
+      "root_id": "training-052",
+      "state_sha256": "fc623d64c62fdd2241e76e6a5ec7c087d61c3f3e60fd4b6983d11e6503f57e7e"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "fabddb1bf296282f7ea672001b85df76106ce6f33e0cf209c06902fb7f36ce75",
+      "root_id": "training-053",
+      "state_sha256": "b3dcf03e27ecc073d22404097c59a828ba2a9b2ca07b6e578c4f27477baaf95c"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "50d0a626a7b47e0df6be34ce8f235422d7e586f0dc74cc239f027b01db6cff1a",
+      "root_id": "training-054",
+      "state_sha256": "210dc7b93326e1d2a75ea4b8125285528b19999da960c6655136573963b26f21"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "4031dbaff430633ee4049a3c5e624cd995d6c179872e8fd56858b94519e2cc8b",
+      "root_id": "training-055",
+      "state_sha256": "51d211b1d9af3f875ea561bbbe58a7528b7b500da1eb32ecf83970147abb7166"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e96199bc74df5f5b3dcd41e4fc48f59d206c0b742f21c28ab2471810e5132462",
+      "root_id": "training-056",
+      "state_sha256": "fc8a3f64435b2686dae8ab0efac84a41a1096d75578b7ef4c08ac1bccbba591d"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "06a9ab92b10992806c21b5476992c13f3b3716988a7528a089d22aef8b4427fd",
+      "root_id": "training-057",
+      "state_sha256": "d0e12d1e4f72d249a030ccf0439ee8a91ae80ae65c70a77fd83676d4110b9db6"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "b55bedd7c5b168f9f06bc6270ee71f94dc2c74cc22ad521a2278e9f9a4f2f7eb",
+      "root_id": "training-058",
+      "state_sha256": "a5b1cd1d477491c9a1f93b6e5c6896a396655f18b8c434e7b7d3ddaaaaa467b6"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "c54544c23192124d77edc0252613d852fb760173ec19776352043e9e26c69a6a",
+      "root_id": "training-059",
+      "state_sha256": "60384b583746629aa660053e16929f27573fee7df0628fac9bbe8bed8f12c86d"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "5375bfbd19db2d0395082717a0339359b41f3519d93e42f18d417189da57702f",
+      "root_id": "training-060",
+      "state_sha256": "dbe3189b250399b8a82c4b18384f12945b94512bbe32197eb44e7c4fb5d16b0f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "06a9ab92b10992806c21b5476992c13f3b3716988a7528a089d22aef8b4427fd",
+      "root_id": "training-061",
+      "state_sha256": "27ac58e3dcbd5268e80aa04acd508a404bd750ebcfc04397a83af7f53322e8ed"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d68fe47e3183507f32651670213da53d0bafd60f93a5ffc9813a522e984f8d80",
+      "root_id": "training-062",
+      "state_sha256": "56d971348f3200618af958bd0236bd0ccbef7ef60c0130ef3a0655ca551813f6"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "c54544c23192124d77edc0252613d852fb760173ec19776352043e9e26c69a6a",
+      "root_id": "training-063",
+      "state_sha256": "5b4ae4de72be5489fec64d48a18c242786109d94207913b7198dabb053701048"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "8ed94b69c56bbbc4d75bc6c9d620f71a9646aa35c537379fe24dc74abebdbe80",
+      "root_id": "validation-000",
+      "state_sha256": "1265a577a23d29e8ec47e0e195c99554c0065b45c702540aa46bf88d69ea1807"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "1e0b0103fdc511ea979bbac192a3b4403b64005f772c7305439479f039f467a0",
+      "root_id": "validation-001",
+      "state_sha256": "20d385fb6bfa08408d3d041660c191e7eec288fd8e660688cb8111427ac36e5f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "0ef05b7c2a72064ce726e8bb9d02f864da83e711213c1d20b2eec2174060fe0f",
+      "root_id": "validation-002",
+      "state_sha256": "96281667dae6736d2f8ace2722431e22d99d916376907d79b895445bfc617c49"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "0720fbeeb9336e7c2b0941f016bfedec92bf3dcc8fae8878edd050fd6fe99d81",
+      "root_id": "validation-003",
+      "state_sha256": "cf05c40592024ded37f88d89327dd88de29f6e87fd9b1a907ce20a88cf76ee95"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "c53583c966488d093df6455209a1672828be00e03a2271ff625ed748114f5ba6",
+      "root_id": "validation-004",
+      "state_sha256": "2ef67bd382ba47e2571f7fbb3f6e2e73a5485634bfa0e827bb35df9212cacf77"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "cb3ba6490103c17db2fd7009e03814ab5f042f09a03cf47d4adfaf7df473dbf9",
+      "root_id": "validation-005",
+      "state_sha256": "bb13ec19aa24c6a544bd4e14e0d769e751c9111214ffefc39881abbf1691653f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "b695b0b58b6ad3c9a4a9b6ae5f5d0eb955a4419a9c7c155bfbd3b9d1f84e17d1",
+      "root_id": "validation-006",
+      "state_sha256": "f9767863aa699f1f0be08b45c206e00392cdc60eeb2e794df465754a53861b79"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "029589025778b3914c989f30a7710b814ba48dc34fbbd0d1443992931abec09c",
+      "root_id": "validation-007",
+      "state_sha256": "8621e7f2834c871163d20f17d1f04924af179ec6c4ef728c656ff34f9bee99c2"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "3f962d775ff1ec3c017864aea720877de04cd486c7e7862250b79f04e539a7ee",
+      "root_id": "validation-008",
+      "state_sha256": "575d2301897c69e98aeb04e8fac45b1515d993cbc64d5dad238c3a8df03f4134"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f9f3341296b0fefc09f5a40931f8f6c246fbdc3f74eb73561af6cfe5ab7abbbe",
+      "root_id": "validation-009",
+      "state_sha256": "dba6c30e5ee59f9daffe7d4e0dd4f8e28bb8e868110aedf8214dacd5d12c0781"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e2410ea7778b7b18a2d1731e3b59df03d8be17543b22ee74b68af0943bd9aa50",
+      "root_id": "validation-010",
+      "state_sha256": "cfc480958397b1a5b0f6fa4ab0ac75dbcfc57e6b4fc0e18f75da1feaf59a5813"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "45990deed284f6a38d8a5a2219bd4924ec582958369a8cdbab7587e71e9f1f83",
+      "root_id": "validation-011",
+      "state_sha256": "7da6c4adaa8f145c3fb9f1a0662ba211423489146c3459cc76cd28f06e026e15"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "05c37ed6c41f90bc956466699664fd4904c3859b8c64df2114ef0a9a1bd8bdfe",
+      "root_id": "validation-012",
+      "state_sha256": "f4ee6421b32b00dcf957ffb113ed097d37ef42da4764529ae8ae809d616b363a"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "c252de1d46a0e7f4784951dd1868d2b68a3bc91aadf1f9ad9f5dc27f12920c80",
+      "root_id": "validation-013",
+      "state_sha256": "0ddf4c76c1b8d469e538918c4e43c30a712c7062cf8a8101ee0c9fbc29d0591f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "203bfab9939f6f22bbe70fb097bba99d63e4c50775bb15a99cb06070ad3d84e8",
+      "root_id": "validation-014",
+      "state_sha256": "0f43c5f2e71b83c17855fd3c7852936ae2d0a26a891607c9855fbe39dca56934"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d21a3b61dc4cb179f2b56601acdc17f59ce134cd5a81402d0a500ac6f3191945",
+      "root_id": "validation-015",
+      "state_sha256": "667146142f410d9aa7427a29bd89ea482472ee6cc9c2b2ef1de0043418b7e990"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "585de117f77698785dd73fe124d8eabcb348316608d63430f320f18180e38185",
+      "root_id": "validation-016",
+      "state_sha256": "7a6fdc14160b3705fe988ba0cd66ebce6e3d1a6d660e3ab4f504f88674165a8b"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "f04dbb2cbe3bc8f084f8420d4abed8294ebb6dc9f9533e20bcc6911f742a5f9f",
+      "root_id": "validation-017",
+      "state_sha256": "fd693d181b88362a7b76d86d43c9f7b83a4ae4f2711febe193823a4923f60c8f"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e501edeaef8e6ce160f5a64a551e359b6c9531a5e863bfe4295c52dc83fe59f7",
+      "root_id": "validation-018",
+      "state_sha256": "ae79ae7c537ca43459a75515a2afc49402fa7541112b0b5eaa326ea939264ac2"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "7b8895c47b4101a2e29386912131ba9d1c935bda1fe4b3e598daa84fba3c336f",
+      "root_id": "validation-019",
+      "state_sha256": "52ccc2b8bb1d742b514d2fe5a4b167304607391386f0383bbe443459d1e2e14c"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "caf81bc8dd806295f3f535122066d4431c56687956b994d9b7ca9cd4cb293c01",
+      "root_id": "validation-020",
+      "state_sha256": "0ad07a722c75b54927b6dcaa1259d02a9c1084e439f05702b7fd2102760da596"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "cac764898ff3a7423f2bf6f54920621ea1380925ab5b413c429485c93e8a6919",
+      "root_id": "validation-021",
+      "state_sha256": "22513909bd7c134b93d1268afcf7159bfd3ca5c5bbc1c8bf4baa994611486586"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "e1ede7637707bcdd11f6c4a7d51e58233e97038a9b25e34adf54face7a902fec",
+      "root_id": "validation-022",
+      "state_sha256": "77cfb806f595d33af533d2940e8c69548c26f360900aea9a556ac1fecd95f466"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "a8cc5b501d83a92ce7163fa58396f94f698106d1a769280d14b960a7e693cd00",
+      "root_id": "validation-023",
+      "state_sha256": "4de97b8d34186d1f39a4f483f232d99ee539c5a2557349c2f9422ea6488dba7d"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "ac2a5fedcefe71ae2a12305fb692f68bfe3a9995ff64bc8be4816f454a65f682",
+      "root_id": "validation-024",
+      "state_sha256": "12777f0ece18b9de75b2790a1248a1d52b1edd1f411d301fdd377ca9412e0824"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "54202f22d89c894b6cd742d51628d57c4fdc784f8e6ece6c301127b8e34fae85",
+      "root_id": "validation-025",
+      "state_sha256": "54b089f41dfb1547f99959b4cdf9b4a3e2aa360ef66f6cf92f64f6671a0bb2ab"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "32e8fea0758d1a9895ebb40fff3aea256f84786534a2d42cff56a4e04ce4095f",
+      "root_id": "validation-026",
+      "state_sha256": "35fdb80dcb1a9ab5da84061884b42c1f49d49228e360fe2dd51f873d9d0c85b7"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "faca517ce19f5d469c7908093877c198934803486a9c19a161c72195cf5b6573",
+      "root_id": "validation-027",
+      "state_sha256": "23005d90245b63e2eb10e8dae2863d0b524dc348367af9d33785a781b35fbb21"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "648d4714ff779f4832457af7c2555693409c272a7cde7c4a756fa7b325eba741",
+      "root_id": "validation-028",
+      "state_sha256": "303250bd823b3e89da7d6c5b8eb9f2920e7dc2116a5f602916817dbebdb64ca0"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "832884e08bf741306d84852a41f186cc22deef9deab0eecfd4610c542a2f80da",
+      "root_id": "validation-029",
+      "state_sha256": "62aa465df45fe9c4f2f1af9130f3cbad8f7eb945fa0eba17d85a0e9a450823ad"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "a6e30772acc32bed644a88bbd9990782d826335017506fca1742b68cac3da0e0",
+      "root_id": "validation-030",
+      "state_sha256": "fd85f3ac22fcdac3ba884f0b40e6446d7377346086f0366ede400f8557280d54"
+    },
+    {
+      "cache_fields_equal": true,
+      "input_hash": "d6d4e405d99df04d251df9de01db60e42f8ce28f745ebb7dfeae9885269f8db6",
+      "root_id": "validation-031",
+      "state_sha256": "6dd3c8d0b85960cc1b9174fa297ede7122f780a8ffb98a4d8bfb0f559c08e346"
+    }
+  ],
+  "search_simulations": 0,
+  "sgd_updates": 0,
+  "terminal_continuations": 0,
+  "verified": 96
+}

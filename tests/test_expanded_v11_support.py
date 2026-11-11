@@ -56,3 +56,10 @@ def test_missing_targets_cannot_form_dataset(actual,tmp_path,monkeypatch):
     monkeypatch.setattr(S,'frozen_plans',lambda _: (manifest,{'roots':[]},{}))
     identity={'config':{'selection_seeds':[223003,223013],'selection_cell_ceiling':3200}}
     with pytest.raises(ValueError,match='comparator incomplete'):S.build_complete_dataset(tmp_path,identity)
+
+def test_complete_real_input_union_passes():
+    from pathlib import Path
+    files={'training':'progress/general-roots-v11/training-input-plan.json','validation':'progress/validation-v11/validation-input-plan.json','exclusions':'configs/validation-v11-exclusions.json'}
+    identity={'input_plans':{k:{'path':v,'sha256':S.C.sha256(S.C.ROOT/v)} for k,v in files.items()}}
+    training,validation,registry=S.frozen_plans(identity)
+    assert len(training['roots'])==64 and len(validation['roots'])==32 and len(registry['input_exclusions'])==2197
