@@ -1,0 +1,114 @@
+{
+  "benchmark_games": 0,
+  "complete": false,
+  "completed_sources": 6,
+  "expected_sources": 64,
+  "new_selfplay_games": 0,
+  "replayed_sources": 6,
+  "sgd_updates": 0,
+  "sources": [
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j1",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j1.json",
+      "source_sha256": "8e1e49b3d2578637a4526324755e8772d7a581334c7702602352a443cde1710e"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j2",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j2.json",
+      "source_sha256": "af5fea2f18bf1e4f4f5f48e8126448438756bb873f8d44bc33312fddf0e10052"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j3",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j3.json",
+      "source_sha256": "74f8695d930a45b34ecf277b254ae8a8deb565760240d03105e2c551bb0d6215"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j4",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j4.json",
+      "source_sha256": "c06e5fca0090b92372028c5324b9631dde7d09944c4a30f17bcab73948f620bd"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j5",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j5.json",
+      "source_sha256": "139b99c5aebb04abdd8390b24bfc239d15db3f62c66b4c16c9597086632f6d07"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "3e4b41c55db6bc9c703f2b723956fcd8d0c063e86cc6c75df34db43682bdb498",
+      "source_id": "training-m0-j6",
+      "source_json": "runs/general-roots-v11/sources/training-m0-j6.json",
+      "source_sha256": "6f51b93952ff5cb7643b84337ab4f54a439f41f88c64dee9abd2a78636df1267"
+    }
+  ],
+  "target_continuations": 0
+}

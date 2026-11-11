@@ -1,0 +1,625 @@
+{
+  "config": {
+    "anchor_seed": 223151,
+    "benchmark_data_used_for_training": false,
+    "benchmark_games": 0,
+    "benchmark_manifest": "configs/benchmarks-development-v4.json",
+    "cell_timeout_seconds": 180,
+    "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "experiment_id": "general-roots-v11-reextraction",
+    "improvement_config": "configs/improvement-v4.json",
+    "maps": [
+      "tiny",
+      "DefaultSmall",
+      "closeup",
+      "knifefight",
+      "DefaultMedium",
+      "DefaultLarge",
+      "cheesefarm",
+      "wallsofparadis"
+    ],
+    "max_decisions": 100000,
+    "max_error_attempts": 1,
+    "new_selfplay_games": 0,
+    "phase": "full_recorded_transcript_reextraction",
+    "planned_sources": 64,
+    "response_timeout_seconds": 30,
+    "root_eligibility": "first decision per role/team with >=2 legal actions",
+    "schema_version": 1,
+    "sgd_updates": 0,
+    "source_j": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "source_temperature": 1.0,
+    "source_timeout_seconds": 1800,
+    "target_continuations": 0,
+    "temperature": 0.35,
+    "torch_threads": 1,
+    "wall_budget_seconds": 10800,
+    "workers": 2
+  },
+  "files": {
+    "alpha0/terminal_v8_collect.py": "2ab5a82851d203cc1386af009a07f92fad6984909908767b26e9ed3b2abd71e6",
+    "configs/general-roots-v11.json": "ac025061a13f59a007ea5338e51c6862728294241ef7d6d85489dc4b2cdc45f2",
+    "docs/general-roots-v11.md": "5e97bf708aab4a3a560ea2f2cb8e9e20de710e4f3f77af01cae3cfa8df006e86",
+    "progress/expanded-corpus-v10r2/summary.json": "47ea621a27b768b74aebf4d17f40dc3fe3e75ae75bf902f1c01fecd9e59c2eeb",
+    "scripts/collect_expanded_sources_v10r2.py": "1472316cd6f3022ace796100727d9291c65e0ed219ae9eb8dfb2756cfef91145",
+    "scripts/collect_general_roots_v11.py": "2f2f0b9b25bbb7bcfaa485dde92f4dc2ef3d5038968b5b37a5e45a6282bbd924"
+  },
+  "source_identity": "e1e2d6bcd0aef767140870aaa3a3cc792bcea1b81b11c4499d61336dd69f0a2a",
+  "v8_runtime": {
+    "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+    "config": {
+      "anchor_count": 512,
+      "anchor_seed": 205151,
+      "benchmark_data_used_for_training": false,
+      "benchmark_manifest": "configs/benchmarks-development-v4.json",
+      "cell_timeout_seconds": 180,
+      "checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "evaluation_attempts": 2,
+      "evaluation_timeout_seconds": 1800,
+      "experiment_id": "terminal-target-head-v8",
+      "fit": {
+        "anchor_batch_size": 32,
+        "anchor_kl_weight": 1,
+        "batch_size": 32,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08,
+        "learning_rate": 0.0003,
+        "seed": 205101,
+        "target_weight": 0.75,
+        "updates": 2048,
+        "weight_decay": 0.0001
+      },
+      "improvement_config": "configs/improvement-v4.json",
+      "maps": [
+        "tiny",
+        "DefaultSmall",
+        "closeup",
+        "knifefight"
+      ],
+      "max_decisions": 100000,
+      "max_error_attempts": 2,
+      "response_timeout_seconds": 10,
+      "schema_version": 1,
+      "search": {
+        "cpuct": 1.5,
+        "dirichlet_alpha": 0.3,
+        "exploration_fraction": 0.25,
+        "max_depth": 12,
+        "root_noise": true,
+        "root_seed_base": 205201,
+        "simulations": 32
+      },
+      "selection_cell_ceiling": 1600,
+      "selection_seeds": [
+        205003,
+        205013
+      ],
+      "source_temperature": 1.0,
+      "source_timeout_seconds": 1800,
+      "temperature": 0.35,
+      "thresholds": {
+        "improved_roots_min": 2,
+        "mean_delta_min": 0.1,
+        "mean_vs_cp2_min": 0,
+        "worst_root_delta_min": -0.25
+      },
+      "torch_threads": 1,
+      "training_roots": 32,
+      "v7_audit": {
+        "path": "progress/cached-head-constraint-v7/independent-final-audit.json",
+        "sha256": "e3776f8fbde2d0ff65117c2efcf029a54265a734d00b1b069ada06dc70b6ebd2"
+      },
+      "validation_roots": 16,
+      "validation_seeds": [
+        205021,
+        205043,
+        205067,
+        205091
+      ],
+      "wall_budget_seconds": 10800,
+      "workers": 3
+    },
+    "config_file_sha256": "c453cec7a657182e59820789109a7b1464fdc1200b14bfc60e33c2e9cf9768e3",
+    "evaluation_runtime": {
+      "bridge_sha256": "44d9cfafe5d5cc9fe3389d04896858c85d084099a91aa646a068a38d0ecc1aa7",
+      "compiled_classes": {
+        "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+        "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+        "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+        "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+        "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+        "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+        "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+        "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+        "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+        "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+        "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+        "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+        "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+        "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+        "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+        "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+        "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+      },
+      "engine_jar_sha256": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec",
+      "engine_patch_sha256": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+      "engine_version": "1.2.6",
+      "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+      "numpy_version": "2.3.5",
+      "physics": {
+        "benchmark_bytecode_limit": 1000000000,
+        "engine_rules": "official-1.2.6",
+        "team_execution_timeout_disabled": true
+      },
+      "python_adapter_sha256": "797ee5634316b622dfa5f2e2ba63a885065ab0008e99230af9c17a7538ae1e7d",
+      "python_sources": {
+        "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+        "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+        "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+        "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+      },
+      "torch_version": "2.15.0+cpu"
+    },
+    "experiment_id": "terminal-target-head-v8",
+    "gate_sha256": "ea50467650f3da2357a25ff6a3583ebfd92176c85cb5cb10a9bc64aedc758148",
+    "historical_exclusion_hashes_sha256": "a0fb612a67d5b1d94f954948b1471f32eb8a27fd97b98f4739f831a67ed7367f",
+    "historical_input_pins": {
+      "progress/terminal-target-head-v6/roots-validation.json": "14552424f106bf83ffac3f98265c5f5f859e111a854c573e34b3d283f3e4be1d",
+      "runs/terminal-target-head-v6/dataset/training.json": "020b5615a430b986802f2ab2ebfbeb6eca532488d1ca1179a863987a8a876d7b"
+    },
+    "improvement_config": {
+      "automatic_promotion": false,
+      "baseline_checkpoint": "runs/warmstart-v3/checkpoint-0002.pt",
+      "baseline_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "bootstrap_replicates": 10000,
+      "bootstrap_seed": 602113,
+      "bootstrap_unit": "map, retaining both seeds, both seats and all opponents",
+      "experiment_id": "development-improvement-v4",
+      "hard_opponents_are_required_wins": false,
+      "manifest": "configs/benchmarks-development-v4.json",
+      "maps": [
+        {
+          "name": "tiny",
+          "sha256": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e"
+        },
+        {
+          "name": "DefaultSmall",
+          "sha256": "664653d43fd633497ac0e0acd874384fe5ebc644de2e6d0036f863b9ff74a68f"
+        },
+        {
+          "name": "DefaultMedium",
+          "sha256": "7d886ee7d3607e49205e5f4d5bd24baf298c917a52ef34d10fcc66a8863c6c5e"
+        },
+        {
+          "name": "DefaultLarge",
+          "sha256": "64588be498e836522096cdaf6cb4c81e61ae17b042dbd711b2f976b7f456f648"
+        },
+        {
+          "name": "closeup",
+          "sha256": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680"
+        },
+        {
+          "name": "knifefight",
+          "sha256": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5"
+        },
+        {
+          "name": "cheesefarm",
+          "sha256": "ee50d2f5ff9965c8c825660d433cc0eafcb371b6aa2711f8874e58223d6ab51a"
+        },
+        {
+          "name": "wallsofparadis",
+          "sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28"
+        }
+      ],
+      "minimum_absolute_score_gain": 0.05,
+      "replaces_all_opponent_all_map_completion_goal": true,
+      "require_95_percent_lower_bound_above_zero": true,
+      "require_complete_valid_games": true,
+      "require_zdb_nonregression": true,
+      "schema_version": 1,
+      "score_definition": "win=1, draw=0.5, loss=0",
+      "seeds": [
+        0,
+        2026
+      ],
+      "sides": [
+        "A",
+        "B"
+      ]
+    },
+    "improvement_config_sha256": "05cfa8db1aea81c1ca37de04d55edfcb5910b0b77c80ded0a6339aa27a28cf2a",
+    "maps": [
+      {
+        "name": "5t4rv4t10n_1337",
+        "sha256": "f1408ac19caaba76286f4fc6b02754f657cdde169764e43d2c7d58b7bee54c6b"
+      },
+      {
+        "name": "DefaultLarge",
+        "sha256": "64588be498e836522096cdaf6cb4c81e61ae17b042dbd711b2f976b7f456f648"
+      },
+      {
+        "name": "DefaultMedium",
+        "sha256": "7d886ee7d3607e49205e5f4d5bd24baf298c917a52ef34d10fcc66a8863c6c5e"
+      },
+      {
+        "name": "DefaultSmall",
+        "sha256": "664653d43fd633497ac0e0acd874384fe5ebc644de2e6d0036f863b9ff74a68f"
+      },
+      {
+        "name": "EscapeTheNight",
+        "sha256": "03f32781ccf887d1aca5b3e6c1ab07545ac6f7747bbbf4816ec12491f86e6963"
+      },
+      {
+        "name": "Excavation",
+        "sha256": "66018e813b4fcc86f60d2f1d73054f3c25064c2eb281f8b7af882a30effed5ff"
+      },
+      {
+        "name": "FreeTheCheese",
+        "sha256": "25a0297ddee2db8e8b51204fcd4b4cd34b1964082962dee41aad41f76b4a5217"
+      },
+      {
+        "name": "Hike",
+        "sha256": "c080d40cee4a49eda61ab9a3ad8caeede32684f135d976f7b761285e3db301e1"
+      },
+      {
+        "name": "Meow",
+        "sha256": "ac2819828c63e772b02d388c5c863e6bd6245f9c243110dfd0b0c1e924984efc"
+      },
+      {
+        "name": "Nofreecheese",
+        "sha256": "223ae65f78ff3eb166cc07c47fabab7252e1ba80815ab51b1b795a4e9304286c"
+      },
+      {
+        "name": "RUN",
+        "sha256": "0fc2b7b1f0c2834b0366ac41eba3e0e883605a8d850d3cb63a501891cef239fa"
+      },
+      {
+        "name": "Stash",
+        "sha256": "d595ec4f1d12387f8930de63ac671f507243ee9fc64d57ab8add1cde8d4fb8e1"
+      },
+      {
+        "name": "TheHeist",
+        "sha256": "a843b63b8872e8bc76451958620576424bd82091395f94b43e7bd7557789a005"
+      },
+      {
+        "name": "UncomfortablyClose",
+        "sha256": "2fa8e6fe6233978c483f3e359c54972b73afc81b10a648f36d1e7b60b597656a"
+      },
+      {
+        "name": "ZeroDay",
+        "sha256": "12f9669dcf0c5d405c59fe081ad2fbcce552e6134c3cec7ee61257e0aad5e2e3"
+      },
+      {
+        "name": "arrows",
+        "sha256": "96d4ddf40cc5a1720c5027779c7af83c38ff4564c14097d3771f5863e0013079"
+      },
+      {
+        "name": "attack_on_cat",
+        "sha256": "06f35543dc356b87b690899dcef3bdd5563cc21d409c0412533f01089e488834"
+      },
+      {
+        "name": "averyfineline",
+        "sha256": "75edfc4910eda8e2dcbc97447562d881834c830c2ebf076d39a9927339504d57"
+      },
+      {
+        "name": "averystrangespace",
+        "sha256": "655a51b3bbad759480be93df7baea0a06bc06723f98ce49ee94fa0407e9431e9"
+      },
+      {
+        "name": "bed",
+        "sha256": "901e70ece4c1567f50b1f2636759b5d8a59f790312d57e34920200ebc0d79e28"
+      },
+      {
+        "name": "canyoudig",
+        "sha256": "b31a3f82a751807917eb4699e3ecd935a0ee71a91c4501b27070add3f6d9e5e6"
+      },
+      {
+        "name": "cheesebottles",
+        "sha256": "06d65275fec39db90552591d7c7081c0d556abc8a829de1e0b6435bcad7987ae"
+      },
+      {
+        "name": "cheesefarm",
+        "sha256": "ee50d2f5ff9965c8c825660d433cc0eafcb371b6aa2711f8874e58223d6ab51a"
+      },
+      {
+        "name": "cheeseguardians",
+        "sha256": "765fc0ddaaf12b9d440cb7e4502a8e629a43fc67256d70147edf1be670b2395a"
+      },
+      {
+        "name": "clockwisdom",
+        "sha256": "262c3bea40a2f7be7cab4e13874ad79909bedac50067056755dbaf5f33f65f5c"
+      },
+      {
+        "name": "closeup",
+        "sha256": "b67f24c8b68ff2387edbe2ec7ba8ff6c454234eb945984ac1f6b17294ac56680"
+      },
+      {
+        "name": "clouds",
+        "sha256": "fb14216e03211b0a4efc32a996dc7970dede5f63fa985404f38a18240ae21522"
+      },
+      {
+        "name": "constrictinglattice",
+        "sha256": "3f4b03a9a0d22fc07683acf949823d16fb3f308e082e470cc1bcc41da953b56a"
+      },
+      {
+        "name": "corridorofdoomanddespair",
+        "sha256": "7b7b38487c635415f0d0102466de6155408908ae54f0b0ea907225a96795a06a"
+      },
+      {
+        "name": "diamond",
+        "sha256": "ca28a2511179f886b86b6ff6c470ec0bdd1d6b2b459bd55cd00c59f9e22a3673"
+      },
+      {
+        "name": "dirtfulcat",
+        "sha256": "e0787a3c077b5dbd900662f90b5465d5b960add737d2792cabac47d9fedbc8b4"
+      },
+      {
+        "name": "dirtpassageway",
+        "sha256": "8dccba40fb9e500f98516f3a421b451ae8b76b9a2b1bf778c3f25ac22505a3f3"
+      },
+      {
+        "name": "evileye",
+        "sha256": "2c09c2c8c1f407ba21b33d644b48a51129acf2895eb30afefe4b8500a31d48d0"
+      },
+      {
+        "name": "externalsustenance",
+        "sha256": "7a688d63da11472d62ad87712e7283119f507231338d9fd9a175115751b9bcae"
+      },
+      {
+        "name": "fullofsecrets",
+        "sha256": "2b711f318a90391ca37bd962ce7d4925a59e36650b03a44b49de64dc2d9ab91b"
+      },
+      {
+        "name": "gridlock",
+        "sha256": "0b89e3f745328d7687fed93b5b4104c158c1c7d4a9718f4b6bc642ed55897899"
+      },
+      {
+        "name": "groveisbeingdesecrated",
+        "sha256": "e38d667943bb36eba65eb05b9e60d6520a397d96723a937c1b241b03a63101ea"
+      },
+      {
+        "name": "hatefullattice",
+        "sha256": "30f817d291f2f493d27a087e956999bb4bffc2e3d078c49e9066eeb64e4dfb48"
+      },
+      {
+        "name": "heart",
+        "sha256": "558d787de451024d7e3e8e2294c338fac44c88de6aef1e65fc1b0009ebb0f3b3"
+      },
+      {
+        "name": "houseofcards",
+        "sha256": "7387f509e131d0c2b1d47117c35667d36ba6e5f3fcf75b0700695f0a87f7fed4"
+      },
+      {
+        "name": "jail",
+        "sha256": "143166ab3ce31d33c10b383083f7fbd97e63f45aef1a96eab15d251b0b14a364"
+      },
+      {
+        "name": "keepout",
+        "sha256": "7d437fde6604c526281fc491ae872789e27046639be045e86b8c3674f56feb10"
+      },
+      {
+        "name": "knifefight",
+        "sha256": "a2bc9161003bf1a7197bc628d9f9ad5ffc47639c9539b1764657ef3373ca53f5"
+      },
+      {
+        "name": "krotus",
+        "sha256": "6b1d293303504b7612724c5e5bd19521fa9e7f013d283831911135cbc773c8cc"
+      },
+      {
+        "name": "learn_your_lesson",
+        "sha256": "ef9e66e2d9e7d5734dabdd5f51f02e3f0e3865a7991089488ce261f92f50f5d9"
+      },
+      {
+        "name": "mercifullattice",
+        "sha256": "299028771fc519832c7ca749a67271193f9f398a9cfb2f69d56068ba9062e661"
+      },
+      {
+        "name": "mincemeat",
+        "sha256": "e9e80ca74b02fc7420f8618861acb2b5296a3cd6cec9974796712cc9b2810316"
+      },
+      {
+        "name": "minimaze",
+        "sha256": "a595a2727ff53fb346f485681e43702c7c9e9450841d36b30c68b1960ddee6e6"
+      },
+      {
+        "name": "peaceinourtime",
+        "sha256": "a4d63e28bbb373fa2acf11e6c63b60defe4094aabf83ace665989ab940c4c62d"
+      },
+      {
+        "name": "pipes",
+        "sha256": "b71bb6e18bf79eff309229aaa53e9a6028df82ec6c45a261264dea6a7b80d788"
+      },
+      {
+        "name": "popthecork",
+        "sha256": "70bd533fb852b41fceeb8611dec9a1bfd2950a41c533a49a1e3125bd9945f8c5"
+      },
+      {
+        "name": "ratsareants",
+        "sha256": "750a401891d03447c5bcf100a82082e8a5db38cbb1e3877aa6804fb4ba423a18"
+      },
+      {
+        "name": "rift",
+        "sha256": "e59a9e618987cc717c98f9995fe707fa5f2b3185d04887a5c8b8b86961e5faaf"
+      },
+      {
+        "name": "rose",
+        "sha256": "1b9c71d170913c3ca12374bf986f70468afc603864d9c216af0dbe67490e7a3c"
+      },
+      {
+        "name": "safelycontained",
+        "sha256": "1d3f70a52c422b4aaefa5baa953bb889e65b3b78fa9ce8dae22a842d0d2cacb9"
+      },
+      {
+        "name": "seepastyourgreed",
+        "sha256": "2c6f859771546156a805967ffbefcb869f1fbb375231408c16ec06804907689c"
+      },
+      {
+        "name": "sittingducks",
+        "sha256": "7bd01a94d10992da18c20f8c11ef6b54f2672f20f9763511778bc7f052e6de7b"
+      },
+      {
+        "name": "starvation",
+        "sha256": "4a11d52e9ac44f6d31f74ebbcf0e1a00735c7ed1956ad44266a376b01cc1e905"
+      },
+      {
+        "name": "streetsofnewyork",
+        "sha256": "d4a1bedaa529c0ab4c76be0afaef09f056cabd16bb3d9da5507dadadde41052f"
+      },
+      {
+        "name": "sunandmoon",
+        "sha256": "f05d94f68eb0653d015a3a390efc1dff7a2accc1ae9c7ebb00174cf3facbc992"
+      },
+      {
+        "name": "superioristhmus",
+        "sha256": "64b540dc2297ada61121ac66d5b17fc623d327d6076857c3ad398fac5526b4ed"
+      },
+      {
+        "name": "t_minus_five_minutes",
+        "sha256": "0f5ba9b058a7449245734c70105eb723275488a8e60b74840add2c610c3a0044"
+      },
+      {
+        "name": "thunderdome",
+        "sha256": "52e2ecd34cc715546487c391f635db6ed0f00c188ad542582f0418529c5d26ae"
+      },
+      {
+        "name": "tiny",
+        "sha256": "bd41981126cb50555b0889bf3dde8c98e8a150b9b5b86a67ebf2d58fa146ee0e"
+      },
+      {
+        "name": "toomuchcheese",
+        "sha256": "c0655b6160ad9001833867046df096eaa2d83a8ef13736831ec986ad98e9b5e0"
+      },
+      {
+        "name": "tornadoes",
+        "sha256": "8890ab24317a11aead31da8b2f0d0a542c7b01b7fc731270430c4f231b2d6ab5"
+      },
+      {
+        "name": "trapped",
+        "sha256": "f06873b2b7b585a03baa8b9000e82310c0259e6edb1856905dc1fb72c06eea43"
+      },
+      {
+        "name": "ultimatestarvation",
+        "sha256": "689acca789f9cb567e2f8b3d854cbcd168788e3733568953dc5828e3696b20fe"
+      },
+      {
+        "name": "uneasy_alliance",
+        "sha256": "ad7d3ff04e273afebe6a0c2e25678aef00cdd792b862acd49ef85b4a4ba1132f"
+      },
+      {
+        "name": "uneruesansfin",
+        "sha256": "98cfb5a858fc097b33c18530c249068afdd3ae9ef5f22b25287d269f95a2a348"
+      },
+      {
+        "name": "wallsofparadis",
+        "sha256": "c2f94735a713ea39a9a91cb66a667857f4b2d78fa75dd4795c43e2685650bf28"
+      },
+      {
+        "name": "whatsthecatdoin",
+        "sha256": "82b17c4d883c128448bdd6bf32ae0f922f563ee787f221193819d5159365ff00"
+      },
+      {
+        "name": "where_are_you",
+        "sha256": "d5f229e428b6f85fc6b95fb70c3be7c72e8af2ffc5ef819ccc05a9d3181528e5"
+      },
+      {
+        "name": "whereisthecheese",
+        "sha256": "085b91c3838087984664630987eb95231b112ae8668bbae149c90b3fb5e3a290"
+      }
+    ],
+    "panel_sha256": "6a407f805af53d0a413d5391b0969c30e04213342ff7a636f4c0b3912bf0d061",
+    "reserved_confirmation_seeds": [
+      90101,
+      90107,
+      90121,
+      90133
+    ],
+    "runtime": {
+      "compiled_classes": {
+        "build/java/alpha0/EngineBridge$1.class": "59ebba9164844d59931641bfc636fdb24953e1006e69ac2dcab480e82e081739",
+        "build/java/alpha0/EngineBridge$DiagnosticLog.class": "5fc0a6bdb7640aa19c6a70ab941a78ab1cadd2b6805836aa31481078e285cec6",
+        "build/java/alpha0/EngineBridge$MonitoredPlayer.class": "74ef6e34368ba991d7fba8edcd0e542850e8500ed5504b06f8dabf44c8e4d21b",
+        "build/java/alpha0/EngineBridge$Saved.class": "23f0725db4e05b2c07d1a09075ea5537c8c71caacf3e8b6de62d869fb9d1f5a1",
+        "build/java/alpha0/EngineBridge$Session.class": "4b11c6cfa862663d54c8431e701dc45537c4db2e440369c7a96ba7b31c9dc602",
+        "build/java/alpha0/EngineBridge.class": "214d0ae6d81a30bdb361494c0027b4638398a0322c1d0e376081356adbf196f2",
+        "build/java/alpha0/MacroV2$Context.class": "db563b30f83168519d1c24ccbfa9daf160aac5026f324b1e49ae2b90ca5dff36",
+        "build/java/alpha0/MacroV2$Routes.class": "d23576180ca6519c92673b30c6f28be6c8667a47bf3123f50d33ad05d310e66a",
+        "build/java/alpha0/MacroV2.class": "5d47b79b3ece780edf8aabdeee3c6c962d95c72a276880ba727766423dcd565a",
+        "build/java/alpha0/NoopGameMaker$Sink.class": "25a1ab25cedbae6cf13b2943486262bac4a9fcf83bdbb2feb1d971e7cf615a57",
+        "build/java/alpha0/NoopGameMaker.class": "d2875f263d07e5b54f38e554f90ef56cc0b127805a5176cec40554b8f20a0ea5",
+        "build/java/alpha0/StateCopier.class": "7b1c50b327982b03e7bf97528a03d402f01e7ce74edd90237ae53e46c22f34b2",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Killer.class": "efeda19aa4a16bd0cb0eae448d8190476a90e81c5392ba28a775e372655f9d1e",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer$Pauser.class": "a37dea54d5c5b3498b75c33ebac3089fa38bfa5f6806024467d6b6240a3a0d41",
+        "build/java/battlecode/instrumenter/SandboxedRobotPlayer.class": "4862ed62ee59ea4ae5b071d0e213b1b27830dab0706555fc786bb227c9d5e23f",
+        "build/java/battlecode/world/GameWorld$1.class": "9d3276fe1791925d982f4b2f60a8efa98c1d7bf980dc2b11ff84fb1c2c7baf30",
+        "build/java/battlecode/world/GameWorld.class": "26aca034abb3f5833ba7507e5ed82bda3e37b25cf5cf0175e1e9cde363ed80ae",
+        "build/java/battlecode/world/InternalRobot$1.class": "64393f5776f9622d395d7b05a930f63b7fe1259d4ceb22c30d0d789488a6e7b8",
+        "build/java/battlecode/world/InternalRobot.class": "4cef15e881e47c0636d6f98c2733c833c2888f11d417c03d768daa1ccb503709",
+        "build/java/battlecode/world/control/PlayerControlProvider.class": "45617e00c3e2f833e043f29852d5d038d97c3b4a2817705ca06015ef72d54850"
+      },
+      "files": {
+        "alpha0/env.py": "ddb4d3b929f7293e233c0277bc98030d58bab6c29cdfb2a6f73564d954b8be66",
+        "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+        "alpha0/learn_v2.py": "81e0dc77edb64dbc037781f284e0b41ffdf9be14dbc7b6b661a83f630e4efa31",
+        "alpha0/mcts.py": "e37c7b595ff6be844b3c8f83818eb8b32224698a692ebf2c9a3023c55c382271",
+        "alpha0/network.py": "b0af7186ec8785e69eb8d15b4f8183d0aa3cefa0355cee471b2e1027a3ed9747",
+        "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90",
+        "alpha0/replay_v2.py": "f6087c10d239e4b2f8d411ce5bb3fc36fd8b6cb541b66695f8041dee59eb4ada",
+        "java/alpha0/EngineBridge.java": "24dbeb34e552e49fee1cb23a614d1d1ab37508a5522fc038ba5b00186abe17b5",
+        "java/alpha0/MacroV2.java": "2e419be54d7ea24c43223d0a060b47896854af958d50a9cda077b2c453a18cd4",
+        "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+        "java/alpha0/StateCopier.java": "fef9a83096398738fe174fb08d001948b6398fd881ead5832b186979bf1255ea",
+        "patches/local-research.patch": "3bec25accdd9b7c7c5b629477c8949e7d6a80d1b1f6430cbe55c27d4327baa76",
+        "vendor/engine/battlecode26-java-1.2.6.jar": "ea722532f6d523241ff4f708078563de2a010a39d7d524c66ae1890ab85c04ec"
+      },
+      "identity_version": 2,
+      "jdk_release_sha256": "f83f6dcc966043c93cd498ac8e7ee7c310852074970d62c702e4ad2710002898",
+      "numpy_version": "2.3.5",
+      "torch_version": "2.15.0+cpu"
+    },
+    "schema_version": 1,
+    "sources": {
+      "alpha0/evaluate.py": "c236a5b04e020f4151a628e33c3c49fe20bde35eed65e06c44866c52788c1875",
+      "alpha0/terminal_v8.py": "a9272836fe79a5e445ec4f1848ff8e610316f40d76c79beebaff441a7795b63f",
+      "alpha0/terminal_v8_collect.py": "2ab5a82851d203cc1386af009a07f92fad6984909908767b26e9ed3b2abd71e6",
+      "alpha0/terminal_v8_common.py": "4fb3e745f3b9093329f5739f03d06990e38a36c80091816a5dd8a9ed4533fe38",
+      "alpha0/terminal_v8_development.py": "dd70496670a577e1ecfae4247b5a99212d15ebd79985333db05fa01bc8e5003d",
+      "alpha0/terminal_v8_fit.py": "8544967ddfa8778fa0dea7e64910a487fb66e6969028d4a821b5701cb0727903",
+      "alpha0/terminal_v8_report.py": "fb44fb919941279c36374fa6eea3b4d1620f01d557c23f1dff8794cb48e0eff4",
+      "configs/terminal-target-head-v6.json": "41d0db0fa42d4abd3644212c7fb016864c4581ced05133a7cbfe8b4f4067f96f",
+      "docs/terminal-target-head-v5.md": "8567abb3f3268b28037adddfe4d6ed21eaa6f604a31ea278701fe9cc4be4d689",
+      "docs/terminal-target-head-v6.md": "3060ee5bc3d148fd84bbb0a253d771281632a60befab956fe81f8c28852a05e1",
+      "docs/terminal-target-head-v8.md": "8f9331a43a1ede3a7e374d280cf727267fd1f503a864c240e90fc5dc9502f9d6",
+      "progress/cached-head-constraint-v7/independent-final-audit.json": "e3776f8fbde2d0ff65117c2efcf029a54265a734d00b1b069ada06dc70b6ebd2",
+      "progress/terminal-target-head-v5/independent-coverage-audit.json": "48b586e3bf2f1befe6c49a89de5d6d153b9506303e7c350a8e8baa4f559b4d1a",
+      "scripts/compare_development.py": "9a8105127c9bfd541dcd2358ac6b9719bbd895efea2eaa27925be593f82d0513",
+      "scripts/plot_terminal_v8.py": "412ddbc13cfc0d0b1d3bc4b0526040e58dddedf11dadbbbab7b4713e3015bb43",
+      "scripts/plot_terminal_v8_development.py": "5ddbef87b260f3c93f4d8fa9a45c5746685036be446cbe24b04e936899918442"
+    },
+    "training_excluded_maps": [
+      "Hike",
+      "Stash",
+      "heart",
+      "ratsareants"
+    ],
+    "v4_audit_sha256": "b69616abb0bb802e386c7f5b00d5b7a061f188f4dccd8e7b5d1c09970bce1394",
+    "v5_coverage_audit_sha256": "48b586e3bf2f1befe6c49a89de5d6d153b9506303e7c350a8e8baa4f559b4d1a",
+    "v7_audit_sha256": "e3776f8fbde2d0ff65117c2efcf029a54265a734d00b1b069ada06dc70b6ebd2"
+  }
+}
