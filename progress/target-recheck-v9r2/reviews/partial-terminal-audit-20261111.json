@@ -1,0 +1,287 @@
+{
+  "complete": false,
+  "verified_cells": 49,
+  "expected_cells": 184,
+  "inherited_cells_verified": 8,
+  "failed_attempts": [],
+  "roots": [
+    {
+      "root_id": "training-000",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j1.json",
+      "complete": true,
+      "paired_advantage": 1.0,
+      "completed_cells": 8
+    },
+    {
+      "root_id": "training-001",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j1.json",
+      "complete": true,
+      "paired_advantage": 1.0,
+      "completed_cells": 8
+    },
+    {
+      "root_id": "training-002",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j2.json",
+      "complete": true,
+      "paired_advantage": 0.25,
+      "completed_cells": 8
+    },
+    {
+      "root_id": "training-003",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j2.json",
+      "complete": true,
+      "paired_advantage": 0.0,
+      "completed_cells": 4
+    },
+    {
+      "root_id": "training-004",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j3.json",
+      "complete": true,
+      "paired_advantage": 0.0,
+      "completed_cells": 4
+    },
+    {
+      "root_id": "training-005",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j3.json",
+      "complete": true,
+      "paired_advantage": 0.0,
+      "completed_cells": 4
+    },
+    {
+      "root_id": "training-006",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j4.json",
+      "complete": true,
+      "paired_advantage": 0.0,
+      "completed_cells": 4
+    },
+    {
+      "root_id": "training-007",
+      "source": "runs/terminal-target-head-v8/sources/training-m0-j4.json",
+      "complete": true,
+      "paired_advantage": 0.0,
+      "completed_cells": 4
+    },
+    {
+      "root_id": "training-008",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 5
+    },
+    {
+      "root_id": "training-009",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-010",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-011",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-012",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j3.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-013",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j7.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-014",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j4.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-015",
+      "source": "runs/terminal-target-head-v8/sources/training-m1-j8.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-016",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-017",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-018",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-019",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-020",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j3.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-021",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j3.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-022",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j4.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-023",
+      "source": "runs/terminal-target-head-v8/sources/training-m2-j8.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-024",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-025",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j1.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-026",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-027",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j2.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-028",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j3.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-029",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j3.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-030",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j4.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    },
+    {
+      "root_id": "training-031",
+      "source": "runs/terminal-target-head-v8/sources/training-m3-j4.json",
+      "complete": false,
+      "paired_advantage": null,
+      "completed_cells": 0
+    }
+  ],
+  "journal_hashes": {
+    "progress/target-recheck-v9r1/cells/training-000-a19-s219003/attempt-001.json": "f28d9e63766c95c6ac75d4a955530ffe82ba2810b54b79d6486685c50426b460",
+    "progress/target-recheck-v9r1/cells/training-000-a19-s219013/attempt-001.json": "b1561675d82be2f55c198e7c857ec60378217a043cefcdf8b25668b49ba364f8",
+    "progress/target-recheck-v9r1/cells/training-000-a19-s219029/attempt-001.json": "992561dc2391bb1e471e61197ccf33a456875e320d6ad1ac9e32bf31b232f12b",
+    "progress/target-recheck-v9r1/cells/training-000-a19-s219041/attempt-001.json": "bec92033b8f69aa31ee66607bb54bb6f7ceecac11e8adb36fd526b16a0690596",
+    "progress/target-recheck-v9r1/cells/training-000-a21-s219003/attempt-001.json": "588ea76a1454ef0976526d2d26e35ae4e542c6d78ffae0708adcb142645c815e",
+    "progress/target-recheck-v9r1/cells/training-000-a21-s219013/attempt-001.json": "4dd38b8c3dbb64bc7453f03897262108c9c51e574f0f1bbb0fa01fe43dc841c5",
+    "progress/target-recheck-v9r1/cells/training-000-a21-s219029/attempt-001.json": "6d04b100636952c994a3ffd0f515da14485f8701ac9d3ff7a4f733441a553812",
+    "progress/target-recheck-v9r1/cells/training-000-a21-s219041/attempt-001.json": "956b50d4b7cd09a7522e3159db06340200d1a451e4ad3a82ec530428d30ec373",
+    "progress/target-recheck-v9r2/cells/training-001-a26-s219003/attempt-001.json": "b6d0e2584a501e5e14e4fa29e741e24f6aaeeae4090b439cd7d437f1b3eaaa12",
+    "progress/target-recheck-v9r2/cells/training-001-a26-s219013/attempt-001.json": "7151b9279dcde15ee1229441089403fbb883f1070622ef25df5963c23cff860f",
+    "progress/target-recheck-v9r2/cells/training-001-a26-s219029/attempt-001.json": "2aee59a8147e911e16b80571ee0e493f58d821a28a5e46664447d35a0e9bd7ff",
+    "progress/target-recheck-v9r2/cells/training-001-a26-s219041/attempt-001.json": "ae2ed84ce36aaa6ed4e772414649693c0623f6e6ad7dbee92b40d114ca905c29",
+    "progress/target-recheck-v9r2/cells/training-001-a27-s219003/attempt-001.json": "ec6eb5f1fe2d19c4221229c12545ce24d914b0c1abe8f7db1dd4da327d4f920b",
+    "progress/target-recheck-v9r2/cells/training-001-a27-s219013/attempt-001.json": "5d38c8938b02a3eea4153c62830d98ef4aa7514c0880099960d310a08984c515",
+    "progress/target-recheck-v9r2/cells/training-001-a27-s219029/attempt-001.json": "05a32a3ade074789318b0e3143f77af123f476fe9be2c5b7b931365cdc51dd25",
+    "progress/target-recheck-v9r2/cells/training-001-a27-s219041/attempt-001.json": "04ba2c764d8359d5be70fc222617998ac27262eda6967c372a10d882ee7f7765",
+    "progress/target-recheck-v9r2/cells/training-002-a7-s219003/attempt-001.json": "3cd5de8f037ef064927b6a4bbbfd7a722c5932661a57cdc3cb57ba53c795c8a6",
+    "progress/target-recheck-v9r2/cells/training-002-a7-s219013/attempt-001.json": "5de4655813d40e6b00006a6c77a15f90e95552f8e43a48f139bc5eca1dfe2e80",
+    "progress/target-recheck-v9r2/cells/training-002-a7-s219029/attempt-001.json": "d7c28ae5066bb46286e92b25c2bc708f45cebd714d7e71881a84aef52a889ce3",
+    "progress/target-recheck-v9r2/cells/training-002-a7-s219041/attempt-001.json": "aaa9cd00cc6e21e71c83f6a59da4fb446fa584841c256f9117c70cd6a646e5bf",
+    "progress/target-recheck-v9r2/cells/training-002-a21-s219003/attempt-001.json": "b14a07c7d2d97cee96e19023e2337e78438c443161cac2b21dad540b96099b55",
+    "progress/target-recheck-v9r2/cells/training-002-a21-s219013/attempt-001.json": "9ce31f4a969b9a9a84d5462c1d88d24f58f68f345609eace9277b0cf405b9465",
+    "progress/target-recheck-v9r2/cells/training-002-a21-s219029/attempt-001.json": "5cc5b63afa3fc47607bc6d16f7354f22c2b853054109ca55f295d49f6840a3ea",
+    "progress/target-recheck-v9r2/cells/training-002-a21-s219041/attempt-001.json": "9bc5f18f4ea39bf19ac6592314b42625d7d9d212596d772327c29f5e4e384343",
+    "progress/target-recheck-v9r2/cells/training-003-a27-s219003/attempt-001.json": "4d845e7d0ad3d5c756e6ef2365c4aeef6590b26bcdb2f44632943004d3db8c94",
+    "progress/target-recheck-v9r2/cells/training-003-a27-s219013/attempt-001.json": "55c18fb8a5d5eaf45c4ab39fcf4744b2e054e8b34af84980cd2060a3b84afa38",
+    "progress/target-recheck-v9r2/cells/training-003-a27-s219029/attempt-001.json": "95194a14a7929c563111b10621344fbaef420f613174398aa7467ce3375e37ce",
+    "progress/target-recheck-v9r2/cells/training-003-a27-s219041/attempt-001.json": "31143665e203bc6cfd892fbdcd52297530e822a7510faddf03d6f8e9d5baa544",
+    "progress/target-recheck-v9r2/cells/training-004-a21-s219003/attempt-001.json": "4ff7b927ab0d7dc0320be87a35a4e71bca7b1abfdd79ff2836aa94c0e66501d5",
+    "progress/target-recheck-v9r2/cells/training-004-a21-s219013/attempt-001.json": "ac59bc9015607112b1b4ef31ec8028a1cd5200357512922bed5b57a9feed4041",
+    "progress/target-recheck-v9r2/cells/training-004-a21-s219029/attempt-001.json": "4c683107d5acd617bf171334abb7a60ea30e994bb9751812ed762bbfaf6cdc58",
+    "progress/target-recheck-v9r2/cells/training-004-a21-s219041/attempt-001.json": "1515649448cc5e84b89d17d359b6954eb5d70ed1a73b93bf61f3cd37b4f8abdd",
+    "progress/target-recheck-v9r2/cells/training-005-a27-s219003/attempt-001.json": "cf1532975b0ada3102d677c332712a10a2dd9dcb3a83657054cf7fbf0ad71138",
+    "progress/target-recheck-v9r2/cells/training-005-a27-s219013/attempt-001.json": "f3089097089704dae5afa1263ba23defd36c28879e3b3992e7a6f81d92e73e5d",
+    "progress/target-recheck-v9r2/cells/training-005-a27-s219029/attempt-001.json": "4918d7a1e634bd8a7bf77a27707b58c5f82881e2583ac030345411e1fae2abed",
+    "progress/target-recheck-v9r2/cells/training-005-a27-s219041/attempt-001.json": "635829b287f650d41676a48c1c0143128d02e999cad8ec320186976095849832",
+    "progress/target-recheck-v9r2/cells/training-006-a21-s219003/attempt-001.json": "66f5a578564a346cbbba60f876c4d7eaf2e705f7ddd08223a5c80b305b0b0541",
+    "progress/target-recheck-v9r2/cells/training-006-a21-s219013/attempt-001.json": "c5b2fdd28b5d80e61a2d61fd8c15756a6ff594503bbd892ec30f64329018a936",
+    "progress/target-recheck-v9r2/cells/training-006-a21-s219029/attempt-001.json": "0fe65b0a0b0272a33174da42e8a7e836a8366af247304df09db93baa606a9658",
+    "progress/target-recheck-v9r2/cells/training-006-a21-s219041/attempt-001.json": "27ded334aee7973a2460f697cff05ddd9462c2f6e00f3227759105254f2a41de",
+    "progress/target-recheck-v9r2/cells/training-007-a27-s219003/attempt-001.json": "57b52d52558ce11d187e360d4806ada843145dd5a577312bc824e3e9314de84d",
+    "progress/target-recheck-v9r2/cells/training-007-a27-s219013/attempt-001.json": "e83bc9b9ecb54f177982a972068c42fc1f8b5dae8a9f03121b6b908329874f09",
+    "progress/target-recheck-v9r2/cells/training-007-a27-s219029/attempt-001.json": "0b0ea10bdb71138f42026b3cbcd6374cefd745d6e9f72d3b243bdef056b2a84d",
+    "progress/target-recheck-v9r2/cells/training-007-a27-s219041/attempt-001.json": "e2b915e5a6b3eacb630e21eb0c8274b45d5f13ceefe65a33305bb0295caee5be",
+    "progress/target-recheck-v9r2/cells/training-008-a21-s219003/attempt-001.json": "a53d0f34faaccb2f0c30d117bf6e79c647c463bf2ac0e6b7480f70c42cc5e73c",
+    "progress/target-recheck-v9r2/cells/training-008-a21-s219013/attempt-001.json": "97a09757391e6dfb234a654b28a8f2c7ce8e95ef270bbb444ddf3ca39c24ee6b",
+    "progress/target-recheck-v9r2/cells/training-008-a21-s219029/attempt-001.json": "4141f71b33fb8f804cb0fccafd2910575675d83db2041923948521633f4d8e79",
+    "progress/target-recheck-v9r2/cells/training-008-a21-s219041/attempt-001.json": "7ba2ddc9065084ba0691d8c80c3302ddc8032147252f67d7ed4016d595041e5b",
+    "progress/target-recheck-v9r2/cells/training-008-a38-s219003/attempt-001.json": "6b3d7187e53b857dfeb4ef0b73e1f224633008feed6c36af23a2e5e752389408"
+  },
+  "no_sgd": true,
+  "benchmark_improvement": false,
+  "auditor_sha256": "e1c60707454ec3cb2649a1837b54c5773c50cc756be69f63b855ac6414204019"
+}
