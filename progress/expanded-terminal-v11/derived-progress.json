@@ -6,11 +6,11 @@
       "expected": 2974
     },
     "validation": {
-      "complete": 0,
-      "expected": 0
+      "complete": 18,
+      "expected": 156
     }
   },
   "mechanism": null,
   "playing_strength_claim": false,
-  "updated_at": "2026-11-11T18:52:43.614314+00:00"
+  "updated_at": "2026-11-11T18:56:10.514093+00:00"
 }

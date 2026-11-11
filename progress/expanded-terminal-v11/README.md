@@ -1,6 +1,9 @@
 # V11 expanded terminal-head learning experiment
 
-**Current stage (November11,11:53 Vancouver /18:53 UTC): matched policy-head training.** All2974/2974 target continuations and64comparators passed the [complete saved-record audit](reviews/recovered-chunk-audit-20261111.json). The handoff exported and isolated-restored6511files, published `0c6f221`, and launched the unchanged bounded pipeline. Live status is now `runs/expanded-terminal-v11/status.json`; handoff status remains `chunk-handoff-status.json`. No V11 benchmark result yet.
+**Current stage (November11,11:55 Vancouver /18:55 UTC): independent validation.** All2974 targets and both4096-update fits completed. [Saved-fit audit](reviews/fit-audit-20261111.json) passed frozen tensors, shared batches/RNG, optimizer steps and checkpoint/snapshot hashes. Terminal candidate `c6f5655e3a56` matches53/64training labels (deterministic ceiling56 due to8conflicting identical-input pairs), changes31training actions and40/1024anchors. PUCT control `2462f2610264` matches64/64, changes0training actions and13anchors. All64slots retained unchanged. These are training diagnostics, not benchmark improvement. Full independent validation and all768benchmark games remain required.
+
+![Saved training diagnostics, not benchmark strength](fit-curves.png)
+
 
 Active bounded research cycle. Frozen identity `94d03e8b4bfa3582dd2129aa1723c541e8b48fbe5c5c0112417d5e732284e200`. All64 training roots/1024 anchors and32 disjoint validation roots were audited; all96 physical roots reconstructed exactly before launch.
 

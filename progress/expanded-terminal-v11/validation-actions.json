@@ -1,0 +1,354 @@
+{
+  "actions": {
+    "validation-000": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-001": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-002": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-003": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-004": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-005": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-006": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-007": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 9
+    },
+    "validation-008": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-009": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-010": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 8
+    },
+    "validation-011": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 1
+    },
+    "validation-012": {
+      "cp2": 20,
+      "puct_head": 20,
+      "terminal_head": 39
+    },
+    "validation-013": {
+      "cp2": 26,
+      "puct_head": 26,
+      "terminal_head": 26
+    },
+    "validation-014": {
+      "cp2": 20,
+      "puct_head": 20,
+      "terminal_head": 20
+    },
+    "validation-015": {
+      "cp2": 26,
+      "puct_head": 26,
+      "terminal_head": 26
+    },
+    "validation-016": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-017": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-018": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-019": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-020": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-021": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-022": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-023": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-024": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-025": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 9
+    },
+    "validation-026": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-027": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 26
+    },
+    "validation-028": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-029": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 27
+    },
+    "validation-030": {
+      "cp2": 21,
+      "puct_head": 21,
+      "terminal_head": 21
+    },
+    "validation-031": {
+      "cp2": 27,
+      "puct_head": 27,
+      "terminal_head": 28
+    }
+  },
+  "checkpoints": {
+    "cp2": {
+      "path": "runs/warmstart-v3/checkpoint-0002.pt",
+      "sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c"
+    },
+    "puct_head": {
+      "metrics": {
+        "anchor_action_changed_fraction": 0.0126953125,
+        "anchor_action_changes": 13,
+        "anchor_count": 1024,
+        "anchor_kl": 0.014143687672913074,
+        "anchor_kl_aggregation": "uniform_stored_anchors",
+        "discordant_target_count": 0,
+        "discordant_target_matches": 0,
+        "expected_anchor_kl": 0.014143686709871872,
+        "expected_objective": 0.5266524962763697,
+        "loss": 0.5266525149345398,
+        "parameter_displacement_l2": 3.2607399664180967,
+        "retained_target_count": 64,
+        "retained_target_matches": 64,
+        "root_action_changed_fraction": 0.0,
+        "root_actions": [
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          20,
+          27,
+          21,
+          27,
+          20,
+          27,
+          21,
+          21,
+          21,
+          21,
+          21,
+          21,
+          21,
+          21,
+          20,
+          26,
+          20,
+          26,
+          20,
+          26,
+          20,
+          26,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          20,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27,
+          21,
+          27
+        ],
+        "root_count": 64,
+        "root_selected_action_matches": 64,
+        "root_target_agreement": 1.0,
+        "target_ce": 0.5125088095664978,
+        "weighted_anchor_metrics_available": true
+      },
+      "path": "runs/expanded-terminal-v11/fit/puct_head.pt",
+      "sha256": "2462f2610264ffa87d8c7d05b1a94fdd52b8a94ab59741d5ca1027872a932922"
+    },
+    "terminal_head": {
+      "metrics": {
+        "anchor_action_changed_fraction": 0.0390625,
+        "anchor_action_changes": 40,
+        "anchor_count": 1024,
+        "anchor_kl": 0.08752711862325668,
+        "anchor_kl_aggregation": "uniform_stored_anchors",
+        "discordant_target_count": 36,
+        "discordant_target_matches": 25,
+        "expected_anchor_kl": 0.08752711697434279,
+        "expected_objective": 1.0584885685047993,
+        "loss": 1.0584886074066162,
+        "parameter_displacement_l2": 6.807141297622351,
+        "retained_target_count": 28,
+        "retained_target_matches": 28,
+        "root_action_changed_fraction": 0.484375,
+        "root_actions": [
+          1,
+          27,
+          21,
+          7,
+          21,
+          27,
+          21,
+          7,
+          21,
+          27,
+          20,
+          9,
+          28,
+          27,
+          20,
+          9,
+          20,
+          21,
+          8,
+          1,
+          21,
+          21,
+          24,
+          1,
+          1,
+          26,
+          20,
+          26,
+          39,
+          26,
+          7,
+          26,
+          29,
+          27,
+          20,
+          27,
+          1,
+          27,
+          21,
+          27,
+          4,
+          2,
+          1,
+          27,
+          4,
+          27,
+          21,
+          27,
+          20,
+          9,
+          19,
+          14,
+          29,
+          9,
+          21,
+          14,
+          21,
+          27,
+          20,
+          29,
+          21,
+          27,
+          20,
+          29
+        ],
+        "root_count": 64,
+        "root_selected_action_matches": 53,
+        "root_target_agreement": 0.828125,
+        "target_ce": 0.9709614515304565,
+        "weighted_anchor_metrics_available": true
+      },
+      "path": "runs/expanded-terminal-v11/fit/terminal_head.pt",
+      "sha256": "c6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb"
+    }
+  },
+  "identity_sha256": "94d03e8b4bfa3582dd2129aa1723c541e8b48fbe5c5c0112417d5e732284e200",
+  "validation_manifest_sha256": "4be0ab0591268411c0fadee1dcbf3e7df8df7022a1e6b4e19a672c50cc3ef15a"
+}

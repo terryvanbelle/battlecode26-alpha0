@@ -1,0 +1,135 @@
+{
+  "verified": true,
+  "scope": "Saved fitting state and training predictions only; not playing-strength improvement or final recovery verification",
+  "baseline_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+  "data_sha256": "994da1b3594079c50ea0a7f7b0dcfcc6500792d9547fa3eec2c72bb4a4f271e0",
+  "shared_batches_sha256": "061b604c56ecf0b480c41f8e1da9e2b5ea76f4e2b41ba9aedd199d6e7665ab56",
+  "arms": {
+    "terminal_head": {
+      "checkpoint_sha256": "c6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb",
+      "updates": 4096,
+      "only_policy_head_changed": true,
+      "training_matches": 53,
+      "training_roots": 64,
+      "changed_training_actions": 31,
+      "changed_anchor_actions": 40,
+      "anchors": 1024
+    },
+    "puct_head": {
+      "checkpoint_sha256": "2462f2610264ffa87d8c7d05b1a94fdd52b8a94ab59741d5ca1027872a932922",
+      "updates": 4096,
+      "only_policy_head_changed": true,
+      "training_matches": 64,
+      "training_roots": 64,
+      "changed_training_actions": 0,
+      "changed_anchor_actions": 13,
+      "anchors": 1024
+    }
+  },
+  "target_ambiguity": {
+    "terminal_head": {
+      "slots": 64,
+      "unique_inputs": 54,
+      "maximum_consistent_label_matches": 56,
+      "conflicting_input_groups": [
+        {
+          "input_hash": "228bad626917b825ca5f6f0838d66a8507811f55c7ac26cb604e2e22d719274f",
+          "slot_indices": [
+            3,
+            7
+          ],
+          "label_counts": {
+            "7": 1,
+            "24": 1
+          }
+        },
+        {
+          "input_hash": "d184baf7d88af834d8a3e674a13371b9a14b9595cb9428558eb2396ab29c12ea",
+          "slot_indices": [
+            9,
+            13
+          ],
+          "label_counts": {
+            "21": 1,
+            "27": 1
+          }
+        },
+        {
+          "input_hash": "fb85cfb022781e1e2c4ef73edae0d62b1283e884f49d14b769571a84a151112b",
+          "slot_indices": [
+            11,
+            15
+          ],
+          "label_counts": {
+            "0": 1,
+            "9": 1
+          }
+        },
+        {
+          "input_hash": "df6573206277bbae56d78d675793a3fd911dd9f6713c00665818667959a0d560",
+          "slot_indices": [
+            27,
+            31
+          ],
+          "label_counts": {
+            "6": 1,
+            "26": 1
+          }
+        },
+        {
+          "input_hash": "f8a4e06710f359ed2c736371e5c4ccd5d6155c468ed6a1ef0602a6f58f193897",
+          "slot_indices": [
+            35,
+            39
+          ],
+          "label_counts": {
+            "4": 1,
+            "27": 1
+          }
+        },
+        {
+          "input_hash": "4031dbaff430633ee4049a3c5e624cd995d6c179872e8fd56858b94519e2cc8b",
+          "slot_indices": [
+            51,
+            55
+          ],
+          "label_counts": {
+            "14": 1,
+            "26": 1
+          }
+        },
+        {
+          "input_hash": "06a9ab92b10992806c21b5476992c13f3b3716988a7528a089d22aef8b4427fd",
+          "slot_indices": [
+            57,
+            61
+          ],
+          "label_counts": {
+            "21": 1,
+            "27": 1
+          }
+        },
+        {
+          "input_hash": "c54544c23192124d77edc0252613d852fb760173ec19776352043e9e26c69a6a",
+          "slot_indices": [
+            59,
+            63
+          ],
+          "label_counts": {
+            "28": 1,
+            "29": 1
+          }
+        }
+      ],
+      "scope": "Equal-slot training-label ceiling for a deterministic policy; not playing strength; all original slots retained"
+    },
+    "puct_head": {
+      "slots": 64,
+      "unique_inputs": 54,
+      "maximum_consistent_label_matches": 64,
+      "conflicting_input_groups": [],
+      "scope": "Equal-slot training-label ceiling for a deterministic policy; not playing strength; all original slots retained"
+    }
+  },
+  "auditor_sha256": "5a512e58880e966dfe70214884235152000de7435414b8ef0a7e14a7c36b16c6"
+}
