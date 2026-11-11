@@ -1,0 +1,13 @@
+{
+  "action": 22,
+  "attempt": 1,
+  "experiment_identity": "289f0b1eb06f27fe1c6afe5c28dfe53a49d054c1954b7a79eed5046ca874d35c",
+  "input_hash": "0112b770a2aee3a95e8cd43877f896a127686cd6cffca3f15eb292ef67136fac",
+  "root_id": "training-018",
+  "root_player": 1,
+  "score": null,
+  "seed": 219029,
+  "started_at": "2026-11-11T01:43:01.324373+00:00",
+  "status": "incomplete",
+  "temperature": 0.35
+}

@@ -1,13 +1,13 @@
-# V9r2 target reliability recheck
+# V9r2 complete — target reliability only
 
-**Active:** 184 distinct continuations for all32 fixed V8 training roots, selected action versus cp2 greedy on four fresh seeds. No SGD or benchmark games. [Frozen protocol](../../docs/target-recheck-v9r2.md).
+All **184/184** planned continuations are valid, covering all32 roots. Eight inherited games were preserved and independently reverified without reruns. No SGD or benchmark games.
 
-![Target reliability and completion coverage](target-reliability.png)
+- Fresh-seed mean paired advantage: **0.148438**.
+- Source-game-cluster bootstrap95% interval: **[0.016129032258064516, 0.296875]**.
+- Precommitted expansion rule: **PASSED**.
 
-[Measured summary](summary.json) · [Frozen identity](identity.json) · [Action pairs](actions.json). No final interpretation until all184 cells are valid. All32 roots remain in the denominator; identical-action pairs share physical games.
+This is a training-target mechanism result, not stronger playing performance, model promotion or benchmark confirmation. Review the full per-root/source evidence before choosing a new learning experiment.
 
-Original V9 stopped before a game due to a missing replay-task path. V9r1 then completed eight terminal games but stopped when the reader rejected a missing redundant decisions count. V9r2 preserves those records unchanged, pins their hashes, derives the count from the action transcript only in its compatibility reader, and fully verifies terminal/action proof. All eight games are retained and none is rerun. New records explicitly include the count. [Inherited journal inventory](../../configs/target-recheck-v9r2-inherited.json).
+![All root comparisons](target-reliability.png)
 
-Status: `runs/target-recheck-v9r2/status.json`; log `/tmp/target-recheck-v9r2.log`. One one-thread actor with an isolated Java engine, eight shared/own locks, STOP checks and hard process-group watchdogs. Do not edit its pinned code/config/protocol while active. Failures stop for review; no automatic retries.
-
-After quiescence, `scripts/export_target_recheck_v9r2.py` exports and hash-verifies own state and both earlier launch records, performs an isolated restore, and records the complete verified V8 dependency. Restore that dependency first without overwriting newer files, then verify the V9r2 archive and restore in isolation. Publish the archive/manifest/recovery pointer at the review boundary.
+[Summary](summary.json) · [Independent final audit](independent-final-audit.json) · [Verified recovery](recovery.json) · [Frozen protocol](../../docs/target-recheck-v9r2.md)
