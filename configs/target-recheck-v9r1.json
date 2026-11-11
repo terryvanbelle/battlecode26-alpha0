@@ -1,0 +1,25 @@
+{
+  "experiment_id": "target-recheck-v9r1",
+  "seeds": [
+    219003,
+    219013,
+    219029,
+    219041
+  ],
+  "roots": 32,
+  "unique_cells": 184,
+  "temperature": 0.35,
+  "workers": 1,
+  "torch_threads": 1,
+  "wall_budget_seconds": 10800,
+  "cell_timeout_seconds": 180,
+  "source_timeout_seconds": 1800,
+  "automatic_retries": 0,
+  "mean_advantage_threshold": 0.1,
+  "bootstrap_seed": 219101,
+  "bootstrap_replicates": 10000,
+  "bootstrap_unit": "source_game",
+  "require_lower_95_bound_above_zero": true,
+  "sgd_updates": 0,
+  "benchmark_games": 0
+}
