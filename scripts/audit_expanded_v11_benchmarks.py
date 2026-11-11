@@ -18,14 +18,23 @@ def audit(require_complete=False):
         validate_benchmark_spec(spec,S.C.fingerprint(identity))
         key=S.C.fingerprint({'kind':'benchmark','payload':spec,'identity':S.C.fingerprint(identity)})
         marker_path=S.P/'benchmark-recovery/jobs'/f'{key}.json'
+        job_path=S.R/'benchmark-recovery/jobs'/f'{key}.json'
+        if not marker_path.exists():
+            marker_path=S.P/'benchmark-deadline/jobs'/f'{key}.json'
+            job_path=S.R/'benchmark-deadline/jobs'/f'{key}.json'
         if not marker_path.exists():pending.append(spec['cell_id']);continue
-        job_path=S.R/'benchmark-recovery/jobs'/f'{key}.json';job=S.read(job_path);marker=S.read(marker_path)
+        job=S.read(job_path);marker=S.read(marker_path)
         if job!={'id':key,'kind':'benchmark','payload':spec}:raise ValueError('changed job descriptor')
         if marker['status']!='ok' or marker['job_sha256']!=S.C.sha256(job_path):raise ValueError('failed/changed job marker')
         if marker['output_hashes']!=S.job_outputs(job):raise ValueError('changed completed outputs')
         files=list((S.P/'benchmarks/cells'/spec['cell_id']).glob('attempt-*.json'))
-        if len(files)!=1 or files[0].name!='attempt-001.json':raise ValueError('unexpected retry')
-        row=S.read(files[0])
+        files=sorted(files)
+        if len(files)==2:
+            from alpha0.expanded_v11_benchmark_deadline import verify
+            reviewed=verify()['interrupted']
+            if spec['cell_id'] not in reviewed or S.C.sha256(files[0])!=reviewed[spec['cell_id']] or [p.name for p in files]!=['attempt-001.json','attempt-002.json']:raise ValueError('unreviewed retry')
+        elif len(files)!=1 or files[0].name!='attempt-001.json':raise ValueError('unexpected retry')
+        row=S.read(files[-1])
         if not S.valid_benchmark_result(spec,row):raise ValueError('invalid benchmark record')
         rows[spec['arm']].append(row['evaluation'])
         proof.append({'job_id':key,'marker_sha256':S.C.sha256(marker_path),'output_hashes':marker['output_hashes']})

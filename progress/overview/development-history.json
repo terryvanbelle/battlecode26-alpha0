@@ -544,15 +544,15 @@
     },
     {
       "overall": {
-        "wins": 64,
-        "losses": 109,
+        "wins": 70,
+        "losses": 186,
         "draws": 0,
-        "valid": 173,
+        "valid": 256,
         "expected": 256,
         "errors": 0,
         "excluded_crashes": 0,
-        "complete": false,
-        "win_rate": null
+        "complete": true,
+        "win_rate": 0.2734375
       },
       "checkpoint_sha256": "c6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb",
       "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
@@ -614,41 +614,149 @@
           "win_rate": 0.28125
         },
         "abcdezyxwv_bestsofar": {
-          "wins": 0,
-          "losses": 13,
+          "wins": 1,
+          "losses": 31,
           "draws": 0,
-          "valid": 13,
+          "valid": 32,
           "expected": 32,
           "errors": 0,
-          "complete": false,
+          "complete": true,
           "excluded_crashes": 0,
-          "win_rate": null
+          "win_rate": 0.03125
         },
         "uravt_Version41": {
-          "wins": 0,
-          "losses": 0,
+          "wins": 4,
+          "losses": 28,
           "draws": 0,
-          "valid": 0,
+          "valid": 32,
           "expected": 32,
           "errors": 0,
-          "complete": false,
+          "complete": true,
           "excluded_crashes": 0,
-          "win_rate": null
+          "win_rate": 0.125
+        },
+        "IvanGeffner_basic51": {
+          "wins": 1,
+          "losses": 31,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.03125
+        }
+      },
+      "source": "progress/development-v4/v11-terminal_head/evaluations.jsonl",
+      "source_sha256": "0dfd0a0ba7a36205ebfe4dd56dc3168dbe1762827f5871836e9e0c2aa3e62742"
+    },
+    {
+      "overall": {
+        "wins": 70,
+        "losses": 164,
+        "draws": 0,
+        "valid": 234,
+        "expected": 256,
+        "errors": 2,
+        "excluded_crashes": 0,
+        "complete": false,
+        "win_rate": null
+      },
+      "checkpoint_sha256": "2462f2610264ffa87d8c7d05b1a94fdd52b8a94ab59741d5ca1027872a932922",
+      "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+      "started_at": "2026-11-11T22:00:30.879294+00:00",
+      "bots": {
+        "CS50Crab_rapierV1": {
+          "wins": 23,
+          "losses": 9,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.71875
+        },
+        "spsquared_TSPAARK_QUALS": {
+          "wins": 13,
+          "losses": 19,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.40625
+        },
+        "HugoIngelsson_Xzibit": {
+          "wins": 14,
+          "losses": 18,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.4375
+        },
+        "vibe26b_zdb": {
+          "wins": 4,
+          "losses": 28,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.125
+        },
+        "HugoIngelsson_YokoOno": {
+          "wins": 11,
+          "losses": 21,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.34375
+        },
+        "abcdezyxwv_bestsofar": {
+          "wins": 1,
+          "losses": 31,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.03125
+        },
+        "uravt_Version41": {
+          "wins": 4,
+          "losses": 28,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.125
         },
         "IvanGeffner_basic51": {
           "wins": 0,
-          "losses": 0,
+          "losses": 10,
           "draws": 0,
-          "valid": 0,
+          "valid": 10,
           "expected": 32,
-          "errors": 0,
+          "errors": 2,
           "complete": false,
           "excluded_crashes": 0,
           "win_rate": null
         }
       },
-      "source": "progress/development-v4/v11-terminal_head/evaluations.jsonl",
-      "source_sha256": "72c977cd5ed3666e02165267b7d86dce67a99eb0eb7e1c5a07f5e9a77948928b"
+      "source": "progress/development-v4/v11-puct_head/evaluations.jsonl",
+      "source_sha256": "47e24f5d97c4fc8c62adeba1bd4caad9c9e4445636df0f19e509a0857e7d8b43"
     }
   ]
 }

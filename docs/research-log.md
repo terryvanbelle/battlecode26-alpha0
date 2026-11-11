@@ -628,3 +628,8 @@ At11:55 Vancouver /18:55 UTC November11, both4096-update fits finished and the i
 ## V11 benchmark adapter review, 2026-11-11
 
 Completed 156 shared first-action validation games; equal-root terminal-minus-cp2 mean 0.0078125, diagnostic only. Benchmark startup failed before any game on the inherited helper cap contract. Reviewed standalone benchmark adapter preserves attempt=1/no retries and all frozen game/checkpoint identities. Original failed jobs retained; post-fit isolated recovery verified 7837 files (SHA fffab06e7418a5ffa925a3f6150853fed63633470e5b7b52cb4f5026d58afd91). See progress/expanded-terminal-v11/reviews/benchmark-adapter-recovery-20261111.json.
+
+
+## V11 completed candidate panel and control deadline review
+
+Terminal candidate70W186L vs freshcp2 81W175L on256valid games each; gain -0.04296875, paired-map95%CI[-0.10546875,0.01171875], zdbunchanged. Improvement failed, no confirmation/promotion. PUCT234valid, two unscored SIGTERM interruptions plus20unstarted cells at3hdeadline. Reviewed exact22-cell continuation preserves all746successes and two original errors. Three recoverytests and provenancepreflight passed. Separate recoveryarchive aad039eb32ee7bd466a567deb8e70362c7b16daf3768dbadfab28a14bdd551a1 isolatedverified12347files. Next scientific direction is user-proposed expert imitation as an architecture test; competent imitation-only full-game play gates RL, with a separate exposed-teacher lineage and independent evaluation. See docs/zdb-imitation-next-experiment.md (draft, no collection/training launched).

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "games_per_checkpoint": 256,
+  "mean_score_gain": -0.05078125,
+  "paired_map_bootstrap_95_interval": [
+    -0.109375,
+    0.00390625
+  ],
+  "per_opponent_score_gain": {
+    "CS50Crab_rapierV1": -0.0625,
+    "spsquared_TSPAARK_QUALS": -0.03125,
+    "HugoIngelsson_Xzibit": -0.09375,
+    "vibe26b_zdb": 0.0,
+    "HugoIngelsson_YokoOno": -0.09375,
+    "abcdezyxwv_bestsofar": -0.03125,
+    "uravt_Version41": -0.09375,
+    "IvanGeffner_basic51": 0.0
+  },
+  "passes_development_improvement_rule": false,
+  "automatic_promotion": false,
+  "all_map_victory": false,
+  "baseline_wins": 83,
+  "candidate_wins": 70
+}
