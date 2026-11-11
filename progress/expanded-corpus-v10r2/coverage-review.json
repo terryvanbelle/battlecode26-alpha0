@@ -1,0 +1,42 @@
+{
+  "anchor_shortfalls": [],
+  "complete": false,
+  "missing_root_slots": [
+    {
+      "group": 4,
+      "map_index": 2,
+      "player": 0,
+      "role": "RAT_KING"
+    },
+    {
+      "group": 1,
+      "map_index": 7,
+      "player": 1,
+      "role": "RAT_KING"
+    },
+    {
+      "group": 2,
+      "map_index": 7,
+      "player": 0,
+      "role": "RAT_KING"
+    },
+    {
+      "group": 3,
+      "map_index": 7,
+      "player": 1,
+      "role": "RAT_KING"
+    },
+    {
+      "group": 4,
+      "map_index": 7,
+      "player": 0,
+      "role": "RAT_KING"
+    }
+  ],
+  "planned_selection_cells": 2642,
+  "reviewer_sha256": "d495827fb2ff9a97cad09872bfca18fe23eacca87e387595ce6fa7638ae22cf3",
+  "sgd_updates": 0,
+  "source_identity": "e1e2d6bcd0aef767140870aaa3a3cc792bcea1b81b11c4499d61336dd69f0a2a",
+  "target_continuations": 0,
+  "unique_gradient_inputs": 1083
+}

@@ -1,7 +1,9 @@
-# V10 source expansion — reviewed continuation
+# V10 source phase complete
 
-Source collection is active with two workers and a 30-second engine response allowance. The fixed 64-game scientific schedule is unchanged: 38 verified original successes are inherited, and only the 26 missing sources are collected here. No targets, SGD or benchmark games have started.
+All64 scheduled self-play source games completed. No target scoring, SGD, validation or benchmark games were run in this phase.
 
-[Current summary](summary.json) · [Frozen identity](identity.json) · [Protocol](../../docs/expanded-corpus-v10r2.md) · [Original verified partial recovery](../expanded-corpus-v10/recovery.json)
+Coverage complete: **False**. Planned selection cells: **2642 / 3200 ceiling**. Missing root slots: 5; anchor shortfalls: 0.
 
-The original run stopped on an engine-startup timeout; a reset-only check needed 10.36 seconds. V10r1 then failed before games due to a loader bug. Both failed versions remain preserved. The completion monitor will freeze the coverage plan, verify/export recovery, and publish the completed source phase for review. Missing roles, anchors, or excess target budget require review before downstream learning.
+[Coverage review](coverage-review.json) · [Frozen input plan](training-input-plan.json) · [Verified recovery](recovery.json) · [Protocol](../../docs/expanded-corpus-v10r2.md)
+
+A complete tested downstream implementation and a fresh validation-source preregistration are required before target outcomes or gradients. Source completion is not playing-strength improvement.
