@@ -1,0 +1,113 @@
+{
+  "benchmark_games": 0,
+  "complete": false,
+  "completed_sources": 6,
+  "expected_sources": 48,
+  "fresh_validation_source_games": 6,
+  "sgd_updates": 0,
+  "sources": [
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j1",
+      "source_json": "runs/validation-v11/sources/validation-m0-j1.json",
+      "source_sha256": "8c045f35ab433015ef9d4093a3c42a46df109de83ba94d2c3e9b3fff0534d677"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j2",
+      "source_json": "runs/validation-v11/sources/validation-m0-j2.json",
+      "source_sha256": "9fc32ad26c6ea5bf76cefffb7cbd16aa0f5345c896a8aba8ed8b291e986dc77d"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j3",
+      "source_json": "runs/validation-v11/sources/validation-m0-j3.json",
+      "source_sha256": "e527289b278440eb21985d5f13a12ce86d07b484cf2945a1aa0da1ae10994162"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j4",
+      "source_json": "runs/validation-v11/sources/validation-m0-j4.json",
+      "source_sha256": "4732e4f533fb5f6cd689f093b490465872e73254263a99725f8c67a36c421f93"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j5",
+      "source_json": "runs/validation-v11/sources/validation-m0-j5.json",
+      "source_sha256": "bcb43a852a43c87d10bca0473a9242fa0100f0bace8d3a83d894d48fd5bea935"
+    },
+    {
+      "anchor_counts": {
+        "0": 0,
+        "1": 0
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "85d2d131946b2407748c669604b8664a00d98576fb47e217f9b53a0b771e7084",
+      "source_id": "validation-m0-j6",
+      "source_json": "runs/validation-v11/sources/validation-m0-j6.json",
+      "source_sha256": "bfa7bf0e88e58b41f717942b77e32adecb3a04bfc456c1cb030c8a481171f9df"
+    }
+  ],
+  "target_continuations": 0
+}

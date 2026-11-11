@@ -1,0 +1,578 @@
+[
+  {
+    "j": 1,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940002,
+      940003
+    ],
+    "seed": 20267501,
+    "source_id": "validation-m0-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940004,
+      940005
+    ],
+    "seed": 20267502,
+    "source_id": "validation-m0-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940006,
+      940007
+    ],
+    "seed": 20267503,
+    "source_id": "validation-m0-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940008,
+      940009
+    ],
+    "seed": 20267504,
+    "source_id": "validation-m0-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940010,
+      940011
+    ],
+    "seed": 20267505,
+    "source_id": "validation-m0-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "tiny",
+    "map_index": 0,
+    "policy_seeds": [
+      940012,
+      940013
+    ],
+    "seed": 20267506,
+    "source_id": "validation-m0-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940202,
+      940203
+    ],
+    "seed": 20267601,
+    "source_id": "validation-m1-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940204,
+      940205
+    ],
+    "seed": 20267602,
+    "source_id": "validation-m1-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940206,
+      940207
+    ],
+    "seed": 20267603,
+    "source_id": "validation-m1-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940208,
+      940209
+    ],
+    "seed": 20267604,
+    "source_id": "validation-m1-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940210,
+      940211
+    ],
+    "seed": 20267605,
+    "source_id": "validation-m1-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "DefaultSmall",
+    "map_index": 1,
+    "policy_seeds": [
+      940212,
+      940213
+    ],
+    "seed": 20267606,
+    "source_id": "validation-m1-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940402,
+      940403
+    ],
+    "seed": 20267701,
+    "source_id": "validation-m2-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940404,
+      940405
+    ],
+    "seed": 20267702,
+    "source_id": "validation-m2-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940406,
+      940407
+    ],
+    "seed": 20267703,
+    "source_id": "validation-m2-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940408,
+      940409
+    ],
+    "seed": 20267704,
+    "source_id": "validation-m2-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940410,
+      940411
+    ],
+    "seed": 20267705,
+    "source_id": "validation-m2-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "closeup",
+    "map_index": 2,
+    "policy_seeds": [
+      940412,
+      940413
+    ],
+    "seed": 20267706,
+    "source_id": "validation-m2-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940602,
+      940603
+    ],
+    "seed": 20267801,
+    "source_id": "validation-m3-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940604,
+      940605
+    ],
+    "seed": 20267802,
+    "source_id": "validation-m3-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940606,
+      940607
+    ],
+    "seed": 20267803,
+    "source_id": "validation-m3-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940608,
+      940609
+    ],
+    "seed": 20267804,
+    "source_id": "validation-m3-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940610,
+      940611
+    ],
+    "seed": 20267805,
+    "source_id": "validation-m3-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "knifefight",
+    "map_index": 3,
+    "policy_seeds": [
+      940612,
+      940613
+    ],
+    "seed": 20267806,
+    "source_id": "validation-m3-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940802,
+      940803
+    ],
+    "seed": 20267901,
+    "source_id": "validation-m4-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940804,
+      940805
+    ],
+    "seed": 20267902,
+    "source_id": "validation-m4-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940806,
+      940807
+    ],
+    "seed": 20267903,
+    "source_id": "validation-m4-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940808,
+      940809
+    ],
+    "seed": 20267904,
+    "source_id": "validation-m4-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940810,
+      940811
+    ],
+    "seed": 20267905,
+    "source_id": "validation-m4-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "DefaultMedium",
+    "map_index": 4,
+    "policy_seeds": [
+      940812,
+      940813
+    ],
+    "seed": 20267906,
+    "source_id": "validation-m4-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941002,
+      941003
+    ],
+    "seed": 20268001,
+    "source_id": "validation-m5-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941004,
+      941005
+    ],
+    "seed": 20268002,
+    "source_id": "validation-m5-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941006,
+      941007
+    ],
+    "seed": 20268003,
+    "source_id": "validation-m5-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941008,
+      941009
+    ],
+    "seed": 20268004,
+    "source_id": "validation-m5-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941010,
+      941011
+    ],
+    "seed": 20268005,
+    "source_id": "validation-m5-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "DefaultLarge",
+    "map_index": 5,
+    "policy_seeds": [
+      941012,
+      941013
+    ],
+    "seed": 20268006,
+    "source_id": "validation-m5-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941202,
+      941203
+    ],
+    "seed": 20268101,
+    "source_id": "validation-m6-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941204,
+      941205
+    ],
+    "seed": 20268102,
+    "source_id": "validation-m6-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941206,
+      941207
+    ],
+    "seed": 20268103,
+    "source_id": "validation-m6-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941208,
+      941209
+    ],
+    "seed": 20268104,
+    "source_id": "validation-m6-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941210,
+      941211
+    ],
+    "seed": 20268105,
+    "source_id": "validation-m6-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "cheesefarm",
+    "map_index": 6,
+    "policy_seeds": [
+      941212,
+      941213
+    ],
+    "seed": 20268106,
+    "source_id": "validation-m6-j6",
+    "split": "validation"
+  },
+  {
+    "j": 1,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941402,
+      941403
+    ],
+    "seed": 20268201,
+    "source_id": "validation-m7-j1",
+    "split": "validation"
+  },
+  {
+    "j": 2,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941404,
+      941405
+    ],
+    "seed": 20268202,
+    "source_id": "validation-m7-j2",
+    "split": "validation"
+  },
+  {
+    "j": 3,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941406,
+      941407
+    ],
+    "seed": 20268203,
+    "source_id": "validation-m7-j3",
+    "split": "validation"
+  },
+  {
+    "j": 4,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941408,
+      941409
+    ],
+    "seed": 20268204,
+    "source_id": "validation-m7-j4",
+    "split": "validation"
+  },
+  {
+    "j": 5,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941410,
+      941411
+    ],
+    "seed": 20268205,
+    "source_id": "validation-m7-j5",
+    "split": "validation"
+  },
+  {
+    "j": 6,
+    "map": "wallsofparadis",
+    "map_index": 7,
+    "policy_seeds": [
+      941412,
+      941413
+    ],
+    "seed": 20268206,
+    "source_id": "validation-m7-j6",
+    "split": "validation"
+  }
+]
