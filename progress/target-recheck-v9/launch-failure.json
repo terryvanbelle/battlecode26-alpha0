@@ -1,0 +1,7 @@
+{
+  "identity": "694d2dff427f73462d8cc25ba0d9c99638c8d88d2d75204483876ebce0187560",
+  "phase": "review_required",
+  "pid": 175110,
+  "reason": "RuntimeError: worker failed; inspect journal/log; no automatic retry",
+  "updated_at": "2026-11-11T01:28:18.162519+00:00"
+}
