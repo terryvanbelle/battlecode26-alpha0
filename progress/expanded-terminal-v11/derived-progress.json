@@ -6,11 +6,339 @@
       "expected": 2974
     },
     "validation": {
-      "complete": 18,
+      "complete": 156,
       "expected": 156
     }
   },
-  "mechanism": null,
+  "mechanism": {
+    "complete": true,
+    "diagnostic_only": true,
+    "mean_terminal_minus_cp2": 0.0078125,
+    "mean_terminal_minus_puct": 0.0078125,
+    "per_root": [
+      {
+        "root_id": "validation-000",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-001",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-002",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-003",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-004",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-005",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-006",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-007",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": 0.25,
+        "terminal_minus_puct": 0.25
+      },
+      {
+        "root_id": "validation-008",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-009",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-010",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.25,
+        "terminal_minus_puct": 0.25
+      },
+      {
+        "root_id": "validation-011",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-012",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 0.75
+        },
+        "terminal_minus_cp2": 0.25,
+        "terminal_minus_puct": 0.25
+      },
+      {
+        "root_id": "validation-013",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-014",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-015",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.75
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-016",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-017",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.75
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-018",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-019",
+        "scores": {
+          "cp2": 0.0,
+          "puct_head": 0.0,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-020",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-021",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-022",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-023",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-024",
+        "scores": {
+          "cp2": 0.25,
+          "puct_head": 0.25,
+          "terminal_head": 0.25
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-025",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.5,
+        "terminal_minus_puct": 0.5
+      },
+      {
+        "root_id": "validation-026",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.75
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-027",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.0
+        },
+        "terminal_minus_cp2": -0.75,
+        "terminal_minus_puct": -0.75
+      },
+      {
+        "root_id": "validation-028",
+        "scores": {
+          "cp2": 1.0,
+          "puct_head": 1.0,
+          "terminal_head": 1.0
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-029",
+        "scores": {
+          "cp2": 0.5,
+          "puct_head": 0.5,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-030",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.75
+        },
+        "terminal_minus_cp2": 0.0,
+        "terminal_minus_puct": 0.0
+      },
+      {
+        "root_id": "validation-031",
+        "scores": {
+          "cp2": 0.75,
+          "puct_head": 0.75,
+          "terminal_head": 0.5
+        },
+        "terminal_minus_cp2": -0.25,
+        "terminal_minus_puct": -0.25
+      }
+    ],
+    "root_count": 32
+  },
   "playing_strength_claim": false,
-  "updated_at": "2026-11-11T18:56:10.514093+00:00"
+  "updated_at": "2026-11-11T19:51:38.983661+00:00"
 }

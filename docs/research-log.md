@@ -623,3 +623,8 @@ At11:52 Vancouver /18:52 UTC November11, all2974 selection continuations and64co
 
 ### V11 fits complete and independently audited
 At11:55 Vancouver /18:55 UTC November11, both4096-update fits finished and the independent saved-fit audit passed full shared batchstream/RNG reconstruction, all128-step snapshot hashes,4096optimizersteps and byte-identical non-policy tensors. Terminal checkpointc6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb matches53/64labels, changes31root actions and40/1024anchors. Eight pairs of identical canonical inputs have conflicting terminal labels, imposing an equal-slot deterministic ceiling56/64; allslots andweights remain unchanged. PUCT2462f2610264ffa87d8c7d05b1a94fdd52b8a94ab59741d5ca1027872a932922 matches64/64labels, changes0root actions and13anchors. This is fitting evidence only. Frozen worker progressed to independent validation, with no benchmark result yet. Published exact audit/fit identity and clearly labeled128-update block-mean training curves; no active-actor recovery export or repeated fitting.
+
+
+## V11 benchmark adapter review, 2026-11-11
+
+Completed 156 shared first-action validation games; equal-root terminal-minus-cp2 mean 0.0078125, diagnostic only. Benchmark startup failed before any game on the inherited helper cap contract. Reviewed standalone benchmark adapter preserves attempt=1/no retries and all frozen game/checkpoint identities. Original failed jobs retained; post-fit isolated recovery verified 7837 files (SHA fffab06e7418a5ffa925a3f6150853fed63633470e5b7b52cb4f5026d58afd91). See progress/expanded-terminal-v11/reviews/benchmark-adapter-recovery-20261111.json.
