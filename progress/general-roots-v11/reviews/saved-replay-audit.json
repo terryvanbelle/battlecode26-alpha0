@@ -1,0 +1,12 @@
+{
+  "sources_verified": 64,
+  "cached_positions_verified": 2304,
+  "roots": 64,
+  "anchors": 1024,
+  "unique_root_inputs": 54,
+  "planned_selection_cells": 2974,
+  "passed": true,
+  "new_selfplay_games": 0,
+  "sgd_updates": 0,
+  "limitation": "Independent saved-record/cache audit, not another physical engine replay."
+}
