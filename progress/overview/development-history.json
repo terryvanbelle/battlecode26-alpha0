@@ -433,6 +433,222 @@
       },
       "source": "progress/development-v4/v8-puct_head/evaluations.jsonl",
       "source_sha256": "d91bc8541fbc551c9f71805b15173abf91ece03ba5234b0d12308a3aa2ed2ace"
+    },
+    {
+      "overall": {
+        "wins": 81,
+        "losses": 175,
+        "draws": 0,
+        "valid": 256,
+        "expected": 256,
+        "errors": 0,
+        "excluded_crashes": 0,
+        "complete": true,
+        "win_rate": 0.31640625
+      },
+      "checkpoint_sha256": "20d9e813349010630940e1cdfbaee5206490c7d323997688d26f47508bbeee7c",
+      "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+      "started_at": "2026-11-11T19:56:38.921420+00:00",
+      "bots": {
+        "CS50Crab_rapierV1": {
+          "wins": 24,
+          "losses": 8,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.75
+        },
+        "spsquared_TSPAARK_QUALS": {
+          "wins": 14,
+          "losses": 18,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.4375
+        },
+        "HugoIngelsson_Xzibit": {
+          "wins": 17,
+          "losses": 15,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.53125
+        },
+        "vibe26b_zdb": {
+          "wins": 4,
+          "losses": 28,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.125
+        },
+        "HugoIngelsson_YokoOno": {
+          "wins": 12,
+          "losses": 20,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.375
+        },
+        "abcdezyxwv_bestsofar": {
+          "wins": 2,
+          "losses": 30,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.0625
+        },
+        "uravt_Version41": {
+          "wins": 7,
+          "losses": 25,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.21875
+        },
+        "IvanGeffner_basic51": {
+          "wins": 1,
+          "losses": 31,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.03125
+        }
+      },
+      "source": "progress/development-v4/v11-cp2/evaluations.jsonl",
+      "source_sha256": "8984e58a1e3a901ef086cb0de5c418e6b2852e2dc114192f1726f116f80c399e"
+    },
+    {
+      "overall": {
+        "wins": 55,
+        "losses": 66,
+        "draws": 0,
+        "valid": 121,
+        "expected": 256,
+        "errors": 0,
+        "excluded_crashes": 0,
+        "complete": false,
+        "win_rate": null
+      },
+      "checkpoint_sha256": "c6f5655e3a56f3e44dfe6869ae8b4eebf8dee595cfe4f04fd2216073aa3e8ebb",
+      "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
+      "started_at": "2026-11-11T20:55:15.498207+00:00",
+      "bots": {
+        "CS50Crab_rapierV1": {
+          "wins": 24,
+          "losses": 8,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.75
+        },
+        "spsquared_TSPAARK_QUALS": {
+          "wins": 13,
+          "losses": 19,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.40625
+        },
+        "HugoIngelsson_Xzibit": {
+          "wins": 14,
+          "losses": 18,
+          "draws": 0,
+          "valid": 32,
+          "expected": 32,
+          "errors": 0,
+          "complete": true,
+          "excluded_crashes": 0,
+          "win_rate": 0.4375
+        },
+        "vibe26b_zdb": {
+          "wins": 4,
+          "losses": 21,
+          "draws": 0,
+          "valid": 25,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "HugoIngelsson_YokoOno": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "abcdezyxwv_bestsofar": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "uravt_Version41": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        },
+        "IvanGeffner_basic51": {
+          "wins": 0,
+          "losses": 0,
+          "draws": 0,
+          "valid": 0,
+          "expected": 32,
+          "errors": 0,
+          "complete": false,
+          "excluded_crashes": 0,
+          "win_rate": null
+        }
+      },
+      "source": "progress/development-v4/v11-terminal_head/evaluations.jsonl",
+      "source_sha256": "6b894e4b4a2ae67599bbe8af9fd8159289dc3db438eb29d17587e4b80c5c8bbc"
     }
   ]
 }
