@@ -1,0 +1,8 @@
+{
+  "archive_manifest": "artifacts/expanded-terminal-v11/recovery-20261111T232102.749320_0000.tar.gz.json",
+  "created_at": "2026-11-11T23:45:30.736620+00:00",
+  "finalizer_original_error_preserved": true,
+  "full_panels_complete": true,
+  "publication_commit": "020149b",
+  "reason": "GitHub rejected two >100 MB derived reports. Full bytes are retained in verified archive c36b40c70fb408ce6364fd5c491b7308bb2b82f4d364dc540ea2d6d76c031d56; only own unpushed publication commit amended to publish compact derived report and full-report pointer. Push succeeded. Original experiment state and raw outcomes unchanged."
+}

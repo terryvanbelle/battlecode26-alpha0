@@ -1,0 +1,2282 @@
+{
+  "kind": "static_interface_inventory",
+  "not_dynamic_coverage": true,
+  "teacher_games": 0,
+  "training_labels": 0,
+  "gradient_updates": 0,
+  "pins": {
+    "benchmarks/bots/vibe26b_zdb/Baby.java": "d1903f57edbb1baf4522d1c1760f3c174d2fa26a249d09e65bd262469263ae4e",
+    "benchmarks/bots/vibe26b_zdb/BitFlow.java": "4875bf7891e5f8df27c4164e7ab758c310014bb7ec8f5183276c2577f75ced26",
+    "benchmarks/bots/vibe26b_zdb/CatLane.java": "e30e4919ad601989a6babfce08b8120d1c61a0f08ae63006f7d751e13efe7c87",
+    "benchmarks/bots/vibe26b_zdb/Cfg.java": "3c7eee28c74b3be00db26a1250ff6f227d46cf51ef3f8117cee8f0a351e7077d",
+    "benchmarks/bots/vibe26b_zdb/Comms.java": "2c1aa4394e4a70ad4abfcb7623c0e6610eb8d1718533c5d6441c3e7c456d80df",
+    "benchmarks/bots/vibe26b_zdb/Debug.java": "d5511b900cd961407b7119b55e14c9dd4988bb3fb9087fe68d18d06791114393",
+    "benchmarks/bots/vibe26b_zdb/Econ.java": "31ddbc01dda0a39d03208acfbc26157c3604db2ad04b6c30705f211ea536150c",
+    "benchmarks/bots/vibe26b_zdb/Flow.java": "1d9d90dfb0b74770886cb7e3ff85ed39d57e5db53547f125dcc14a8b053afc15",
+    "benchmarks/bots/vibe26b_zdb/G.java": "44e8283005c05f25b5dbd91be26cddeee108d3a5ad0bba57c277a5c5f785ce77",
+    "benchmarks/bots/vibe26b_zdb/GrabMicro.java": "64dbdaf14b851e814d260d96359d310a4c0dd32602387c357e8e3155f1567444",
+    "benchmarks/bots/vibe26b_zdb/KPath.java": "e95a1849f9d1abe0817de8ec49a74f1469c1000247159cd8d9f92cac8be202c0",
+    "benchmarks/bots/vibe26b_zdb/King.java": "066ed1568db750dfe208addcf3b53a0b6e1204f1974be6d5aaf886decf08cae4",
+    "benchmarks/bots/vibe26b_zdb/Micro.java": "361563b656803cf11d9021341c2bfcf948cd61ec5b8ebf4355070bc7ee41019c",
+    "benchmarks/bots/vibe26b_zdb/Moat.java": "5f5b46a05f80a6fafd194d4f7888f072af960721163b05f163a8de0433581832",
+    "benchmarks/bots/vibe26b_zdb/Nav.java": "9465d03dd09fd83dc924bbedef4db3891064371be4eee3df073fd9c1fbc79e0c",
+    "benchmarks/bots/vibe26b_zdb/PathOracle.java": "483071896eede7879c237be51cfb9592939774e3f6abdc8c0dff3798539b7423",
+    "benchmarks/bots/vibe26b_zdb/RobotPlayer.java": "ca278f1ab51ad39356593c62a1fca528acd18dd7388d271d6c5b1f2f777c5ed4",
+    "benchmarks/bots/vibe26b_zdb/Seal.java": "17cd0eb7680e10ae4069af606e8511d895073f14ad6941fb0e5e9d2069bd6b12",
+    "benchmarks/bots/vibe26b_zdb/Sym.java": "52ddfb93228aba93b86cfe1ae1f1685e64f650f406f1881b1eaefe8c006873a1",
+    "benchmarks/bots/vibe26b_zdb/Trail.java": "68204d0db0a170e504a0ea97dbf54ed60a234e8dccbf92e87d25843071b6ca51",
+    "benchmarks/bots/vibe26b_zdb/TrapRisk.java": "fed4f851dfdb88fe6fe469af1be50c4cc0ac2f3591b38842bf6859597e24c183",
+    "benchmarks/bots/vibe26b_zdb/TrapRows.java": "3a9940b6b951ffbbc5f1f76c86387483e777b44b1e1aef5e728190a00e245929",
+    "java/alpha0/MacroV2.java": "2e419be54d7ea24c43223d0a060b47896854af958d50a9cda077b2c453a18cd4",
+    "alpha0/features_v2.py": "98b2358cb2444df6a1fdc57f5bdaf4ed21826ffdde10354fabf9307b798749cd",
+    "alpha0/network_v2.py": "59a5265626a140f6a82c8c5041771e8f309977d2889fcb87f370a0acd1015b90"
+  },
+  "teacher_calls": {
+    "benchmarks/bots/vibe26b_zdb/Baby.java": [
+      {
+        "method": "isTurningReady",
+        "line": 69
+      },
+      {
+        "method": "getHealth",
+        "line": 69
+      },
+      {
+        "method": "getHealth",
+        "line": 69
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 69
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 70
+      },
+      {
+        "method": "getCarrying",
+        "line": 91
+      },
+      {
+        "method": "getCarrying",
+        "line": 117
+      },
+      {
+        "method": "getHealth",
+        "line": 118
+      },
+      {
+        "method": "getCarrying",
+        "line": 126
+      },
+      {
+        "method": "getCarrying",
+        "line": 130
+      },
+      {
+        "method": "getCarrying",
+        "line": 132
+      },
+      {
+        "method": "getCarrying",
+        "line": 139
+      },
+      {
+        "method": "getHealth",
+        "line": 150
+      },
+      {
+        "method": "getCarrying",
+        "line": 156
+      },
+      {
+        "method": "getCarrying",
+        "line": 156
+      },
+      {
+        "method": "isMovementReady",
+        "line": 163
+      },
+      {
+        "method": "isActionReady",
+        "line": 163
+      },
+      {
+        "method": "getLocation",
+        "line": 182
+      },
+      {
+        "method": "canBecomeRatKing",
+        "line": 185
+      },
+      {
+        "method": "becomeRatKing",
+        "line": 186
+      },
+      {
+        "method": "isMovementReady",
+        "line": 192
+      },
+      {
+        "method": "getLocation",
+        "line": 195
+      },
+      {
+        "method": "getType",
+        "line": 196
+      },
+      {
+        "method": "getCarrying",
+        "line": 199
+      },
+      {
+        "method": "getCarrying",
+        "line": 200
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 201
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 204
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 207
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 209
+      },
+      {
+        "method": "getHealth",
+        "line": 221
+      },
+      {
+        "method": "getDirection",
+        "line": 244
+      },
+      {
+        "method": "canTurn",
+        "line": 245
+      },
+      {
+        "method": "turn",
+        "line": 245
+      },
+      {
+        "method": "isTurningReady",
+        "line": 289
+      },
+      {
+        "method": "getCarrying",
+        "line": 289
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 292
+      },
+      {
+        "method": "getDirection",
+        "line": 314
+      },
+      {
+        "method": "canTurn",
+        "line": 314
+      },
+      {
+        "method": "turn",
+        "line": 314
+      },
+      {
+        "method": "getCurrentRatCost",
+        "line": 348
+      },
+      {
+        "method": "readSqueaks",
+        "line": 360
+      },
+      {
+        "method": "getID",
+        "line": 369
+      },
+      {
+        "method": "senseNearbyMapInfos",
+        "line": 455
+      },
+      {
+        "method": "getLocation",
+        "line": 548
+      },
+      {
+        "method": "pickUpCheese",
+        "line": 549
+      },
+      {
+        "method": "getDirection",
+        "line": 550
+      },
+      {
+        "method": "pickUpCheese",
+        "line": 554
+      },
+      {
+        "method": "getRawCheese",
+        "line": 556
+      },
+      {
+        "method": "canPickUpCheese",
+        "line": 563
+      },
+      {
+        "method": "getRawCheese",
+        "line": 564
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 564
+      },
+      {
+        "method": "getRawCheese",
+        "line": 566
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 567
+      },
+      {
+        "method": "isActionReady",
+        "line": 584
+      },
+      {
+        "method": "getCarrying",
+        "line": 584
+      },
+      {
+        "method": "canCarryRat",
+        "line": 590
+      },
+      {
+        "method": "carryRat",
+        "line": 595
+      },
+      {
+        "method": "getLocation",
+        "line": 648
+      },
+      {
+        "method": "isMovementReady",
+        "line": 668
+      },
+      {
+        "method": "canMove",
+        "line": 687
+      },
+      {
+        "method": "getDirection",
+        "line": 695
+      },
+      {
+        "method": "canTurn",
+        "line": 695
+      },
+      {
+        "method": "turn",
+        "line": 695
+      },
+      {
+        "method": "move",
+        "line": 696
+      },
+      {
+        "method": "getLocation",
+        "line": 696
+      },
+      {
+        "method": "canThrowRat",
+        "line": 697
+      },
+      {
+        "method": "throwRat",
+        "line": 697
+      },
+      {
+        "method": "isActionReady",
+        "line": 709
+      },
+      {
+        "method": "getLocation",
+        "line": 710
+      },
+      {
+        "method": "canDropRat",
+        "line": 714
+      },
+      {
+        "method": "dropRat",
+        "line": 719
+      },
+      {
+        "method": "isActionReady",
+        "line": 725
+      },
+      {
+        "method": "getLocation",
+        "line": 726
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 727
+      },
+      {
+        "method": "getDirection",
+        "line": 761
+      },
+      {
+        "method": "canTurn",
+        "line": 761
+      },
+      {
+        "method": "turn",
+        "line": 761
+      },
+      {
+        "method": "canThrowRat",
+        "line": 762
+      },
+      {
+        "method": "throwRat",
+        "line": 763
+      },
+      {
+        "method": "isActionReady",
+        "line": 777
+      },
+      {
+        "method": "getLocation",
+        "line": 778
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 779
+      },
+      {
+        "method": "getDirection",
+        "line": 828
+      },
+      {
+        "method": "canTurn",
+        "line": 829
+      },
+      {
+        "method": "turn",
+        "line": 830
+      },
+      {
+        "method": "onTheMap",
+        "line": 837
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 837
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 838
+      },
+      {
+        "method": "canThrowRat",
+        "line": 845
+      },
+      {
+        "method": "throwRat",
+        "line": 846
+      },
+      {
+        "method": "isActionReady",
+        "line": 854
+      },
+      {
+        "method": "getNumberRatTraps",
+        "line": 854
+      },
+      {
+        "method": "getAllCheese",
+        "line": 855
+      },
+      {
+        "method": "getRoundNum",
+        "line": 856
+      },
+      {
+        "method": "getAllCheese",
+        "line": 856
+      },
+      {
+        "method": "getLocation",
+        "line": 859
+      },
+      {
+        "method": "getDirection",
+        "line": 859
+      },
+      {
+        "method": "placeRatTrap",
+        "line": 861
+      },
+      {
+        "method": "canPlaceRatTrap",
+        "line": 877
+      },
+      {
+        "method": "isActionReady",
+        "line": 912
+      },
+      {
+        "method": "getNumberRatTraps",
+        "line": 912
+      },
+      {
+        "method": "getAllCheese",
+        "line": 913
+      },
+      {
+        "method": "getLocation",
+        "line": 914
+      },
+      {
+        "method": "getDirection",
+        "line": 915
+      },
+      {
+        "method": "canPlaceRatTrap",
+        "line": 917
+      },
+      {
+        "method": "placeRatTrap",
+        "line": 918
+      },
+      {
+        "method": "isActionReady",
+        "line": 931
+      },
+      {
+        "method": "getLocation",
+        "line": 932
+      },
+      {
+        "method": "getHealth",
+        "line": 933
+      },
+      {
+        "method": "canAttack",
+        "line": 951
+      },
+      {
+        "method": "isTurningReady",
+        "line": 956
+      },
+      {
+        "method": "canAttack",
+        "line": 963
+      },
+      {
+        "method": "getDirection",
+        "line": 965
+      },
+      {
+        "method": "canTurn",
+        "line": 965
+      },
+      {
+        "method": "turn",
+        "line": 965
+      },
+      {
+        "method": "getDirection",
+        "line": 966
+      },
+      {
+        "method": "canAttack",
+        "line": 968
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 969
+      },
+      {
+        "method": "canAttack",
+        "line": 970
+      },
+      {
+        "method": "attack",
+        "line": 970
+      },
+      {
+        "method": "attack",
+        "line": 970
+      },
+      {
+        "method": "isActionReady",
+        "line": 995
+      },
+      {
+        "method": "canAttack",
+        "line": 998
+      },
+      {
+        "method": "getDirection",
+        "line": 1000
+      },
+      {
+        "method": "canTurn",
+        "line": 1000
+      },
+      {
+        "method": "turn",
+        "line": 1000
+      },
+      {
+        "method": "canAttack",
+        "line": 1002
+      },
+      {
+        "method": "attack",
+        "line": 1002
+      },
+      {
+        "method": "isActionReady",
+        "line": 1009
+      },
+      {
+        "method": "getLocation",
+        "line": 1010
+      },
+      {
+        "method": "canAttack",
+        "line": 1015
+      },
+      {
+        "method": "canAttack",
+        "line": 1017
+      },
+      {
+        "method": "attack",
+        "line": 1017
+      },
+      {
+        "method": "attack",
+        "line": 1017
+      },
+      {
+        "method": "canTurn",
+        "line": 1023
+      },
+      {
+        "method": "turn",
+        "line": 1024
+      },
+      {
+        "method": "canAttack",
+        "line": 1025
+      },
+      {
+        "method": "attack",
+        "line": 1025
+      },
+      {
+        "method": "isActionReady",
+        "line": 1035
+      },
+      {
+        "method": "getNumberCatTraps",
+        "line": 1035
+      },
+      {
+        "method": "getAllCheese",
+        "line": 1035
+      },
+      {
+        "method": "getLocation",
+        "line": 1036
+      },
+      {
+        "method": "canPlaceCatTrap",
+        "line": 1042
+      },
+      {
+        "method": "placeCatTrap",
+        "line": 1046
+      },
+      {
+        "method": "isActionReady",
+        "line": 1057
+      },
+      {
+        "method": "getAllCheese",
+        "line": 1058
+      },
+      {
+        "method": "getNumberCatTraps",
+        "line": 1063
+      },
+      {
+        "method": "getLocation",
+        "line": 1068
+      },
+      {
+        "method": "getDirection",
+        "line": 1069
+      },
+      {
+        "method": "canPlaceCatTrap",
+        "line": 1074
+      },
+      {
+        "method": "placeCatTrap",
+        "line": 1082
+      },
+      {
+        "method": "getRawCheese",
+        "line": 1093
+      },
+      {
+        "method": "isActionReady",
+        "line": 1094
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 1095
+      },
+      {
+        "method": "canTransferCheese",
+        "line": 1102
+      },
+      {
+        "method": "transferCheese",
+        "line": 1103
+      },
+      {
+        "method": "squeak",
+        "line": 1120
+      },
+      {
+        "method": "readSqueaks",
+        "line": 1126
+      },
+      {
+        "method": "squeak",
+        "line": 1134
+      },
+      {
+        "method": "readSqueaks",
+        "line": 1138
+      },
+      {
+        "method": "squeak",
+        "line": 1146
+      },
+      {
+        "method": "squeak",
+        "line": 1153
+      },
+      {
+        "method": "squeak",
+        "line": 1158
+      },
+      {
+        "method": "squeak",
+        "line": 1160
+      },
+      {
+        "method": "squeak",
+        "line": 1166
+      },
+      {
+        "method": "squeak",
+        "line": 1172
+      },
+      {
+        "method": "squeak",
+        "line": 1176
+      },
+      {
+        "method": "squeak",
+        "line": 1209
+      },
+      {
+        "method": "getRawCheese",
+        "line": 1226
+      },
+      {
+        "method": "getCarrying",
+        "line": 1240
+      },
+      {
+        "method": "getCarrying",
+        "line": 1240
+      },
+      {
+        "method": "getHealth",
+        "line": 1253
+      },
+      {
+        "method": "getDirection",
+        "line": 1287
+      },
+      {
+        "method": "canTurn",
+        "line": 1287
+      },
+      {
+        "method": "turn",
+        "line": 1287
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1289
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 1289
+      },
+      {
+        "method": "getHealth",
+        "line": 1305
+      },
+      {
+        "method": "canTurn",
+        "line": 1342
+      },
+      {
+        "method": "turn",
+        "line": 1342
+      },
+      {
+        "method": "getDirection",
+        "line": 1369
+      },
+      {
+        "method": "canTurn",
+        "line": 1369
+      },
+      {
+        "method": "turn",
+        "line": 1369
+      },
+      {
+        "method": "isMovementReady",
+        "line": 1401
+      },
+      {
+        "method": "getHealth",
+        "line": 1433
+      },
+      {
+        "method": "getRawCheese",
+        "line": 1434
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1437
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 1438
+      },
+      {
+        "method": "getDirection",
+        "line": 1446
+      },
+      {
+        "method": "canTurn",
+        "line": 1446
+      },
+      {
+        "method": "turn",
+        "line": 1446
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1482
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 1483
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1509
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 1510
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1537
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 1538
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1567
+      },
+      {
+        "method": "getDirection",
+        "line": 1567
+      },
+      {
+        "method": "getDirection",
+        "line": 1568
+      },
+      {
+        "method": "canTurn",
+        "line": 1568
+      },
+      {
+        "method": "turn",
+        "line": 1568
+      },
+      {
+        "method": "canMove",
+        "line": 1571
+      },
+      {
+        "method": "move",
+        "line": 1573
+      },
+      {
+        "method": "getLocation",
+        "line": 1574
+      },
+      {
+        "method": "getHealth",
+        "line": 1598
+      },
+      {
+        "method": "getRawCheese",
+        "line": 1606
+      },
+      {
+        "method": "getDirection",
+        "line": 1613
+      },
+      {
+        "method": "canTurn",
+        "line": 1613
+      },
+      {
+        "method": "turn",
+        "line": 1613
+      },
+      {
+        "method": "getDirection",
+        "line": 1625
+      },
+      {
+        "method": "canTurn",
+        "line": 1625
+      },
+      {
+        "method": "turn",
+        "line": 1625
+      },
+      {
+        "method": "getHealth",
+        "line": 1633
+      },
+      {
+        "method": "getDirection",
+        "line": 1635
+      },
+      {
+        "method": "canTurn",
+        "line": 1635
+      },
+      {
+        "method": "turn",
+        "line": 1635
+      },
+      {
+        "method": "isActionReady",
+        "line": 1717
+      },
+      {
+        "method": "getHealth",
+        "line": 1718
+      },
+      {
+        "method": "getDirection",
+        "line": 1722
+      },
+      {
+        "method": "canTurn",
+        "line": 1722
+      },
+      {
+        "method": "turn",
+        "line": 1722
+      },
+      {
+        "method": "isMovementReady",
+        "line": 1726
+      },
+      {
+        "method": "canMove",
+        "line": 1733
+      },
+      {
+        "method": "getDirection",
+        "line": 1734
+      },
+      {
+        "method": "getDirection",
+        "line": 1754
+      },
+      {
+        "method": "canTurn",
+        "line": 1754
+      },
+      {
+        "method": "turn",
+        "line": 1754
+      },
+      {
+        "method": "isMovementReady",
+        "line": 1758
+      },
+      {
+        "method": "canMove",
+        "line": 1765
+      },
+      {
+        "method": "getDirection",
+        "line": 1766
+      },
+      {
+        "method": "canMove",
+        "line": 1783
+      },
+      {
+        "method": "onTheMap",
+        "line": 1800
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1800
+      },
+      {
+        "method": "sensePassability",
+        "line": 1800
+      },
+      {
+        "method": "isActionReady",
+        "line": 1813
+      },
+      {
+        "method": "isMovementReady",
+        "line": 1813
+      },
+      {
+        "method": "getCarrying",
+        "line": 1813
+      },
+      {
+        "method": "canMove",
+        "line": 1824
+      },
+      {
+        "method": "getDirection",
+        "line": 1825
+      },
+      {
+        "method": "isMovementReady",
+        "line": 1859
+      },
+      {
+        "method": "canMove",
+        "line": 1862
+      },
+      {
+        "method": "getHealth",
+        "line": 1895
+      },
+      {
+        "method": "getHealth",
+        "line": 1907
+      },
+      {
+        "method": "getDirection",
+        "line": 1932
+      },
+      {
+        "method": "canTurn",
+        "line": 1932
+      },
+      {
+        "method": "turn",
+        "line": 1932
+      },
+      {
+        "method": "getCarrying",
+        "line": 1949
+      },
+      {
+        "method": "canBecomeRatKing",
+        "line": 2128
+      },
+      {
+        "method": "becomeRatKing",
+        "line": 2128
+      },
+      {
+        "method": "canMove",
+        "line": 2134
+      },
+      {
+        "method": "getDirection",
+        "line": 2135
+      },
+      {
+        "method": "canTurn",
+        "line": 2135
+      },
+      {
+        "method": "turn",
+        "line": 2135
+      },
+      {
+        "method": "canMove",
+        "line": 2136
+      },
+      {
+        "method": "move",
+        "line": 2136
+      },
+      {
+        "method": "getLocation",
+        "line": 2136
+      },
+      {
+        "method": "isMovementReady",
+        "line": 2167
+      },
+      {
+        "method": "canMove",
+        "line": 2170
+      },
+      {
+        "method": "getDirection",
+        "line": 2171
+      },
+      {
+        "method": "canTurn",
+        "line": 2171
+      },
+      {
+        "method": "turn",
+        "line": 2171
+      },
+      {
+        "method": "canMove",
+        "line": 2172
+      },
+      {
+        "method": "move",
+        "line": 2173
+      },
+      {
+        "method": "getLocation",
+        "line": 2173
+      },
+      {
+        "method": "readSqueaks",
+        "line": 2238
+      },
+      {
+        "method": "getRawCheese",
+        "line": 2258
+      },
+      {
+        "method": "getID",
+        "line": 2261
+      },
+      {
+        "method": "squeak",
+        "line": 2278
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 2304
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 2305
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 2306
+      },
+      {
+        "method": "canMove",
+        "line": 2322
+      },
+      {
+        "method": "getDirection",
+        "line": 2323
+      },
+      {
+        "method": "canTurn",
+        "line": 2323
+      },
+      {
+        "method": "turn",
+        "line": 2323
+      },
+      {
+        "method": "canMove",
+        "line": 2324
+      },
+      {
+        "method": "move",
+        "line": 2324
+      },
+      {
+        "method": "getLocation",
+        "line": 2324
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/BitFlow.java": [
+      {
+        "method": "canMove",
+        "line": 272
+      },
+      {
+        "method": "isActionReady",
+        "line": 294
+      },
+      {
+        "method": "getDirection",
+        "line": 295
+      },
+      {
+        "method": "canTurn",
+        "line": 295
+      },
+      {
+        "method": "turn",
+        "line": 295
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 296
+      },
+      {
+        "method": "removeDirt",
+        "line": 297
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/CatLane.java": [],
+    "benchmarks/bots/vibe26b_zdb/Cfg.java": [],
+    "benchmarks/bots/vibe26b_zdb/Comms.java": [
+      {
+        "method": "readSharedArray",
+        "line": 42
+      },
+      {
+        "method": "readSharedArray",
+        "line": 46
+      },
+      {
+        "method": "writeSharedArray",
+        "line": 46
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Debug.java": [
+      {
+        "method": "getRoundNum",
+        "line": 21
+      },
+      {
+        "method": "setIndicatorString",
+        "line": 73
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Econ.java": [
+      {
+        "method": "getGlobalCheese",
+        "line": 19
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 30
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 43
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Flow.java": [
+      {
+        "method": "canMove",
+        "line": 804
+      },
+      {
+        "method": "isActionReady",
+        "line": 846
+      },
+      {
+        "method": "getDirection",
+        "line": 847
+      },
+      {
+        "method": "canTurn",
+        "line": 847
+      },
+      {
+        "method": "turn",
+        "line": 847
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 848
+      },
+      {
+        "method": "removeDirt",
+        "line": 849
+      },
+      {
+        "method": "canMove",
+        "line": 855
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/G.java": [
+      {
+        "method": "getRoundNum",
+        "line": 65
+      },
+      {
+        "method": "getLocation",
+        "line": 66
+      },
+      {
+        "method": "getDirection",
+        "line": 67
+      },
+      {
+        "method": "getType",
+        "line": 68
+      },
+      {
+        "method": "isCooperation",
+        "line": 69
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 70
+      },
+      {
+        "method": "getRawCheese",
+        "line": 71
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/GrabMicro.java": [
+      {
+        "method": "getCarrying",
+        "line": 209
+      },
+      {
+        "method": "getLocation",
+        "line": 210
+      },
+      {
+        "method": "isMovementReady",
+        "line": 270
+      },
+      {
+        "method": "canMove",
+        "line": 272
+      },
+      {
+        "method": "getDirection",
+        "line": 273
+      },
+      {
+        "method": "getHealth",
+        "line": 274
+      },
+      {
+        "method": "isTurningReady",
+        "line": 274
+      },
+      {
+        "method": "isActionReady",
+        "line": 274
+      },
+      {
+        "method": "getDirection",
+        "line": 287
+      },
+      {
+        "method": "canTurn",
+        "line": 290
+      },
+      {
+        "method": "turn",
+        "line": 290
+      },
+      {
+        "method": "canMove",
+        "line": 291
+      },
+      {
+        "method": "move",
+        "line": 291
+      },
+      {
+        "method": "canTurn",
+        "line": 293
+      },
+      {
+        "method": "turn",
+        "line": 293
+      },
+      {
+        "method": "getLocation",
+        "line": 294
+      },
+      {
+        "method": "getDirection",
+        "line": 295
+      },
+      {
+        "method": "canCarryRat",
+        "line": 298
+      },
+      {
+        "method": "carryRat",
+        "line": 299
+      },
+      {
+        "method": "canAttack",
+        "line": 306
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 307
+      },
+      {
+        "method": "canAttack",
+        "line": 308
+      },
+      {
+        "method": "attack",
+        "line": 308
+      },
+      {
+        "method": "attack",
+        "line": 308
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/KPath.java": [
+      {
+        "method": "getLocation",
+        "line": 222
+      },
+      {
+        "method": "canMove",
+        "line": 261
+      },
+      {
+        "method": "move",
+        "line": 262
+      },
+      {
+        "method": "getLocation",
+        "line": 262
+      },
+      {
+        "method": "isActionReady",
+        "line": 266
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 266
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 269
+      },
+      {
+        "method": "removeDirt",
+        "line": 270
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/King.java": [
+      {
+        "method": "senseNearbyRobots",
+        "line": 42
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 43
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 46
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 48
+      },
+      {
+        "method": "squeak",
+        "line": 58
+      },
+      {
+        "method": "senseNearbyMapInfos",
+        "line": 142
+      },
+      {
+        "method": "getLocation",
+        "line": 143
+      },
+      {
+        "method": "readSqueaks",
+        "line": 165
+      },
+      {
+        "method": "getLocation",
+        "line": 206
+      },
+      {
+        "method": "getLocation",
+        "line": 207
+      },
+      {
+        "method": "getLocation",
+        "line": 221
+      },
+      {
+        "method": "canPickUpCheese",
+        "line": 225
+      },
+      {
+        "method": "pickUpCheese",
+        "line": 225
+      },
+      {
+        "method": "isActionReady",
+        "line": 241
+      },
+      {
+        "method": "canAttack",
+        "line": 244
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 248
+      },
+      {
+        "method": "canAttack",
+        "line": 249
+      },
+      {
+        "method": "attack",
+        "line": 249
+      },
+      {
+        "method": "attack",
+        "line": 250
+      },
+      {
+        "method": "isActionReady",
+        "line": 256
+      },
+      {
+        "method": "getLocation",
+        "line": 257
+      },
+      {
+        "method": "attack",
+        "line": 265
+      },
+      {
+        "method": "canAttack",
+        "line": 274
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 310
+      },
+      {
+        "method": "getCurrentRatCost",
+        "line": 311
+      },
+      {
+        "method": "getCurrentRatCost",
+        "line": 329
+      },
+      {
+        "method": "isActionReady",
+        "line": 338
+      },
+      {
+        "method": "getCurrentRatCost",
+        "line": 339
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 354
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 356
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 361
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 363
+      },
+      {
+        "method": "getLocation",
+        "line": 365
+      },
+      {
+        "method": "canBuildRat",
+        "line": 377
+      },
+      {
+        "method": "getDirection",
+        "line": 392
+      },
+      {
+        "method": "canTurn",
+        "line": 392
+      },
+      {
+        "method": "turn",
+        "line": 392
+      },
+      {
+        "method": "buildRat",
+        "line": 393
+      },
+      {
+        "method": "isActionReady",
+        "line": 411
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 411
+      },
+      {
+        "method": "getNumberRatTraps",
+        "line": 411
+      },
+      {
+        "method": "getLocation",
+        "line": 413
+      },
+      {
+        "method": "getNumberRatTraps",
+        "line": 424
+      },
+      {
+        "method": "canPlaceRatTrap",
+        "line": 434
+      },
+      {
+        "method": "placeRatTrap",
+        "line": 439
+      },
+      {
+        "method": "isActionReady",
+        "line": 447
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 447
+      },
+      {
+        "method": "getLocation",
+        "line": 448
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 455
+      },
+      {
+        "method": "removeDirt",
+        "line": 459
+      },
+      {
+        "method": "isMovementReady",
+        "line": 464
+      },
+      {
+        "method": "getLocation",
+        "line": 465
+      },
+      {
+        "method": "canMove",
+        "line": 473
+      },
+      {
+        "method": "move",
+        "line": 473
+      },
+      {
+        "method": "isActionReady",
+        "line": 506
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 507
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 510
+      },
+      {
+        "method": "removeDirt",
+        "line": 511
+      },
+      {
+        "method": "canMove",
+        "line": 573
+      },
+      {
+        "method": "move",
+        "line": 584
+      },
+      {
+        "method": "getLocation",
+        "line": 585
+      },
+      {
+        "method": "canMove",
+        "line": 602
+      },
+      {
+        "method": "move",
+        "line": 607
+      },
+      {
+        "method": "getLocation",
+        "line": 608
+      },
+      {
+        "method": "isActionReady",
+        "line": 612
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 612
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 621
+      },
+      {
+        "method": "removeDirt",
+        "line": 622
+      },
+      {
+        "method": "canMove",
+        "line": 772
+      },
+      {
+        "method": "move",
+        "line": 777
+      },
+      {
+        "method": "getLocation",
+        "line": 778
+      },
+      {
+        "method": "canMove",
+        "line": 794
+      },
+      {
+        "method": "move",
+        "line": 795
+      },
+      {
+        "method": "getLocation",
+        "line": 795
+      },
+      {
+        "method": "canMove",
+        "line": 838
+      },
+      {
+        "method": "move",
+        "line": 840
+      },
+      {
+        "method": "getLocation",
+        "line": 840
+      },
+      {
+        "method": "getCurrentRatCost",
+        "line": 886
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 887
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 906
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 991
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 992
+      },
+      {
+        "method": "getGlobalCheese",
+        "line": 999
+      },
+      {
+        "method": "senseNearbyRobots",
+        "line": 1157
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 1190
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 1190
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 1191
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Micro.java": [
+      {
+        "method": "isMovementReady",
+        "line": 18
+      },
+      {
+        "method": "getLocation",
+        "line": 19
+      },
+      {
+        "method": "getHealth",
+        "line": 21
+      },
+      {
+        "method": "isActionReady",
+        "line": 41
+      },
+      {
+        "method": "getHealth",
+        "line": 42
+      },
+      {
+        "method": "canMove",
+        "line": 48
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 51
+      },
+      {
+        "method": "senseMapInfo",
+        "line": 51
+      },
+      {
+        "method": "getDirection",
+        "line": 57
+      },
+      {
+        "method": "canTurn",
+        "line": 57
+      },
+      {
+        "method": "turn",
+        "line": 57
+      },
+      {
+        "method": "getDirection",
+        "line": 65
+      },
+      {
+        "method": "canTurn",
+        "line": 65
+      },
+      {
+        "method": "turn",
+        "line": 65
+      },
+      {
+        "method": "getDirection",
+        "line": 66
+      },
+      {
+        "method": "canTurn",
+        "line": 66
+      },
+      {
+        "method": "turn",
+        "line": 68
+      },
+      {
+        "method": "canMove",
+        "line": 71
+      },
+      {
+        "method": "move",
+        "line": 72
+      },
+      {
+        "method": "getLocation",
+        "line": 73
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Moat.java": [
+      {
+        "method": "getLocation",
+        "line": 49
+      },
+      {
+        "method": "canPlaceDirt",
+        "line": 57
+      },
+      {
+        "method": "placeDirt",
+        "line": 63
+      },
+      {
+        "method": "getLocation",
+        "line": 72
+      },
+      {
+        "method": "isActionReady",
+        "line": 80
+      },
+      {
+        "method": "isActionReady",
+        "line": 95
+      },
+      {
+        "method": "getLocation",
+        "line": 98
+      },
+      {
+        "method": "getDirt",
+        "line": 100
+      },
+      {
+        "method": "getAllCheese",
+        "line": 106
+      },
+      {
+        "method": "getLocation",
+        "line": 107
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 111
+      },
+      {
+        "method": "removeDirt",
+        "line": 116
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Nav.java": [
+      {
+        "method": "canMove",
+        "line": 79
+      },
+      {
+        "method": "isMovementReady",
+        "line": 96
+      },
+      {
+        "method": "getCarrying",
+        "line": 174
+      },
+      {
+        "method": "isActionReady",
+        "line": 175
+      },
+      {
+        "method": "isMovementReady",
+        "line": 175
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 177
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 178
+      },
+      {
+        "method": "getDirection",
+        "line": 181
+      },
+      {
+        "method": "canTurn",
+        "line": 182
+      },
+      {
+        "method": "turn",
+        "line": 183
+      },
+      {
+        "method": "canSenseLocation",
+        "line": 186
+      },
+      {
+        "method": "senseRobotAtLocation",
+        "line": 186
+      },
+      {
+        "method": "canCarryRat",
+        "line": 187
+      },
+      {
+        "method": "carryRat",
+        "line": 189
+      },
+      {
+        "method": "getDirection",
+        "line": 209
+      },
+      {
+        "method": "canTurn",
+        "line": 209
+      },
+      {
+        "method": "turn",
+        "line": 209
+      },
+      {
+        "method": "canMove",
+        "line": 210
+      },
+      {
+        "method": "move",
+        "line": 211
+      },
+      {
+        "method": "getLocation",
+        "line": 212
+      },
+      {
+        "method": "getDirection",
+        "line": 213
+      },
+      {
+        "method": "isActionReady",
+        "line": 275
+      },
+      {
+        "method": "getDirection",
+        "line": 276
+      },
+      {
+        "method": "canTurn",
+        "line": 276
+      },
+      {
+        "method": "turn",
+        "line": 276
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 277
+      },
+      {
+        "method": "removeDirt",
+        "line": 278
+      },
+      {
+        "method": "isActionReady",
+        "line": 303
+      },
+      {
+        "method": "getDirection",
+        "line": 311
+      },
+      {
+        "method": "canTurn",
+        "line": 311
+      },
+      {
+        "method": "turn",
+        "line": 311
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 312
+      },
+      {
+        "method": "removeDirt",
+        "line": 313
+      },
+      {
+        "method": "getDirection",
+        "line": 329
+      },
+      {
+        "method": "canTurn",
+        "line": 329
+      },
+      {
+        "method": "turn",
+        "line": 329
+      },
+      {
+        "method": "canRemoveDirt",
+        "line": 330
+      },
+      {
+        "method": "removeDirt",
+        "line": 331
+      },
+      {
+        "method": "isMovementReady",
+        "line": 345
+      },
+      {
+        "method": "canMove",
+        "line": 356
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/PathOracle.java": [],
+    "benchmarks/bots/vibe26b_zdb/RobotPlayer.java": [
+      {
+        "method": "getAllLocationsWithinRadiusSquared",
+        "line": 19
+      },
+      {
+        "method": "getLocation",
+        "line": 19
+      },
+      {
+        "method": "getRoundNum",
+        "line": 24
+      },
+      {
+        "method": "getHealth",
+        "line": 30
+      },
+      {
+        "method": "getHealth",
+        "line": 33
+      },
+      {
+        "method": "getRoundNum",
+        "line": 41
+      },
+      {
+        "method": "getRoundNum",
+        "line": 42
+      },
+      {
+        "method": "getType",
+        "line": 49
+      },
+      {
+        "method": "getRoundNum",
+        "line": 51
+      },
+      {
+        "method": "getRoundNum",
+        "line": 60
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/Seal.java": [],
+    "benchmarks/bots/vibe26b_zdb/Sym.java": [],
+    "benchmarks/bots/vibe26b_zdb/Trail.java": [
+      {
+        "method": "canMove",
+        "line": 56
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/TrapRisk.java": [
+      {
+        "method": "getLocation",
+        "line": 34
+      },
+      {
+        "method": "readSqueaks",
+        "line": 44
+      },
+      {
+        "method": "readSqueaks",
+        "line": 45
+      }
+    ],
+    "benchmarks/bots/vibe26b_zdb/TrapRows.java": []
+  },
+  "teacher_method_names": [
+    "attack",
+    "becomeRatKing",
+    "buildRat",
+    "canAttack",
+    "canBecomeRatKing",
+    "canBuildRat",
+    "canCarryRat",
+    "canDropRat",
+    "canMove",
+    "canPickUpCheese",
+    "canPlaceCatTrap",
+    "canPlaceDirt",
+    "canPlaceRatTrap",
+    "canRemoveDirt",
+    "canSenseLocation",
+    "canThrowRat",
+    "canTransferCheese",
+    "canTurn",
+    "carryRat",
+    "dropRat",
+    "getAllCheese",
+    "getAllLocationsWithinRadiusSquared",
+    "getCarrying",
+    "getCurrentRatCost",
+    "getDirection",
+    "getDirt",
+    "getGlobalCheese",
+    "getHealth",
+    "getID",
+    "getLocation",
+    "getNumberCatTraps",
+    "getNumberRatTraps",
+    "getRawCheese",
+    "getRoundNum",
+    "getType",
+    "isActionReady",
+    "isCooperation",
+    "isMovementReady",
+    "isTurningReady",
+    "move",
+    "onTheMap",
+    "pickUpCheese",
+    "placeCatTrap",
+    "placeDirt",
+    "placeRatTrap",
+    "readSharedArray",
+    "readSqueaks",
+    "removeDirt",
+    "senseMapInfo",
+    "senseNearbyMapInfos",
+    "senseNearbyRobots",
+    "sensePassability",
+    "senseRobotAtLocation",
+    "setIndicatorString",
+    "squeak",
+    "throwRat",
+    "transferCheese",
+    "turn",
+    "writeSharedArray"
+  ],
+  "macro_method_names": [
+    "attack",
+    "becomeRatKing",
+    "buildRat",
+    "canAttack",
+    "canBecomeRatKing",
+    "canBuildRat",
+    "canCarryRat",
+    "canDropRat",
+    "canMove",
+    "canPickUpCheese",
+    "canPlaceCatTrap",
+    "canPlaceRatTrap",
+    "canRemoveCatTrap",
+    "canRemoveDirt",
+    "canRemoveRatTrap",
+    "canThrowRat",
+    "canTransferCheese",
+    "canTurn",
+    "carryRat",
+    "dropRat",
+    "getAllCheese",
+    "getDirection",
+    "getGlobalCheese",
+    "getLocation",
+    "getRawCheese",
+    "getType",
+    "isActionReady",
+    "isMovementReady",
+    "isTurningReady",
+    "move",
+    "pickUpCheese",
+    "placeCatTrap",
+    "placeRatTrap",
+    "removeCatTrap",
+    "removeDirt",
+    "removeRatTrap",
+    "throwRat",
+    "transferCheese",
+    "turn"
+  ],
+  "communication_methods": {
+    "readSharedArray": {
+      "teacher_call_sites": 2,
+      "macro_call_sites": 0
+    },
+    "writeSharedArray": {
+      "teacher_call_sites": 1,
+      "macro_call_sites": 0
+    },
+    "readSqueaks": {
+      "teacher_call_sites": 7,
+      "macro_call_sites": 0
+    },
+    "squeak": {
+      "teacher_call_sites": 12,
+      "macro_call_sites": 0
+    }
+  },
+  "teacher_methods_absent_from_macro": [
+    "canPlaceDirt",
+    "canSenseLocation",
+    "getAllLocationsWithinRadiusSquared",
+    "getCarrying",
+    "getCurrentRatCost",
+    "getDirt",
+    "getHealth",
+    "getID",
+    "getNumberCatTraps",
+    "getNumberRatTraps",
+    "getRoundNum",
+    "isCooperation",
+    "onTheMap",
+    "placeDirt",
+    "readSharedArray",
+    "readSqueaks",
+    "senseMapInfo",
+    "senseNearbyMapInfos",
+    "senseNearbyRobots",
+    "sensePassability",
+    "senseRobotAtLocation",
+    "setIndicatorString",
+    "squeak",
+    "writeSharedArray"
+  ],
+  "limits": [
+    "Lexical receiver-name scan; aliases/reflection/call reachability not resolved.",
+    "Call-site counts are not action frequencies or measured behavioral coverage.",
+    "Missing communication operations establish that macro_v2 cannot express arbitrary complete teacher controller traces; actual unmatched-turn fraction is unmeasured.",
+    "Teacher private memory must not be exposed as student inputs."
+  ]
+}
