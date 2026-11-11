@@ -1,5 +1,7 @@
 # V11 expanded terminal-head learning experiment
 
+**V11 benchmarks complete: terminal 70W / 186L / 0D; fresh cp2 81W / 175L / 0D; PUCT 71W / 185L / 0D, all 256/256 valid. Terminal development rule failed. No promotion.** [Complete audit](reviews/completed-benchmark-audit-20261111.json). Earlier timestamped snapshots below are historical.
+
 **Current stage: candidate panel complete; PUCT deadline recovery reviewed.** Terminal candidate **70W / 186L / 0D, 256/256**, fresh cp2 **81W / 175L / 0D, 256/256**. The candidate fails the unchanged improvement rule against fresh and original cp2. [Fresh-control comparison](reviews/terminal-vs-fresh-cp2-20261111.json) · [Original-baseline comparison](reviews/terminal-vs-original-cp2-20261111.json). No confirmation or promotion. PUCT has 234 valid games; its remaining 22 cells include two unscored SIGTERM interruptions at the three-hour invocation deadline. [746-job boundary audit](reviews/benchmark-deadline-audit-20261111.json) · [Recovery review](reviews/benchmark-deadline-recovery-20261111.json). Original errors and all successful outcomes remain unchanged. Separate recovery runs only these 22 cells, permits one explicit attempt 2 for the two pinned interruptions, and stops on any new failure. Current recovery status will be `runs/expanded-terminal-v11/benchmark-deadline/status.json`.
 
 Pre-recovery archive SHA `aad039eb32ee7bd466a567deb8e70362c7b16daf3768dbadfab28a14bdd551a1` verified 12,347 files through isolated restore. The frozen identity, checkpoints, game schedule and limits are unchanged.

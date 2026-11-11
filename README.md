@@ -23,7 +23,7 @@ All bots share one graph, ordered by prior Elo in the legend. The bold black ser
 | [V8](progress/terminal-target-head-v8/INDEX.md) | Trained both heads; no verified improvement | Terminal candidate **81W / 175L / 0D**, 256/256 valid; PUCT control 79W / 177L; fresh cp2 82W / 174L |
 | [V9r2](progress/target-recheck-v9r2/README.md) | 184/184 action-continuation diagnostic games; target-reliability rule passed; no training | **Not run — no new candidate** |
 | [V10](progress/expanded-corpus-v10r2/README.md) | 64/64 self-play sources; required combat-position coverage failed at 59/64; training withheld | **Not run — no new candidate** |
-| [V11](progress/expanded-terminal-v11/README.md) | All 2,974 targets audited; both 4,096-update fits complete and audited; all 156 shared validation continuations complete (+0.78 pp first-action diagnostic); terminal benchmark complete; control completion under reviewed recovery | **Terminal complete: 70W / 186L / 0D; fresh cp2 81W / 175L / 0D. Improvement failed. PUCT 234/256 valid; 22 games remain.** |
+| [V11](progress/expanded-terminal-v11/README.md) | Complete, independently audited benchmark panels | V11 benchmarks complete: terminal 70W / 186L / 0D; fresh cp2 81W / 175L / 0D; PUCT 71W / 185L / 0D, all 256/256 valid. Terminal development rule failed. No promotion. |
 
 [Active benchmark and improvement rules](docs/development-benchmarks-v4.md) · [Benchmark configuration](configs/benchmarks-development-v4.json) · [Latest completed game research](docs/terminal-v6-results.md)
 

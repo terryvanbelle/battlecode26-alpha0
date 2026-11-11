@@ -652,15 +652,15 @@
     },
     {
       "overall": {
-        "wins": 70,
-        "losses": 164,
+        "wins": 71,
+        "losses": 185,
         "draws": 0,
-        "valid": 234,
+        "valid": 256,
         "expected": 256,
-        "errors": 2,
+        "errors": 0,
         "excluded_crashes": 0,
-        "complete": false,
-        "win_rate": null
+        "complete": true,
+        "win_rate": 0.27734375
       },
       "checkpoint_sha256": "2462f2610264ffa87d8c7d05b1a94fdd52b8a94ab59741d5ca1027872a932922",
       "evaluation_config_sha256": "ef6f893eb9563b88a33b6288c95b2fdeecd537db9eb16ed28040d52b0f97235c",
@@ -744,19 +744,19 @@
           "win_rate": 0.125
         },
         "IvanGeffner_basic51": {
-          "wins": 0,
-          "losses": 10,
+          "wins": 1,
+          "losses": 31,
           "draws": 0,
-          "valid": 10,
+          "valid": 32,
           "expected": 32,
-          "errors": 2,
-          "complete": false,
+          "errors": 0,
+          "complete": true,
           "excluded_crashes": 0,
-          "win_rate": null
+          "win_rate": 0.03125
         }
       },
       "source": "progress/development-v4/v11-puct_head/evaluations.jsonl",
-      "source_sha256": "47e24f5d97c4fc8c62adeba1bd4caad9c9e4445636df0f19e509a0857e7d8b43"
+      "source_sha256": "5ece73af33c1e9a94ddcc78423aa0618b2c95b60327167e9f7eacb51fa36150b"
     }
   ]
 }

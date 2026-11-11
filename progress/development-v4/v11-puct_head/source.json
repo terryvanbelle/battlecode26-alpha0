@@ -942,8 +942,96 @@
       "sha256": "b03fc4dca49abe2052377cfa04832488cbda4faf1c2bdfa8b5b808714be5b388"
     },
     {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/f92f1066c579567c3568ff99dff53a89202d604d92866f628c1967ea97f3c81a/attempt-002.json",
+      "sha256": "096c4322591b0a12209864504e14426984b29854d1a9da7f5959c492fa6f5891"
+    },
+    {
       "path": "progress/expanded-terminal-v11/benchmarks/cells/56bb2b3e3d7ca6d757ba2ce8478e40799d4410cda4d723889fcc4ab4c5efb912/attempt-001.json",
       "sha256": "4a85e6678a5014b5d5dbaec81d23efbe1b654ddba8bf1030e9019959396227f2"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/56bb2b3e3d7ca6d757ba2ce8478e40799d4410cda4d723889fcc4ab4c5efb912/attempt-002.json",
+      "sha256": "b37c0984398c70f1129b57f8added4869bb8f09f065c5ab60678574117ba6e92"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/cbcaafa18d05afc3740c26a6f9b03bb0b90c48615d88bbb3623f0c7bf2adbeb3/attempt-001.json",
+      "sha256": "968640856a5b1cd2fbd08c91535555d0a9f5db288030efa2836b03289187c907"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/af3dd24a1a9632af6049ac03278b7813f2daf8634f321e8d3459828244175c3d/attempt-001.json",
+      "sha256": "ac047c14b3b61bdafda9e327996995a3288607d84f3fa855085fc424f39fff0b"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/f8c861b700ffbeb41b4698999c1de84570540d2db54b7730520075e76a696009/attempt-001.json",
+      "sha256": "1a0c932874d4e078121945aef1ed43d84493c51d23c66fa3f1872f5200b85cdd"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/9a4115ac2b330461c61ec8d9b3055eb4588d39ad40bcdc4ddc8e806c58d71522/attempt-001.json",
+      "sha256": "426618524dd4ce33e3acdb5069d49ca22a5b5f751f6e72fd43e583917dc3cb47"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/d122f7ad12b1c6735f0c7c26dcd6de90ecc42cf3c684cb182a5aec5b8b14ff80/attempt-001.json",
+      "sha256": "92c581b715050d332b9e3157d81bfa707588cf9745739ae5328604d7da68577f"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/f474d3d1788940f42caa3637b7141bc88aeba5d909e143dcb4619dc7151093f5/attempt-001.json",
+      "sha256": "107114019d305f07f1d87651ff3753113b70ecfae778fbf45842b9cbc2b55707"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/4fc87475bb5a3ea1c1d2541d8fa9752c36962f9f09555ac2c7d56c362b701e9f/attempt-001.json",
+      "sha256": "5ac76c846be8f4fa50c018812ab7e5cbd2fc8b88c2528f852dfe28e37b4ffcdb"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/edb11abd04a754b3918b667e888ddabc48e28162b5249e09036d2823c6c9bbee/attempt-001.json",
+      "sha256": "2b6b8dab3e0b7471441356aef0c19c95cd433a7f7654cd6748fbcb380897dd39"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/ed201d377668622a9ede1560afd6bab259c73baf1234abd1ee6d45bb2f398da6/attempt-001.json",
+      "sha256": "b88b6111159a228ad175b569ccd1a5536eaf11b8e1140cf833a1165342ce06ee"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/0dc4297977168e2d8e7e2abd2ff5f950a307bd6e2c5f00b09956e2dadb220512/attempt-001.json",
+      "sha256": "86bca81d5dd763cf1c59b58673df0fef9d96ded18675f146c01af9a77742d1ec"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/d0470f1f39a7028ed7cd8aa06343a8f3351949ca6f670523d1d436a53d416bc5/attempt-001.json",
+      "sha256": "9e55d377d0cb6ee60d1ba49878c052a753019b16e1d7c9220063c35c0dc361af"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/70028a9f35ad9607ecc14f16e88fe03bfb2ff65761c5f0210d57faa04a15a9dc/attempt-001.json",
+      "sha256": "043e8ed1b58442958635ae9ebecf35271eecc19a9e5bd8479c1e99f881739f10"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/f457e179db47d3312248f033dfcfd5ee2ef2e540e5a6cb4ba70f28f85072177f/attempt-001.json",
+      "sha256": "afa56bd0c2b5e9dd2a158ca23dee765c52a12f0fdd4e0f127c71371099301fbf"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/b2323ec0f874dbac065201640160ed70f8ea5ca0fe55250720b98cda2db53f29/attempt-001.json",
+      "sha256": "a963ea9c7529bda4a20f664b76ff7fbee67b67aaff164e58695a5dd2f69a6919"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/47878a37cf4ba4f831946eca96d6d995a7fe234c0ff4ddaf5150ff70a89c9fa2/attempt-001.json",
+      "sha256": "933c8c6893dc3bfd3678f9932313efbc8c909240869f3621e74a26f20b5b279c"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/6e82a01c3985200508c2f4af1601eb6bb1679dab572092696bd9d4c353bfe43f/attempt-001.json",
+      "sha256": "ba2653ce3a10844254bd1c76d132c9bbaa71aa37ab1bec25e0d222389dcf791b"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/57addf25e8f84a167c6ac3affb8f2873616c91ffbd9357fd0f7a277023af24b2/attempt-001.json",
+      "sha256": "f0b41984824d9145469323ca7f06015167fbdbdf0a127841e4fed5f92a4ba30c"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/f5ee9596912977575fc9deb9f8c45c09d29b48b4e3c78d2a14ca2b6964e23f48/attempt-001.json",
+      "sha256": "fb979c8eb753087683b7337c28461353c2aed2f096e8c0a5ebbf128ae1c6a1e8"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/41a71bde9e8466a2e1bba996cd93b91b5038a80bb1b94e0f6b0d4e422c3b74c4/attempt-001.json",
+      "sha256": "715baf5b749031abdaaea537baf62b9b000c33476d30a2caa82dbdc07b4969e6"
+    },
+    {
+      "path": "progress/expanded-terminal-v11/benchmarks/cells/c3373d97642a6732be80389224a3a307e2bb523d2300190ff24c644590f20d90/attempt-001.json",
+      "sha256": "03d22de9add348bd36d039b97b19f2b664238c41338f05023df5df6ea8611a98"
     }
   ],
   "automatic_promotion": false,

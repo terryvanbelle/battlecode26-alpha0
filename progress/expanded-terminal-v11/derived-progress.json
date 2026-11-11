@@ -1,5 +1,133 @@
 {
-  "benchmark": null,
+  "benchmark": {
+    "comparisons": {
+      "puct_head": {
+        "versus_fresh_cp2": {
+          "all_map_victory": false,
+          "automatic_promotion": false,
+          "baseline_wins": 81,
+          "candidate_wins": 71,
+          "complete": true,
+          "games_per_checkpoint": 256,
+          "mean_score_gain": -0.0390625,
+          "paired_map_bootstrap_95_interval": [
+            -0.078125,
+            -0.00390625
+          ],
+          "passes_development_improvement_rule": false,
+          "per_opponent_score_gain": {
+            "CS50Crab_rapierV1": -0.03125,
+            "HugoIngelsson_Xzibit": -0.09375,
+            "HugoIngelsson_YokoOno": -0.03125,
+            "IvanGeffner_basic51": 0.0,
+            "abcdezyxwv_bestsofar": -0.03125,
+            "spsquared_TSPAARK_QUALS": -0.03125,
+            "uravt_Version41": -0.09375,
+            "vibe26b_zdb": 0.0
+          }
+        },
+        "versus_original_cp2": {
+          "all_map_victory": false,
+          "automatic_promotion": false,
+          "baseline_wins": 83,
+          "candidate_wins": 71,
+          "complete": true,
+          "games_per_checkpoint": 256,
+          "mean_score_gain": -0.046875,
+          "paired_map_bootstrap_95_interval": [
+            -0.08203125,
+            -0.015625
+          ],
+          "passes_development_improvement_rule": false,
+          "per_opponent_score_gain": {
+            "CS50Crab_rapierV1": -0.09375,
+            "HugoIngelsson_Xzibit": -0.09375,
+            "HugoIngelsson_YokoOno": -0.03125,
+            "IvanGeffner_basic51": 0.0,
+            "abcdezyxwv_bestsofar": -0.03125,
+            "spsquared_TSPAARK_QUALS": -0.03125,
+            "uravt_Version41": -0.09375,
+            "vibe26b_zdb": 0.0
+          }
+        }
+      },
+      "terminal_head": {
+        "versus_fresh_cp2": {
+          "all_map_victory": false,
+          "automatic_promotion": false,
+          "baseline_wins": 81,
+          "candidate_wins": 70,
+          "complete": true,
+          "games_per_checkpoint": 256,
+          "mean_score_gain": -0.04296875,
+          "paired_map_bootstrap_95_interval": [
+            -0.10546875,
+            0.01171875
+          ],
+          "passes_development_improvement_rule": false,
+          "per_opponent_score_gain": {
+            "CS50Crab_rapierV1": 0.0,
+            "HugoIngelsson_Xzibit": -0.09375,
+            "HugoIngelsson_YokoOno": -0.09375,
+            "IvanGeffner_basic51": 0.0,
+            "abcdezyxwv_bestsofar": -0.03125,
+            "spsquared_TSPAARK_QUALS": -0.03125,
+            "uravt_Version41": -0.09375,
+            "vibe26b_zdb": 0.0
+          }
+        },
+        "versus_original_cp2": {
+          "all_map_victory": false,
+          "automatic_promotion": false,
+          "baseline_wins": 83,
+          "candidate_wins": 70,
+          "complete": true,
+          "games_per_checkpoint": 256,
+          "mean_score_gain": -0.05078125,
+          "paired_map_bootstrap_95_interval": [
+            -0.109375,
+            0.00390625
+          ],
+          "passes_development_improvement_rule": false,
+          "per_opponent_score_gain": {
+            "CS50Crab_rapierV1": -0.0625,
+            "HugoIngelsson_Xzibit": -0.09375,
+            "HugoIngelsson_YokoOno": -0.09375,
+            "IvanGeffner_basic51": 0.0,
+            "abcdezyxwv_bestsofar": -0.03125,
+            "spsquared_TSPAARK_QUALS": -0.03125,
+            "uravt_Version41": -0.09375,
+            "vibe26b_zdb": 0.0
+          }
+        }
+      }
+    },
+    "complete": true,
+    "completed": 768,
+    "expected": 768,
+    "full_report_archive_member": "progress/expanded-terminal-v11/benchmark-summary.json",
+    "full_report_recovery_manifest": "artifacts/expanded-terminal-v11/recovery-20261111T232102.749320_0000.tar.gz.json",
+    "panels": {
+      "cp2": {
+        "draws": 0,
+        "losses": 175,
+        "valid": 256,
+        "wins": 81
+      },
+      "puct_head": {
+        "draws": 0,
+        "losses": 185,
+        "valid": 256,
+        "wins": 71
+      },
+      "terminal_head": {
+        "draws": 0,
+        "losses": 186,
+        "valid": 256,
+        "wins": 70
+      }
+    }
+  },
   "counts": {
     "selection": {
       "complete": 2974,
@@ -340,5 +468,5 @@
     "root_count": 32
   },
   "playing_strength_claim": false,
-  "updated_at": "2026-11-11T19:51:38.983661+00:00"
+  "updated_at": "2026-11-11T23:20:57.139098+00:00"
 }
