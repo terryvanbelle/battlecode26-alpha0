@@ -1,5 +1,5 @@
 {
-  "archive_sha256": "7cf6291ae86de200c7f11e4a1ad65481f2339a237dde2fca5b63a92a188cec53",
+  "archive_sha256": "0f44ee810729fae837d1f239fc6423611eaff36a12da004b7693c049a6aa308e",
   "dependencies": [
     {
       "archive": "artifacts/general-roots-v11/recovery-20261111T063948.518350_0000.tar.gz",
@@ -35,13 +35,13 @@
       "verification": "artifacts/terminal-target-head-v8/recovery-20261111T012458886997Z-1bfb038a6daa.tar.gz.verification.json"
     }
   ],
-  "manifest": "artifacts/expanded-terminal-v11/recovery-20261111T112819.581969_0000.tar.gz.json",
+  "manifest": "artifacts/expanded-terminal-v11/recovery-20261111T145047.424772_0000.tar.gz.json",
   "partial": true,
   "parts": [
     {
-      "bytes": 5920292,
-      "path": "artifacts/expanded-terminal-v11/recovery-20261111T112819.581969_0000.tar.gz",
-      "sha256": "7cf6291ae86de200c7f11e4a1ad65481f2339a237dde2fca5b63a92a188cec53"
+      "bytes": 9783775,
+      "path": "artifacts/expanded-terminal-v11/recovery-20261111T145047.424772_0000.tar.gz",
+      "sha256": "0f44ee810729fae837d1f239fc6423611eaff36a12da004b7693c049a6aa308e"
     }
   ]
 }

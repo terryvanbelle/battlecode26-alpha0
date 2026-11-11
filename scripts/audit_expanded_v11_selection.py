@@ -64,12 +64,10 @@ def audit(base=ROOT):
     require(len(schedule)==2974,'changed selection schedule')
     files=sorted((progress/'cells').glob('selection-*/attempt-[0-9][0-9][0-9].json'))
     proofs=[]; seen=set(); counts=Counter(); reviewed_interruptions=[]
-    review_path=progress/'reviews/deadline-recovery-20261111.json'
-    review=read(review_path) if review_path.exists() else None
-    allowed=set(review['interrupted_cells']) if review else set()
-    if review:
+    reviews=[read(p) for p in (progress/'reviews').glob('*-recovery-20261111.json')]
+    allowed={path for review in reviews for path in review['interrupted_cells']}
+    for review in reviews:
         require(review['identity_sha256']==digest(identity), 'foreign recovery review')
-        # Verify original cells/logs/descriptors; status is allowed to advance later.
         for name, expected in review['preserved_files'].items():
             if name.endswith('/status.json'):continue
             require(sha(base/name)==expected, 'changed pre-recovery evidence')
@@ -79,7 +77,7 @@ def audit(base=ROOT):
         root,action,seed=schedule[name]; row=read(path)
         original=str(path.with_name('attempt-001.json').relative_to(base))
         if str(path.relative_to(base)) in allowed:
-            require(row['status']=='incomplete' and row['score'] is None and row['terminal'] is False and row['error']=='Interrupted: STOP or deadline', 'invalid reviewed interruption')
+            require(row['status']=='incomplete' and row['score'] is None and row['terminal'] is False and row['error'] in ('Interrupted: STOP or deadline','Interrupted: SIGTERM'), 'invalid reviewed interruption')
             reviewed_interruptions.append({'path':str(path.relative_to(base)),'sha256':sha(path)})
             continue
         verify_cell(row,root,identity,action,seed,attempt=2 if original in allowed else 1)

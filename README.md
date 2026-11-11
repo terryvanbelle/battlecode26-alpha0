@@ -16,6 +16,15 @@ All bots share one graph, ordered by prior Elo in the legend. The bold black ser
 
 **Revised baseline complete:** **83 wins / 173 losses / 0 draws (32.4%)**, all 256 games valid with zero errors. The graphs above show the current v4 panel, including qualified replacement YokoOno. [Verified baseline](progress/development-v4/baseline/README.md). The V8 terminal candidate completed **81 wins / 175 losses / 0 draws (31.6%)** across256 valid games; it failed the improvement rule against both original and fresh cp2 controls. The PUCT control also completed at **79 wins / 177 losses (30.9%)**. V8 is complete with no promoted model. The next [target-reliability diagnostic](progress/target-recheck-v9r2/README.md) completed its 184-game mechanism test and passed its target-reliability rule, without training or benchmark improvement. The next [V10 source phase](progress/expanded-corpus-v10r2/README.md) completed all 64 self-play sources, but its strict combat-root rule yielded only 59/64 required roots; no training started. [Coverage audit and graph](progress/expanded-corpus-v10r2/reviews/independent-source-audit.json) · [Completed eligibility replay](progress/v10-eligibility-probe/RESULTS.md) · [Completed V11 input extraction](progress/general-roots-v11/README.md) · [Completed validation discovery](progress/validation-v11/README.md) · [Active V11 learning experiment](progress/expanded-terminal-v11/README.md). [Candidate review](docs/v8-candidate-review.md). Independent first-action validation also showed no gain. [Follow V8 progress](progress/terminal-target-head-v8/INDEX.md). No V8 playing-strength improvement is established yet.
 
+**Why some versions have no benchmark score:** V9 and V10 did not produce trained candidate checkpoints. Their research outcomes are retained below; “not run” is not a zero-win result.
+
+| Version | Work completed / outcome | Full development benchmark |
+| --- | --- | --- |
+| [V8](progress/terminal-target-head-v8/INDEX.md) | Trained both heads; no verified improvement | Terminal candidate **81W / 175L / 0D**, 256/256 valid; PUCT control 79W / 177L; fresh cp2 82W / 174L |
+| [V9r2](progress/target-recheck-v9r2/README.md) | 184/184 action-continuation diagnostic games; target-reliability rule passed; no training | **Not run — no new candidate** |
+| [V10](progress/expanded-corpus-v10r2/README.md) | 64/64 self-play sources; required combat-position coverage failed at 59/64; training withheld | **Not run — no new candidate** |
+| [V11](progress/expanded-terminal-v11/README.md) | Complete input and validation plans; collecting the full target set before training | **Pending — no benchmark result yet** |
+
 [Active benchmark and improvement rules](docs/development-benchmarks-v4.md) · [Benchmark configuration](configs/benchmarks-development-v4.json) · [Latest completed game research](docs/terminal-v6-results.md)
 
 The goal is verified improvement, not winning against every bot or on every map.
