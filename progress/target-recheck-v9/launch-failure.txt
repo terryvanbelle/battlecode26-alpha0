@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9.py", line 158, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9.py", line 114, in main
+    if a.worker:return worker(a.worker,a.deadline,a.parent)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9.py", line 47, in worker
+    state=w.restore();actions=[]
+          ^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/alpha0/terminal_v8_collect.py", line 412, in restore
+    task = _task(root, "root_reconstruction", config["source_timeout_seconds"], self.deadline, root_id=root["root_id"])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/alpha0/terminal_v8_collect.py", line 234, in _task
+    task_path = resolve(job["worker_task_path"])
+                        ~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'worker_task_path'

@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 155, in main
+    write_summary(summary())
+                  ^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 101, in summary
+    _,ok=valid_records(paths(pair['root_id'],a,seed))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 23, in valid_records
+    for r in ok:verify_terminal(r,r['root_player'])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/alpha0/terminal_v8_collect.py", line 188, in verify_terminal
+    raise ValueError("terminal action transcript count/type mismatch")
+ValueError: terminal action transcript count/type mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 159, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 158, in main
+    write_summary(summary());status('review_required',reason=f'{type(e).__name__}: {e}');raise
+                  ^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 101, in summary
+    _,ok=valid_records(paths(pair['root_id'],a,seed))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/scripts/run_target_recheck_v9r1.py", line 23, in valid_records
+    for r in ok:verify_terminal(r,r['root_player'])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/battlecode26-alpha0/alpha0/terminal_v8_collect.py", line 188, in verify_terminal
+    raise ValueError("terminal action transcript count/type mismatch")
+ValueError: terminal action transcript count/type mismatch
