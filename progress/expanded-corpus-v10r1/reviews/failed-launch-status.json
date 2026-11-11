@@ -1,0 +1,7 @@
+{
+  "identity": "044e0f9d859cd59c4cd084909a1cd6798bac9fdd1291d8f9b0ce681bfd6ffc44",
+  "phase": "review_required",
+  "pid": 179333,
+  "reason": "RuntimeError: training-m4-j7 worker failed; review required",
+  "updated_at": "2026-11-11T04:15:51.103882+00:00"
+}

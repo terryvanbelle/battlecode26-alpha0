@@ -1,0 +1,650 @@
+{
+  "benchmark_games": 0,
+  "complete": false,
+  "completed_sources": 38,
+  "expected_sources": 64,
+  "inherited_sources": 38,
+  "sgd_updates": 0,
+  "sources": [
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j1",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j1.json",
+      "source_sha256": "e802157634ce5e71e395b4747d2e9c18e917bf335497785f35e87201de9a374c"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j2",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j2.json",
+      "source_sha256": "3b6ff8a647c5b3030f808c6cc95cc4ef0628b56d468a644eb2483f82dbf070cd"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j3",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j3.json",
+      "source_sha256": "c8989620e80b26fb226b8b8f2bff2d0bfdb182174add1af0cb8b411fd8cf1288"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j4",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j4.json",
+      "source_sha256": "76e57aefcbc82fc0773743a6e8f8e7524ca10c82087a2c90892ae6e709f02b7e"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j5",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j5.json",
+      "source_sha256": "dd099bbc8c26fa8379993223d8564c895bdcdc10379f0e996acaaca532f9e5d0"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j6",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j6.json",
+      "source_sha256": "5f8f092832b42789fd8bdd8f67dbb8ac3e599d956d2c867fef8c83c0dc165035"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j7",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j7.json",
+      "source_sha256": "5257c03e010112cddb196bbd97e36a322e49dbc8ca40269dd55ba2cdd7ffaa2c"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "tiny",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m0-j8",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m0-j8.json",
+      "source_sha256": "81d8afc5e7f75dbdab51abe96738d3435210804e7b59389cb9613e111cf85770"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j1",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j1.json",
+      "source_sha256": "da8ea6f66ad7fb401f55805a80f86ccf3599c6061c10a7e65da6f473ac24df4e"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j2",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j2.json",
+      "source_sha256": "43d15e6f1b660e2fed2624046bcce32a69149f950cd61e39cfc6137e0eaee862"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j3",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j3.json",
+      "source_sha256": "0026e1df5fde61f3f1c04e5e82c5a5dffe01defeea732a9b3e7b2f1c3d4c5c91"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j4",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j4.json",
+      "source_sha256": "f19404691a07f516353760e7159a0dff426ec00c65d8a11e29c936c5d7dcba07"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j5",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j5.json",
+      "source_sha256": "171f1b6f66430329ceaf304a452b1d60e679c58b02facfaf68e10dfde12fe067"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j6",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j6.json",
+      "source_sha256": "50e9c1b193ad6bdc73692294a5c0fd16f564a3ec090f159659dfdbc3a299966f"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j7",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j7.json",
+      "source_sha256": "17c61fe66494fba8e87fed045019d7087051a9498a317cedbedc851705c6b059"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultSmall",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m1-j8",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m1-j8.json",
+      "source_sha256": "7f67b230e4d275d9ed512d79de9144cf96065ddd436eb9602240d8247cf97354"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j1",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j1.json",
+      "source_sha256": "ca8614985df178c98e185e798f892687cf30f070d180a8bda520c57b961b3e50"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j2",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j2.json",
+      "source_sha256": "884e8fced382480c103fe177d523d67e2fcd3a49e162a285cb163fb92b351509"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j3",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j3.json",
+      "source_sha256": "4d586a7cb24ca89c2e679add5af2678dc65af82d4a620be6cae925b2e862e286"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j4",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j4.json",
+      "source_sha256": "debe4112b2add006284357e6d2575548e7d741f3bb6ffc85de104bd3c266c8b8"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j5",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j5.json",
+      "source_sha256": "3b3ccded9e92e90ad232bff648cda69a9bcc9b08928de6ee4620dde71f41eb5d"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j6",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j6.json",
+      "source_sha256": "59617c695a7ad7c84f774e8a02e70bd9870e3c8a540e3c08946c7fd119d9b7fe"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j7",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j7.json",
+      "source_sha256": "6f01d89ae790e99741368a49fc3e6cf50efc50e79e0c95a49f4ea5e83deb4c7f"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "closeup",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m2-j8",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m2-j8.json",
+      "source_sha256": "c3d16fd7e36e5bcc45626e6a3ca3dfa73d8e510725638862258d6c3135a3f7a7"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j1",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j1.json",
+      "source_sha256": "fa9915afcbfabc0c14cb78c96c9a81664ce300cd2fe7278b57a9e1bcb9b0d6c5"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j2",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j2.json",
+      "source_sha256": "23cf85e87d34d15b63128315463d3e2da2f5fa0da0a8dfc81a93ed1456280c1f"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j3",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j3.json",
+      "source_sha256": "e86bfe988fe78c7bec4522f71cde83f56eda9a161dc6ae94c3ff5ef43d965532"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j4",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j4.json",
+      "source_sha256": "0e62827ab37a158ac17aa36fe98e198f6adbfdb9c9cc8310312412ac2009c329"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j5",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j5.json",
+      "source_sha256": "ba6b58bc84b6ff2a31a37639cd0974b24a024a5b0eaf5aa80535606714bec021"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j6",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j6.json",
+      "source_sha256": "9dc003c73c26b5c5965c65d24c91066d04eb29020c6dd992c52eab19dba28aef"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j7",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j7.json",
+      "source_sha256": "1ea1cefec14c786f24f306cf07eeb9365ab0caffae0ebb831bc01c114eb1ed0b"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "knifefight",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m3-j8",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m3-j8.json",
+      "source_sha256": "5096cb89724cc9818f536d66377069e99ea229edbd7b222f287a8be8a1576215"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j1",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j1.json",
+      "source_sha256": "2dc8bdac092b434120ea441efb115a09281e934e8271f3fe98917ae36807396f"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j2",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j2.json",
+      "source_sha256": "aeed9a5cadf0fe42829d802b29d207b000070c4ffd4b28ed7ee4ebe0bfd3561f"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j3",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j3.json",
+      "source_sha256": "4bba1e2f93e0e62c5f7d9f958d934f97c5121449532c1d96028ae6da6ee34aab"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j4",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j4.json",
+      "source_sha256": "61bbf272299e8f76fe703be714b8c67488d8e1f476883cd9d2d55203faa811b6"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j5",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j5.json",
+      "source_sha256": "a85ee2ba9ce111e6b378542a04abad52030c24683f18831e16ba24d4bb828a02"
+    },
+    {
+      "anchor_counts": {
+        "0": 16,
+        "1": 16
+      },
+      "map": "DefaultMedium",
+      "root_roles": [
+        "BABY_RAT:0",
+        "BABY_RAT:1",
+        "RAT_KING:0",
+        "RAT_KING:1"
+      ],
+      "source_experiment_identity": "524d3a73c68d1076dbde755b4f7fb3930d6c8f9b3f20f44ad642ec40cf5c9f5d",
+      "source_id": "training-m4-j6",
+      "source_json": "runs/expanded-corpus-v10/sources/training-m4-j6.json",
+      "source_sha256": "570195ebf7481751a2e026d704e6aa8aad3c930d09a3d69da4cdd1dcc2ce3f69"
+    }
+  ],
+  "target_continuations": 0
+}
