@@ -1,0 +1,9 @@
+Stack trace: 
+java.lang.IllegalStateException: synthetic lifecycle exception
+	at imitationexceptionfixture.RobotPlayer.run(RobotPlayer.java:4)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayerJava(SandboxedRobotPlayer.java:306)
+	at battlecode.instrumenter.SandboxedRobotPlayer.loadAndRunPlayer(SandboxedRobotPlayer.java:268)
+	at battlecode.instrumenter.SandboxedRobotPlayer.lambda$new$2(SandboxedRobotPlayer.java:202)
+	at java.base/java.lang.Thread.run(Thread.java:1583)

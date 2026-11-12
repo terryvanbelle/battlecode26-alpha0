@@ -1,0 +1,2 @@
+A's 5 at location [7, 2] froze in round 1 because it returned from its run() method!
+PASS real-world synthetic fixture recording budgets=[[5, 1, 1]]

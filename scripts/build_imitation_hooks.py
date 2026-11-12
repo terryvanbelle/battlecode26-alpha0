@@ -50,10 +50,22 @@ def transform_sandbox(source):
     source=source[:begin]+pause+source[end:]
     for old,new in {
         'initMethod.invoke(null, pauser, killer, this.seed, profiler, provider);':'initMethod.invoke(null, pauser, killer, this.seed, profiler, provider);\n                alpha0.imitation.RobotThreadRecorder.attach(robotController, getBytecodeNumMethod);',
-        "// Ensure that we know we're terminated.":"alpha0.imitation.RobotThreadRecorder.detach();\n                // Ensure that we know we're terminated.",
+        "// Ensure that we know we're terminated.":"alpha0.imitation.RobotThreadRecorder.detach(imitationReturned, imitationFailure);\n                // Ensure that we know we're terminated.",
     }.items():
         if source.count(old)!=1:raise ValueError('sandbox lifecycle contract changed')
         source=source.replace(old,new)
+    # Capture the actual sandbox exit, preserving the original catch/return behavior.
+    old='mainThread = new Thread(() -> {\n            try {'
+    if source.count(old)!=1:raise ValueError('robot main-thread scope changed')
+    source=source.replace(old,'mainThread = new Thread(() -> {\n            Throwable imitationFailure = null; boolean imitationReturned = false;\n            try {')
+    old='loadAndRunPlayer(teamName, teamLanguage, PLAYER_CLASS_NAME);'
+    if source.count(old)!=1:raise ValueError('player entry contract changed')
+    source=source.replace(old,old+'\n                imitationReturned = true;')
+    for kind in ('NonJavaBotException','IllegalAccessException','InvocationTargetException','InstrumentationException','RobotDeathException'):
+        old='} catch (final '+kind+' e) {'
+        if source.count(old)!=1:raise ValueError('sandbox exception contract changed: '+kind)
+        cause='e.getCause()' if kind=='InvocationTargetException' else 'e'
+        source=source.replace(old,old+'\n                imitationFailure = '+cause+';')
     return source
 
 def build(output):

@@ -1,0 +1,35 @@
+{
+  "scope": "real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence",
+  "bot": "imitationexceptionfixture",
+  "teacher_games": 0,
+  "complete_game": false,
+  "training_approved": false,
+  "records": 0,
+  "sandbox_exits": [
+    {
+      "budget": 4,
+      "exception": "java.lang.IllegalStateException",
+      "outcome": "exception",
+      "robot": 5,
+      "turn_open": true
+    }
+  ],
+  "observations": 0,
+  "matched_bytecode_budgets": [
+    [
+      5,
+      1,
+      4
+    ]
+  ],
+  "logs": {
+    "recording": "PASS real-world synthetic fixture recording budgets=[[5, 1, 4]]",
+    "baseline": "PASS real-world synthetic fixture baseline budgets=[[5, 1, 4]]"
+  },
+  "source_sha256": {
+    "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+    "tests/java/WorldJournalTest.java": "69294f4835d523661ba9057276332cd01f3dc5a63ab729443c14c4495fbdea11",
+    "tests/java/imitationexceptionfixture/RobotPlayer.java": "a804f00fdf08fb06b5fa5325efbf340a3fefb12f11b34bc232dd05d97740d2f4"
+  },
+  "manifest_sha256": "5eed88f5d719835d72bc473963e398b03983634984ff9a45203ffac1b0afa75b"
+}

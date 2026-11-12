@@ -645,3 +645,7 @@ Added a shared-lock-protected isolated paired harness using actual GameWorld/con
 ## Imitation pause-reason integration, November 12
 
 No research actors;15locks free;zdb STOP preserved. Added fail-closed nearest-monitor-caller classification for yield versus bytecode exhaustion. Real GameWorld pairs match original-jar budgets: voluntary yields106/107, deliberate overruns20000/20000. Python validates every journal/observation hash;11 tests pass and V11 identity unchanged. Separate raw proof under diagnostics/zdb-imitation-planning/world-overrun-v1 and world-yield-reason-v1. No terminal seal, teacher collection or training; death/resignation/exception lifecycle and complete physical/terminal proof remain pending.
+
+## Imitation actual exit lifecycle, November 12
+
+Added isolated sandbox outcome/cause callbacks and open-turn tracking. Six synthetic real-world pairs match original-jar scheduler budgets and terminal/winner/round results. Shutdown-wake open-turn bug caught by two failed regression fixtures, fixed using individual monitor shouldDie, all originals retained. Evidence: diagnostics/zdb-imitation-planning/termination-lifecycle/review.json.11tests pass,V11identity unchanged. Raw death signals deliberately not mapped blindly to physical death; resignation scheduler0/monitor1 distinction retained. No seals/teacher collection/SGD; complete physical proof and terminal journal integration remain pending.

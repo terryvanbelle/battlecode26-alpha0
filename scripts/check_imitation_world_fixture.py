@@ -29,10 +29,22 @@ def check(output,bot="imitationfixture"):
             if result.returncode:raise RuntimeError(f'{mode} failed; retained logs')
             logs[mode]=result.stdout.strip()
         rows=read_trace(output/'recording/trace.jsonl')
-        expected=['turn_end']*2 if bot=='imitationoverrunfixture' else ['action','action','turn_end']*2
-        assert [r['kind'] for r in rows]==expected
-        reason='overrun' if bot=='imitationoverrunfixture' else 'yield'
-        assert all(r['payload']['termination']==reason for r in rows if r['kind']=='turn_end')
+        lifecycle=bot in ('imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture')
+        if lifecycle:
+            expected=['action'] if bot in ('imitationdeathfixture','imitationresignfixture') else []
+            assert [r['kind'] for r in rows]==expected
+            exits=json.loads((output/'recording/terminations.json').read_text())
+            expected_exit={'imitationdeathfixture':'robot_death_signal','imitationresignfixture':'robot_death_signal','imitationexceptionfixture':'exception','imitationreturnfixture':'returned'}[bot]
+            assert len(exits)==1 and exits[0]['outcome']==expected_exit and exits[0]['turn_open']
+        else:
+            expected=['turn_end']*2 if bot=='imitationoverrunfixture' else ['action','action','turn_end']*2
+            assert [r['kind'] for r in rows]==expected
+            reason='overrun' if bot=='imitationoverrunfixture' else 'yield'
+            assert all(r['payload']['termination']==reason for r in rows if r['kind']=='turn_end')
+            exits=json.loads((output/'recording/terminations.json').read_text())
+            assert len(exits)==1 and not exits[0]['turn_open']
+        for key in ('world_terminal','winner','round'):
+            assert json.loads((output/'recording/result.json').read_text())[key]==json.loads((output/'baseline/result.json').read_text())[key]
         assert not read_trace(output/'baseline/trace.jsonl')
         budgets=json.loads((output/'recording/budgets.json').read_text())
         assert budgets==json.loads((output/'baseline/budgets.json').read_text())
@@ -43,12 +55,12 @@ def check(output,bot="imitationfixture"):
             assert (output/'recording/observations'/f"{row['payload']['public_observation_sha256']}.json").is_file()
         result={'scope':'real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence',
                 'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
-                'observations':len(observations),'matched_bytecode_budgets':budgets,'logs':logs,
+                'sandbox_exits':exits,'observations':len(observations),'matched_bytecode_budgets':budgets,'logs':logs,
                 'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 'manifest_sha256':hashlib.sha256((output/'manifest.json').read_bytes()).hexdigest()}
         (output/'review.json').write_text(json.dumps(result,indent=2)+'\n')
         return result
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--bot',choices=['imitationfixture','imitationoverrunfixture'],default='imitationfixture')
+    parser.add_argument('--bot',choices=['imitationfixture','imitationoverrunfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture'],default='imitationfixture')
     args=parser.parse_args();print(json.dumps(check(args.output,args.bot),indent=2))

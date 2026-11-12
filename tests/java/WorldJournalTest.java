@@ -13,6 +13,7 @@ import java.util.*;
 public class WorldJournalTest {
  static GameWorld world;
  static final List<Object> budgets=new ArrayList<>();
+ static final List<Object> terminations=new ArrayList<>();
  static class Player extends PlayerControlProvider {
   Player(String classes,String bot){super(Team.A,bot,CrossPlayLanguage.JAVA,null,classes,new ByteArrayOutputStream(),false);}
   public void runRobot(InternalRobot r){super.runRobot(r);budgets.add(List.of(r.getID(),world.getCurrentRound(),getBytecodesUsed(r)));}
@@ -36,7 +37,11 @@ public class WorldJournalTest {
       try{observer.endTurn(r,TraceJournal.digest(Map.of("round",world.getCurrentRound(),"robot",r.getID())),reason,n);}
       catch(IOException e){throw new UncheckedIOException(e);}
      }
-     public void terminated(RobotController r,int n){} // externally stopped fixture: no invented death event
+     public void terminated(RobotController r,int n){throw new AssertionError("missing exit cause");}
+     public void terminated(RobotController r,int n,RobotThreadRecorder.Termination t){
+      Map<String,Object> row=new TreeMap<>();row.put("robot",r.getID());row.put("budget",n);row.put("outcome",t.outcome());
+      row.put("exception",t.exceptionClass());row.put("turn_open",t.turnOpen());terminations.add(row);
+     }
     };
    });
    var map=GameMapIO.loadMap("tiny",new File("maps"),false);
@@ -45,11 +50,12 @@ public class WorldJournalTest {
    controls.registerControlProvider(Team.B,new NullControlProvider());controls.registerControlProvider(Team.NEUTRAL,new NullControlProvider());
    var info=new GameInfo("fixture",CrossPlayLanguage.JAVA,"fixture",null,"null",CrossPlayLanguage.JAVA,"null",null,new String[]{"tiny"},null,false);
    world=new GameWorld(map,controls,new NoopGameMaker(info).getMatchMaker());
-   try{for(int i=0;i<2;i++){world.runRound();if(!world.isRunning())throw new AssertionError("unexpected terminal");}}
+   try{for(int i=0;i<2;i++){world.runRound();if(!world.isRunning())break;}}
    finally{controls.matchEnded();}
    RobotThreadRecorder.requireHealthy();
+   Files.write(output.resolve("terminations.json"),TraceJournal.canonical(terminations));
    Files.write(output.resolve("budgets.json"),TraceJournal.canonical(budgets));
-   Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording)));
+   Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording,"world_terminal",!world.isRunning(),"winner",world.getWinner()==null?"none":world.getWinner().name())));
    System.out.println("PASS real-world synthetic fixture "+args[2]+" budgets="+budgets);
   }
  }
