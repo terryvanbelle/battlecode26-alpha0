@@ -9,6 +9,7 @@ from alpha0.imitation.trace import read_trace, digest
 from alpha0.imitation.terminal import validate_terminal
 from alpha0.imitation.completion import seal, verify
 from alpha0.imitation.provenance import source_spec,validate,invocation_id
+from alpha0.imitation.replay import compare_replay
 from alpha0.imitation.runtime import runtime_spec, validate_runtime, launch_command, clean_environment
 from scripts.build_imitation_hooks import build
 
@@ -49,6 +50,8 @@ def check(output,bot="imitationfixture",full_game=False):
             (output/f'{mode}.stdout').write_text(result.stdout);(output/f'{mode}.stderr').write_text(result.stderr)
             if result.returncode:raise RuntimeError(f'{mode} failed; retained logs')
             logs[mode]=result.stdout.strip()
+        replay_comparison=compare_replay(output/'baseline/replay-audit.json',output/'recording/replay-audit.json')
+        (output/'replay-comparison.json').write_text(json.dumps(replay_comparison,indent=2)+'\n')
         assert (output/'recording/world-audit.json').read_bytes()==(output/'baseline/world-audit.json').read_bytes()
         assert (output/'recording/world-audit-sequence.json').read_bytes()==(output/'baseline/world-audit-sequence.json').read_bytes()
         for mode in ('recording','baseline'):
@@ -92,7 +95,7 @@ def check(output,bot="imitationfixture",full_game=False):
             if row['kind']=='turn_end':assert (output/'recording/world-audits'/f"{row['payload']['physical_state_sha256']}.json").is_file()
             assert (output/'recording/observations'/f"{row['payload']['public_observation_sha256']}.json").is_file()
         result={'scope':'real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence',
-                'runtime_id':runtime['runtime_id'],'source_game_id':spec['game_id'],'invocation_ids':{m:invocation_id(spec,m) for m in ('baseline','recording')},'wall_seconds':timings,'full_game_requested':full_game,'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
+                'runtime_id':runtime['runtime_id'],'source_game_id':spec['game_id'],'invocation_ids':{m:invocation_id(spec,m) for m in ('baseline','recording')},'wall_seconds':timings,'full_game_requested':full_game,'replay_callbacks_equal':True,'replay_is_complete_primitive_trace':False,'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
                 'sandbox_exits':exits,'observations':len(observations),'matched_bytecode_budgets':budgets,'logs':logs,
                 'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 'manifest_sha256':hashlib.sha256((output/'manifest.json').read_bytes()).hexdigest()}

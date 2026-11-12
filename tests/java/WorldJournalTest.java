@@ -69,7 +69,8 @@ public class WorldJournalTest {
    var controls=new TeamControlProvider();controls.registerControlProvider(Team.A,new Player(args[0],bot));
    controls.registerControlProvider(Team.B,new NullControlProvider());controls.registerControlProvider(Team.NEUTRAL,new NullControlProvider());
    var info=new GameInfo("fixture",CrossPlayLanguage.JAVA,"fixture",null,"null",CrossPlayLanguage.JAVA,"null",null,new String[]{"tiny"},null,false);
-   world=new GameWorld(map,controls,new NoopGameMaker(info).getMatchMaker());
+   ReplayAuditGameMaker replayAudit=new ReplayAuditGameMaker(info);
+   world=new GameWorld(map,controls,replayAudit.getMatchMaker());
    try{for(int i=0;i<(fullGame?GameConstants.GAME_MAX_NUMBER_OF_ROUNDS:2);i++){world.runRound();if(!world.isRunning())break;}}
    finally{controls.matchEnded();}
    RobotThreadRecorder.requireHealthy();
@@ -89,6 +90,7 @@ public class WorldJournalTest {
    if(!TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("state restore failed");
    Files.write(output.resolve("recorder-roster.json"),TraceJournal.canonical(roster));
    Files.write(output.resolve("terminations.json"),TraceJournal.canonical(terminations));
+   replayAudit.save(output.resolve("replay-audit.json"));
    Files.write(output.resolve("budgets.json"),TraceJournal.canonical(budgets));
    Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording,"world_terminal",!world.isRunning(),"winner",world.getWinner()==null?"none":world.getWinner().name())));
    System.out.println("PASS real-world synthetic fixture "+args[2]+" budgets="+budgets);
