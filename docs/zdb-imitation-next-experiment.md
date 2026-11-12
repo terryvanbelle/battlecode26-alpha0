@@ -1,5 +1,14 @@
 # Proposed next experiment: zdb imitation followed by RL
 
+> **User scope correction — November 12, 2026 (America/Vancouver):** The objective is a model that behaves reasonably as an RL starting point, not exact zdb imitation. This amendment supersedes conflicting requirements below, including exact teacher trace/terminal equivalence as a collection gate and perfect action expressibility as a training gate. Historical diagnostics remain preserved evidence, not mandatory milestones to repeat.
+>
+> Approximate imitation is acceptable when its action mapping, coverage and limitations are explicit. Held-out teacher-action accuracy is diagnostic, not an exact-match acceptance threshold. Gate the transition to RL on a fixed, practical imitation-only gameplay check against simple independent opponents and a matched untrained model; preregister its numerical rule before observing those evaluation outcomes. A failed check calls for a bounded initialization/model review, not indefinite pursuit of teacher fidelity.
+>
+> Research storage, runtime and data budgets may be relaxed when necessary on the existing managed host. The64MiB audit cap and45s fixture watchdog were engineering defaults, not user requirements or official rules. Choose bounded collection limits from measured workload and available disk, with clear failure records. Full privileged world snapshots and three-way exact replay comparisons are optional diagnostics, not required for every demonstration. Preserve essential source identity, legal public observations, action arguments/results, robot histories, completion/error records and split integrity. Timing overhead must be disclosed and must not silently invalidate source games; exact timing equality is not required.
+>
+> Next priority is a modest complete fresh demonstration pilot and an encoder/policy initialization fit, followed by the practical gameplay gate and RL. Do not add further synthetic fidelity milestones unless a concrete data-integrity or execution bug requires them. Freeze the pilot's source/split/model/evaluation choices before launch. Preserve excluded ancestral maps, benchmark/confirmation separation, teacher-exposure disclosure, unchanged development-v4 improvement/confirmation rules, shared locks/STOPs, and no paid infrastructure/GCloud or tournament submission.
+
+
 Status: design draft, no teacher collection or training launched. This follows the user's November 11 proposal to pretrain on vibe26b_zdb moves before switching to RL. It changes the earlier prohibition on using this opponent as a teacher for this new lineage only; all historical experiments and their exclusions remain unchanged.
 
 Hypothesis: learning the expert's state-dependent behavior across full games, including the feature encoder, supplies a better starting policy than further fitting a small output head on sparse root labels. Improved supervised accuracy alone does not establish playing strength.
@@ -18,7 +27,7 @@ Before launch: review the current V11 deadline interruption and preserve its com
 
 ## Imitation competence gate before RL
 
-The user explicitly identified imitation as a model-design test. Do not proceed to RL solely because supervised loss falls. Freeze quantitative pass criteria before collecting teacher outcomes: held-out action prediction including consequential rare actions, legal-action expressibility and full-game imitation-only strength on the independent evaluation panel. Diagnose failed training fit separately from poor held-out prediction and closed-loop compounding errors. If competent imitation-only gameplay is not established, stop for architecture/observation-memory/action-interface review rather than use RL to hide the failure. Numerical thresholds and final protocol are still unregistered; no teacher data or SGD has launched.
+Imitation tests whether the model can acquire useful behavior before RL. The current user correction requires reasonable closed-loop gameplay, not exact teacher reproduction. Before evaluation, freeze a small complete gameplay panel, a matched untrained baseline and a numerical competence rule. Track held-out action prediction and illegal-action handling as diagnostics. Once the practical gameplay rule passes, proceed to the planned RL phase without demanding additional teacher-fidelity milestones. Numerical criteria and pilot source/split/model settings still need registration before their respective outcomes; no teacher data or SGD has launched.
 
 ## Static feasibility review — November 11
 
