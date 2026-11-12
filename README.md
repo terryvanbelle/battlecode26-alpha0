@@ -1,5 +1,27 @@
 # Battlecode 2026 Alpha0
 
+## Current work: bootstrap from zdb by imitation, then RL
+
+<!-- CURRENT_WORK_START -->
+**Goal.** Train a network to imitate `zdb` (the current best bot from [battlecode26b-vibe](https://github.com/terryvanbelle/battlecode26b-vibe)) well enough to be a competent starting point, then improve it with self-play RL. Exact imitation isn't required.
+
+**Approach.**
+- **Recording:** zdb plays ordinary full games, and a hook around every controller call records what the acting robot could see together with the action it took.
+- **Student:** a per-robot network chooses one primitive action at a time (move, turn, attack, build, ratnap, traps, cheese…) from that robot's own observations and memory.
+- **Runtime:** the network runs inside the Java engine, so games run at engine speed and the bot can later become an all-Java tournament player.
+
+Details: [lean imitation pipeline](docs/lean-imitation.md).
+
+**Status (November 12, 2026).**
+- The pipeline works end to end: game harness, recorder, training, Java inference, and a test that Java and PyTorch choose the same actions.
+- Collecting 400 zdb demonstration games on 63 training maps: 118 done, 1 to re-run.
+- The imitation pass rule was fixed before any training ([`configs/student-gate-v1.json`](configs/student-gate-v1.json)). Training and evaluation follow the collection.
+
+**Most recent result.** None yet for the imitation student. The latest completed benchmark is below: the earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
+<!-- CURRENT_WORK_END -->
+
+## Previous line: macro-action AlphaZero (V1–V11)
+
 ## Current benchmark performance
 
 **Next phase:** at **70% overall wins** on the complete benchmark suite, prioritize [tournament compatibility](docs/tournament-transition.md) before further win-rate optimization: Java throughout the deployed bot, standard bytecode, memory, compile and wall-clock limits, and standard API calls only.
