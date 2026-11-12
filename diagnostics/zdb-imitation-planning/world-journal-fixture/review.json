@@ -1,0 +1,49 @@
+{
+  "scope": "real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence",
+  "teacher_games": 0,
+  "complete_game": false,
+  "training_approved": false,
+  "records": 6,
+  "observations": 3,
+  "matched_bytecode_budgets": [
+    [
+      5,
+      1,
+      106
+    ],
+    [
+      5,
+      2,
+      107
+    ]
+  ],
+  "logs": {
+    "recording": "PASS real-world synthetic fixture recording budgets=[[5, 1, 106], [5, 2, 107]]",
+    "baseline": "PASS real-world synthetic fixture baseline budgets=[[5, 1, 106], [5, 2, 107]]"
+  },
+  "source_sha256": {
+    "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+    "tests/java/WorldJournalTest.java": "174dda917aaf958f68c77a7671f4f8fba0e7098f0bbdfd6dd0285e695907564a",
+    "tests/java/imitationfixture/RobotPlayer.java": "1852c923a566aa284b8282c338870ae4b6fd017c269f6301bfb9b695e0e4ce0d"
+  },
+  "manifest_sha256": "d921621315eae2fc0597b4fd54b1e4596d7c201d528640a0a21bcdd430ab0711",
+  "v11_identity_unchanged": true,
+  "tests_passed": 11,
+  "runner_sha256": "88837a4ca5f8f893678826b217d41728ce5d5965c3bf1ee029ddc4fe4436623d",
+  "files": {
+    "baseline/budgets.json": "c29e722218a379e63d13b5fc36561ed5d8ee36fb9a590824846159fe560d29a2",
+    "baseline/result.json": "9e6e2263399ace6b4a8edc65c8e4c4ab35acba164fc865ea3ed6b931fe27e60b",
+    "baseline/trace.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.stdout": "ae51922e261b15633403cb6d2d24caa3c00bd807ccee7a8f20db1b69025f08ed",
+    "manifest.json": "d921621315eae2fc0597b4fd54b1e4596d7c201d528640a0a21bcdd430ab0711",
+    "recording/budgets.json": "c29e722218a379e63d13b5fc36561ed5d8ee36fb9a590824846159fe560d29a2",
+    "recording/observations/5427d38e7d71942fc72a3e7ca3f096997d06be928ba8d27c644e78776b057729.json": "5427d38e7d71942fc72a3e7ca3f096997d06be928ba8d27c644e78776b057729",
+    "recording/observations/7f367e1b9e172b7b3c1d4ab1ee790d72a1483089d4ddc47fd66e8458482d25a1.json": "7f367e1b9e172b7b3c1d4ab1ee790d72a1483089d4ddc47fd66e8458482d25a1",
+    "recording/observations/9f9bab0db4ffa042f8db2fe80df85fc57c1489e7ba6e0fdebd7dfba8efdbc408.json": "9f9bab0db4ffa042f8db2fe80df85fc57c1489e7ba6e0fdebd7dfba8efdbc408",
+    "recording/result.json": "71570547ca1ef57898bf19fc67f69e6ad283f7e090ede655ee84ab6013e86d1b",
+    "recording/trace.jsonl": "8d4705fc657054aebf3b2c2337b86b707b5a7f6131c9605f8428da3e71cb29ca",
+    "recording.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recording.stdout": "f23d270910139fa328ad14c72e19c30eeaa30157450cea37f3e35e1e77bf748d"
+  }
+}

@@ -637,3 +637,7 @@ Terminal candidate70W186L vs freshcp2 81W175L on256valid games each; gain -0.042
 ## Imitation bounded journal implementation, November 12
 
 Verified no matching research actors, all15 shared locks free, and user zdb STOP preserved. Added exclusive bounded Java trace transport with Python-compatible SHA chaining, explicit seals, and a public-observation adapter. Cross-language tests caught and repaired Unicode canonicalization differences; eleven schema/build/transport tests pass. Adapter compilation is verified, real-world observation/lifecycle integration is pending. No teacher games, labels or SGD; V11 results unchanged. See docs/zdb-imitation-next-experiment.md and diagnostics/zdb-imitation-planning/journal-transport-review.json.
+
+## Imitation real-world fixture, November 12
+
+Added a shared-lock-protected isolated paired harness using actual GameWorld/controller hooks and a synthetic bot for two rounds. Four actions/two turn ends/three public observations validate through Python; original-jar baseline and recording match charged budgets106,107. No completion seal or teacher game; physical diagnostic hash is explicitly partial. All11 existing schema/build/transport tests pass and V11 identity remains unchanged. Raw evidence: diagnostics/zdb-imitation-planning/world-journal-fixture/review.json. General terminal/death/overrun lifecycle handling remains required before preregistered teacher equivalence.
