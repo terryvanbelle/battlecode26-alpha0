@@ -661,3 +661,9 @@ Implemented separate audit-only terminal closure schema preserving last-recorded
 ## Imitation full-game provenance prototype, November 12
 
 Replaced placeholder game identity in new fixtures with pinned source-derived identity and distinct mode invocation IDs. Before/after runtime artifact checks plus engine source echo pass. Full-game mode completed one-round synthetic resignation, matching physical/terminal evidence and seals;31tests pass, V11unchanged.64MiBaudit cap added. No teacher collection/SGD. Recovery and source proof: diagnostics/zdb-imitation-planning/fullgame-provenance. Full teacher schedule/seed inventory/JVM pins/independent baseline action evidence and competence preregistration remain required.
+
+## JVM launch pins (November 12)
+
+The synthetic harness now records `diagnostic-jvm-runtime-v1`: SHA pins for the Java executable, release file and complete lib/conf trees, plus the actual allowed add-opens flags. Launch argv derives from these pins and is retained per mode with source game/runtime identities. Before/after checks reject changed artifacts. Ambient JAVA_TOOL_OPTIONS, JDK_JAVA_OPTIONS, _JAVA_OPTIONS, JAVA_OPTIONS, LD_PRELOAD and LD_LIBRARY_PATH are rejected when nonempty. System libraries and host scheduling remain outside this identity; this is not official-limit certification or timing equivalence.
+
+44 tests pass, including runtime mutations, flag tampering and injection rejection. A new bounded synthetic resignation pair matched budgets, world state, terminal proof and completion seal. Evidence is under diagnostics/zdb-imitation-planning/runtime-pins. No teacher games, labels or SGD. The independent original-engine baseline still lacks primitive-action evidence (end-of-turn physical equality is insufficient); fresh teacher seed inventory/preregistration, storage/timing review, and numerical imitation competence/independent-opponent gates remain pending. The synthetic-only allowlist remains enforced.

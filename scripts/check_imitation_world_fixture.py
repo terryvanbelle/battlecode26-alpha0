@@ -9,6 +9,7 @@ from alpha0.imitation.trace import read_trace, digest
 from alpha0.imitation.terminal import validate_terminal
 from alpha0.imitation.completion import seal, verify
 from alpha0.imitation.provenance import source_spec,validate,invocation_id
+from alpha0.imitation.runtime import runtime_spec, validate_runtime, launch_command, clean_environment
 from scripts.build_imitation_hooks import build
 
 def check(output,bot="imitationfixture",full_game=False):
@@ -18,7 +19,10 @@ def check(output,bot="imitationfixture",full_game=False):
             stream=stack.enter_context(open(path,'a'))
             fcntl.flock(stream,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if any(Path(p).exists() for p in STOPS):raise RuntimeError('research STOP present')
+        environment=clean_environment()
+        runtime=runtime_spec(ROOT/'vendor/jdk',JAVA_OPENS)
         manifest=build(output)
+        (output/'runtime-spec.json').write_text(json.dumps(runtime,indent=2)+'\n')
         classes=output/'test-classes';classes.mkdir()
         jar=ROOT/'vendor/engine/battlecode26-java-1.2.6.jar'
         sources=[ROOT/p for p in ('java/alpha0/NoopGameMaker.java','tests/java/WorldJournalTest.java',f'tests/java/{bot}/RobotPlayer.java')]
@@ -26,15 +30,20 @@ def check(output,bot="imitationfixture",full_game=False):
         artifacts=dict(map_file=ROOT/'maps/tiny.map26',engine_jar=jar,bot_classes=classes,hook_classes=output/'classes',harness_source=ROOT/'tests/java/WorldJournalTest.java')
         spec=source_spec(slot=output.name,map_name='tiny',seed=314159,bot=bot,full_game=full_game,**artifacts)
         (output/'source-spec.json').write_text(json.dumps(spec,indent=2)+'\n')
-        logs={};timings={}
+        logs={};timings={};launches={}
         import time
         for mode in ('recording','baseline'):
             # Baseline resolves original engine classes first. Shared fixture bytecode is identical.
             cp=f'{classes}:{output}/classes:{jar}' if mode=='recording' else f'{classes}:{jar}:{output}/classes'
             validate(spec,**artifacts)
+            validate_runtime(runtime,ROOT/'vendor/jdk',JAVA_OPENS)
+            command=launch_command(runtime,classpath=cp,arguments=[str(classes),str(output/mode),mode,bot,str(output/'source-spec.json')])
+            launches[mode]={'argv':command,'runtime_id':runtime['runtime_id'],'game_id':spec['game_id']}
+            (output/'launches.json').write_text(json.dumps(launches,indent=2)+'\n')
             started=time.monotonic()
-            result=subprocess.run([str(ROOT/'vendor/jdk/bin/java'),*JAVA_OPENS,'-cp',cp,'WorldJournalTest',str(classes),str(output/mode),mode,bot,str(output/'source-spec.json')],cwd=ROOT,capture_output=True,text=True,timeout=45)
+            result=subprocess.run(command,cwd=ROOT,env=environment,capture_output=True,text=True,timeout=45)
             timings[mode]=time.monotonic()-started
+            validate_runtime(runtime,ROOT/'vendor/jdk',JAVA_OPENS)
             validate(spec,**artifacts)
             if result.returncode==0 and json.loads((output/mode/'source-spec.json').read_text())!=spec:raise ValueError('engine source echo differs')
             (output/f'{mode}.stdout').write_text(result.stdout);(output/f'{mode}.stderr').write_text(result.stderr)
@@ -83,7 +92,7 @@ def check(output,bot="imitationfixture",full_game=False):
             if row['kind']=='turn_end':assert (output/'recording/world-audits'/f"{row['payload']['physical_state_sha256']}.json").is_file()
             assert (output/'recording/observations'/f"{row['payload']['public_observation_sha256']}.json").is_file()
         result={'scope':'real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence',
-                'source_game_id':spec['game_id'],'invocation_ids':{m:invocation_id(spec,m) for m in ('baseline','recording')},'wall_seconds':timings,'full_game_requested':full_game,'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
+                'runtime_id':runtime['runtime_id'],'source_game_id':spec['game_id'],'invocation_ids':{m:invocation_id(spec,m) for m in ('baseline','recording')},'wall_seconds':timings,'full_game_requested':full_game,'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
                 'sandbox_exits':exits,'observations':len(observations),'matched_bytecode_budgets':budgets,'logs':logs,
                 'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 'manifest_sha256':hashlib.sha256((output/'manifest.json').read_bytes()).hexdigest()}
