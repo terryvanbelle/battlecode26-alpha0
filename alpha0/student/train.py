@@ -1,6 +1,6 @@
 """Behaviour-cloning fit of the student MLP on teacher records; exports Java weights.
 
-python -m alpha0.student.train --run runs/teacher-v1 --out runs/student-v1 [--epochs 4]
+python -m alpha0.student.train --run runs/teacher-v1[,runs/teacher-v2] --out runs/student-v1 [--epochs 4]
 """
 import argparse, json, struct, time
 from collections import Counter, defaultdict
@@ -44,12 +44,13 @@ def _gz_records(f: Path) -> int:
         return int.from_bytes(fh.read(4), 'little') // RECORD
 
 
-def load_split(run: Path, split: str, max_games=None, baby_keep=1.0, seed=0):
+def load_split(runs, split: str, max_games=None, baby_keep=1.0, seed=0):
     """Two-pass load into preallocated arrays, so peak RAM is ~1x the dataset (~25 GB for all of teacher-v1).
     baby_keep < 1 subsamples non-king records (kings are always kept) to fit RAM."""
-    sched = json.loads((run / 'schedule.json').read_text())
+    runs = [runs] if isinstance(runs, (str, Path)) else runs
+    sched = [(Path(r), g) for r in runs for g in json.loads((Path(r) / 'schedule.json').read_text())]
     files, games = [], 0
-    for g in sched:
+    for run, g in sched:
         if g['split'] != split:
             continue
         d = run / 'games' / g['id']
@@ -127,7 +128,7 @@ def evaluate(net, data, device, bs=4096):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--run', required=True)
+    ap.add_argument('--run', required=True, help='teacher run dir, or several separated by commas')
     ap.add_argument('--out', required=True)
     ap.add_argument('--epochs', type=int, default=4)
     ap.add_argument('--bs', type=int, default=1024)
@@ -142,7 +143,7 @@ def main():
     ap.add_argument('--baby-keep', type=float, default=1.0, help='fraction of non-king train records kept (RAM)')
     a = ap.parse_args()
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
-    run, out = Path(a.run), Path(a.out)
+    run, out = [Path(r) for r in a.run.split(',')], Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     train, val = load_split(run, 'train', a.max_games, a.baby_keep, a.seed), load_split(run, 'val', a.max_games and max(1, a.max_games // 9))
