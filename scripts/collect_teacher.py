@@ -61,7 +61,8 @@ def main():
         a, b = (zdb, opp) if 'A' in g['teacher_sides'] else (opp, zdb)
         cmd = [str(ROOT / 'scripts/student_java.sh'), '--map', g['map'], '--maps-dir', str(ROOT / 'maps'), '--seed', str(g['seed']),
                '--a', f'bot:{a[0]}:{a[1]}', '--b', f'bot:{b[0]}:{b[1]}', '--out', str(out),
-               '--record', g['teacher_sides'], '--record-p', str(cfg['record_p'])]
+               '--record', g['teacher_sides'], '--record-p', str(cfg['record_p']),
+               '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
         t0 = time.time()
         try:
             p = subprocess.run(cmd, capture_output=True, text=True, timeout=cfg['game_timeout_seconds'], env={**os.environ, 'JAVA_FLAGS': flags})

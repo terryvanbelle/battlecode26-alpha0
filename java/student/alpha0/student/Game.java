@@ -16,7 +16,7 @@ import java.util.*;
  * (bot team's) decisions, or the student's own decisions, as Records.
  *
  * java ... alpha0.student.Game --map M --maps-dir D --seed S --a SPEC --b SPEC --out DIR
- *      [--record AB] [--record-p 0.1] [--max-rounds 2000]
+ *      [--record AB] [--record-p 0.1] [--record-p-king P (default: record-p)] [--max-rounds 2000]
  */
 public final class Game {
     static final ObjectMapper JSON = new ObjectMapper();
@@ -38,14 +38,14 @@ public final class Game {
     /** Sandboxed teacher/opponent bot, optionally recording sampled turns. */
     static final class Bot extends PlayerControlProvider {
         final Obs obs = new Obs();
-        final Records rec; final double p; final Random rng; final int teamIndex;
+        final Records rec; final double p, pKing; final Random rng; final int teamIndex;
         final byte[] scratch = new byte[Obs.SIZE]; final boolean[] mask = new boolean[Actions.N];
         final List<String> failures = new ArrayList<>();
         GameWorld world;
         long turns, sampledTurns, ends;
-        Bot(Team team, String pkg, String classes, OutputStream out, Records rec, double p, long seed) {
+        Bot(Team team, String pkg, String classes, OutputStream out, Records rec, double p, double pKing, long seed) {
             super(team, pkg, CrossPlayLanguage.JAVA, null, classes, out, false);
-            this.rec = rec; this.p = p; this.rng = new Random(seed); this.teamIndex = team.ordinal();
+            this.rec = rec; this.p = p; this.pKing = pKing; this.rng = new Random(seed); this.teamIndex = team.ordinal();
         }
         @Override public void matchStarted(GameWorld w) { world = w; super.matchStarted(w); }
         @Override public void robotSpawned(InternalRobot robot) {
@@ -56,7 +56,7 @@ public final class Game {
         @Override public void runRobot(InternalRobot robot) {
             turns++;
             RobotController rc = robot.getController();
-            boolean sample = rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null && rng.nextDouble() < p;
+            boolean sample = rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null && rng.nextDouble() < (rc.getType() == UnitType.RAT_KING ? pKing : p);
             if (rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null) {
                 try { obs.encode(rc, 0, scratch); } catch (RuntimeException e) { /* memory update only */ }
             }
@@ -137,6 +137,7 @@ public final class Game {
         InternalRobot.rand = new Random(1092L + 7919L * seed);
         String recordTeams = args.get("record", "");
         double recordP = Double.parseDouble(args.get("record-p", "0.1"));
+        double recordPKing = Double.parseDouble(args.get("record-p-king", Double.toString(recordP)));
         int maxRounds = Integer.parseInt(args.get("max-rounds", "2000"));
 
         TeamControlProvider controls = new TeamControlProvider();
@@ -151,7 +152,7 @@ public final class Game {
             Records rec = recordTeams.contains(team.name()) ? new Records(new File(out, "records-" + team.name() + ".bin.gz")) : null;
             if (rec != null) records.put(team, rec);
             RobotControlProvider prov;
-            if (parts[0].equals("bot")) prov = new Bot(team, parts[1], parts[2], botOut, rec, recordP, seed * 2L + team.ordinal());
+            if (parts[0].equals("bot")) prov = new Bot(team, parts[1], parts[2], botOut, rec, recordP, recordPKing, seed * 2L + team.ordinal());
             else if (parts[0].equals("net")) prov = new Student(team, new Net(new File(parts[1])), parts.length > 2 ? Double.parseDouble(parts[2]) : 0.0, seed * 2L + team.ordinal() + 99, rec);
             else throw new IllegalArgumentException("bad team spec " + spec);
             controls.registerControlProvider(team, prov);
