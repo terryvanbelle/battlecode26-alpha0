@@ -77,12 +77,20 @@ def check(output,bot="imitationfixture",full_game=False):
             expected_exit={'imitationdeathfixture':'robot_death_signal','imitationresignfixture':'robot_death_signal','imitationexceptionfixture':'exception','imitationreturnfixture':'returned'}[bot]
             assert len(exits)==1 and exits[0]['outcome']==expected_exit and exits[0]['turn_open']
         else:
-            expected=['turn_end']*2 if bot=='imitationoverrunfixture' else ['action','action','turn_end']*2
+            expected=(['action']*8+['turn_end'])*2 if bot=='imitationboundaryfixture' else (['turn_end']*2 if bot=='imitationoverrunfixture' else ['action','action','turn_end']*2)
             assert [r['kind'] for r in rows]==expected
             reason='overrun' if bot=='imitationoverrunfixture' else 'yield'
             assert all(r['payload']['termination']==reason for r in rows if r['kind']=='turn_end')
             exits=json.loads((output/'recording/terminations.json').read_text())
             assert len(exits)==1 and not exits[0]['turn_open']
+        if bot=='imitationboundaryfixture':
+            actions=[r['payload'] for r in rows if r['kind']=='action']
+            operations=['writeSharedArray','writeSharedArray','squeak','squeak','attack','attackAmount','pickUpCheese','pickUpCheeseAmount']
+            for offset in (0,8):
+                chunk=actions[offset:offset+8]
+                if [p['operation'] for p in chunk]!=operations:raise ValueError('boundary operation coverage')
+                if [p['return_boolean'] for p in chunk[2:4]]!=[True,False]:raise ValueError('boundary boolean coverage')
+                if any(p['exception']!='battlecode.common.GameActionException' for p in chunk[4:]):raise ValueError('boundary exception coverage')
         for key in ('world_terminal','winner','round'):
             assert json.loads((output/'recording/result.json').read_text())[key]==json.loads((output/'baseline/result.json').read_text())[key]
         assert not read_trace(output/'baseline/trace.jsonl')
@@ -103,6 +111,6 @@ def check(output,bot="imitationfixture",full_game=False):
         return result
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--bot',choices=['imitationfixture','imitationoverrunfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture'],default='imitationfixture')
+    parser.add_argument('--bot',choices=['imitationboundaryfixture','imitationfixture','imitationoverrunfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture'],default='imitationfixture')
     parser.add_argument('--full-game',action='store_true')
     args=parser.parse_args();print(json.dumps(check(args.output,args.bot,args.full_game),indent=2))
