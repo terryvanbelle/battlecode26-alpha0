@@ -1,13 +1,18 @@
 {
   "schema": 1,
-  "phase": "imitation_pilot_implementation",
+  "phase": "pilot_seed_inventory_running",
   "teacher_games": 0,
   "sgd_started": false,
-  "active_owner": null,
+  "active_owner": {
+    "pid": 266225,
+    "command": ".venv/bin/python -u scripts/inventory_imitation_seeds.py diagnostics/imitation-pilot/seed-inventory-20261112T160341Z",
+    "status": "diagnostics/imitation-pilot/seed-inventory-20261112T160341Z/status.json",
+    "log": "/tmp/imitation-pilot-seed-inventory-20261112T160341Z.log"
+  },
   "latest_scientific_result": "V11 complete: cp2 81W175L, terminal70W186L, PUCT71W185L; both candidates failed; no confirmation/promotion",
   "latest_user_direction": "Reasonable imitation-only gameplay before RL, not exact zdb fidelity. Engineering budgets may be relaxed. Work independently with economical recurring continuation.",
   "next_actions": [
-    "Freeze a modest fresh teacher collection pilot, whole-game split, model/data settings and practical gameplay gate; inventory seeds before launch.",
+    "Review completed seed inventory including read errors, formulas and split archives; freeze fresh pilot source/split/model/evaluation protocol.",
     "Implement lean teacher collection and public-observation tensor encoder; primitive target codec is alpha0/imitation/actions.py. Freeze model/data interface before collecting pilot.",
     "Build student input/action encoding and encoder-policy fit, train only once the entire pilot dataset passes integrity checks.",
     "Evaluate frozen imitation-only model against matched untrained model and simple independent opponents, then proceed to RL when practical gate passes."
