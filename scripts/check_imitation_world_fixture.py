@@ -7,6 +7,7 @@ from alpha0.env import JAVA_OPENS
 from alpha0.expanded_v11_run import LOCKS, STOPS
 from alpha0.imitation.trace import read_trace, digest
 from alpha0.imitation.terminal import validate_terminal
+from alpha0.imitation.completion import seal, verify
 from scripts.build_imitation_hooks import build
 
 def check(output,bot="imitationfixture"):
@@ -40,6 +41,11 @@ def check(output,bot="imitationfixture"):
             assert (output/'recording/terminal-proof.json').read_bytes()==(output/'baseline/terminal-proof.json').read_bytes()
             for mode in ('recording','baseline'):
                 validate_terminal(json.loads((output/mode/'terminal-proof.json').read_text()),json.loads((output/mode/'world-audit.json').read_text()))
+        if terminal:
+            roster=json.loads((output/'recording/recorder-roster.json').read_text())
+            assert roster==json.loads((output/'baseline/recorder-roster.json').read_text())
+            seal(output/'recording',output/'recording/completion.json',expected_roster=roster,game_id='a'*64)
+            verify(output/'recording',output/'recording/completion.json',expected_roster=roster,game_id='a'*64)
         rows=read_trace(output/'recording/trace.jsonl')
         lifecycle=bot in ('imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture')
         if lifecycle:

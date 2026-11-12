@@ -21,10 +21,12 @@ public class WorldJournalTest {
   if(!Files.exists(p))Files.write(p,bytes,StandardOpenOption.CREATE_NEW);
   return sha;
  }
+ static final List<Object> roster=new ArrayList<>();
  static final List<Object> budgets=new ArrayList<>();
  static final List<Object> terminations=new ArrayList<>();
  static class Player extends PlayerControlProvider {
   Player(String classes,String bot){super(Team.A,bot,CrossPlayLanguage.JAVA,null,classes,new ByteArrayOutputStream(),false);}
+  public void robotSpawned(InternalRobot r){roster.add(Map.of("robot",r.getID(),"team",r.getTeam().name()));super.robotSpawned(r);}
   public void runRobot(InternalRobot r){super.runRobot(r);budgets.add(List.of(r.getID(),world.getCurrentRound(),getBytecodesUsed(r)));
    try{auditSequence.add(List.of(r.getID(),world.getCurrentRound(),saveAudit()));}catch(IOException e){throw new UncheckedIOException(e);}}
  }
@@ -49,7 +51,7 @@ public class WorldJournalTest {
      }
      public void terminated(RobotController r,int n){throw new AssertionError("missing exit cause");}
      public void terminated(RobotController r,int n,RobotThreadRecorder.Termination t){
-      Map<String,Object> row=new TreeMap<>();row.put("robot",r.getID());row.put("budget",n);row.put("outcome",t.outcome());
+      Map<String,Object> row=new TreeMap<>();row.put("robot",r.getID());row.put("team",r.getTeam().name());row.put("round",r.getRoundNum());row.put("budget",n);row.put("outcome",t.outcome());
       row.put("exception",t.exceptionClass());row.put("turn_open",t.turnOpen());terminations.add(row);
      }
     };
@@ -76,6 +78,7 @@ public class WorldJournalTest {
    if(TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("shared state omitted");
    shared[0][0]=prior;
    if(!TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("state restore failed");
+   Files.write(output.resolve("recorder-roster.json"),TraceJournal.canonical(roster));
    Files.write(output.resolve("terminations.json"),TraceJournal.canonical(terminations));
    Files.write(output.resolve("budgets.json"),TraceJournal.canonical(budgets));
    Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording,"world_terminal",!world.isRunning(),"winner",world.getWinner()==null?"none":world.getWinner().name())));

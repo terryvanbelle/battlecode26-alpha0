@@ -653,3 +653,7 @@ Added isolated sandbox outcome/cause callbacks and open-turn tracking. Six synth
 ## Imitation world audit and terminal proof, November 12
 
 Implemented separate audit-only world graph/RNG capture with explicit runtime/cache exclusions and lossless typed array compression. Six synthetic lifecycle pairs match per-robot/final audit bytes; four terminal proofs match.15tests pass, including rehashed live-state/wrong-round/forged-winner rejection; hidden shared-state mutation sensitivity and nonmutation checks pass. All diagnostic generations archived with per-file hashes and isolated restore; V11identity unchanged. No teacher games or SGD. Full terminal-turn journal/seal semantics remain pending; proof alone cannot authorize training. See diagnostics/zdb-imitation-planning/world-audit/review.json.
+
+## Imitation terminal completion seals, November 12
+
+Implemented separate audit-only terminal closure schema preserving last-recorded versus absent observations; no invented post-death sensing. All four synthetic terminal fixtures independently seal/verify with complete recorded roster and verified physical terminal proof.23tests pass, raw archive isolated-restored, V11identity unchanged. No teacher collection/SGD. Full-game identity/provenance/seed preregistration and teacher-equivalence/timing gates remain. Evidence: diagnostics/zdb-imitation-planning/terminal-completion/review.json.
