@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-os.environ.setdefault('TZ', 'America/Los_Angeles')   # log in Pacific time
+os.environ.setdefault('TZ', 'PDT+7')   # log in PDT (UTC-7, BC's permanent time; user preference)
 time.tzset()
 
 
