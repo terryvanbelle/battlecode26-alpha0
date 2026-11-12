@@ -4,6 +4,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+os.environ.setdefault('TZ', 'America/Los_Angeles')   # log in Pacific time
+time.tzset()
 
 
 def field(path):

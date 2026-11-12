@@ -9,6 +9,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+os.environ.setdefault('TZ', 'America/Los_Angeles')   # log in Pacific time
+time.tzset()
 BC26B = Path(os.path.expanduser('~/projects/vibe/2026b'))
 
 
