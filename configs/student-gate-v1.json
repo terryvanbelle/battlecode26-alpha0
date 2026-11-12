@@ -1,0 +1,24 @@
+{
+  "name": "student-gate-v1",
+  "frozen": "2026-11-12, before any student checkpoint was trained or played",
+  "purpose": "Practical imitation-only competence check before RL (user direction: reasonable play, not exact zdb fidelity).",
+  "maps": ["tiny", "DefaultSmall", "DefaultMedium", "DefaultLarge", "closeup", "knifefight", "cheesefarm", "wallsofparadis"],
+  "maps_note": "development-v4 maps; all excluded from teacher-v1 collection",
+  "seeds": [11, 12],
+  "sides": "AB",
+  "groups": {
+    "untrained": ["@untrained"],
+    "simple": ["examplefuncsplayer", "lectureplayer"],
+    "heldout_field": ["VarunVejalla_final4_run_away10", "GuzziFlipFlops_Hermesv8", "quesswho_quals", "daannte_v47_Skadoosh", "AlexT101_usqualsbot"]
+  },
+  "pass_rule": {"untrained": 0.80, "simple": 0.70, "heldout_field": 0.20},
+  "pass_rule_note": "win fraction (draws count 0.5) per group; all three must hold. Temperature is chosen beforehand on the selection panel only.",
+  "selection_panel": {
+    "maps": ["mincemeat", "jail", "rift", "pipes"],
+    "seeds": [21],
+    "opponents": ["examplefuncsplayer", "uravt_Version35", "AlexT101_finalsbot"],
+    "temperatures": [0.0, 0.3, 1.0],
+    "note": "training-distribution maps/opponents; used only to pick checkpoint temperature"
+  },
+  "teacher_reference": "zdb is also run against the same gate opponents for context (not part of the rule)."
+}
