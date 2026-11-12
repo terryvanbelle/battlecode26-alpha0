@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-11-12T03:55:20.591978+00:00",
+  "scope": "synthetic cross-language transport and adapter compilation only",
+  "tests_passed": 11,
+  "teacher_games": 0,
+  "training_approved": false,
+  "actual_world_observer_tested": false,
+  "pending": [
+    "full-world lifecycle and observation capture",
+    "terminal provenance",
+    "fresh paired schedule preregistration",
+    "teacher equivalence"
+  ],
+  "sources": {
+    "java/imitation/alpha0/imitation/TraceJournal.java": "e3b22276224ffdff368da9b47c2db0a74c09df924bc3165b7ecd0d0be1b93b3c",
+    "java/imitation/alpha0/imitation/JournalObserver.java": "8f131b4000a915374721067727fff8bac0bef4bb8ef76f7dd3de79a0f71968a5",
+    "tests/java/TraceJournalTest.java": "61d1a692abba849b7047212656bb9379cc97503fde7d68bfe4fc4bd853d82153",
+    "tests/test_imitation_journal.py": "75b0da1e699e5e20cbd0abdad0582c6b68cba2442cdc399ea0ca2c05d37e2143"
+  }
+}
