@@ -15,15 +15,14 @@ public class WorldJournalTest {
  static GameWorld world;
  static boolean proxyMode;
  static final ControllerCallAudit callAudit=new ControllerCallAudit();
- static long storedAuditBytes;
+ static AuditStore auditStore;
  static final long AUDIT_CAP=64L*1024*1024;
  static Path outputDirectory;
  static final List<Object> auditSequence=new ArrayList<>();
  static String saveAudit()throws IOException {
   var state=WorldAudit.capture(world);byte[] bytes=TraceJournal.canonical(state);
   if(!Arrays.equals(bytes,TraceJournal.canonical(WorldAudit.capture(world))))throw new AssertionError("audit mutated world");
-  String sha=TraceJournal.digest(state);Path p=outputDirectory.resolve("world-audits").resolve(sha+".json");
-  if(!Files.exists(p)){if(bytes.length>AUDIT_CAP-storedAuditBytes)throw new IOException("audit storage cap");Files.write(p,bytes,StandardOpenOption.CREATE_NEW);storedAuditBytes+=bytes.length;}
+  String sha=auditStore.put(bytes);
   return sha;
  }
  static final List<Object> roster=new ArrayList<>();
@@ -50,7 +49,7 @@ public class WorldJournalTest {
   String gameId=source==null?"a".repeat(64):source.get("game_id").asText();TraceJournal.hash(gameId);
   boolean fullGame=source!=null && source.get("full_game").asBoolean();
   proxyMode=args[2].equals("proxy");
-  boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);outputDirectory=output;Files.createDirectory(output.resolve("world-audits"));
+  boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);outputDirectory=output;auditStore=new AuditStore(output.resolve("world-audits"),AUDIT_CAP);
   try(TraceJournal journal=new TraceJournal(output.resolve("trace.jsonl"),gameId,8*1024*1024)) {
    var store=new JournalObserver.ObservationStore(output.resolve("observations"),8*1024*1024);
    if(recording)RobotThreadRecorder.configure((rc,budget)->{

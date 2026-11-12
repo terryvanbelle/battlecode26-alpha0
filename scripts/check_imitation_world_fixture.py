@@ -9,6 +9,7 @@ from alpha0.imitation.trace import read_trace, digest
 from alpha0.imitation.terminal import validate_terminal
 from alpha0.imitation.completion import seal, verify
 from alpha0.imitation.provenance import source_spec,validate,invocation_id
+from alpha0.imitation.audit_store import read_snapshot
 from alpha0.imitation.replay import compare_replay
 from alpha0.imitation.runtime import runtime_spec, validate_runtime, launch_command, clean_environment
 from scripts.build_imitation_hooks import build
@@ -55,8 +56,9 @@ def check(output,bot="imitationfixture",full_game=False):
         assert (output/'recording/world-audit.json').read_bytes()==(output/'baseline/world-audit.json').read_bytes()
         assert (output/'recording/world-audit-sequence.json').read_bytes()==(output/'baseline/world-audit-sequence.json').read_bytes()
         for mode in ('recording','baseline'):
-            for path in (output/mode/'world-audits').glob('*.json'):
-                assert digest(json.loads(path.read_text()))==path.stem
+            for path in (output/mode/'world-audits').glob('*.index.json'):
+                sha=path.name.removesuffix('.index.json')
+                assert digest(json.loads(read_snapshot(path.parent,sha)))==sha
         terminal=(output/'recording/terminal-proof.json').exists()
         assert terminal==(output/'baseline/terminal-proof.json').exists()
         if terminal:
@@ -107,7 +109,7 @@ def check(output,bot="imitationfixture",full_game=False):
         for path in observations:
             assert digest(json.loads(path.read_text()))==path.stem
         for row in rows:
-            if row['kind']=='turn_end':assert (output/'recording/world-audits'/f"{row['payload']['physical_state_sha256']}.json").is_file()
+            if row['kind']=='turn_end':assert read_snapshot(output/'recording/world-audits',row['payload']['physical_state_sha256'])
             assert (output/'recording/observations'/f"{row['payload']['public_observation_sha256']}.json").is_file()
         result={'scope':'real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence',
                 'runtime_id':runtime['runtime_id'],'source_game_id':spec['game_id'],'invocation_ids':{m:invocation_id(spec,m) for m in ('baseline','recording')},'wall_seconds':timings,'full_game_requested':full_game,'replay_callbacks_equal':True,'replay_is_complete_primitive_trace':False,'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
