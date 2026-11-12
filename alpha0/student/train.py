@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .data import read_records, unpack_mask
-from .spec import OBS, N_ACTIONS, action_group
+from .spec import OBS, MASK_BYTES, RECORD, N_ACTIONS, action_group
 
 MAGIC = 0x53544E31
 
@@ -38,9 +38,17 @@ def export(net: StudentNet, path: Path):
         f.write(arr(net.value.weight.reshape(-1))); f.write(arr(net.value.bias))
 
 
-def load_split(run: Path, split: str, max_games=None):
+def _gz_records(f: Path) -> int:
+    with open(f, 'rb') as fh:  # gzip trailer holds uncompressed size mod 2**32 (files are far smaller)
+        fh.seek(-4, 2)
+        return int.from_bytes(fh.read(4), 'little') // RECORD
+
+
+def load_split(run: Path, split: str, max_games=None, baby_keep=1.0, seed=0):
+    """Two-pass load into preallocated arrays, so peak RAM is ~1x the dataset (~25 GB for all of teacher-v1).
+    baby_keep < 1 subsamples non-king records (kings are always kept) to fit RAM."""
     sched = json.loads((run / 'schedule.json').read_text())
-    obs, masks, labels, values, kings, games = [], [], [], [], [], 0
+    files, games = [], 0
     for g in sched:
         if g['split'] != split:
             continue
@@ -53,20 +61,31 @@ def load_split(run: Path, split: str, max_games=None):
             continue
         for side in g['teacher_sides']:
             f = d / f'records-{side}.bin.gz'
-            if not f.exists():
-                continue
-            h, o, m = read_records(f)
-            legal = unpack_mask(m, N_ACTIONS)
-            keep = legal.sum(1) > 1
-            obs.append(np.ascontiguousarray(o[keep])); masks.append(np.ascontiguousarray(m[keep]))
-            labels.append(h['label'][keep].astype(np.int64)); kings.append(h['king'][keep].astype(bool))
-            v = 0.0 if r['winner'] is None else (1.0 if r['winner'] == side else -1.0)
-            values.append(np.full(keep.sum(), v, np.float32))
+            if f.exists():
+                v = 0.0 if r['winner'] is None else (1.0 if r['winner'] == side else -1.0)
+                files.append((f, v))
         games += 1
         if max_games and games >= max_games:
             break
-    cat = lambda xs, dt=None: np.concatenate(xs) if xs else np.zeros((0,), dt)
-    return dict(obs=cat(obs), mask=cat(masks), label=cat(labels), value=cat(values), king=cat(kings), games=games)
+    cap = sum(_gz_records(f) for f, _ in files)
+    if baby_keep < 1:
+        cap = int(cap * (baby_keep + 0.08)) + 100000  # kings are ~5% of records; overflow is checked below
+    rng = np.random.default_rng(seed)
+    obs = np.empty((cap, OBS), np.uint8); mask = np.empty((cap, MASK_BYTES), np.uint8)
+    label = np.empty(cap, np.int64); value = np.empty(cap, np.float32); king = np.empty(cap, bool)
+    n = 0
+    for f, v in files:
+        h, o, m = read_records(f)
+        keep = unpack_mask(m, N_ACTIONS).sum(1) > 1
+        if baby_keep < 1:
+            keep &= (h['king'] != 0) | (rng.random(len(keep)) < baby_keep)
+        k = int(keep.sum())
+        if n + k > cap:
+            raise MemoryError(f'preallocated {cap} records is too small; raise the slack in load_split')
+        obs[n:n + k] = o[keep]; mask[n:n + k] = m[keep]
+        label[n:n + k] = h['label'][keep]; king[n:n + k] = h['king'][keep].astype(bool); value[n:n + k] = v
+        n += k
+    return dict(obs=obs[:n], mask=mask[:n], label=label[:n], value=value[:n], king=king[:n], games=games)
 
 
 def batches(n, bs, rng):
@@ -120,12 +139,13 @@ def main():
     ap.add_argument('--threads', type=int, default=8)
     ap.add_argument('--max-games', type=int)
     ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--baby-keep', type=float, default=1.0, help='fraction of non-king train records kept (RAM)')
     a = ap.parse_args()
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
     run, out = Path(a.run), Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
-    train, val = load_split(run, 'train', a.max_games), load_split(run, 'val', a.max_games and max(1, a.max_games // 9))
+    train, val = load_split(run, 'train', a.max_games, a.baby_keep, a.seed), load_split(run, 'val', a.max_games and max(1, a.max_games // 9))
     print(f"loaded train {len(train['label'])} recs/{train['games']} games, val {len(val['label'])}/{val['games']} in {time.time()-t0:.0f}s", flush=True)
     device = 'cpu'
     net = StudentNet(a.h1, a.h2)
