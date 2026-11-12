@@ -25,7 +25,7 @@ def source_spec(*,slot,map_name,seed,bot,map_file,engine_jar,bot_classes,hook_cl
     integer(seed)
     if seed>=2**31 or type(full_game) is not bool:raise ValueError('invalid source settings')
     # This API deliberately cannot silently graduate synthetic fixtures into teacher collection.
-    if bot not in ('imitationboundaryfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture','imitationfixture','imitationoverrunfixture'):raise ValueError('teacher protocol not registered')
+    if bot not in ('imitationmultifixture','imitationboundaryfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture','imitationfixture','imitationoverrunfixture'):raise ValueError('teacher protocol not registered')
     core={'schema':'synthetic-game-source-v1','slot':slot,'map':map_name,'seed':seed,'bot':bot,'full_game':full_game,
           'map_sha256':file_hash(map_file),'engine_sha256':file_hash(engine_jar),
           'bot_classes':tree_hashes(bot_classes),'hook_classes':tree_hashes(hook_classes),

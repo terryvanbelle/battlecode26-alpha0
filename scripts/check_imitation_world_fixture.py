@@ -70,7 +70,14 @@ def check(output,bot="imitationfixture",full_game=False):
             verify(output/'recording',output/'recording/completion.json',expected_roster=roster,game_id=spec['game_id'])
         rows=read_trace(output/'recording/trace.jsonl')
         lifecycle=bot in ('imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture')
-        if lifecycle:
+        if bot=='imitationmultifixture':
+            exits=json.loads((output/'recording/terminations.json').read_text())
+            robot_ids={r['robot_id'] for r in rows}
+            if len(robot_ids)<2:raise ValueError('multi-robot fixture failed to spawn/execute')
+            if not terminal:raise ValueError('multi-robot terminal fixture incomplete')
+            if not any(r['kind']=='action' and r['payload']['operation']=='buildRat' for r in rows):raise ValueError('spawn action missing')
+            if {x['robot'] for x in exits}!=robot_ids:raise ValueError('multi-robot exits differ')
+        elif lifecycle:
             expected=['action'] if bot in ('imitationdeathfixture','imitationresignfixture') else []
             assert [r['kind'] for r in rows]==expected
             exits=json.loads((output/'recording/terminations.json').read_text())
@@ -111,6 +118,6 @@ def check(output,bot="imitationfixture",full_game=False):
         return result
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--bot',choices=['imitationboundaryfixture','imitationfixture','imitationoverrunfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture'],default='imitationfixture')
+    parser.add_argument('--bot',choices=['imitationmultifixture','imitationboundaryfixture','imitationfixture','imitationoverrunfixture','imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture'],default='imitationfixture')
     parser.add_argument('--full-game',action='store_true')
     args=parser.parse_args();print(json.dumps(check(args.output,args.bot,args.full_game),indent=2))
