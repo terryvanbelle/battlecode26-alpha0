@@ -13,12 +13,14 @@ def test_java_journal_python_equivalence(tmp_path):
     jar = ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'
     sources = [ROOT / 'java/imitation/alpha0/imitation' / name for name in
                ('PrimitiveRecorder.java', 'RobotThreadRecorder.java', 'TraceJournal.java',
-                'JournalObserver.java', 'PublicObservation.java')]
+                'JournalObserver.java', 'PublicObservation.java', 'PauseReason.java')]
     sources.append(ROOT / 'tests/java/TraceJournalTest.java')
+    sources.append(ROOT / 'tests/java/PauseReasonTest.java')
     subprocess.run([str(ROOT / 'vendor/jdk/bin/javac'), '-cp', str(jar), '-d', str(classes),
                     *map(str, sources)], check=True, timeout=30, capture_output=True)
     subprocess.run([str(ROOT / 'vendor/jdk/bin/java'), '-cp', f'{classes}:{jar}',
                     'TraceJournalTest', str(tmp_path)], check=True, timeout=30, capture_output=True)
+    subprocess.run([str(ROOT / 'vendor/jdk/bin/java'), '-cp', f'{classes}:{jar}', 'PauseReasonTest'], check=True, timeout=30)
     rows = read_trace(tmp_path / 'trace.jsonl')
     seal = json.loads((tmp_path / 'seal.json').read_text())
     assert compare_complete(rows, rows, seal, seal)['training_approved'] is False

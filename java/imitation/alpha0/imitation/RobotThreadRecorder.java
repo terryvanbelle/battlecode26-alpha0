@@ -10,6 +10,7 @@ public final class RobotThreadRecorder {
     public interface Session extends PrimitiveRecorder.Observer {
         void turnEnded(RobotController rc, int chargedBytecodes);
         void terminated(RobotController rc, int chargedBytecodes);
+        default void turnEnded(RobotController rc,int chargedBytecodes,String reason){turnEnded(rc,chargedBytecodes);}
     }
     public interface Factory { Session create(RobotController rc, IntSupplier chargedBytecodes); }
     private record Bound(RobotController rc, Session session, IntSupplier budget) {}
@@ -43,7 +44,7 @@ public final class RobotThreadRecorder {
     /** Initial scheduler pause has no completed turn and must not produce a fake record. */
     public static void pausing() {
         Bound b=BOUND.get();if(b==null || !STARTED.get())return;
-        try {b.session.turnEnded(b.rc,b.budget.getAsInt());}catch(Throwable t){fail(t);}
+        try {b.session.turnEnded(b.rc,b.budget.getAsInt(),PauseReason.current());}catch(Throwable t){fail(t);}
     }
     public static void resumed(){if(BOUND.get()!=null)STARTED.set(true);}
     /** Never prevent the sandbox's finally block from notifying its scheduler. */

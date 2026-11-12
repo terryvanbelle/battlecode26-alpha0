@@ -1,0 +1,59 @@
+{
+  "scope": "real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence",
+  "bot": "imitationfixture",
+  "teacher_games": 0,
+  "complete_game": false,
+  "training_approved": false,
+  "records": 6,
+  "observations": 3,
+  "matched_bytecode_budgets": [
+    [
+      5,
+      1,
+      106
+    ],
+    [
+      5,
+      2,
+      107
+    ]
+  ],
+  "logs": {
+    "recording": "PASS real-world synthetic fixture recording budgets=[[5, 1, 106], [5, 2, 107]]",
+    "baseline": "PASS real-world synthetic fixture baseline budgets=[[5, 1, 106], [5, 2, 107]]"
+  },
+  "source_sha256": {
+    "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+    "tests/java/WorldJournalTest.java": "3f885f96da6d0e1085731ead26c5ec8a54af6500c2a287a7f283305f906f49ff",
+    "tests/java/imitationfixture/RobotPlayer.java": "1852c923a566aa284b8282c338870ae4b6fd017c269f6301bfb9b695e0e4ce0d"
+  },
+  "manifest_sha256": "f30fb3f735c30f3f3ba1c2a247bcafe4a42b15ca2cea3fefa252facc90f9af89",
+  "v11_identity_unchanged": true,
+  "tests_passed": 11,
+  "implementation_sha256": {
+    "java/imitation/alpha0/imitation/PrimitiveRecorder.java": "5550c7b9ee0edf25759f38ad58a33bca71e8d5d618cb4c289ec0df772acfad31",
+    "java/imitation/alpha0/imitation/TraceJournal.java": "e3b22276224ffdff368da9b47c2db0a74c09df924bc3165b7ecd0d0be1b93b3c",
+    "java/imitation/alpha0/imitation/PublicObservation.java": "f05247b163611aaccc6dc0a8f595ae394d07bd659d697bf9b12818ea58acdd50",
+    "java/imitation/alpha0/imitation/JournalObserver.java": "8f131b4000a915374721067727fff8bac0bef4bb8ef76f7dd3de79a0f71968a5",
+    "java/imitation/alpha0/imitation/RobotThreadRecorder.java": "3529ae221c666e1081da083987afe4e3acf8b5bef4b9c9c723f02207976904b7",
+    "java/imitation/alpha0/imitation/PauseReason.java": "7719fb69c19ebb2ea4a15b5a1a681d160e5481bcd8ee006eea9cc861a651e8d0",
+    "scripts/check_imitation_world_fixture.py": "22a38af92c1ba2f713b684ecc97fdfb35495dd85fa053cbacf57349fb1768ece",
+    "tests/java/PauseReasonTest.java": "0b4a197becf95a70ed18c7a39fbce999083812818dd77dca7aa8dbad5b921a64"
+  },
+  "files": {
+    "baseline/budgets.json": "c29e722218a379e63d13b5fc36561ed5d8ee36fb9a590824846159fe560d29a2",
+    "baseline/result.json": "9e6e2263399ace6b4a8edc65c8e4c4ab35acba164fc865ea3ed6b931fe27e60b",
+    "baseline/trace.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "baseline.stdout": "ae51922e261b15633403cb6d2d24caa3c00bd807ccee7a8f20db1b69025f08ed",
+    "manifest.json": "f30fb3f735c30f3f3ba1c2a247bcafe4a42b15ca2cea3fefa252facc90f9af89",
+    "recording/budgets.json": "c29e722218a379e63d13b5fc36561ed5d8ee36fb9a590824846159fe560d29a2",
+    "recording/observations/5427d38e7d71942fc72a3e7ca3f096997d06be928ba8d27c644e78776b057729.json": "5427d38e7d71942fc72a3e7ca3f096997d06be928ba8d27c644e78776b057729",
+    "recording/observations/7f367e1b9e172b7b3c1d4ab1ee790d72a1483089d4ddc47fd66e8458482d25a1.json": "7f367e1b9e172b7b3c1d4ab1ee790d72a1483089d4ddc47fd66e8458482d25a1",
+    "recording/observations/9f9bab0db4ffa042f8db2fe80df85fc57c1489e7ba6e0fdebd7dfba8efdbc408.json": "9f9bab0db4ffa042f8db2fe80df85fc57c1489e7ba6e0fdebd7dfba8efdbc408",
+    "recording/result.json": "71570547ca1ef57898bf19fc67f69e6ad283f7e090ede655ee84ab6013e86d1b",
+    "recording/trace.jsonl": "8d4705fc657054aebf3b2c2337b86b707b5a7f6131c9605f8428da3e71cb29ca",
+    "recording.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recording.stdout": "f23d270910139fa328ad14c72e19c30eeaa30157450cea37f3e35e1e77bf748d"
+  }
+}

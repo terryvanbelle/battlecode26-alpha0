@@ -641,3 +641,7 @@ Verified no matching research actors, all15 shared locks free, and user zdb STOP
 ## Imitation real-world fixture, November 12
 
 Added a shared-lock-protected isolated paired harness using actual GameWorld/controller hooks and a synthetic bot for two rounds. Four actions/two turn ends/three public observations validate through Python; original-jar baseline and recording match charged budgets106,107. No completion seal or teacher game; physical diagnostic hash is explicitly partial. All11 existing schema/build/transport tests pass and V11 identity remains unchanged. Raw evidence: diagnostics/zdb-imitation-planning/world-journal-fixture/review.json. General terminal/death/overrun lifecycle handling remains required before preregistered teacher equivalence.
+
+## Imitation pause-reason integration, November 12
+
+No research actors;15locks free;zdb STOP preserved. Added fail-closed nearest-monitor-caller classification for yield versus bytecode exhaustion. Real GameWorld pairs match original-jar budgets: voluntary yields106/107, deliberate overruns20000/20000. Python validates every journal/observation hash;11 tests pass and V11 identity unchanged. Separate raw proof under diagnostics/zdb-imitation-planning/world-overrun-v1 and world-yield-reason-v1. No terminal seal, teacher collection or training; death/resignation/exception lifecycle and complete physical/terminal proof remain pending.
