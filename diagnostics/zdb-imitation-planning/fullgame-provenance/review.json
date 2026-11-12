@@ -1,0 +1,49 @@
+{
+  "scope": "real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence",
+  "source_game_id": "ef16f7e7881b40b9ff067ff3e528b37893e7145fb0086e1142156c986ac4984b",
+  "invocation_ids": {
+    "baseline": "ff2abbd93ca5d8ff748fd53fe97e5fa972e6ad04c3da4444ba8421307b7bca08",
+    "recording": "ed3095a441c46fdb7c27aed6330d94b459c707700ccbbc357cfa3851dbcdd6f4"
+  },
+  "wall_seconds": {
+    "recording": 0.9719997030042578,
+    "baseline": 1.2385674170218408
+  },
+  "full_game_requested": true,
+  "world_audit_equal": true,
+  "terminal_proof_equal": true,
+  "bot": "imitationresignfixture",
+  "teacher_games": 0,
+  "complete_game": false,
+  "training_approved": false,
+  "records": 1,
+  "sandbox_exits": [
+    {
+      "budget": 1,
+      "exception": "battlecode.instrumenter.RobotDeathException",
+      "outcome": "robot_death_signal",
+      "robot": 5,
+      "round": 1,
+      "team": "A",
+      "turn_open": true
+    }
+  ],
+  "observations": 1,
+  "matched_bytecode_budgets": [
+    [
+      5,
+      1,
+      0
+    ]
+  ],
+  "logs": {
+    "recording": "PASS real-world synthetic fixture recording budgets=[[5, 1, 0]]",
+    "baseline": "PASS real-world synthetic fixture baseline budgets=[[5, 1, 0]]"
+  },
+  "source_sha256": {
+    "java/alpha0/NoopGameMaker.java": "b17f0625dfadb500a20dcfa6ad859a7c02db6f0c632c0d34887dd8c6cd5db1f8",
+    "tests/java/WorldJournalTest.java": "2a1aef69e538ff41b7aca8362ce650388b50c6c9318cdf6584d24e165acef65d",
+    "tests/java/imitationresignfixture/RobotPlayer.java": "8d0ce63f469ad8cd919e0e67d021f9a99ba892b0cd17c18af03265f0a5c1e646"
+  },
+  "manifest_sha256": "9de12d97a8553072fec7e7ff13c93c40361ad18c9dc0335445eba8cdeceda0f1"
+}

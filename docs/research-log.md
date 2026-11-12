@@ -657,3 +657,7 @@ Implemented separate audit-only world graph/RNG capture with explicit runtime/ca
 ## Imitation terminal completion seals, November 12
 
 Implemented separate audit-only terminal closure schema preserving last-recorded versus absent observations; no invented post-death sensing. All four synthetic terminal fixtures independently seal/verify with complete recorded roster and verified physical terminal proof.23tests pass, raw archive isolated-restored, V11identity unchanged. No teacher collection/SGD. Full-game identity/provenance/seed preregistration and teacher-equivalence/timing gates remain. Evidence: diagnostics/zdb-imitation-planning/terminal-completion/review.json.
+
+## Imitation full-game provenance prototype, November 12
+
+Replaced placeholder game identity in new fixtures with pinned source-derived identity and distinct mode invocation IDs. Before/after runtime artifact checks plus engine source echo pass. Full-game mode completed one-round synthetic resignation, matching physical/terminal evidence and seals;31tests pass, V11unchanged.64MiBaudit cap added. No teacher collection/SGD. Recovery and source proof: diagnostics/zdb-imitation-planning/fullgame-provenance. Full teacher schedule/seed inventory/JVM pins/independent baseline action evidence and competence preregistration remain required.

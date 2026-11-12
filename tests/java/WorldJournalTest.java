@@ -1,4 +1,5 @@
 import alpha0.NoopGameMaker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import alpha0.imitation.*;
 import battlecode.common.*;
 import battlecode.crossplay.CrossPlayLanguage;
@@ -12,13 +13,15 @@ import java.util.*;
 /** Real GameWorld, synthetic bot, two rounds only. Deliberately never seals a game. */
 public class WorldJournalTest {
  static GameWorld world;
+ static long storedAuditBytes;
+ static final long AUDIT_CAP=64L*1024*1024;
  static Path outputDirectory;
  static final List<Object> auditSequence=new ArrayList<>();
  static String saveAudit()throws IOException {
   var state=WorldAudit.capture(world);byte[] bytes=TraceJournal.canonical(state);
   if(!Arrays.equals(bytes,TraceJournal.canonical(WorldAudit.capture(world))))throw new AssertionError("audit mutated world");
   String sha=TraceJournal.digest(state);Path p=outputDirectory.resolve("world-audits").resolve(sha+".json");
-  if(!Files.exists(p))Files.write(p,bytes,StandardOpenOption.CREATE_NEW);
+  if(!Files.exists(p)){if(bytes.length>AUDIT_CAP-storedAuditBytes)throw new IOException("audit storage cap");Files.write(p,bytes,StandardOpenOption.CREATE_NEW);storedAuditBytes+=bytes.length;}
   return sha;
  }
  static final List<Object> roster=new ArrayList<>();
@@ -32,8 +35,11 @@ public class WorldJournalTest {
  }
  public static void main(String[] args)throws Exception {
   Config.setGlobalConfig(new Config(new String[0]));
+  var source=args.length>4?new ObjectMapper().readTree(Files.readString(Path.of(args[4]))):null;
+  String gameId=source==null?"a".repeat(64):source.get("game_id").asText();TraceJournal.hash(gameId);
+  boolean fullGame=source!=null && source.get("full_game").asBoolean();
   boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);outputDirectory=output;Files.createDirectory(output.resolve("world-audits"));
-  try(TraceJournal journal=new TraceJournal(output.resolve("trace.jsonl"),"a".repeat(64),8*1024*1024)) {
+  try(TraceJournal journal=new TraceJournal(output.resolve("trace.jsonl"),gameId,8*1024*1024)) {
    var store=new JournalObserver.ObservationStore(output.resolve("observations"),8*1024*1024);
    if(recording)RobotThreadRecorder.configure((rc,budget)->{
     var observer=new JournalObserver(journal,store,budget);
@@ -56,15 +62,18 @@ public class WorldJournalTest {
      }
     };
    });
-   var map=GameMapIO.loadMap("tiny",new File("maps"),false);
+   var map=GameMapIO.loadMap(source==null?"tiny":source.get("map").asText(),new File("maps"),false);
+   if(source!=null){var seedField=LiveMap.class.getDeclaredField("seed");seedField.setAccessible(true);seedField.setInt(map,source.get("seed").asInt());}
+   if(source!=null)Files.writeString(output.resolve("source-spec.json"),source.toString(),StandardOpenOption.CREATE_NEW);
    InternalRobot.rand=new Random(1092);
    var controls=new TeamControlProvider();controls.registerControlProvider(Team.A,new Player(args[0],bot));
    controls.registerControlProvider(Team.B,new NullControlProvider());controls.registerControlProvider(Team.NEUTRAL,new NullControlProvider());
    var info=new GameInfo("fixture",CrossPlayLanguage.JAVA,"fixture",null,"null",CrossPlayLanguage.JAVA,"null",null,new String[]{"tiny"},null,false);
    world=new GameWorld(map,controls,new NoopGameMaker(info).getMatchMaker());
-   try{for(int i=0;i<2;i++){world.runRound();if(!world.isRunning())break;}}
+   try{for(int i=0;i<(fullGame?GameConstants.GAME_MAX_NUMBER_OF_ROUNDS:2);i++){world.runRound();if(!world.isRunning())break;}}
    finally{controls.matchEnded();}
    RobotThreadRecorder.requireHealthy();
+   if(fullGame && world.isRunning())throw new AssertionError("full-game source did not finish");
    String finalAudit=saveAudit();
    Files.write(output.resolve("world-audit.json"),TraceJournal.canonical(WorldAudit.capture(world)));
    Files.write(output.resolve("world-audit-sequence.json"),TraceJournal.canonical(auditSequence));
