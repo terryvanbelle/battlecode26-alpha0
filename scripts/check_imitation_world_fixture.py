@@ -6,6 +6,7 @@ sys.path.insert(0,str(ROOT))
 from alpha0.env import JAVA_OPENS
 from alpha0.expanded_v11_run import LOCKS, STOPS
 from alpha0.imitation.trace import read_trace, digest
+from alpha0.imitation.terminal import validate_terminal
 from scripts.build_imitation_hooks import build
 
 def check(output,bot="imitationfixture"):
@@ -28,6 +29,17 @@ def check(output,bot="imitationfixture"):
             (output/f'{mode}.stdout').write_text(result.stdout);(output/f'{mode}.stderr').write_text(result.stderr)
             if result.returncode:raise RuntimeError(f'{mode} failed; retained logs')
             logs[mode]=result.stdout.strip()
+        assert (output/'recording/world-audit.json').read_bytes()==(output/'baseline/world-audit.json').read_bytes()
+        assert (output/'recording/world-audit-sequence.json').read_bytes()==(output/'baseline/world-audit-sequence.json').read_bytes()
+        for mode in ('recording','baseline'):
+            for path in (output/mode/'world-audits').glob('*.json'):
+                assert digest(json.loads(path.read_text()))==path.stem
+        terminal=(output/'recording/terminal-proof.json').exists()
+        assert terminal==(output/'baseline/terminal-proof.json').exists()
+        if terminal:
+            assert (output/'recording/terminal-proof.json').read_bytes()==(output/'baseline/terminal-proof.json').read_bytes()
+            for mode in ('recording','baseline'):
+                validate_terminal(json.loads((output/mode/'terminal-proof.json').read_text()),json.loads((output/mode/'world-audit.json').read_text()))
         rows=read_trace(output/'recording/trace.jsonl')
         lifecycle=bot in ('imitationdeathfixture','imitationresignfixture','imitationexceptionfixture','imitationreturnfixture')
         if lifecycle:
@@ -52,9 +64,10 @@ def check(output,bot="imitationfixture"):
         for path in observations:
             assert digest(json.loads(path.read_text()))==path.stem
         for row in rows:
+            if row['kind']=='turn_end':assert (output/'recording/world-audits'/f"{row['payload']['physical_state_sha256']}.json").is_file()
             assert (output/'recording/observations'/f"{row['payload']['public_observation_sha256']}.json").is_file()
         result={'scope':'real GameWorld, synthetic bot, two nonterminal rounds; not teacher equivalence',
-                'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
+                'world_audit_equal':True,'terminal_proof_equal':terminal,'bot':bot,'teacher_games':0,'complete_game':False,'training_approved':False,'records':len(rows),
                 'sandbox_exits':exits,'observations':len(observations),'matched_bytecode_budgets':budgets,'logs':logs,
                 'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},
                 'manifest_sha256':hashlib.sha256((output/'manifest.json').read_bytes()).hexdigest()}

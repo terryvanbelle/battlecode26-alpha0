@@ -12,15 +12,25 @@ import java.util.*;
 /** Real GameWorld, synthetic bot, two rounds only. Deliberately never seals a game. */
 public class WorldJournalTest {
  static GameWorld world;
+ static Path outputDirectory;
+ static final List<Object> auditSequence=new ArrayList<>();
+ static String saveAudit()throws IOException {
+  var state=WorldAudit.capture(world);byte[] bytes=TraceJournal.canonical(state);
+  if(!Arrays.equals(bytes,TraceJournal.canonical(WorldAudit.capture(world))))throw new AssertionError("audit mutated world");
+  String sha=TraceJournal.digest(state);Path p=outputDirectory.resolve("world-audits").resolve(sha+".json");
+  if(!Files.exists(p))Files.write(p,bytes,StandardOpenOption.CREATE_NEW);
+  return sha;
+ }
  static final List<Object> budgets=new ArrayList<>();
  static final List<Object> terminations=new ArrayList<>();
  static class Player extends PlayerControlProvider {
   Player(String classes,String bot){super(Team.A,bot,CrossPlayLanguage.JAVA,null,classes,new ByteArrayOutputStream(),false);}
-  public void runRobot(InternalRobot r){super.runRobot(r);budgets.add(List.of(r.getID(),world.getCurrentRound(),getBytecodesUsed(r)));}
+  public void runRobot(InternalRobot r){super.runRobot(r);budgets.add(List.of(r.getID(),world.getCurrentRound(),getBytecodesUsed(r)));
+   try{auditSequence.add(List.of(r.getID(),world.getCurrentRound(),saveAudit()));}catch(IOException e){throw new UncheckedIOException(e);}}
  }
  public static void main(String[] args)throws Exception {
   Config.setGlobalConfig(new Config(new String[0]));
-  boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);
+  boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);outputDirectory=output;Files.createDirectory(output.resolve("world-audits"));
   try(TraceJournal journal=new TraceJournal(output.resolve("trace.jsonl"),"a".repeat(64),8*1024*1024)) {
    var store=new JournalObserver.ObservationStore(output.resolve("observations"),8*1024*1024);
    if(recording)RobotThreadRecorder.configure((rc,budget)->{
@@ -34,7 +44,7 @@ public class WorldJournalTest {
       String expected=bot.equals("imitationoverrunfixture")?"overrun":"yield";
       if(!reason.equals(expected))throw new IllegalStateException("unexpected fixture pause reason");
       // Minimal diagnostic hash only; not a complete physical-state proof.
-      try{observer.endTurn(r,TraceJournal.digest(Map.of("round",world.getCurrentRound(),"robot",r.getID())),reason,n);}
+      try{observer.endTurn(r,saveAudit(),reason,n);}
       catch(IOException e){throw new UncheckedIOException(e);}
      }
      public void terminated(RobotController r,int n){throw new AssertionError("missing exit cause");}
@@ -53,6 +63,19 @@ public class WorldJournalTest {
    try{for(int i=0;i<2;i++){world.runRound();if(!world.isRunning())break;}}
    finally{controls.matchEnded();}
    RobotThreadRecorder.requireHealthy();
+   String finalAudit=saveAudit();
+   Files.write(output.resolve("world-audit.json"),TraceJournal.canonical(WorldAudit.capture(world)));
+   Files.write(output.resolve("world-audit-sequence.json"),TraceJournal.canonical(auditSequence));
+   if(!world.isRunning()) {
+    if(world.getWinner()==null || world.getGameStats().getDominationFactor()==null)throw new AssertionError("missing terminal result");
+    Files.write(output.resolve("terminal-proof.json"),TraceJournal.canonical(Map.of("schema","synthetic-world-terminal-v1","world_terminal",true,"winner",world.getWinner().name(),"reason",world.getGameStats().getDominationFactor().name(),"round",world.getCurrentRound(),"physical_state_sha256",finalAudit,"training_approved",false)));
+   }
+   // Check sensitivity to hidden shared state; restore it before accepting the fixture.
+   var sharedField=GameWorld.class.getDeclaredField("sharedArray");sharedField.setAccessible(true);
+   int[][] shared=(int[][])sharedField.get(world);int prior=shared[0][0];shared[0][0]=prior^1;
+   if(TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("shared state omitted");
+   shared[0][0]=prior;
+   if(!TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("state restore failed");
    Files.write(output.resolve("terminations.json"),TraceJournal.canonical(terminations));
    Files.write(output.resolve("budgets.json"),TraceJournal.canonical(budgets));
    Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording,"world_terminal",!world.isRunning(),"winner",world.getWinner()==null?"none":world.getWinner().name())));

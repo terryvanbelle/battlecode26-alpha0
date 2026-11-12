@@ -649,3 +649,7 @@ No research actors;15locks free;zdb STOP preserved. Added fail-closed nearest-mo
 ## Imitation actual exit lifecycle, November 12
 
 Added isolated sandbox outcome/cause callbacks and open-turn tracking. Six synthetic real-world pairs match original-jar scheduler budgets and terminal/winner/round results. Shutdown-wake open-turn bug caught by two failed regression fixtures, fixed using individual monitor shouldDie, all originals retained. Evidence: diagnostics/zdb-imitation-planning/termination-lifecycle/review.json.11tests pass,V11identity unchanged. Raw death signals deliberately not mapped blindly to physical death; resignation scheduler0/monitor1 distinction retained. No seals/teacher collection/SGD; complete physical proof and terminal journal integration remain pending.
+
+## Imitation world audit and terminal proof, November 12
+
+Implemented separate audit-only world graph/RNG capture with explicit runtime/cache exclusions and lossless typed array compression. Six synthetic lifecycle pairs match per-robot/final audit bytes; four terminal proofs match.15tests pass, including rehashed live-state/wrong-round/forged-winner rejection; hidden shared-state mutation sensitivity and nonmutation checks pass. All diagnostic generations archived with per-file hashes and isolated restore; V11identity unchanged. No teacher games or SGD. Full terminal-turn journal/seal semantics remain pending; proof alone cannot authorize training. See diagnostics/zdb-imitation-planning/world-audit/review.json.
