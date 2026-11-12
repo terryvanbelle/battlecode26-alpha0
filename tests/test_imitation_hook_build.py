@@ -1,5 +1,5 @@
 import unittest
-from scripts.build_imitation_hooks import transform,SOURCE
+from scripts.build_imitation_hooks import transform,transform_sandbox,SOURCE
 from alpha0.imitation.trace import OPERATIONS
 class HookBuildTests(unittest.TestCase):
  def test_exact_primitive_inventory_and_missing_method_rejected(self):
@@ -7,6 +7,12 @@ class HookBuildTests(unittest.TestCase):
   self.assertEqual(sorted(found),sorted(OPERATIONS));self.assertEqual(len(found),23)
   self.assertEqual(generated.count('PrimitiveRecorder.begin('),23)
   with self.assertRaises(ValueError):transform(source.replace('public void resign()', 'public void missingResign()'))
+ def test_robot_thread_hooks_are_scoped_to_pauser(self):
+  source=(SOURCE.parents[1]/'instrumenter/SandboxedRobotPlayer.java').read_text();out=transform_sandbox(source)
+  for method in ('attach','pausing','resumed','detach'):self.assertEqual(out.count('RobotThreadRecorder.'+method+'('),1)
+  pause=out[out.index('final Pauser pauser'):out.index('final Killer killer')]
+  self.assertIn('RobotThreadRecorder.pausing()',pause);self.assertIn('RobotThreadRecorder.resumed()',pause)
+  with self.assertRaises(ValueError):transform_sandbox(source.replace('notifier.wait();','notifier.wait(1);'))
  def test_overloads_keep_original_bodies(self):
   generated,_=transform(SOURCE.read_text())
   self.assertIn('private void _imitationOriginal_attack(MapLocation loc)',generated)

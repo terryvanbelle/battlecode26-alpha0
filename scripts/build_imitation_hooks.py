@@ -37,18 +37,39 @@ def transform(source):
     for a,b,text in reversed(edits):source=source[:a]+text+source[b:]
     return source,found
 
+def transform_sandbox(source):
+    begin=source.index('final Pauser pauser = () -> {')
+    end=source.index('final Killer killer = () -> {',begin)
+    pause=source[begin:end]
+    for old,new in {
+        'synchronized (notifier) {':'alpha0.imitation.RobotThreadRecorder.pausing();\n                synchronized (notifier) {',
+        'notifier.wait();':'notifier.wait();\n                    alpha0.imitation.RobotThreadRecorder.resumed();',
+    }.items():
+        if pause.count(old)!=1:raise ValueError('pauser lifecycle contract changed')
+        pause=pause.replace(old,new)
+    source=source[:begin]+pause+source[end:]
+    for old,new in {
+        'initMethod.invoke(null, pauser, killer, this.seed, profiler, provider);':'initMethod.invoke(null, pauser, killer, this.seed, profiler, provider);\n                alpha0.imitation.RobotThreadRecorder.attach(robotController, getBytecodeNumMethod);',
+        "// Ensure that we know we're terminated.":"alpha0.imitation.RobotThreadRecorder.detach();\n                // Ensure that we know we're terminated.",
+    }.items():
+        if source.count(old)!=1:raise ValueError('sandbox lifecycle contract changed')
+        source=source.replace(old,new)
+    return source
+
 def build(output):
     output=Path(output).resolve()
     if output.exists():raise ValueError('exclusive build directory already exists')
     if not output.is_relative_to(ROOT/'build/imitation'):raise ValueError('isolated namespace required')
     source_hash=hashlib.sha256(SOURCE.read_bytes()).hexdigest();text,ops=transform(SOURCE.read_text())
     generated=output/'src/battlecode/world/RobotControllerImpl.java';generated.parent.mkdir(parents=True);generated.write_text(text)
+    sandbox_source=ROOT/'vendor/engine/src/battlecode/instrumenter/SandboxedRobotPlayer.java'
+    sandbox=output/'src/battlecode/instrumenter/SandboxedRobotPlayer.java';sandbox.parent.mkdir(parents=True);sandbox.write_text(transform_sandbox(sandbox_source.read_text()))
     classes=output/'classes';classes.mkdir()
     hook=ROOT/'java/imitation/alpha0/imitation/PrimitiveRecorder.java'
     jar=ROOT/'vendor/engine/battlecode26-java-1.2.6.jar'
-    subprocess.run([str(ROOT/'vendor/jdk/bin/javac'),'-cp',str(jar),'-d',str(classes),str(hook),str(ROOT/'java/imitation/alpha0/imitation/PublicObservation.java'),str(generated)],check=True,timeout=120)
+    subprocess.run([str(ROOT/'vendor/jdk/bin/javac'),'-cp',str(jar),'-d',str(classes),*[str(p) for p in sorted((ROOT/'java/imitation/alpha0/imitation').glob('*.java'))],str(generated),str(sandbox)],check=True,timeout=120)
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()==source_hash
-    record={'isolated_build':str(output.relative_to(ROOT)),'primitive_operations':ops,'source_sha256':source_hash,'hook_sha256':hashlib.sha256(hook.read_bytes()).hexdigest(),'observation_sha256':hashlib.sha256((ROOT/'java/imitation/alpha0/imitation/PublicObservation.java').read_bytes()).hexdigest(),'generated_sha256':hashlib.sha256(generated.read_bytes()).hexdigest(),'classes':{str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest() for p in classes.rglob('*.class')},'engine_equivalence_proven':False,'teacher_games':0,'training_enabled':False}
+    record={'isolated_build':str(output.relative_to(ROOT)),'primitive_operations':ops,'source_sha256':source_hash,'hook_sha256':hashlib.sha256(hook.read_bytes()).hexdigest(),'observation_sha256':hashlib.sha256((ROOT/'java/imitation/alpha0/imitation/PublicObservation.java').read_bytes()).hexdigest(),'sandbox_source_sha256':hashlib.sha256(sandbox_source.read_bytes()).hexdigest(),'sandbox_generated_sha256':hashlib.sha256(sandbox.read_bytes()).hexdigest(),'thread_recorder_sha256':hashlib.sha256((ROOT/'java/imitation/alpha0/imitation/RobotThreadRecorder.java').read_bytes()).hexdigest(),'generated_sha256':hashlib.sha256(generated.read_bytes()).hexdigest(),'classes':{str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest() for p in classes.rglob('*.class')},'engine_equivalence_proven':False,'teacher_games':0,'training_enabled':False}
     (output/'manifest.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record,indent=2));return record
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--output',required=True,type=Path);build(p.parse_args().output)
