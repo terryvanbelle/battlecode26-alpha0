@@ -1,0 +1,16 @@
+{
+  "stage": "schema_and_saved_trace_equivalence_only",
+  "tests_passed": 7,
+  "synthetic_tests": true,
+  "engine_integration_complete": false,
+  "engine_equivalence_proven": false,
+  "teacher_games": 0,
+  "gradient_updates": 0,
+  "training_enabled": false,
+  "files": {
+    "alpha0/imitation/trace.py": "19ba8d9f198794b511081344f02137afcd9e593b94e8d770447cf7c40a8193d4",
+    "tests/test_imitation_trace.py": "4e07a9c20d3733d73e8685094fbefb27c35fc8de1ce3c35e85d13ade08b7a7e7",
+    "vendor/engine/src/battlecode/common/RobotController.java": "0b417b6fd6cb5d743b7f373d647fc44c827794a408a8e373806909be8c05c3da",
+    "vendor/engine/src/battlecode/world/RobotControllerImpl.java": "d60c0a6a225134defab9669cfd3c2001b0771b2cfd54f67b5350fd80a203004f"
+  }
+}
