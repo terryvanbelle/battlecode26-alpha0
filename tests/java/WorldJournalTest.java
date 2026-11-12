@@ -13,6 +13,8 @@ import java.util.*;
 /** Real GameWorld, synthetic bot, two rounds only. Deliberately never seals a game. */
 public class WorldJournalTest {
  static GameWorld world;
+ static boolean proxyMode;
+ static final ControllerCallAudit callAudit=new ControllerCallAudit();
  static long storedAuditBytes;
  static final long AUDIT_CAP=64L*1024*1024;
  static Path outputDirectory;
@@ -29,7 +31,16 @@ public class WorldJournalTest {
  static final List<Object> terminations=new ArrayList<>();
  static class Player extends PlayerControlProvider {
   Player(String classes,String bot){super(Team.A,bot,CrossPlayLanguage.JAVA,null,classes,new ByteArrayOutputStream(),false);}
-  public void robotSpawned(InternalRobot r){roster.add(Map.of("robot",r.getID(),"team",r.getTeam().name()));super.robotSpawned(r);}
+  public void robotSpawned(InternalRobot r){roster.add(Map.of("robot",r.getID(),"team",r.getTeam().name()));if(!proxyMode){super.robotSpawned(r);return;}
+   try {
+    var factoryField=PlayerControlProvider.class.getDeclaredField("factory");factoryField.setAccessible(true);
+    var factory=(battlecode.instrumenter.TeamClassLoaderFactory)factoryField.get(this);
+    var packageField=PlayerControlProvider.class.getDeclaredField("teamPackage");packageField.setAccessible(true);
+    var player=new battlecode.instrumenter.SandboxedRobotPlayer((String)packageField.get(this),CrossPlayLanguage.JAVA,null,callAudit.wrap(r.getController()),r.getID(),factory.createLoader(false),new ByteArrayOutputStream(),null,this);
+    var field=PlayerControlProvider.class.getDeclaredField("sandboxes");field.setAccessible(true);
+    ((Map<Integer,battlecode.instrumenter.SandboxedRobotPlayer>)field.get(this)).put(r.getID(),player);
+   }catch(ReflectiveOperationException e){throw new IllegalStateException(e);}
+  }
   public void runRobot(InternalRobot r){super.runRobot(r);budgets.add(List.of(r.getID(),world.getCurrentRound(),getBytecodesUsed(r)));
    try{auditSequence.add(List.of(r.getID(),world.getCurrentRound(),saveAudit()));}catch(IOException e){throw new UncheckedIOException(e);}}
  }
@@ -38,6 +49,7 @@ public class WorldJournalTest {
   var source=args.length>4?new ObjectMapper().readTree(Files.readString(Path.of(args[4]))):null;
   String gameId=source==null?"a".repeat(64):source.get("game_id").asText();TraceJournal.hash(gameId);
   boolean fullGame=source!=null && source.get("full_game").asBoolean();
+  proxyMode=args[2].equals("proxy");
   boolean recording=args[2].equals("recording");String bot=args.length>3?args[3]:"imitationfixture";Path output=Path.of(args[1]);Files.createDirectory(output);outputDirectory=output;Files.createDirectory(output.resolve("world-audits"));
   try(TraceJournal journal=new TraceJournal(output.resolve("trace.jsonl"),gameId,8*1024*1024)) {
    var store=new JournalObserver.ObservationStore(output.resolve("observations"),8*1024*1024);
@@ -90,6 +102,7 @@ public class WorldJournalTest {
    if(!TraceJournal.digest(WorldAudit.capture(world)).equals(finalAudit))throw new AssertionError("state restore failed");
    Files.write(output.resolve("recorder-roster.json"),TraceJournal.canonical(roster));
    Files.write(output.resolve("terminations.json"),TraceJournal.canonical(terminations));
+   callAudit.save(output.resolve("controller-calls.json"));
    replayAudit.save(output.resolve("replay-audit.json"));
    Files.write(output.resolve("budgets.json"),TraceJournal.canonical(budgets));
    Files.write(output.resolve("result.json"),TraceJournal.canonical(Map.of("round",world.getCurrentRound(),"complete",false,"teacher_games",0,"recording",recording,"world_terminal",!world.isRunning(),"winner",world.getWinner()==null?"none":world.getWinner().name())));
