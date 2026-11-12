@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "phase": "imitation_pilot_implementation",
+  "teacher_games": 0,
+  "sgd_started": false,
+  "active_owner": null,
+  "latest_scientific_result": "V11 complete: cp2 81W175L, terminal70W186L, PUCT71W185L; both candidates failed; no confirmation/promotion",
+  "latest_user_direction": "Reasonable imitation-only gameplay before RL, not exact zdb fidelity. Engineering budgets may be relaxed. Work independently with economical recurring continuation.",
+  "next_actions": [
+    "Freeze a modest fresh teacher collection pilot, whole-game split, model/data settings and practical gameplay gate; inventory seeds before launch.",
+    "Implement lean teacher collection and public-observation tensor encoder; primitive target codec is alpha0/imitation/actions.py. Freeze model/data interface before collecting pilot.",
+    "Build student input/action encoding and encoder-policy fit, train only once the entire pilot dataset passes integrity checks.",
+    "Evaluate frozen imitation-only model against matched untrained model and simple independent opponents, then proceed to RL when practical gate passes."
+  ],
+  "stop_reason": null,
+  "protocol": "docs/zdb-imitation-next-experiment.md",
+  "continuation_rules": "docs/research-continuation.md",
+  "last_completed": "Hourly automation compacted/enabled; read-only status probe added. Primitive student action codec implemented;31 round-trip/malformed-target tests pass. No teacher games/SGD.",
+  "automation_id": "Automation_eb84926478f4819194cb4df1911c4e59",
+  "automation_cadence": "hourly"
+}

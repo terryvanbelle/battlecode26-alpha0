@@ -705,3 +705,9 @@ Single-invocation wall times were3.331s recording and2.250s baseline, including 
 ## User correction: practical imitation initialization, November 12
 
 The user authorizes relaxing engineering budgets and clarifies that reasonable behavior before RL, not exact zdb imitation, is the objective. Updated the top-level imitation protocol and competence section to supersede exact teacher-equivalence and perfect-expressibility gates. Future full-state/three-way comparisons are optional targeted diagnostics. Prioritize a modest complete fresh demonstration pilot, encoder/policy fit and preregistered practical gameplay check, then RL. Historical evidence, legal-input/data-integrity requirements and development-v4 gates remain unchanged. No games or SGD launched in this protocol amendment. Managed disk inspection showed25GiB available; all15locks free and zdbSTOP intact.
+
+## Economical continuation and student targets, November12
+
+Reused the existing hourly automation, replacing its obsolete long handoff with a1228-character prompt and repo-based current-state JSON. Each wake checks actual actor/cwd/locks/STOPs, then advances substantive work; no duplicate actors or blind retries. The automation is a recovery mechanism, not a guarantee of uninterrupted execution during managed-host suspension. Added read-only scripts/research_status.py and docs/research-continuation.md.
+
+Started the student implementation with primitive-byte-arguments-v1:23 primitive operation variants plus END_TURN; relative location arguments, direction tokens and exact signed-int32 byte targets.31tests pass for every operation, translation invariance, signed message extremes and malformed target rejection. This is a codec, not a trained model or accepted dataset. Public-observation encoder, pilot registration and lean collection are next; no teacher games/SGD.
