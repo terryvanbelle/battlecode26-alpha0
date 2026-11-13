@@ -1,8 +1,8 @@
 """Constants mirrored from java/student/alpha0/student/{Obs,Actions,Records}.java."""
-OBS_VERSION = 'student-obs-v2'
-L, CL, G, CG, NS = 11, 16, 16, 8, 48
+OBS_VERSION = 'student-obs-v3'
+L, CL, G, CG, NS = 11, 17, 16, 8, 52
 LOCAL, GLOBAL = L * L * CL, G * G * CG
-OBS = LOCAL + GLOBAL + NS                       # 4032 (obs-v2)
+OBS = LOCAL + GLOBAL + NS                       # 4157 (obs-v3)
 TC = 49
 NT = 11
 TARGET0 = 17

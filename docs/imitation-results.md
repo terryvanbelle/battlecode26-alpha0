@@ -12,6 +12,8 @@ The check is 32 games: 8 training-distribution maps (mincemeat, jail, rift, pipe
 | student-v2 | + teacher-v2 (400 games, kings every turn) | 0.863 | 0/32 | 1/32 |
 | student-v3 | + teacher-v3-dagger (400 DAgger games, student-v2 at T=1.0 plays 50% of zdb turns) | 0.854* | 2/32 | 0/32 |
 | student-v4 | + teacher-v4-dagger (DAgger with student-v3, rare baby states always recorded) | 0.846* | – | 0/32 |
+| student-v5 | obs-v2 (team board); teacher-v5, 500 pure zdb games | 0.839 | – | 0/32 |
+| student-v7 | obs-v3 (enemy memory); teacher-v7, 500 pure zdb games | running | | |
 
 \* Validation for v3 and v4 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
 
@@ -66,3 +68,19 @@ Observation v1 held only what each robot had seen itself, so these decisions loo
 - Enemy-king sightings are published.
 
 Every robot reads the board as relative vectors to the nearest live king, the alert and the enemy king, plus a "within defend range of a fresh alert" flag. The student can run the same protocol itself in a tournament. Babies in defend range are now always recorded. The obs-v1 data cannot be reused, so the pipeline restarts: teacher-v5 (500 pure zdb games), student-v5, a DAgger round (teacher-v6-dagger, 400 games with student-v5), student-v6, then the zdb check and the gate ([script](../scripts/pipeline_obs_v2.sh)).
+
+**student-v5 (obs-v2): still 0/32.** Long maps are about as before: jail 46–53 to 48–51, pipes 48–51 in two games. The small maps were still lost. Changing the sampling temperature (0, 0.3, 0.6, 1.0) didn't change the outcome on thunderdome, sunandmoon or gridlock. The obs-v2 DAgger round was stopped at 35/400 games after the next finding.
+
+**Per-round traces found the mechanism.** Game.java gained `--trace N`, which writes a per-round table plus the student's death log. On gridlock (seed 23, T=1.0):
+- Both sides hold 12 babies at round 20. By round 45 the student is down to 2, while zdb still has 12 and has spent only about 80 cheese.
+- Most dead student babies had "turns since thrown or dropped" = 0, so zdb was grabbing and throwing them.
+
+The engine lets a rat grab an enemy that can't see it, or one that is weaker by more than a health threshold. zdb guards against this by turning to face the nearest enemy that could grab it (`Baby.guardTurn`). That enemy may not be in view: zdb remembers enemies seen at the start of the turn and recent threats (`threatRound`, glance back), and it notices unseen damage (`blindHurt`). The student had none of this memory. Once it turned away, the enemy vanished from its observation. This fits its worst-copied action, baby turn, at 0.44 accuracy.
+
+**Observation v3** adds:
+- a local channel for enemy babies seen in the last 6 rounds, fading with age;
+- the time since any enemy rat was seen;
+- health lost since the robot's last turn;
+- a count of remembered enemies that aren't in view now.
+
+Everything restarts on obs-v3: teacher-v7 (500 pure zdb games), student-v7, teacher-v8-dagger, student-v8, then the zdb check and the gate ([script](../scripts/pipeline_obs_v3.sh)).

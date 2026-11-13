@@ -1,0 +1,57 @@
+{
+  "name": "teacher-v7",
+  "purpose": "obs-v3 restart (obs-v2 team board, plus short-term enemy memory, enemy recency and health lost since last turn, which zdb uses to face threats it cannot see and avoid being grabbed): the student now observes a team board (live king positions, threatened-king alerts, enemy-king sightings) that fits the kings-write shared array. zdb's babies defend and regroup from exactly this shared information, which obs-v1 lacked; students v1-v4 lost their king early on small maps. Pure zdb play; kings every turn; babies at 0.06, every turn when they can become king, see an enemy, or are within defend range of a fresh alert (record_p_boost=1.0).",
+  "teacher": {
+    "id": "zdb",
+    "package": "zdb",
+    "classes": "build/bots/zdb",
+    "source": "battlecode26b-vibe bots/zdb"
+  },
+  "field_tsv": "~/projects/vibe/2026b/research/field/FIELD.tsv",
+  "train_opponents": [
+    "uravt_Version35",
+    "daannte_v52_ThisGuy",
+    "AlexT101_finalsbot",
+    "AdamTan12_Finals",
+    "TeamSPAARK_SPAARK",
+    "awu7_awubot_us",
+    "quesswho_bot16",
+    "thewaxmango_PhD",
+    "justinottesen_carbonara",
+    "CS50Crab_protoSaberV7",
+    "XSercia_genies",
+    "nzjt_TheComplexMerlin"
+  ],
+  "heldout_opponents": [
+    "VarunVejalla_final4_run_away10",
+    "GuzziFlipFlops_Hermesv8",
+    "quesswho_quals",
+    "daannte_v47_Skadoosh",
+    "AlexT101_usqualsbot"
+  ],
+  "mirror_fraction": 0.3,
+  "excluded_maps": [
+    "Stash",
+    "Hike",
+    "heart",
+    "ratsareants",
+    "tiny",
+    "DefaultSmall",
+    "DefaultMedium",
+    "DefaultLarge",
+    "closeup",
+    "knifefight",
+    "cheesefarm",
+    "wallsofparadis"
+  ],
+  "excluded_maps_reason": "four ancestral training-excluded maps plus the eight development-v4 benchmark maps",
+  "games": 500,
+  "validation_every": 10,
+  "record_p": 0.06,
+  "seed_base": 1300000,
+  "tournament_limits": true,
+  "workers": 7,
+  "game_timeout_seconds": 1200,
+  "record_p_king": 1.0,
+  "record_p_boost": 1.0
+}

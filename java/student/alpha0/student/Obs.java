@@ -11,17 +11,17 @@ import java.util.*;
  * Layout (uint8 each): local window L*L*CL, then coarse global G*G*CG, then NS scalars.
  */
 public final class Obs {
-    public static final String VERSION = "student-obs-v2";
-    public static final int R = 5, L = 2 * R + 1, CL = 16;
+    public static final String VERSION = "student-obs-v3";
+    public static final int R = 5, L = 2 * R + 1, CL = 17;
     public static final int G = 16, CG = 8;
-    public static final int NS = 48;
+    public static final int NS = 52;
     public static final int LOCAL = L * L * CL, GLOBAL = G * G * CG;
     public static final int SIZE = LOCAL + GLOBAL + NS;
 
     // local channels
     static final int ON_MAP = 0, VISIBLE = 1, WALL = 2, DIRT = 3, CHEESE = 4, MINE = 5, OWN_RAT_TRAP = 6,
         OWN_CAT_TRAP = 7, OWN_BABY = 8, OWN_KING = 9, ENEMY_BABY = 10, ENEMY_KING = 11, CAT = 12,
-        FACING_ME = 13, FLYING = 14, AGE = 15;
+        FACING_ME = 13, FLYING = 14, AGE = 15, ENEMY_MEM = 16;
     // global channels
     static final int G_WALL = 0, G_DIRT = 1, G_MINE = 2, G_OWN_KING = 3, G_ENEMY_KING = 4, G_ENEMY_GUESS = 5,
         G_SELF = 6, G_SEEN = 7;
@@ -37,6 +37,8 @@ public final class Obs {
         MapLocation home;        // own location on first observed turn (king within 2 tiles of spawn)
         final HashMap<Integer, int[]> ownKings = new HashMap<>();   // id -> x,y,round
         final HashMap<Integer, int[]> enemyKings = new HashMap<>();
+        final HashMap<Integer, int[]> enemyRats = new HashMap<>();  // obs-v3: id -> x, y, round last seen (MEM_ROUNDS)
+        int threatRound = -1000, hpPrev = -1, hpLoss, lastTurnRound = -1;
         Memory(int w, int h) { this.w = w; this.h = h; flags = new byte[w * h]; seenRound = new int[w * h]; }
     }
 
@@ -46,7 +48,7 @@ public final class Obs {
      * threat = enemy babies within THREAT_D2 of it (like zdb's Comms.ALERT); enemy-king sightings are published
      * (by kings directly, by babies through the squeak relay a tournament bot would use). Everyone reads it.
      */
-    static final int THREAT_D2 = 18, DEFEND_D2 = 100;
+    static final int THREAT_D2 = 18, DEFEND_D2 = 100, MEM_ROUNDS = 6;
     final HashMap<Integer, int[]> boardKings = new HashMap<>();   // id -> x, y, round
     int[] alert, eKing;                                           // x, y, round, threat / x, y, round
 
@@ -91,6 +93,24 @@ public final class Obs {
             }
         }
         if (rc.getType() == UnitType.RAT_KING) m.ownKings.put(rc.getID(), new int[]{me.x, me.y, round});
+        // ---- obs-v3 short-term enemy memory (like zdb's start-of-turn `seen`, threatRound and blindHurt)
+        if (round != m.lastTurnRound) {   // first encode of this turn
+            int hp = rc.getHealth();
+            m.hpLoss = m.hpPrev < 0 ? 0 : Math.max(0, m.hpPrev - hp);
+            m.lastTurnRound = round;
+        }
+        m.hpPrev = rc.getHealth();
+        for (RobotInfo r : robots)
+            if (r.getTeam() != us && r.getType() == UnitType.BABY_RAT) {
+                m.enemyRats.put(r.getID(), new int[]{r.getLocation().x, r.getLocation().y, round});
+                m.threatRound = round;
+            } else if (r.getTeam() != us && r.getType() == UnitType.RAT_KING) m.threatRound = round;
+        m.enemyRats.entrySet().removeIf(e -> {
+            int[] v = e.getValue();
+            if (round - v[2] > MEM_ROUNDS) return true;
+            if (seenIds.contains(e.getKey())) return false;
+            return v[2] < round && rc.canSenseLocation(new MapLocation(v[0], v[1]));   // visible spot, no longer there
+        });
         // ---- team board writes
         for (RobotInfo r : robots)
             if (r.getType() == UnitType.RAT_KING && r.getTeam() != us) eKing = new int[]{r.getLocation().x, r.getLocation().y, round};
@@ -153,6 +173,13 @@ public final class Obs {
                 int vx = me.x - r.getLocation().x, vy = me.y - r.getLocation().y;
                 if (vx * d.dx + vy * d.dy > 0) out[base + FACING_ME] = (byte) 255;
             }
+        }
+
+        for (int[] v : m.enemyRats.values()) {
+            int dx = v[0] - me.x, dy = v[1] - me.y;
+            if (dx < -R || dx > R || dy < -R || dy > R) continue;
+            int o = ((dy + R) * L + (dx + R)) * CL + ENEMY_MEM;
+            out[o] = (byte) Math.max(out[o] & 255, 255 - (round - v[2]) * 32);
         }
 
         // ---- coarse global map from memory
@@ -243,6 +270,12 @@ public final class Obs {
             out[s + 43] = rel(eKing[0] - me.x); out[s + 44] = rel(eKing[1] - me.y);
             out[s + 46] = (byte) clamp((int) (Math.sqrt((eKing[0] - me.x) * (eKing[0] - me.x) + (eKing[1] - me.y) * (eKing[1] - me.y)) * 4));
         }
+        out[s + 48] = (byte) clamp(255 - (round - m.threatRound) * 16);   // recency of any enemy rat sighting
+        out[s + 49] = (byte) clamp(m.hpLoss * 4);                          // health lost since our last turn
+        int remembered = 0;
+        for (int[] v : m.enemyRats.values()) if (v[2] < round || !rc.canSenseLocation(new MapLocation(v[0], v[1]))) remembered++;
+        out[s + 50] = (byte) clamp(remembered * 32);                        // remembered enemies not in view now
+
     }
 
     private static byte rel(int d) { return (byte) clamp(128 + 4 * d); }

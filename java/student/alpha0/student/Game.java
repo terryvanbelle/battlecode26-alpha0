@@ -18,12 +18,14 @@ import java.util.*;
  *
  * java ... alpha0.student.Game --map M --maps-dir D --seed S --a SPEC --b SPEC --out DIR
  *      [--record AB] [--record-p 0.1] [--record-p-king P (default: record-p)] [--max-rounds 2000]
+ *      [--trace N]   write trace.tsv (babies, kings, cheese, transferred per team) every N rounds
  *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
  */
 public final class Game {
     static final ObjectMapper JSON = new ObjectMapper();
+    static boolean traceDeaths;
 
     static final class Args {
         final Map<String, String> v = new HashMap<>();
@@ -119,10 +121,18 @@ public final class Game {
         @Override public void roundStarted() {}
         @Override public void roundEnded() {}
         @Override public void robotSpawned(InternalRobot robot) {}
-        @Override public void robotKilled(InternalRobot robot) { obs.forget(robot.getID()); }
+        final Map<Integer, Integer> lastHp = new HashMap<>();
+        @Override public void robotKilled(InternalRobot robot) {
+            obs.forget(robot.getID());
+            if (traceDeaths) System.err.println("DEATH team=" + robot.getTeam() + " round=" + world.getCurrentRound() + " id=" + robot.getID()
+                + " type=" + robot.getType() + " hpAtLastTurn=" + lastHp.get(robot.getID()) + " hp=" + robot.getHealth()
+                + " thrown=" + robot.isBeingThrown() + " sinceThrown=" + robot.getTurnsSinceThrownOrDropped()
+                + " loc=" + robot.getDiedLocation());
+        }
         @Override public int getBytecodesUsed(InternalRobot robot) { return 0; }
         @Override public boolean getTerminated(InternalRobot robot) { return false; }
         @Override public void runRobot(InternalRobot robot) {
+            lastHp.put(robot.getID(), robot.getHealth());
             boolean sample = rec != null && recRng.nextDouble() < (robot.getType() == UnitType.RAT_KING ? pKing : p);
             if (sample) sampledTurns++;
             long[] r = studentTurn(world, robot, obs, net, temperature, rng, buf, mask, sample ? rec : null, teamIndex);
@@ -202,7 +212,23 @@ public final class Game {
         GameWorld world = new GameWorld(map, controls, new alpha0.NoopGameMaker(info).getMatchMaker());
         String error = null;
         try {
-            while (world.isRunning() && world.getCurrentRound() < maxRounds + 1) world.runRound();
+            int trace = Integer.parseInt(args.get("trace", "0"));
+            traceDeaths = trace > 0;
+            PrintWriter tw = trace > 0 ? new PrintWriter(new FileWriter(new File(out, "trace.tsv"))) : null;
+            if (tw != null) tw.println("round\tA_babies\tA_kings\tA_cheese\tA_xfer\tA_rattraps\tB_babies\tB_kings\tB_cheese\tB_xfer\tB_rattraps");
+            while (world.isRunning() && world.getCurrentRound() < maxRounds + 1) {
+                world.runRound();
+                if (tw != null && world.getCurrentRound() % trace == 0) {
+                    TeamInfo t = world.getTeamInfo();
+                    StringBuilder sb = new StringBuilder().append(world.getCurrentRound());
+                    for (Team tm : new Team[]{Team.A, Team.B})
+                        sb.append('\t').append(t.getNumBabyRats(tm)).append('\t').append(t.getNumRatKings(tm))
+                          .append('\t').append(t.getCheese(tm)).append('\t').append(t.getCheeseTransferred(tm))
+                          .append('\t').append(world.getTrapCount(TrapType.RAT_TRAP, tm));
+                    tw.println(sb);
+                }
+            }
+            if (tw != null) tw.close();
         } catch (Throwable t) { error = t.toString(); t.printStackTrace(); }
         if (world.isRunning()) controls.matchEnded();
         for (Records r : records.values()) r.close();

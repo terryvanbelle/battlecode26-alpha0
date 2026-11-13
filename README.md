@@ -12,12 +12,12 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 01:20 PDT).**
-- Four students trained on observation v1. The best, student-v4, nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
-- Diagnosis: zdb's babies defend, regroup and press using the kings' shared array (threat alerts, live king positions, enemy-king sightings). The student's observation didn't include any of it.
-- Observation v2 adds a fixed team board that fits the shared array. A fresh pipeline is running overnight: new zdb data, student-v5, a DAgger round, student-v6, then the zdb check and the gate.
+**Status (November 13, 2026, 04:45 PDT).**
+- student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
+- Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
+- Running: the full obs-v3 pipeline (fresh zdb data, student-v7, a DAgger round, student-v8, then the zdb check and the gate), expected around 11:30 PDT.
 
-**Most recent result.** student-v4: 0/32 vs zdb (sampling temperature 1.0). Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
+**Most recent result.** student-v4: 0/32 vs zdb (sampling temperature 1.0); student-v5 (observation v2): also 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->
