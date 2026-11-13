@@ -17,6 +17,7 @@ import java.util.*;
  *
  * java ... alpha0.student.Game --map M --maps-dir D --seed S --a SPEC --b SPEC --out DIR
  *      [--record AB] [--record-p 0.1] [--record-p-king P (default: record-p)] [--max-rounds 2000]
+ *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
  */
@@ -40,7 +41,7 @@ public final class Game {
     /** Sandboxed teacher/opponent bot, optionally recording sampled turns. */
     static final class Bot extends PlayerControlProvider {
         final Obs obs = new Obs();
-        final Records rec; final double p, pKing; final Random rng; final int teamIndex;
+        final Records rec; final double p, pKing; double pBoost; final Random rng; final int teamIndex;
         final byte[] scratch = new byte[Obs.SIZE]; final boolean[] mask = new boolean[Actions.N];
         final List<String> failures = new ArrayList<>();
         GameWorld world;
@@ -48,9 +49,15 @@ public final class Game {
         Net mixNet; double mixP, mixT; Random mixRng;
         Bot(Team team, String pkg, String classes, OutputStream out, Records rec, double p, double pKing, long seed) {
             super(team, pkg, CrossPlayLanguage.JAVA, null, classes, out, false);
-            this.rec = rec; this.p = p; this.pKing = pKing; this.rng = new Random(seed); this.teamIndex = team.ordinal();
+            this.rec = rec; this.p = p; this.pKing = pKing; this.pBoost = p; this.rng = new Random(seed); this.teamIndex = team.ordinal();
         }
         @Override public void matchStarted(GameWorld w) { world = w; super.matchStarted(w); }
+        /** Rare, decisive baby states (state-based, so the recorded P(action | state) stays unbiased). */
+        boolean boosted(RobotController rc) {
+            if (pBoost == p) return false;
+            try { return rc.canBecomeRatKing() || rc.senseNearbyRobots(-1, rc.getTeam().opponent()).length > 0; }
+            catch (GameActionException | RuntimeException e) { return false; }
+        }
         @Override public void robotSpawned(InternalRobot robot) {
             super.robotSpawned(robot);
             if (getTerminated(robot)) failures.add("init_failed:" + robot.getID());
@@ -64,7 +71,7 @@ public final class Game {
                 studentPrimitives += studentTurn(world, robot, obs, mixNet, mixT, mixRng, scratch, mask, null, teamIndex)[1];
                 return;   // the bot's own player does not run this turn (like a skipped turn)
             }
-            boolean sample = rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null && rng.nextDouble() < (rc.getType() == UnitType.RAT_KING ? pKing : p);
+            boolean sample = rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null && rng.nextDouble() < (rc.getType() == UnitType.RAT_KING ? pKing : boosted(rc) ? pBoost : p);
             if (rec != null && world.getObjectInfo().getRobotByID(robot.getID()) != null) {
                 try { obs.encode(rc, 0, scratch); } catch (RuntimeException e) { /* memory update only */ }
             }
@@ -156,6 +163,7 @@ public final class Game {
         double recordP = Double.parseDouble(args.get("record-p", "0.1"));
         double recordPKing = Double.parseDouble(args.get("record-p-king", Double.toString(recordP)));
         Net mixNet = args.v.containsKey("mix-net") ? new Net(new File(args.need("mix-net"))) : null;
+        double recordPBoost = Double.parseDouble(args.get("record-p-boost", Double.toString(recordP)));
         double mixP = Double.parseDouble(args.get("mix-p", "0.5")), mixT = Double.parseDouble(args.get("mix-t", "0"));
         int maxRounds = Integer.parseInt(args.get("max-rounds", "2000"));
 
@@ -173,6 +181,7 @@ public final class Game {
             RobotControlProvider prov;
             if (parts[0].equals("bot")) {
                 Bot b = new Bot(team, parts[1], parts[2], botOut, rec, recordP, recordPKing, seed * 2L + team.ordinal());
+                b.pBoost = recordPBoost;
                 if (mixNet != null && rec != null) { b.mixNet = mixNet; b.mixP = mixP; b.mixT = mixT; b.mixRng = new Random(seed * 2L + team.ordinal() + 7777); }
                 prov = b;
             }

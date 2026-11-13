@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .data import read_records, unpack_mask
-from .spec import OBS, MASK_BYTES, RECORD, N_ACTIONS, action_group
+from .spec import OBS, MASK_BYTES, RECORD, N_ACTIONS, LOCAL, GLOBAL, L, CL, action_group
 
 MAGIC = 0x53544E31
 
@@ -44,9 +44,15 @@ def _gz_records(f: Path) -> int:
         return int.from_bytes(fh.read(4), 'little') // RECORD
 
 
+def rare_state(o):
+    """State-based (label-free) test for rare decisive baby states: can become king, or an enemy is in view."""
+    loc = o[:, :LOCAL].reshape(len(o), L * L, CL)
+    return (o[:, LOCAL + GLOBAL + 31] > 0) | (loc[:, :, 10] > 0).any(1) | (loc[:, :, 11] > 0).any(1)
+
+
 def load_split(runs, split: str, max_games=None, baby_keep=1.0, seed=0):
     """Two-pass load into preallocated arrays, so peak RAM is ~1x the dataset (~25 GB for all of teacher-v1).
-    baby_keep < 1 subsamples non-king records (kings are always kept) to fit RAM."""
+    baby_keep < 1 subsamples ordinary baby records (kings and rare_state babies are always kept) to fit RAM."""
     runs = [runs] if isinstance(runs, (str, Path)) else runs
     sched = [(Path(r), g) for r in runs for g in json.loads((Path(r) / 'schedule.json').read_text())]
     files, games = [], 0
@@ -68,21 +74,23 @@ def load_split(runs, split: str, max_games=None, baby_keep=1.0, seed=0):
         games += 1
         if max_games and games >= max_games:
             break
-    cap = sum(_gz_records(f) for f, _ in files)
+    def kept(i, f):
+        h, o, m = read_records(f)
+        keep = unpack_mask(m, N_ACTIONS).sum(1) > 1
+        if baby_keep < 1:   # per-file seed, so the counting pass and the fill pass agree exactly
+            rng = np.random.default_rng([seed, i])
+            keep &= (h['king'] != 0) | rare_state(o) | (rng.random(len(keep)) < baby_keep)
+        return h, o, m, keep
     if baby_keep < 1:
-        cap = int(cap * (baby_keep + 0.08)) + 100000  # kings are ~5% of records; overflow is checked below
-    rng = np.random.default_rng(seed)
+        cap = sum(int(kept(i, f)[3].sum()) for i, (f, _) in enumerate(files))
+    else:
+        cap = sum(_gz_records(f) for f, _ in files)
     obs = np.empty((cap, OBS), np.uint8); mask = np.empty((cap, MASK_BYTES), np.uint8)
     label = np.empty(cap, np.int64); value = np.empty(cap, np.float32); king = np.empty(cap, bool)
     n = 0
-    for f, v in files:
-        h, o, m = read_records(f)
-        keep = unpack_mask(m, N_ACTIONS).sum(1) > 1
-        if baby_keep < 1:
-            keep &= (h['king'] != 0) | (rng.random(len(keep)) < baby_keep)
+    for i, (f, v) in enumerate(files):
+        h, o, m, keep = kept(i, f)
         k = int(keep.sum())
-        if n + k > cap:
-            raise MemoryError(f'preallocated {cap} records is too small; raise the slack in load_split')
         obs[n:n + k] = o[keep]; mask[n:n + k] = m[keep]
         label[n:n + k] = h['label'][keep]; king[n:n + k] = h['king'][keep].astype(bool); value[n:n + k] = v
         n += k

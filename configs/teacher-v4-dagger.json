@@ -1,0 +1,60 @@
+{
+  "name": "teacher-v4-dagger",
+  "purpose": "DAgger round 2: student-v3 (T=1.0) plays each zdb robot turn with p=0.5; zdb turns are recorded. Kings every turn; babies at 0.06, but every turn when the baby can become king or sees an enemy (record_p_boost=1.0). student-v3 never builds a second king (~0 become-king examples) and loses early fights on small maps.",
+  "teacher": {
+    "id": "zdb",
+    "package": "zdb",
+    "classes": "build/bots/zdb",
+    "source": "battlecode26b-vibe bots/zdb"
+  },
+  "field_tsv": "~/projects/vibe/2026b/research/field/FIELD.tsv",
+  "train_opponents": [
+    "uravt_Version35",
+    "daannte_v52_ThisGuy",
+    "AlexT101_finalsbot",
+    "AdamTan12_Finals",
+    "TeamSPAARK_SPAARK",
+    "awu7_awubot_us",
+    "quesswho_bot16",
+    "thewaxmango_PhD",
+    "justinottesen_carbonara",
+    "CS50Crab_protoSaberV7",
+    "XSercia_genies",
+    "nzjt_TheComplexMerlin"
+  ],
+  "heldout_opponents": [
+    "VarunVejalla_final4_run_away10",
+    "GuzziFlipFlops_Hermesv8",
+    "quesswho_quals",
+    "daannte_v47_Skadoosh",
+    "AlexT101_usqualsbot"
+  ],
+  "mirror_fraction": 0.3,
+  "excluded_maps": [
+    "Stash",
+    "Hike",
+    "heart",
+    "ratsareants",
+    "tiny",
+    "DefaultSmall",
+    "DefaultMedium",
+    "DefaultLarge",
+    "closeup",
+    "knifefight",
+    "cheesefarm",
+    "wallsofparadis"
+  ],
+  "excluded_maps_reason": "four ancestral training-excluded maps plus the eight development-v4 benchmark maps",
+  "games": 400,
+  "validation_every": 10,
+  "record_p": 0.06,
+  "seed_base": 1000000,
+  "tournament_limits": true,
+  "workers": 7,
+  "game_timeout_seconds": 1200,
+  "record_p_king": 1.0,
+  "mix_net": "runs/student-v3/best.bin",
+  "mix_p": 0.5,
+  "mix_t": 1.0,
+  "record_p_boost": 1.0
+}

@@ -63,6 +63,8 @@ def main():
                '--a', f'bot:{a[0]}:{a[1]}', '--b', f'bot:{b[0]}:{b[1]}', '--out', str(out),
                '--record', g['teacher_sides'], '--record-p', str(cfg['record_p']),
                '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
+        if 'record_p_boost' in cfg:
+            cmd += ['--record-p-boost', str(cfg['record_p_boost'])]
         if cfg.get('mix_net'):   # DAgger: student plays a fraction of the teacher's turns
             cmd += ['--mix-net', str(ROOT / cfg['mix_net']), '--mix-p', str(cfg['mix_p']), '--mix-t', str(cfg.get('mix_t', 0))]
         t0 = time.time()
