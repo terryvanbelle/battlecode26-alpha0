@@ -22,12 +22,14 @@ import java.util.*;
  *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
+ *      [--param-t T]   temperature for parameter bits (default 0 = most likely bits: values must be exact)
  *      [--end-actions 1]   let student teams choose disintegrate (off by default: it is in the action
  *      space, but a sampled imitation policy would occasionally pick them by accident).
  */
 public final class Game {
     static final ObjectMapper JSON = new ObjectMapper();
     static boolean traceDeaths, endActions;
+    static double paramT = 0;   // --param-t: temperature for parameter bits (default 0: most likely bits; values must be exact)
 
     static final class Args {
         final Map<String, String> v = new HashMap<>();
@@ -156,7 +158,7 @@ public final class Game {
             if (n <= 1) return r;
             net.forward(buf);
             int a = net.act(mask, temperature, rng);
-            int param = net.param(a, temperature, rng);
+            int param = net.param(a, paramT, rng);
             r[0]++;
             if (rec != null) {
                 try { rec.write(robot.getID(), world.getCurrentRound(), a, param, teamIndex, rc.getType() == UnitType.RAT_KING, step, false, buf, mask); }
@@ -189,6 +191,7 @@ public final class Game {
         double mixP = Double.parseDouble(args.get("mix-p", "0.5")), mixT = Double.parseDouble(args.get("mix-t", "0"));
         int maxRounds = Integer.parseInt(args.get("max-rounds", "2000"));
         endActions = args.get("end-actions", "0").equals("1");
+        if (args.get("param-t", null) != null) paramT = Double.parseDouble(args.get("param-t", null));
 
         TeamControlProvider controls = new TeamControlProvider();
         Map<Team, Object> providers = new LinkedHashMap<>();

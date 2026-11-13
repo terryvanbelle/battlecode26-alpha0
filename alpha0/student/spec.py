@@ -1,4 +1,4 @@
-"""Constants mirrored from java/student/alpha0/student/{Obs,Actions,Records}.java (obs-v4 / actions-v3 / records-v2).
+"""Constants mirrored from java/student/alpha0/student/{Obs,Actions,Records}.java (obs-v4 / actions-v3 / records-v2; Net.java student-mlp-v3).
 Game.java writes obs_size, n_actions and record_size into result.json; train.py checks them against these."""
 OBS_VERSION = 'student-obs-v4'
 ACTION_VERSION = 'student-actions-v3'
@@ -10,6 +10,11 @@ DENSE = SCALARS + NS + SQ * SQM                 # 5297
 MAP_MAX, MAP_PLANES = 60, 8
 MAP_BITS = MAP_MAX * MAP_MAX * MAP_PLANES       # 28800 (bit offset of the shared array)
 BITS = MAP_BITS + 64 * 10 + 32 * 10 + SQ * 32   # 30272
+B_SHARED, B_REG = MAP_BITS, MAP_BITS + 64 * 10    # bit offsets of the shared array and the registers
+B_SQ = B_REG + 32 * 10                          # heard squeak contents (newest first)
+SQMETA = SCALARS + NS                           # dense offset of heard-squeak metadata
+CTX_W = [6, 6, 11, 16, 10, 32, 6, 6]            # param context (Net.ctx): x, y, round, all cheese, target value, squeak, enemy king x, y
+CTX = sum(CTX_W)                                # 93
 OTHER_BITS = BITS - MAP_BITS
 BIT_BYTES = (BITS + 7) // 8
 OBS = DENSE + BIT_BYTES                         # 9081

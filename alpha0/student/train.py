@@ -13,23 +13,49 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .data import read_records, unpack_mask
-from .spec import (OBS_VERSION, OBS, RECORD, N_ACTIONS, LEGACY_N_ACTIONS, LOCAL, GLOBAL, L, CL, DENSE, MAP_BITS, OTHER_BITS, BITS,
+from .spec import (OBS_VERSION, OBS, RECORD, N_ACTIONS, LEGACY_N_ACTIONS, CTX, CTX_W, B_SHARED, B_REG, B_SQ, SQMETA,
+                   WRITE_SHARED0, WRITE_REG0, DISINTEGRATE, LOCAL, GLOBAL, L, CL, DENSE, MAP_BITS, OTHER_BITS, BITS,
                    PARAM_MAX_BITS, PARAM_BITS, PARAM_KIND_OF, P_NONE, action_group)
 
-MAGIC = 0x53544E32
+MAGIC = 0x53544E33
 KIND_OF = torch.tensor(PARAM_KIND_OF)
 # bits used by each param kind: [kinds, 32] 0/1
 KIND_BITS = torch.tensor([[1.0 if b < PARAM_BITS[k] else 0.0 for b in range(PARAM_MAX_BITS)] for k in range(4)])
 SHIFTS = torch.arange(8, dtype=torch.uint8)
 
 
+def param_ctx(x_uint8, a):
+    """Mirror of Net.ctx (Java): [N, CTX] 0/1 floats from observations and chosen actions."""
+    x = x_uint8.long()
+    n, dev = len(x), x.device
+    s = LOCAL + GLOBAL
+    mx, my = x[:, s + 63], x[:, s + 64]
+
+    def bits_at(p):   # p: [N, k] bit positions within the bit section -> [N, k]
+        return (x.gather(1, DENSE + (p >> 3)) >> (p & 7)) & 1
+
+    ar10 = torch.arange(10, device=dev)
+    ws = (a >= WRITE_SHARED0) & (a < WRITE_REG0)
+    wr = (a >= WRITE_REG0) & (a < DISINTEGRATE)
+    base = torch.where(ws, B_SHARED + (a - WRITE_SHARED0) * 10, B_REG + (a - WRITE_REG0) * 10).clamp(min=0)
+    cur = (bits_at(base[:, None] + ar10) << ar10).sum(1) * (ws | wr).long()
+    ar32 = torch.arange(32, device=dev)
+    sq = (bits_at((B_SQ + ar32).expand(n, 32)) << ar32).sum(1) * (x[:, SQMETA] != 0).long()
+    known = (x[:, s + 42] != 0).long()
+    ex = (mx + torch.div(x[:, s + 43] - 128, 4, rounding_mode='floor')).clamp(0, 63) * known
+    ey = (my + torch.div(x[:, s + 44] - 128, 4, rounding_mode='floor')).clamp(0, 63) * known
+    vals = [mx, my, x[:, s + 65] * 256 + x[:, s + 66], x[:, s + 55] * 256 + x[:, s + 56], cur, sq, ex, ey]
+    return torch.cat([((v[:, None] >> torch.arange(w, device=dev)) & 1) for v, w in zip(vals, CTX_W)], 1).float()
+
+
 class StudentNet(nn.Module):
-    def __init__(self, h1=384, h2=256, hm=64, hq=64):
+    def __init__(self, h1=384, h2=256, hm=64, hq=128):
         super().__init__()
         self.map = nn.Linear(MAP_BITS, hm)
         self.l1, self.l2 = nn.Linear(DENSE + OTHER_BITS + hm, h1), nn.Linear(h1, h2)
         self.policy, self.value = nn.Linear(h2, N_ACTIONS), nn.Linear(h2, 1)
         self.pq, self.emb, self.pb = nn.Linear(h2, hq), nn.Embedding(N_ACTIONS, hq), nn.Linear(hq, PARAM_MAX_BITS)
+        self.pc, self.pq2 = nn.Linear(CTX, hq, bias=False), nn.Linear(hq, hq)
         nn.init.normal_(self.emb.weight, std=0.1)
 
     def trunk(self, x_uint8):
@@ -42,22 +68,23 @@ class StudentNet(nn.Module):
         h = self.trunk(x_uint8)
         return self.policy(h), torch.tanh(self.value(h)).squeeze(-1), h
 
-    def param_logits(self, h, a):
-        return self.pb(F.relu(self.pq(h) + self.emb(a)))
+    def param_logits(self, h, a, ctx):
+        return self.pb(F.relu(self.pq2(F.relu(self.pq(h) + self.emb(a) + self.pc(ctx)))))
 
 
 def export(net: StudentNet, path: Path):
     def arr(t):
         return t.detach().cpu().float().numpy().astype('>f4').tobytes()
     with open(path, 'wb') as f:
-        f.write(struct.pack('>10i', MAGIC, DENSE, MAP_BITS, OTHER_BITS, net.map.out_features, net.l1.out_features,
-                            net.l2.out_features, net.pq.out_features, N_ACTIONS, PARAM_MAX_BITS))
+        f.write(struct.pack('>11i', MAGIC, DENSE, MAP_BITS, OTHER_BITS, net.map.out_features, net.l1.out_features,
+                            net.l2.out_features, net.pq.out_features, N_ACTIONS, PARAM_MAX_BITS, CTX))
         f.write(arr(net.map.weight.t().contiguous())); f.write(arr(net.map.bias))
         f.write(arr(net.l1.weight.t().contiguous())); f.write(arr(net.l1.bias))
         f.write(arr(net.l2.weight)); f.write(arr(net.l2.bias))
         f.write(arr(net.policy.weight)); f.write(arr(net.policy.bias))
         f.write(arr(net.value.weight.reshape(-1))); f.write(arr(net.value.bias))
         f.write(arr(net.pq.weight)); f.write(arr(net.emb.weight)); f.write(arr(net.pq.bias))
+        f.write(arr(net.pc.weight)); f.write(arr(net.pq2.weight)); f.write(arr(net.pq2.bias))
         f.write(arr(net.pb.weight)); f.write(arr(net.pb.bias))
 
 
@@ -123,16 +150,16 @@ def run_batch(net, data, idx):
     legal = torch.from_numpy(unpack_mask(data['mask'][idx], N_ACTIONS)).to(DEV, non_blocking=True)
     y = torch.from_numpy(data['label'][idx]).to(DEV, non_blocking=True)
     logits, value, h = net(x)
-    return logits.masked_fill(~legal, -1e9), value, h, y
+    return logits.masked_fill(~legal, -1e9), value, h, y, x
 
 
-def param_loss(net, h, y, param):
+def param_loss(net, h, y, param, x):
     """Mean BCE over the bits each labelled parameter uses (0 if no record in the batch takes a parameter)."""
     kind = KIND_OF.to(y.device)[y]
     sel = kind != P_NONE
     if not sel.any():
         return h.new_zeros(()), None
-    pl = net.param_logits(h[sel], y[sel])
+    pl = net.param_logits(h[sel], y[sel], param_ctx(x[sel], y[sel]))
     target = ((torch.as_tensor(param).to(y.device)[sel].unsqueeze(1) >> torch.arange(PARAM_MAX_BITS, device=y.device)) & 1).float()
     used = KIND_BITS.to(y.device)[kind[sel]]
     bce = F.binary_cross_entropy_with_logits(pl, target, reduction='none')
@@ -147,7 +174,7 @@ def evaluate(net, data, bs=2048):
     ptot = Counter(); pexact = Counter(); pbits = Counter(); pbtot = Counter()
     for i in range(0, n, bs):
         idx = np.arange(i, min(n, i + bs))
-        logits, value, h, y = run_batch(net, data, idx)
+        logits, value, h, y, x = run_batch(net, data, idx)
         v = torch.from_numpy(data['value'][idx]).to(DEV)
         loss += F.cross_entropy(logits, y, reduction='sum').item()
         vloss += F.mse_loss(value, v, reduction='sum').item()
@@ -156,7 +183,7 @@ def evaluate(net, data, bs=2048):
             g = ('king:' if kk else 'baby:') + action_group(int(yy))
             tot[g] += 1; correct[g] += int(yy == pp)
             tot['all'] += 1; correct['all'] += int(yy == pp)
-        _, extra = param_loss(net, h, y, data['param'][idx])
+        _, extra = param_loss(net, h, y, data['param'][idx], x)
         if extra is not None:
             pl, target, used, kind = extra
             ok = ((pl > 0).float() == target).float() * used
@@ -184,7 +211,7 @@ def main():
     ap.add_argument('--h1', type=int, default=384)
     ap.add_argument('--h2', type=int, default=256)
     ap.add_argument('--hm', type=int, default=64)
-    ap.add_argument('--hq', type=int, default=64)
+    ap.add_argument('--hq', type=int, default=128)
     ap.add_argument('--king-weight', type=float, default=4.0)
     ap.add_argument('--threads', type=int, default=8)
     ap.add_argument('--max-games', type=int)
@@ -228,10 +255,10 @@ def main():
             perm = rng.permutation(n)
             for i in range(0, n, a.bs):
                 idx = np.sort(perm[i:i + a.bs])
-                logits, value, h, y = run_batch(net, data, idx)
+                logits, value, h, y, x = run_batch(net, data, idx)
                 v = torch.from_numpy(data['value'][idx]).to(DEV); k = torch.from_numpy(data['king'][idx]).to(DEV)
                 w = 1.0 + (a.king_weight - 1.0) * k.float()
-                pl, _ = param_loss(net, h, y, data['param'][idx])
+                pl, _ = param_loss(net, h, y, data['param'][idx], x)
                 loss = ((F.cross_entropy(logits, y, reduction='none') * w).sum() / w.sum()
                         + a.value_weight * F.mse_loss(value, v) + a.param_weight * pl)
                 for g in opt.param_groups:

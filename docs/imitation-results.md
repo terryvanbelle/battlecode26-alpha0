@@ -14,6 +14,7 @@ The check is 32 games: 8 training-distribution maps (mincemeat, jail, rift, pipe
 | student-v4 | + teacher-v4-dagger (DAgger with student-v3, rare baby states always recorded) | 0.846* | – | 0/32 |
 | student-v5 | obs-v2 (team board); teacher-v5, 500 pure zdb games | 0.839 | – | 0/32 |
 | student-v7 | obs-v3 (enemy memory); teacher-v7, 500 pure zdb games | 0.836 | – | 1/32 |
+| student-v9 | obs-v4 / actions-v2 (capability-complete), mlp-v2; teacher-v9, 500 pure zdb games | 0.838 | – | 1/32 |
 
 \* Validation for v3 and v4 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
 
@@ -91,3 +92,31 @@ Everything restarts on obs-v3: teacher-v7 (500 pure zdb games), student-v7, teac
 - The long maps are no better than v4–v5: pipes 38–40 points of 99, rift 28–40, ZeroDay 28–39, jail 38–43 or a king kill.
 
 Enemy memory alone doesn't close the gap. The obs-v3 DAgger round (teacher-v8) was stopped at 08:13 PDT to free the VM. The RL starting model will come from the capability-complete spec in [capability-principle.md](capability-principle.md).
+
+## student-v9 (obs-v4, capability-complete): 1/32 against zdb; the king starves (November 13, 2026)
+
+Val acc 0.838; parameter exact-match on held-out zdb turns: amount 0.978, squeak 0.338, shared-array/register value 0.666.
+Against zdb it won 1/32 (gridlock seed 21). Small maps: king killed by round 33–387. Long maps: 5 games reached round 2000 and lost
+on points; the other 11 ended in a king kill by round 861.
+
+**Diagnosis** (student-v9 vs zdb on jail and pipes, every turn of both teams recorded; scratch scripts):
+- The student's team never killed a zdb robot (zdb lost 0 robots; the student lost 43 on jail, 50 on pipes). On jail the
+  student's cheese was 0 from round 650 and its king died at round 719 with 10 HP: it starved.
+- Babies deliver far less cheese: 97 transfers vs zdb's 755 on pipes.
+- Cause: the king's shared-array writes, which zdb's babies (and so the student's) use to find the king, are wrong:
+
+  | write | zdb | student-v9 pipes | student-v9 jail |
+  |---|---|---|---|
+  | king x+1 (slot 2) | 100% | 9% | 2% |
+  | king y+1 (slot 3) | 100% | 17% | 0% |
+  | heartbeat round%1024 (slot 4) | 100% | 1% | 4% |
+
+  Two causes: value bits were sampled at T=1.0 (10 independent samples), and the mlp-v2 parameter head has no easy way to copy
+  integers bit-exactly (66.6% exact even with the most likely bits). Taking the most likely bits alone (`Game --param-t 0`) raised
+  the heartbeat to 45% on jail but left positions at 14–19%, and the student still lost.
+
+**Fix (student-mlp-v3):** the parameter head also sees binary copies of the integers values are usually built from (own x, y,
+round, all cheese, the target slot's or register's current value, newest heard squeak, last-known enemy king x, y), and has a
+second hidden layer. Every value stays reachable. Games now take the most likely parameter bits by default (`--param-t`).
+A 40-game, 2-epoch test: value exact 0.65 (mlp-v2 on 60 games, 1 epoch: 0.006); heartbeat 0.85; king position still rare in
+so little data. student-v10 trains with it on teacher-v9 + teacher-v10-dagger.

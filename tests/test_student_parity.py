@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np, pytest, torch
 from alpha0.student.data import read_records, unpack_mask
 from alpha0.student.spec import N_ACTIONS, GROUP_OF, N_GROUPS
-from alpha0.student.train import StudentNet, export
+from alpha0.student.train import StudentNet, export, param_ctx
 
 ROOT = Path(__file__).resolve().parents[1]
 REC = os.environ.get('STUDENT_RECORDS', str(ROOT / 'runs/smoke/zdb-mirror/records-A.bin.gz'))
@@ -14,6 +14,8 @@ REC = os.environ.get('STUDENT_RECORDS', str(ROOT / 'runs/smoke/zdb-mirror/record
 def test_java_matches_torch():
     torch.manual_seed(1)
     net = StudentNet(64, 32, 16, 16)
+    with torch.no_grad():
+        net.pc.weight.mul_(5)   # make the param context matter
     with torch.no_grad():
         for p in net.parameters():
             p.mul_(3)   # make logits spread so argmax is well defined
@@ -27,8 +29,10 @@ def test_java_matches_torch():
     h, o, m = read_records(REC)
     legal = torch.from_numpy(unpack_mask(m[:k], N_ACTIONS))
     with torch.no_grad():
-        logits, value, hid = net(torch.from_numpy(np.ascontiguousarray(o[:k])))
-        plog = net.param_logits(hid, torch.from_numpy(h['label'][:k].astype(np.int64)))
+        x = torch.from_numpy(np.ascontiguousarray(o[:k]))
+        lab = torch.from_numpy(h['label'][:k].astype(np.int64))
+        logits, value, hid = net(x)
+        plog = net.param_logits(hid, lab, param_ctx(x, lab))
     probs = torch.softmax(logits.masked_fill(~legal, -1e9), 1)
     gid = torch.tensor(GROUP_OF)
     mass = torch.zeros(k, N_GROUPS).index_add_(1, gid, probs)

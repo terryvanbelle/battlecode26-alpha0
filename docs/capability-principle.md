@@ -99,3 +99,11 @@ How this applies:
 **Recording.** Every zdb controller call now maps to a label: squeaks, shared-array writes, boosted bites and amounts included. A 400-round smoke game had no unmapped or ignored calls.
 
 Pipeline: [scripts/pipeline_obs_v4.sh](../scripts/pipeline_obs_v4.sh) runs teacher-v9 (500 pure zdb games), student-v9, a DAgger round (teacher-v10-dagger, student-v10), the zdb check and the frozen gate. The trainer now streams records in chunks of games, because obs-v4 records are about 9 KB each.
+
+## Update: student-mlp-v3 (November 13, 2026)
+
+Capability includes being able to *use* the actions well enough to learn from: student-v9 could write any shared-array value,
+but wrote its king's position correctly only 2–17% of the time, so its babies could not find the king and it starved
+([results](imitation-results.md#student-v9-obs-v4-capability-complete-132-against-zdb-the-king-starves-november-13-2026)).
+mlp-v3 gives the parameter head binary copies of the integers values are usually built from (`Net.ctx`) and a second hidden
+layer. This adds no restriction: every bit is still chosen freely.
