@@ -1,6 +1,6 @@
 {
   "name": "teacher-v3-dagger",
-  "purpose": "DAgger round 1: as teacher-v2, but each zdb robot turn is played by student-v2 with probability 0.5 (group-argmax, T=0). Only zdb-played turns are recorded, so labels are zdb actions in states the student reaches. student-v2 lost 0/32 to zdb: no defence on small maps, no second king.",
+  "purpose": "DAgger round 1: as teacher-v2, but each zdb robot turn is played by student-v2 with probability 0.5 (sampled, T=1.0: the selection panel showed greedy T=0 babies loop and starve the king on jail/pipes even vs examplefuncsplayer, while T=1.0 wins there). Only zdb-played turns are recorded, so labels are zdb actions in states the student reaches. student-v2 lost 0/32 to zdb: no defence on small maps, no second king.",
   "teacher": {
     "id": "zdb",
     "package": "zdb",
@@ -55,5 +55,5 @@
   "record_p_king": 1.0,
   "mix_net": "runs/student-v2/best.bin",
   "mix_p": 0.5,
-  "mix_t": 0
+  "mix_t": 1.0
 }
