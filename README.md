@@ -12,12 +12,16 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 12, 2026).**
-- The pipeline works end to end: game harness, recorder, training, Java inference, and a test that Java and PyTorch choose the same actions.
-- Collecting 400 zdb demonstration games on 63 training maps: 118 done, 1 to re-run.
-- The imitation pass rule was fixed before any training ([`configs/student-gate-v1.json`](configs/student-gate-v1.json)). Training and evaluation follow the collection.
+**Status (November 12, 2026, 21:30 PDT).**
+- Three students trained so far; none plays at zdb's level yet. Each round fixed a concrete failure:
+  - v1: the king overbuilt and starved.
+  - v2: the economy works, but there's no defence and no second king.
+  - v3: first DAgger round, a small gain.
+- DAgger round 2 is running. The student plays half of zdb's turns, and zdb's actions in the states the student reaches become training data. Rare decisive states (a baby can become king, or sees an enemy) are now always recorded.
 
-**Most recent result.** None yet for the imitation student. The latest completed benchmark is below: the earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
+**Most recent result.** Against zdb (32 games, sampling temperature 1.0), every student so far scores 0–1 wins. On large maps student-v2/v3 survive all 2000 rounds with 70–95% of zdb's cheese income but lose on points. On small maps zdb kills their king early. [Results log](docs/imitation-results.md).
+
+The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->
 
 ## Previous line: macro-action AlphaZero (V1–V11)
