@@ -70,6 +70,8 @@ def main():
                '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
         if 'record_p_boost' in cfg:
             cmd += ['--record-p-boost', str(cfg['record_p_boost'])]
+        if cfg.get('decisions'):   # decision records (setIndicatorString channel): true = teacher sides, or a string like "AB"
+            cmd += ['--decisions', g['teacher_sides'] if cfg['decisions'] is True else str(cfg['decisions'])]
         if cfg.get('mix_net'):   # DAgger: student plays a fraction of the teacher's turns
             cmd += ['--mix-net', str(ROOT / cfg['mix_net']), '--mix-p', str(cfg['mix_p']), '--mix-t', str(cfg.get('mix_t', 0))]
         t0 = time.time()

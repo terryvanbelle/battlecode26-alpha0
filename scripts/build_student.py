@@ -1,5 +1,8 @@
 """Build the student harness: hooked RobotControllerImpl + alpha0.student classes -> build/student/classes.
 
+Also injects the decision-record channel: setIndicatorString(s) with s.charAt(0) == '\\uDEC0' goes to
+alpha0.student.Decisions.take (never to the robot's indicator string).
+
 Runtime classpath: build/student/classes:build/java:vendor/engine/battlecode26-java-1.2.6.jar
 (requires scripts/setup_engine.py to have run).
 """
@@ -44,9 +47,16 @@ def transform(source: str) -> tuple[str, list[str]]:
                    f'    }}\n    {priv} {{{body}}}')
         edits.append((m.start(), i, wrapper))
         found.append(name)
+    m = re.search(r'public\s+void\s+setIndicatorString\s*\(\s*String\s+(\w+)\s*\)\s*\{', source)
+    if not m:
+        raise SystemExit('setIndicatorString(String) not found in engine source')
+    v = m.group(1)
+    edits.append((m.end(), m.end(), f"\n        if ({v} != null && !{v}.isEmpty() && {v}.charAt(0) == '\\uDEC0') "
+                                     f"{{ alpha0.student.Decisions.take(this, {v}); return; }}"))
     missing = PRIMITIVES - set(found)
     if missing:
         raise SystemExit(f'primitive methods not found in engine source: {sorted(missing)}')
+    edits.sort(key=lambda e: e[0])
     for a, b, text in reversed(edits):
         source = source[:a] + text + source[b:]
     return source, found

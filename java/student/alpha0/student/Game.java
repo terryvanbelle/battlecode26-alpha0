@@ -22,6 +22,8 @@ import java.util.*;
  *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
+ *      [--decisions AB]   record bot teams' decision records (setIndicatorString channel, see Decisions) to
+ *      decisions-A.bin.gz / decisions-B.bin.gz (every emit; net teams emit nothing)
  *      [--param-t T]   temperature for parameter bits (default 0 = most likely bits: values must be exact)
  *      [--end-actions 1]   let student teams choose disintegrate (off by default: it is in the action
  *      space, but a sampled imitation policy would occasionally pick them by accident).
@@ -185,6 +187,9 @@ public final class Game {
         Field f = LiveMap.class.getDeclaredField("seed"); f.setAccessible(true); f.setInt(map, seed);
         InternalRobot.rand = new Random(1092L + 7919L * seed);
         String recordTeams = args.get("record", "");
+        String decisionTeams = args.get("decisions", "");
+        for (Team team : new Team[]{Team.A, Team.B})
+            if (decisionTeams.contains(team.name())) Decisions.open(team.ordinal(), new File(out, "decisions-" + team.name() + ".bin.gz"));
         double recordP = Double.parseDouble(args.get("record-p", "0.1"));
         double recordPKing = Double.parseDouble(args.get("record-p-king", Double.toString(recordP)));
         Net mixNet = args.v.containsKey("mix-net") ? new Net(new File(args.need("mix-net"))) : null;
@@ -247,6 +252,7 @@ public final class Game {
         } catch (Throwable t) { error = t.toString(); t.printStackTrace(); }
         if (world.isRunning()) controls.matchEnded();
         for (Records r : records.values()) r.close();
+        Decisions.closeAll();
 
         Map<String, Object> res = new LinkedHashMap<>();
         res.put("map", mapName); res.put("seed", seed); res.put("a", names[0]); res.put("b", names[1]);
@@ -267,8 +273,10 @@ public final class Game {
             if (p instanceof Bot b) { s.put("turns", b.turns); s.put("sampled_turns", b.sampledTurns); s.put("end_records", b.ends); s.put("failures", b.failures); s.put("student_turns", b.studentTurns); s.put("student_primitives", b.studentPrimitives); }
             if (p instanceof Student st) { s.put("decisions", st.decisions); s.put("primitives", st.primitives); s.put("errors", st.errors); s.put("sampled_turns", st.sampledTurns); }
             if (records.containsKey(t)) s.put("records", records.get(t).count);
+            if (decisionTeams.contains(t.name())) s.put("decisions_recorded", Decisions.count[t.ordinal()]);
             res.put(t.name(), s);
         }
+        res.put("decisions_errors", Decisions.errors);
         res.put("hook_recorded", Hook.recorded); res.put("hook_label_not_legal", Hook.labelNotLegal); res.put("hook_failed_calls", Hook.failedCalls);
         res.put("hook_unmapped", Hook.unmapped); res.put("hook_ignored", Hook.ignored);
         res.put("hook_error", Hook.error == null ? null : Hook.error.toString());

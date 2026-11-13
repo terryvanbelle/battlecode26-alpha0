@@ -60,6 +60,7 @@ def main():
     ap.add_argument('--untrained', default='')
     ap.add_argument('--workers', type=int, default=7)
     ap.add_argument('--limits', action='store_true', help='official bytecode limits for bot teams')
+    ap.add_argument('--decisions', action='store_true', help="record the player's decision records (bot players only)")
     ap.add_argument('--slice', help='LO:HI:N: only jobs with LO <= index %% N < HI (split across machines; summary covers those)')
     a = ap.parse_args()
     out = Path(a.out); (out / 'games').mkdir(parents=True, exist_ok=True)
@@ -83,7 +84,7 @@ def main():
             return j, json.loads((d / 'result.json').read_text())
         A, B = (player, j['opp_spec']) if j['side'] == 'A' else (j['opp_spec'], player)
         cmd = [str(ROOT / 'scripts/student_java.sh'), '--map', j['map'], '--maps-dir', str(ROOT / 'maps'), '--seed', str(j['seed']),
-               '--a', A, '--b', B, '--out', str(d)]
+               '--a', A, '--b', B, '--out', str(d)] + (['--decisions', j['side']] if a.decisions else [])
         try:
             subprocess.run(cmd, capture_output=True, text=True, timeout=1800, env={**os.environ, 'JAVA_FLAGS': flags})
         except subprocess.TimeoutExpired:
