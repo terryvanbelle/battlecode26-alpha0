@@ -15,12 +15,23 @@ BC26B = Path(os.path.expanduser('~/projects/vibe/2026b'))
 
 
 def compile_local(name):
+    """Compile a local bot (java/bots/NAME in this repo, else bots/NAME in 2026b); rebuilds when a source changed."""
     dest = ROOT / 'build/bots' / name
-    if not (dest / name).exists():
-        dest.mkdir(parents=True, exist_ok=True)
+    src = ROOT / 'java/bots' / name
+    if not src.is_dir():
+        src = BC26B / 'bots' / name
+    files = sorted(src.glob('*.java'))
+    stamp = dest / '.stamp'
+    newest = max(f.stat().st_mtime for f in files)
+    if not (dest / name).exists() or (src.parent == ROOT / 'java/bots' and (not stamp.exists() or stamp.stat().st_mtime < newest)):
+        tmp = dest.with_name(name + '.tmp')
+        subprocess.run(['rm', '-rf', str(tmp)], check=True)
+        tmp.mkdir(parents=True)
         subprocess.run([str(ROOT / 'vendor/jdk/bin/javac'), '--release', '21', '-nowarn', '-proc:none', '-cp',
-                        str(ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'), '-d', str(dest),
-                        *map(str, sorted((BC26B / 'bots' / name).glob('*.java')))], check=True)
+                        str(ROOT / 'vendor/engine/battlecode26-java-1.2.6.jar'), '-d', str(tmp), *map(str, files)], check=True)
+        (tmp / '.stamp').touch()
+        subprocess.run(['rm', '-rf', str(dest)], check=True)
+        tmp.rename(dest)
     return f'bot:{name}:{dest}'
 
 
@@ -29,7 +40,7 @@ def resolve(name, untrained):
         return name
     if name == '@untrained':
         return f'net:{untrained}:0'
-    if name in ('examplefuncsplayer', 'lectureplayer', 'zdb'):
+    if name in ('examplefuncsplayer', 'lectureplayer', 'zdb') or (ROOT / 'java/bots' / name).is_dir():
         return compile_local(name)
     for line in (BC26B / 'research/field/FIELD.tsv').read_text().splitlines():
         p = line.split('\t')

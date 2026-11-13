@@ -30,6 +30,7 @@ public final class Game {
     static final ObjectMapper JSON = new ObjectMapper();
     static boolean traceDeaths, endActions;
     static double paramT = 0;   // --param-t: temperature for parameter bits (default 0: most likely bits; values must be exact)
+    static long trajHash = 17;   // per-round fingerprint of both teams' stats
 
     static final class Args {
         final Map<String, String> v = new HashMap<>();
@@ -227,6 +228,11 @@ public final class Game {
             if (tw != null) tw.println("round\tA_babies\tA_kings\tA_cheese\tA_xfer\tA_rattraps\tB_babies\tB_kings\tB_cheese\tB_xfer\tB_rattraps");
             while (world.isRunning() && world.getCurrentRound() < maxRounds + 1) {
                 world.runRound();
+                TeamInfo th = world.getTeamInfo();   // trajectory fingerprint: identical play gives identical hashes
+                for (Team tm : new Team[]{Team.A, Team.B})
+                    trajHash = trajHash * 1000003L + th.getCheese(tm) * 31L + th.getCheeseTransferred(tm) * 997L
+                        + th.getNumBabyRats(tm) * 7919L + th.getNumRatKings(tm) * 104729L + th.getDamageToCats(tm)
+                        + world.getTrapCount(TrapType.RAT_TRAP, tm) * 15485863L;
                 if (tw != null && world.getCurrentRound() % trace == 0) {
                     TeamInfo t = world.getTeamInfo();
                     StringBuilder sb = new StringBuilder().append(world.getCurrentRound());
@@ -249,6 +255,7 @@ public final class Game {
         res.put("tournament_limits", Boolean.getBoolean("bc.alpha0.tournamentLimits"));
         res.put("finished", !world.isRunning());
         res.put("rounds", world.getCurrentRound());
+        res.put("traj_hash", Long.toHexString(trajHash));
         res.put("winner", world.getWinner() == null ? null : world.getWinner().name());
         res.put("reason", world.getGameStats().getDominationFactor() == null ? null : world.getGameStats().getDominationFactor().toString());
         TeamInfo ti = world.getTeamInfo();
