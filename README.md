@@ -21,9 +21,10 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - `resign()` removed from the action space (actions v3, 664 actions): it only forfeits the game. Records already collected still load.
 - **Second worker:** a Windows 11 desktop (WSL2 over Tailscale) now plays 3/4 of each run's games; it is about 4x as fast as the VM and plays identical games. The VM fills in anything it doesn't finish. [box_split.sh](scripts/box_split.sh), [box_helper.sh](scripts/box_helper.sh).
 - **student-v9 (capability-complete): 1/32 against zdb.** Diagnosis: its king writes its own position into the shared array correctly only 2–17% of the time, so babies can't find it to deliver cheese and the king starves. Fix: the parameter head now gets binary copies of the integers it usually writes (student-mlp-v3). [Details](docs/imitation-results.md#student-v9-obs-v4-capability-complete-132-against-zdb-the-king-starves-november-13-2026).
-- Running: [pipeline_obs_v4e.sh](scripts/pipeline_obs_v4e.sh): student-v10 (mlp-v3) trains on the box GPU on teacher-v9 + the DAgger round, then the zdb check and the frozen gate. Expected around 16:00 PDT.
+- **student-v10 (mlp-v3): 1/32 against zdb.** The shared-array writes are now 94–100% correct, but the student still loses every robot fight and delivers a fraction of zdb's cheese. Gate: untrained 0.81, simple bots 0.75, held-out field 0.18 (fails the 0.20 bar; zdb 0.33). [Details](docs/imitation-results.md#student-v10-mlp-v3-writes-fixed-still-132-against-zdb-november-13-2026).
+- **Next: decision-point imitation.** Primitive-level imitation has stalled. A copy of zdb will route its control choices through a few dozen decision points (comms behind an abstraction layer), validated by replaying zdb's games exactly; then a small net that fits the bytecode limits learns those choices.
 
-**Most recent result.** student-v7 (observation v3): 1/32 vs zdb at sampling temperature 1.0. Earlier, student-v4 and student-v5 (observation v2) both scored 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
+**Most recent result.** student-v10: 1/32 vs zdb; held-out field 0.18 (zdb 0.33). [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->

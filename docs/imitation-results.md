@@ -15,6 +15,7 @@ The check is 32 games: 8 training-distribution maps (mincemeat, jail, rift, pipe
 | student-v5 | obs-v2 (team board); teacher-v5, 500 pure zdb games | 0.839 | – | 0/32 |
 | student-v7 | obs-v3 (enemy memory); teacher-v7, 500 pure zdb games | 0.836 | – | 1/32 |
 | student-v9 | obs-v4 / actions-v2 (capability-complete), mlp-v2; teacher-v9, 500 pure zdb games | 0.838 | – | 1/32 |
+| student-v10 | mlp-v3 (parameter head with binary copy context); teacher-v9 + teacher-v10-dagger, 810 games | 0.826 | – | 1/32 |
 
 \* Validation for v3 and v4 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
 
@@ -120,3 +121,29 @@ round, all cheese, the target slot's or register's current value, newest heard s
 second hidden layer. Every value stays reachable. Games now take the most likely parameter bits by default (`--param-t`).
 A 40-game, 2-epoch test: value exact 0.65 (mlp-v2 on 60 games, 1 epoch: 0.006); heartbeat 0.85; king position still rare in
 so little data. student-v10 trains with it on teacher-v9 + teacher-v10-dagger.
+
+## student-v10 (mlp-v3): writes fixed, still 1/32 against zdb (November 13, 2026)
+
+Trained on the box GPU (36 min). Val acc 0.826; parameter exact: amount 0.976, squeak 0.398, value 0.805 (v9: 0.666).
+Against zdb: 1/32. Small maps: king killed by round 45–569. Long maps: 5 games reached round 2000 and lost on points (26–38 vs 61–73).
+
+**The arithmetic fix worked; the games did not improve.** Recorded student-v10 vs zdb on jail and pipes (seed 22):
+
+| | student-v10 jail | student-v10 pipes | v9 (jail / pipes) |
+|---|---|---|---|
+| king x+1 (slot 2) correct | 100% | 94% | 2% / 9% |
+| king y+1 (slot 3) correct | 100% | 96% | 0% / 17% |
+| heartbeat correct | 100% | 100% | 4% / 1% |
+| robots lost (student / zdb) | 18 / 0 | 35 / 0 | 43 / 0, 50 / 0 |
+| transfer calls (student / zdb) | 1 / 32 | 75 / 614 | |
+
+**Frozen gate at T=1.0:** untrained 26/32 (0.81, pass); examplefuncsplayer + lectureplayer 48/64 (0.75, pass);
+held-out field **28/154 = 0.18, fails** (bar 0.20; student-v4 0.15, zdb 0.33). Per bot: GuzziFlipFlops 20/26, VarunVejalla 6/32,
+AlexT101_usqualsbot 1/32, quesswho_quals 1/32, daannte_v47 0/32.
+
+**Conclusion.** Single-decision accuracy is about 83% and the communication arithmetic is now right, but the student's
+babies still die without killing anything and deliver a fraction of zdb's cheese. Per-primitive imitation doesn't compose
+into zdb's multi-turn plans. Next: the decision-point line. A copy of zdb whose control choices go through a few dozen
+decision points, with comms behind an abstraction layer, and a small net (within the engine's bytecode limits) that
+replaces only those choices.
+
