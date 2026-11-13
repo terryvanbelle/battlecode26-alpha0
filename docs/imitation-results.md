@@ -11,9 +11,9 @@ The check is 32 games: 8 training-distribution maps (mincemeat, jail, rift, pipe
 | student-v1 | teacher-v1 (400 games, kings sampled 6%) | 0.848 | 0/32 | 1/32 |
 | student-v2 | + teacher-v2 (400 games, kings every turn) | 0.863 | 0/32 | 1/32 |
 | student-v3 | + teacher-v3-dagger (400 DAgger games, student-v2 at T=1.0 plays 50% of zdb turns) | 0.854* | 2/32 | 0/32 |
-| student-v4 | + teacher-v4-dagger (DAgger with student-v3, rare baby states always recorded) | running | | |
+| student-v4 | + teacher-v4-dagger (DAgger with student-v3, rare baby states always recorded) | 0.846* | – | 0/32 |
 
-\* Validation for v3 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
+\* Validation for v3 and v4 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
 
 ## What each round found
 
@@ -35,4 +35,12 @@ T=1.0 is the deployment temperature.
 
 **student-v3: DAgger round 1 made little difference.** It lasts longer on small maps (mincemeat about 270 rounds vs 210; sunandmoon 130–480 vs 33–99), but still loses to zdb.
 
-**teacher-v4-dagger, now running.** A second king and defending fights are rare, decisive states. With babies sampled at 6%, there were almost no become-king examples. Babies that can become king or that see an enemy are now recorded every turn. The rule depends only on the state, so the learned P(action | state) stays unbiased.
+**student-v4: long maps nearly even, small maps still lost.** DAgger round 2 always recorded babies that could become king or saw an enemy. It was trained on all four collections (4.56M records, 8 epochs; val acc 0.846). Against zdb it scored 0/32 at T=1.0, but the losses changed:
+- It now makes a second king. On rift it ends with 2–4 kings, against zdb's 2 (v3 always had 1).
+- On the 2000-round maps it loses on points by much less. pipes: 48–51, 48–51, 49–50 and 38–61 (v3: about 38–61 in every game). rift: 40–59 to 47–52 (v3: 30–69 to 33–66). jail: 40–59 to 42–57.
+- On ZeroDay it is unchanged at 30–36 points of 99, mainly because zdb does 3–5× its cat damage.
+- On the small maps (gridlock, mincemeat, sunandmoon, thunderdome) and one jail seed, zdb still kills its king, in 27–530 rounds.
+
+Selection panel at T=1.0, wins out of 8: examplefuncsplayer 6, uravt_Version35 0, AlexT101_finalsbot 0.
+
+Next: run the frozen [student gate](../configs/student-gate-v1.json), which uses held-out maps and opponents, with zdb against the same opponents as a reference. The bar is competence, not an exact copy, so the gate decides whether to continue imitation or start self-play RL.

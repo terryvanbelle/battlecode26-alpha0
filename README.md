@@ -12,14 +12,14 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 12, 2026, 21:30 PDT).**
-- Three students trained so far; none plays at zdb's level yet. Each round fixed a concrete failure:
+**Status (November 13, 2026, 00:30 PDT).**
+- Four students trained so far. Each round fixed a concrete failure:
   - v1: the king overbuilt and starved.
-  - v2: the economy works, but there's no defence and no second king.
-  - v3: first DAgger round, a small gain.
-- DAgger round 2 is running. The student plays half of zdb's turns, and zdb's actions in the states the student reaches become training data. Rare decisive states (a baby can become king, or sees an enemy) are now always recorded.
+  - v2: the economy works.
+  - v3/v4: DAgger rounds, where the student plays half of zdb's turns and zdb's actions in the states the student reaches become training data. v4 also always records rare decisive states (a baby can become king, or sees an enemy). It now builds a second king.
+- Running now: the frozen [student gate](configs/student-gate-v1.json) for student-v4. It covers held-out maps and opponents, with zdb run against the same opponents as a reference. The gate decides whether imitation is good enough to start self-play RL.
 
-**Most recent result.** Against zdb (32 games, sampling temperature 1.0), every student so far scores 0–1 wins. On large maps student-v2/v3 survive all 2000 rounds with 70–95% of zdb's cheese income but lose on points. On small maps zdb kills their king early. [Results log](docs/imitation-results.md).
+**Most recent result.** student-v4 vs zdb: 0/32 at sampling temperature 1.0. On the 2000-round maps it now loses narrowly on points (pipes 48–51, 49–50; rift up to 47–52). On small maps zdb still kills its king early. [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->
