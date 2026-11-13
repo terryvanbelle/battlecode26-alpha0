@@ -12,14 +12,15 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 09:30 PDT).**
+**Status (November 13, 2026, 10:55 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
 - student-v7 (observation v3) scored 1/32 against zdb and still loses the small maps, so enemy memory alone isn't enough. The obs-v3 DAgger round was stopped to free the VM for the capability-complete student.
 - **Implemented: actions v2 / observation v4.** It adds squeaks, shared-array writes, cheese-boosted bites, pickup and transfer amounts, private registers, the raw shared array, heard squeaks, full RobotInfo, and a 60×60 map memory. Every zdb call is now a training label. [Details](docs/capability-principle.md#implemented-november-13-2026-student-actions-v2--student-obs-v4--student-mlp-v2).
 - `resign()` removed from the action space (actions v3, 664 actions): it only forfeits the game. Records already collected still load.
-- Running: [pipeline_obs_v4b.sh](scripts/pipeline_obs_v4b.sh), which took over from pipeline_obs_v4.sh at 09:24 PDT to rebuild without resign (teacher-v9 with 500 zdb games → student-v9 → zdb check → DAgger round → student-v10 → zdb check → frozen gate). Started 08:13 PDT; expected to finish around 16:00 PDT.
+- **Second worker:** a Windows 11 laptop (WSL2 over Tailscale) now plays 3/4 of each run's games; it is about 4x as fast as the VM and plays identical games. The VM fills in anything it doesn't finish. [box_split.sh](scripts/box_split.sh), [box_helper.sh](scripts/box_helper.sh).
+- Running: [pipeline_obs_v4c.sh](scripts/pipeline_obs_v4c.sh) (teacher-v9 with 500 zdb games → student-v9 → zdb check → DAgger round → student-v10 → zdb check → frozen gate). It took over from v4/v4b without losing recorded games; started 08:13 PDT.
 
 **Most recent result.** student-v7 (observation v3): 1/32 vs zdb at sampling temperature 1.0. Earlier, student-v4 and student-v5 (observation v2) both scored 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
 

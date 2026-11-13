@@ -1,4 +1,5 @@
-"""Collect zdb demonstration games in parallel (resumable). Usage: collect_teacher.py CONFIG [--games N] [--workers K]"""
+"""Collect zdb demonstration games in parallel (resumable). Usage: collect_teacher.py CONFIG [--games N] [--workers K] [--slice LO:HI:N]
+--slice runs only games whose index i has LO <= i % N < HI (to split a run across machines, scripts/box_split.sh)."""
 import argparse, json, os, random, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -35,6 +36,7 @@ def main():
     ap.add_argument('config')
     ap.add_argument('--games', type=int)
     ap.add_argument('--workers', type=int)
+    ap.add_argument('--slice', help='LO:HI:N: only games with LO <= index %% N < HI')
     a = ap.parse_args()
     cfg = json.loads(Path(a.config).read_text())
     if a.games:
@@ -49,6 +51,9 @@ def main():
     games = schedule(cfg)
     (run / 'schedule.json').write_text(json.dumps(games, indent=1))
     todo = [g for g in games if not (run / 'games' / g['id'] / 'result.json').exists()]
+    if a.slice:
+        lo, hi, n = map(int, a.slice.split(':'))
+        todo = [g for g in todo if lo <= int(g['id'][1:]) % n < hi]
     print(f'{len(games)} scheduled, {len(todo)} to run', flush=True)
     flags = '-Xmx2g' + (' -Dbc.alpha0.tournamentLimits=true' if cfg['tournament_limits'] else '')
 

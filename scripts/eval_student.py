@@ -49,6 +49,7 @@ def main():
     ap.add_argument('--untrained', default='')
     ap.add_argument('--workers', type=int, default=7)
     ap.add_argument('--limits', action='store_true', help='official bytecode limits for bot teams')
+    ap.add_argument('--slice', help='LO:HI:N: only jobs with LO <= index %% N < HI (split across machines; summary covers those)')
     a = ap.parse_args()
     out = Path(a.out); (out / 'games').mkdir(parents=True, exist_ok=True)
     player = resolve(a.player, a.untrained)
@@ -60,6 +61,9 @@ def main():
                 for side in a.sides:
                     jobs.append(dict(id=f'{o}__{m}__{s}__{side}', opponent=o, map=m, seed=int(s), side=side, opp_spec=spec))
     (out / 'jobs.json').write_text(json.dumps({'player': player, 'jobs': jobs}, indent=1))
+    if a.slice:
+        lo, hi, n = map(int, a.slice.split(':'))
+        jobs = [j for i, j in enumerate(jobs) if lo <= i % n < hi]
     flags = '-Xmx2g' + (' -Dbc.alpha0.tournamentLimits=true' if a.limits else '')
 
     def play(j):
