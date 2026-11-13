@@ -20,7 +20,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - **Implemented: actions v2 / observation v4.** It adds squeaks, shared-array writes, cheese-boosted bites, pickup and transfer amounts, private registers, the raw shared array, heard squeaks, full RobotInfo, and a 60×60 map memory. Every zdb call is now a training label. [Details](docs/capability-principle.md#implemented-november-13-2026-student-actions-v2--student-obs-v4--student-mlp-v2).
 - `resign()` removed from the action space (actions v3, 664 actions): it only forfeits the game. Records already collected still load.
 - **Second worker:** a Windows 11 laptop (WSL2 over Tailscale) now plays 3/4 of each run's games; it is about 4x as fast as the VM and plays identical games. The VM fills in anything it doesn't finish. [box_split.sh](scripts/box_split.sh), [box_helper.sh](scripts/box_helper.sh).
-- Running: [pipeline_obs_v4c.sh](scripts/pipeline_obs_v4c.sh) (teacher-v9 with 500 zdb games → student-v9 → zdb check → DAgger round → student-v10 → zdb check → frozen gate). It took over from v4/v4b without losing recorded games; started 08:13 PDT.
+- Running: [pipeline_obs_v4d.sh](scripts/pipeline_obs_v4d.sh) (teacher-v9 with 500 zdb games → student-v9 → zdb check → DAgger round → student-v10 → zdb check → frozen gate). It took over from v4/v4b/v4c without losing work; started 08:13 PDT. student-v10 trains on the laptop GPU (about 4.5x as fast as the VM CPU), falling back to the VM.
 
 **Most recent result.** student-v7 (observation v3): 1/32 vs zdb at sampling temperature 1.0. Earlier, student-v4 and student-v5 (observation v2) both scored 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
 

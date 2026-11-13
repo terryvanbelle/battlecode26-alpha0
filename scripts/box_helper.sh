@@ -33,7 +33,8 @@ while true; do
         misses=$((misses + 1)); [ $misses -ge 10 ] && { out=unreachable; break; }
       fi
     done
-    T=1800 box "cd $R && find $res/games -name result.json -printf '%h\n' | tar czf - -T -" | T=1800 vm "cd $R && tar xzf -"
+    # game runs: only finished games; anything else (e.g. a training run): the whole directory
+    T=1800 box "cd $R && if [ -d $res/games ]; then find $res/games -name result.json -printf '%h\n'; else echo $res; fi | tar czf - -T -" | T=1800 vm "cd $R && tar xzf -"
     status "$tag" $state "$out"
   done
   sleep 30

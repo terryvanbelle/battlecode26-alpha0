@@ -115,23 +115,26 @@ def load_files(files, baby_keep=1.0, seed=0, tag=0):
     return {k: np.concatenate([p[k] for p in parts]) for k in parts[0]} if parts else None
 
 
+DEV = torch.device('cpu')
+
+
 def run_batch(net, data, idx):
-    x = torch.from_numpy(data['obs'][idx])
-    legal = torch.from_numpy(unpack_mask(data['mask'][idx], N_ACTIONS))
-    y = torch.from_numpy(data['label'][idx])
+    x = torch.from_numpy(data['obs'][idx]).to(DEV, non_blocking=True)
+    legal = torch.from_numpy(unpack_mask(data['mask'][idx], N_ACTIONS)).to(DEV, non_blocking=True)
+    y = torch.from_numpy(data['label'][idx]).to(DEV, non_blocking=True)
     logits, value, h = net(x)
     return logits.masked_fill(~legal, -1e9), value, h, y
 
 
 def param_loss(net, h, y, param):
     """Mean BCE over the bits each labelled parameter uses (0 if no record in the batch takes a parameter)."""
-    kind = KIND_OF[y]
+    kind = KIND_OF.to(y.device)[y]
     sel = kind != P_NONE
     if not sel.any():
         return h.new_zeros(()), None
     pl = net.param_logits(h[sel], y[sel])
-    target = ((torch.as_tensor(param)[sel].unsqueeze(1) >> torch.arange(PARAM_MAX_BITS)) & 1).float()
-    used = KIND_BITS[kind[sel]]
+    target = ((torch.as_tensor(param).to(y.device)[sel].unsqueeze(1) >> torch.arange(PARAM_MAX_BITS, device=y.device)) & 1).float()
+    used = KIND_BITS.to(y.device)[kind[sel]]
     bce = F.binary_cross_entropy_with_logits(pl, target, reduction='none')
     return (bce * used).sum() / used.sum(), (pl, target, used, kind[sel])
 
@@ -145,10 +148,10 @@ def evaluate(net, data, bs=2048):
     for i in range(0, n, bs):
         idx = np.arange(i, min(n, i + bs))
         logits, value, h, y = run_batch(net, data, idx)
-        v = torch.from_numpy(data['value'][idx])
+        v = torch.from_numpy(data['value'][idx]).to(DEV)
         loss += F.cross_entropy(logits, y, reduction='sum').item()
         vloss += F.mse_loss(value, v, reduction='sum').item()
-        pred = logits.argmax(1).numpy()
+        pred = logits.argmax(1).cpu().numpy()
         for yy, pp, kk in zip(data['label'][idx], pred, data['king'][idx]):
             g = ('king:' if kk else 'baby:') + action_group(int(yy))
             tot[g] += 1; correct[g] += int(yy == pp)
@@ -157,6 +160,7 @@ def evaluate(net, data, bs=2048):
         if extra is not None:
             pl, target, used, kind = extra
             ok = ((pl > 0).float() == target).float() * used
+            ok, used = ok.cpu(), used.cpu()
             for g, (o, u, k) in zip(range(len(kind)), zip(ok, used, kind.tolist())):
                 name = ['', 'amount', 'squeak', 'value'][k]
                 ptot[name] += 1; pexact[name] += int(o.sum().item() == u.sum().item())
@@ -187,9 +191,12 @@ def main():
     ap.add_argument('--val-games', type=int, default=25)
     ap.add_argument('--chunk-files', type=int, default=80, help='record files loaded and shuffled together')
     ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--device', default='cpu', help="'cpu' or 'cuda'")
     ap.add_argument('--baby-keep', type=float, default=1.0, help='fraction of ordinary baby train records kept')
     a = ap.parse_args()
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed)
+    global DEV
+    DEV = torch.device(a.device)
     runs, out = [Path(r) for r in a.run.split(',')], Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
@@ -201,6 +208,7 @@ def main():
           f"loaded in {time.time()-t0:.0f}s", flush=True)
     net = StudentNet(a.h1, a.h2, a.hm, a.hq)
     export(net, out / 'untrained.bin')
+    net.to(DEV)
     opt = torch.optim.AdamW(net.parameters(), lr=a.lr, weight_decay=1e-4)
     total = max(1, a.epochs * est // a.bs)
     def lr_at(step):   # 5% linear warmup, then cosine to 2% of max
@@ -221,7 +229,7 @@ def main():
             for i in range(0, n, a.bs):
                 idx = np.sort(perm[i:i + a.bs])
                 logits, value, h, y = run_batch(net, data, idx)
-                v = torch.from_numpy(data['value'][idx]); k = torch.from_numpy(data['king'][idx])
+                v = torch.from_numpy(data['value'][idx]).to(DEV); k = torch.from_numpy(data['king'][idx]).to(DEV)
                 w = 1.0 + (a.king_weight - 1.0) * k.float()
                 pl, _ = param_loss(net, h, y, data['param'][idx])
                 loss = ((F.cross_entropy(logits, y, reduction='none') * w).sum() / w.sum()
@@ -229,9 +237,9 @@ def main():
                 for g in opt.param_groups:
                     g['lr'] = lr_at(step)
                 opt.zero_grad(); loss.backward(); opt.step(); step += 1
-                run_loss += loss.item(); nb += 1
+                run_loss += loss.detach(); nb += 1
                 if step % 500 == 0:
-                    print(f'ep {ep} step {step}/{total} loss {run_loss/nb:.4f} {time.time()-t0:.0f}s', flush=True)
+                    print(f'ep {ep} step {step}/{total} loss {float(run_loss)/nb:.4f} {time.time()-t0:.0f}s', flush=True)
                     run_loss, nb = 0.0, 0
             del data
         ev = evaluate(net, val)
