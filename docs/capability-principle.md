@@ -14,7 +14,7 @@ How this applies:
 | API call | Student today | Gap |
 |---|---|---|
 | `move(dir)`, `turn(dir)` | yes (8 directions each) | — |
-| `moveForward()` | via `move(facing)` | to check: whether the cooldown is the same as `move` toward the facing direction |
+| `moveForward()` | via `move(facing)` | none: in engine 1.2.6 `moveForward()` is exactly `move(getDirection())` |
 | `buildRat`, `placeDirt`, `removeDirt`, `place/removeRatTrap`, `place/removeCatTrap`, `carryRat` | yes, at any tile within ±3 | none: every engine action range is distance² ≤ 9, so the 7×7 target window covers all of them |
 | `attack(loc)` | yes | — |
 | `attack(loc, cheeseAmount)` | **no**; recorded as a plain bite | **missing**: cheese-boosted bites. zdb uses them in fights (`Baby.java:970`, `Baby.java:1017`, `GrabMicro.java:308`) |
@@ -65,4 +65,35 @@ How this applies:
 4. **Imitation benefit.** zdb's squeaks, shared-array writes and boosted bites become ordinary training labels, so the student can learn zdb's own communication protocol instead of a hand-made substitute.
 5. Recollect teacher data, retrain, and pass the gate. **RL starts only from a model built to this spec.**
 
-The obs-v3 pipeline started at 04:41 PDT keeps running as a diagnostic: it shows whether enemy memory fixes small-map defence. It cannot produce the RL starting model.
+## Implemented (November 13, 2026): student-actions-v2 / student-obs-v4 / student-mlp-v2
+
+**Actions (665).** The v1 actions plus:
+- `SQUEAK`, 64 `WRITE_SHARED i` (kings only, as in the engine), 32 `WRITE_REG i`, `DISINTEGRATE`, `RESIGN`.
+- A parameter is chosen after the action, as independent bits from a head conditioned on the trunk and on the chosen action:
+  - 16-bit amount for attack, pickup and transfer. 0 means the default: a plain bite, the whole tile, or all raw cheese. Amounts above what the engine allows are clamped.
+  - 32-bit squeak content.
+  - 10-bit value for shared-array and register writes.
+- At most 128 primitives per turn (zdb writes about 1.4 shared-array slots per king turn).
+- `DISINTEGRATE` and `RESIGN` are in the space, but a student team is only offered them with `Game --end-actions 1`. An untrained net at temperature 1.0 resigns in round 1, and an imitation net would pick them by accident about once per game. RL can switch them on.
+
+**Observation (9,081 bytes).**
+- Dense values:
+  - the local window grows to 25 channels per tile, adding exact facing, raw cheese, what the robot carries, cat chirality, ID and exact HP;
+  - exact cheese amounts per tile;
+  - scalars add own ID, turning cooldown, `getAllCheese`, exact HP/cheese/round/position, the carried robot's details, whether it squeaked this turn, and the step counter;
+  - metadata for up to 16 heard squeaks: sender offset, absolute source, age and sender ID.
+- Bits:
+  - full-resolution map memory, 60×60 tiles × 8 planes: seen, wall, dirt, mine, cheese, rat trap, cat trap, self;
+  - the raw shared array (64 × 10 bits);
+  - 32 private registers × 10 bits;
+  - the content of the heard squeaks (16 × 32 bits).
+- The obs-v2 team board and obs-v3 enemy memory stay as extra inputs.
+
+**Network.**
+- The map bits go through their own 64-unit layer, computed sparsely over the bits that are set.
+- That output joins the dense values and the other bits in the 384→256 trunk, which feeds the policy, value and parameter heads.
+- Java/PyTorch parity is tested for the policy, the value and the parameter logits.
+
+**Recording.** Every zdb controller call now maps to a label: squeaks, shared-array writes, boosted bites and amounts included. A 400-round smoke game had no unmapped or ignored calls.
+
+Pipeline: [scripts/pipeline_obs_v4.sh](../scripts/pipeline_obs_v4.sh) runs teacher-v9 (500 pure zdb games), student-v9, a DAgger round (teacher-v10-dagger, student-v10), the zdb check and the frozen gate. The trainer now streams records in chunks of games, because obs-v4 records are about 9 KB each.

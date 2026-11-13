@@ -4,24 +4,34 @@ import battlecode.common.*;
 import java.util.*;
 
 /**
- * Student observation encoder (student-obs-v1). Uses only the public RobotController
- * API plus per-robot memory of what that robot itself sensed. No teacher state, no
- * engine internals, no communication. One Memory instance per robot ID.
+ * Student observation encoder (student-obs-v4). Uses only the public RobotController API plus per-robot memory of
+ * what that robot itself sensed, and the obs-v2 team board. One Memory instance per robot ID.
  *
- * Layout (uint8 each): local window L*L*CL, then coarse global G*G*CG, then NS scalars.
+ * Layout: DENSE uint8 values (read as value/255): local window L*L*CL, coarse global G*G*CG, NS scalars,
+ * SQ heard squeaks x SQM bytes of metadata; then BIT_BYTES of bits (LSB-first): full-resolution map memory
+ * (MAP_MAX x MAP_MAX x MAP_PLANES, absolute coordinates), the raw shared array (64 x 10 bits), the robot's private
+ * registers (32 x 10 bits) and the content of the heard squeaks (SQ x 32 bits). See docs/capability-principle.md.
  */
 public final class Obs {
-    public static final String VERSION = "student-obs-v3";
-    public static final int R = 5, L = 2 * R + 1, CL = 17;
+    public static final String VERSION = "student-obs-v4";
+    public static final int R = 5, L = 2 * R + 1, CL = 25;
     public static final int G = 16, CG = 8;
-    public static final int NS = 52;
-    public static final int LOCAL = L * L * CL, GLOBAL = G * G * CG;
-    public static final int SIZE = LOCAL + GLOBAL + NS;
+    public static final int NS = 96, SQ = 16, SQM = 8;
+    public static final int LOCAL = L * L * CL, GLOBAL = G * G * CG, SCALARS = LOCAL + GLOBAL, SQMETA = SCALARS + NS;
+    public static final int DENSE = SQMETA + SQ * SQM;
+    public static final int MAP_MAX = 60, MAP_PLANES = 8;
+    public static final int B_MAP = 0, B_SHARED = MAP_MAX * MAP_MAX * MAP_PLANES, B_REG = B_SHARED + 64 * 10,
+        B_SQ = B_REG + Actions.REGS * 10, BITS = B_SQ + SQ * 32, BIT_BYTES = (BITS + 7) / 8;
+    public static final int SIZE = DENSE + BIT_BYTES;
+    // map memory planes
+    static final int P_SEEN = 0, P_WALL = 1, P_DIRT = 2, P_MINE = 3, P_CHEESE = 4, P_RAT_TRAP = 5, P_CAT_TRAP = 6, P_SELF = 7;
 
     // local channels
     static final int ON_MAP = 0, VISIBLE = 1, WALL = 2, DIRT = 3, CHEESE = 4, MINE = 5, OWN_RAT_TRAP = 6,
         OWN_CAT_TRAP = 7, OWN_BABY = 8, OWN_KING = 9, ENEMY_BABY = 10, ENEMY_KING = 11, CAT = 12,
-        FACING_ME = 13, FLYING = 14, AGE = 15, ENEMY_MEM = 16;
+        FACING_ME = 13, FLYING = 14, AGE = 15, ENEMY_MEM = 16,
+        // obs-v4: the rest of RobotInfo
+        DIR_X = 17, DIR_Y = 18, RAW_CHEESE = 19, CARRYING = 20, CHIRALITY = 21, ID_HI = 22, ID_LO = 23, HP_LO = 24;
     // global channels
     static final int G_WALL = 0, G_DIRT = 1, G_MINE = 2, G_OWN_KING = 3, G_ENEMY_KING = 4, G_ENEMY_GUESS = 5,
         G_SELF = 6, G_SEEN = 7;
@@ -32,13 +42,15 @@ public final class Obs {
     /** What one robot remembers about the map. */
     public static final class Memory {
         final int w, h;
-        final byte[] flags;      // bit0 seen, bit1 wall, bit2 dirt, bit3 mine
+        final byte[] flags;      // bit0 seen, bit1 wall, bit2 dirt, bit3 mine, bit4 cheese, bit5 rat trap, bit6 cat trap
         final int[] seenRound;
         MapLocation home;        // own location on first observed turn (king within 2 tiles of spawn)
         final HashMap<Integer, int[]> ownKings = new HashMap<>();   // id -> x,y,round
         final HashMap<Integer, int[]> enemyKings = new HashMap<>();
         final HashMap<Integer, int[]> enemyRats = new HashMap<>();  // obs-v3: id -> x, y, round last seen (MEM_ROUNDS)
         int threatRound = -1000, hpPrev = -1, hpLoss, lastTurnRound = -1;
+        int lastSqueakRound = -1;                                    // obs-v4: one squeak per turn (engine limit)
+        final int[] reg = new int[Actions.REGS];                     // obs-v4: private registers (WRITE_REG)
         Memory(int w, int h) { this.w = w; this.h = h; flags = new byte[w * h]; seenRound = new int[w * h]; }
     }
 
@@ -79,7 +91,9 @@ public final class Obs {
         for (MapInfo mi : infos) {
             MapLocation p = mi.getMapLocation();
             int i = p.y * m.w + p.x;
-            int f = 1 | (mi.isWall() ? 2 : 0) | (mi.isDirt() ? 4 : 0) | (mi.hasCheeseMine() ? 8 : 0);
+            TrapType tt = mi.getTrap();
+            int f = 1 | (mi.isWall() ? 2 : 0) | (mi.isDirt() ? 4 : 0) | (mi.hasCheeseMine() ? 8 : 0)
+                | (mi.getCheeseAmount() > 0 ? 16 : 0) | (tt == TrapType.RAT_TRAP ? 32 : 0) | (tt == TrapType.CAT_TRAP ? 64 : 0);
             m.flags[i] = (byte) f;
             m.seenRound[i] = round;
         }
@@ -154,7 +168,7 @@ public final class Obs {
             if (dx < -R || dx > R || dy < -R || dy > R) continue;
             base = ((dy + R) * L + (dx + R)) * CL;
             out[base + VISIBLE] = (byte) 255;
-            out[base + CHEESE] = (byte) clamp(mi.getCheeseAmount() * 4);
+            out[base + CHEESE] = (byte) clamp(mi.getCheeseAmount());
             TrapType t = mi.getTrap();
             if (t == TrapType.RAT_TRAP) out[base + OWN_RAT_TRAP] = (byte) 255;
             else if (t == TrapType.CAT_TRAP) out[base + OWN_CAT_TRAP] = (byte) 255;
@@ -172,7 +186,16 @@ public final class Obs {
             if (d != null && d != Direction.CENTER) {
                 int vx = me.x - r.getLocation().x, vy = me.y - r.getLocation().y;
                 if (vx * d.dx + vy * d.dy > 0) out[base + FACING_ME] = (byte) 255;
+                out[base + DIR_X] = (byte) (128 + 127 * d.dx);
+                out[base + DIR_Y] = (byte) (128 + 127 * d.dy);
             }
+            out[base + RAW_CHEESE] = (byte) clamp(r.getRawCheeseAmount());
+            RobotInfo cr = r.getCarryingRobot();
+            if (cr != null) out[base + CARRYING] = (byte) (cr.getTeam() == us ? 128 : 255);
+            out[base + CHIRALITY] = (byte) clamp(128 + r.getChirality());
+            out[base + ID_HI] = (byte) (r.getID() >> 8);
+            out[base + ID_LO] = (byte) r.getID();
+            out[base + HP_LO] = (byte) r.getHealth();
         }
 
         for (int[] v : m.enemyRats.values()) {
@@ -276,9 +299,82 @@ public final class Obs {
         for (int[] v : m.enemyRats.values()) if (v[2] < round || !rc.canSenseLocation(new MapLocation(v[0], v[1]))) remembered++;
         out[s + 50] = (byte) clamp(remembered * 32);                        // remembered enemies not in view now
 
+        // ---- obs-v4: exact getters (every value a bot can read about itself)
+        int id = rc.getID();
+        out[s + 52] = (byte) (id >> 8); out[s + 53] = (byte) id;
+        out[s + 54] = (byte) clamp(rc.getTurningCooldownTurns() * 4);
+        hilo(out, s + 55, rc.getAllCheese());
+        hilo(out, s + 57, rc.getHealth());
+        hilo(out, s + 59, rc.getRawCheese());
+        hilo(out, s + 61, rc.getGlobalCheese());
+        out[s + 63] = (byte) me.x; out[s + 64] = (byte) me.y;
+        hilo(out, s + 65, round);
+        out[s + 67] = (byte) m.w; out[s + 68] = (byte) m.h;
+        RobotInfo carried = rc.getCarrying();
+        if (carried != null) {
+            out[s + 69] = (byte) (carried.getTeam() == us ? 128 : 255);
+            out[s + 70] = (byte) (carried.getType() == UnitType.RAT_KING ? 255 : 128);
+            hilo(out, s + 71, carried.getHealth());
+            out[s + 73] = (byte) (carried.getID() >> 8); out[s + 74] = (byte) carried.getID();
+            out[s + 75] = (byte) clamp(carried.getRawCheeseAmount());
+        }
+        out[s + 76] = (byte) (rc.isBeingThrown() ? 255 : 0);
+        out[s + 77] = (byte) (m.lastSqueakRound == round ? 255 : 0);
+        out[s + 79] = (byte) clamp(rc.getActionCooldownTurns() / 4);
+        out[s + 80] = (byte) clamp(rc.getMovementCooldownTurns() / 4);
+        out[s + 81] = (byte) clamp(rc.getCurrentRatCost() / 4);
+        out[s + 84] = (byte) clamp(rc.getDirt());
+        out[s + 85] = (byte) clamp(rc.getNumberRatTraps());
+        out[s + 86] = (byte) clamp(rc.getNumberCatTraps());
+        out[s + 87] = (byte) clamp(step * 2);
+
+        // ---- obs-v4: heard squeaks (newest SQ of the last 5 rounds): metadata bytes + content bits
+        Message[] msgs = rc.readSqueaks(-1);
+        out[s + 78] = (byte) clamp(msgs.length * 16);
+        int bitBase = DENSE * 8;
+        for (int k = 0; k < SQ && k < msgs.length; k++) {
+            Message msg = msgs[msgs.length - 1 - k];
+            int o = SQMETA + k * SQM;
+            MapLocation src = msg.getSource();
+            out[o] = (byte) 255;
+            out[o + 1] = rel(src.x - me.x); out[o + 2] = rel(src.y - me.y);
+            out[o + 3] = (byte) clamp((round - msg.getRound()) * 50);
+            out[o + 4] = (byte) (msg.getSenderID() >> 8); out[o + 5] = (byte) msg.getSenderID();
+            out[o + 6] = (byte) src.x; out[o + 7] = (byte) src.y;
+            int bytes = msg.getBytes();
+            for (int b = 0; b < 32; b++) if ((bytes >>> b & 1) != 0) setBit(out, bitBase + B_SQ + k * 32 + b);
+        }
+
+        // ---- obs-v4: raw shared array and private registers
+        for (int i = 0; i < 64; i++) {
+            int v;
+            try { v = rc.readSharedArray(i); } catch (GameActionException e) { v = 0; }
+            for (int b = 0; b < 10; b++) if ((v >> b & 1) != 0) setBit(out, bitBase + B_SHARED + i * 10 + b);
+        }
+        for (int i = 0; i < Actions.REGS; i++) {
+            int v = m.reg[i];
+            for (int b = 0; b < 10; b++) if ((v >> b & 1) != 0) setBit(out, bitBase + B_REG + i * 10 + b);
+        }
+
+        // ---- obs-v4: full-resolution map memory, absolute coordinates
+        for (int y = 0; y < m.h && y < MAP_MAX; y++) for (int x = 0; x < m.w && x < MAP_MAX; x++) {
+            int f = m.flags[y * m.w + x];
+            if (f == 0) continue;
+            int t = bitBase + B_MAP + (y * MAP_MAX + x) * MAP_PLANES;
+            for (int pl = 0; pl < 7; pl++) if ((f >> pl & 1) != 0) setBit(out, t + pl);
+        }
+        if (me.x < MAP_MAX && me.y < MAP_MAX) setBit(out, bitBase + B_MAP + (me.y * MAP_MAX + me.x) * MAP_PLANES + P_SELF);
+
     }
 
     private static byte rel(int d) { return (byte) clamp(128 + 4 * d); }
+
+    private static void hilo(byte[] out, int o, int v) {
+        v = Math.max(0, Math.min(65535, v));
+        out[o] = (byte) (v >> 8); out[o + 1] = (byte) v;
+    }
+
+    private static void setBit(byte[] out, int bit) { out[bit >> 3] |= (byte) (1 << (bit & 7)); }
 
     private static int bin(Memory m, int x, int y) {
         x = Math.max(0, Math.min(m.w - 1, x)); y = Math.max(0, Math.min(m.h - 1, y));

@@ -13,7 +13,7 @@ REC = os.environ.get('STUDENT_RECORDS', str(ROOT / 'runs/smoke/zdb-mirror/record
 @pytest.mark.skipif(not (ROOT / 'build/student/classes').exists() or not Path(REC).exists(), reason='needs student build and records')
 def test_java_matches_torch():
     torch.manual_seed(1)
-    net = StudentNet(64, 32)
+    net = StudentNet(64, 32, 16, 16)
     with torch.no_grad():
         for p in net.parameters():
             p.mul_(3)   # make logits spread so argmax is well defined
@@ -27,7 +27,8 @@ def test_java_matches_torch():
     h, o, m = read_records(REC)
     legal = torch.from_numpy(unpack_mask(m[:k], N_ACTIONS))
     with torch.no_grad():
-        logits, value = net(torch.from_numpy(np.ascontiguousarray(o[:k])))
+        logits, value, hid = net(torch.from_numpy(np.ascontiguousarray(o[:k])))
+        plog = net.param_logits(hid, torch.from_numpy(h['label'][:k].astype(np.int64)))
     probs = torch.softmax(logits.masked_fill(~legal, -1e9), 1)
     gid = torch.tensor(GROUP_OF)
     mass = torch.zeros(k, N_GROUPS).index_add_(1, gid, probs)
@@ -38,3 +39,5 @@ def test_java_matches_torch():
     jval = np.array([float(l.split()[1]) for l in out if l])
     assert (jpred == pred).mean() > 0.99
     assert np.abs(jval - value.numpy()).max() < 1e-3
+    jp = np.array([[float(x) for x in l.split()[2:4]] for l in out if l])
+    assert np.abs(jp - plog[:, [0, 31]].numpy()).max() < 1e-2

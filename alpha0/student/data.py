@@ -1,11 +1,12 @@
-"""Read student-records-v1 files (gzip, big-endian fixed-size records)."""
+"""Read student-records-v2 files (gzip, big-endian fixed-size records)."""
 import gzip
 from pathlib import Path
 import numpy as np
 from .spec import HEADER, OBS, MASK_BYTES, RECORD
 
 HEADER_DTYPE = np.dtype([('robot', '>i4'), ('round', '>i4'), ('label', '>i2'), ('team', 'i1'), ('king', 'i1'),
-                         ('step', 'i1'), ('flags', 'i1'), ('reserved', '>i2')])
+                         ('step', 'i1'), ('flags', 'i1'), ('reserved', '>i2'), ('param', '>i4'),
+                         ('reserved2', '>i4')])
 
 
 def read_records(path):

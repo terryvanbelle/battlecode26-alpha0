@@ -90,4 +90,4 @@ Everything restarts on obs-v3: teacher-v7 (500 pure zdb games), student-v7, teac
 - thunderdome is lost by round 60 every time, with no cheese moved by either side.
 - The long maps are no better than v4–v5: pipes 38–40 points of 99, rift 28–40, ZeroDay 28–39, jail 38–43 or a king kill.
 
-Enemy memory alone doesn't close the gap. The obs-v3 DAgger round (teacher-v8, student-v8, gate) keeps running as a diagnostic. The RL starting model will come from the capability-complete spec in [capability-principle.md](capability-principle.md).
+Enemy memory alone doesn't close the gap. The obs-v3 DAgger round (teacher-v8) was stopped at 08:13 PDT to free the VM. The RL starting model will come from the capability-complete spec in [capability-principle.md](capability-principle.md).

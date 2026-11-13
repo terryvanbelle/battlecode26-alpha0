@@ -1,0 +1,57 @@
+{
+  "name": "teacher-v9",
+  "purpose": "Capability-complete restart (student-actions-v2 / student-obs-v4, docs/capability-principle.md): every zdb controller call is now a label, including squeaks, shared-array writes, cheese-boosted bites and pickup/transfer amounts; the observation adds the raw shared array, heard squeaks, full RobotInfo, exact getters, private registers and a full-resolution 60x60 map memory. Pure zdb play; kings every turn; babies at 0.06, every turn in rare decisive states.",
+  "teacher": {
+    "id": "zdb",
+    "package": "zdb",
+    "classes": "build/bots/zdb",
+    "source": "battlecode26b-vibe bots/zdb"
+  },
+  "field_tsv": "~/projects/vibe/2026b/research/field/FIELD.tsv",
+  "train_opponents": [
+    "uravt_Version35",
+    "daannte_v52_ThisGuy",
+    "AlexT101_finalsbot",
+    "AdamTan12_Finals",
+    "TeamSPAARK_SPAARK",
+    "awu7_awubot_us",
+    "quesswho_bot16",
+    "thewaxmango_PhD",
+    "justinottesen_carbonara",
+    "CS50Crab_protoSaberV7",
+    "XSercia_genies",
+    "nzjt_TheComplexMerlin"
+  ],
+  "heldout_opponents": [
+    "VarunVejalla_final4_run_away10",
+    "GuzziFlipFlops_Hermesv8",
+    "quesswho_quals",
+    "daannte_v47_Skadoosh",
+    "AlexT101_usqualsbot"
+  ],
+  "mirror_fraction": 0.3,
+  "excluded_maps": [
+    "Stash",
+    "Hike",
+    "heart",
+    "ratsareants",
+    "tiny",
+    "DefaultSmall",
+    "DefaultMedium",
+    "DefaultLarge",
+    "closeup",
+    "knifefight",
+    "cheesefarm",
+    "wallsofparadis"
+  ],
+  "excluded_maps_reason": "four ancestral training-excluded maps plus the eight development-v4 benchmark maps",
+  "games": 500,
+  "validation_every": 10,
+  "record_p": 0.06,
+  "seed_base": 1500000,
+  "tournament_limits": true,
+  "workers": 7,
+  "game_timeout_seconds": 1200,
+  "record_p_king": 1.0,
+  "record_p_boost": 1.0
+}

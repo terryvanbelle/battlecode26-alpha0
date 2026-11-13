@@ -22,10 +22,12 @@ import java.util.*;
  *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
+ *      [--end-actions 1]   let student teams choose disintegrate/resign (off by default: they are in the action
+ *      space, but a sampled imitation policy would occasionally pick them by accident).
  */
 public final class Game {
     static final ObjectMapper JSON = new ObjectMapper();
-    static boolean traceDeaths;
+    static boolean traceDeaths, endActions;
 
     static final class Args {
         final Map<String, String> v = new HashMap<>();
@@ -92,8 +94,8 @@ public final class Game {
                     if (alive && !exhausted) {
                         try {
                             obs.encode(rc, step, scratch);
-                            Actions.legal(rc, mask);
-                            rec.write(robot.getID(), world.getCurrentRound(), Actions.END, teamIndex,
+                            Actions.legal(rc, obs.memory(rc), mask, true);
+                            rec.write(robot.getID(), world.getCurrentRound(), Actions.END, 0, teamIndex,
                                       rc.getType() == UnitType.RAT_KING, step, false, scratch, mask);
                             ends++;
                         } catch (Exception e) { if (Hook.error == null) Hook.error = e; }
@@ -146,21 +148,24 @@ public final class Game {
         long[] r = new long[3];
         if (world.getObjectInfo().getRobotByID(robot.getID()) == null) return r;
         RobotController rc = robot.getController();
-        for (int step = 0; step < 12; step++) {
-            if (world.getObjectInfo().getRobotByID(robot.getID()) == null) return r;
+        for (int step = 0; step < Actions.MAX_STEPS; step++) {
+            if (world.getObjectInfo().getRobotByID(robot.getID()) == null || !world.isRunning()) return r;
             obs.encode(rc, step, buf);
-            int n = Actions.legal(rc, mask);
+            Obs.Memory m = obs.memory(rc);
+            int n = Actions.legal(rc, m, mask, endActions);
             if (n <= 1) return r;
             net.forward(buf);
             int a = net.act(mask, temperature, rng);
+            int param = net.param(a, temperature, rng);
             r[0]++;
             if (rec != null) {
-                try { rec.write(robot.getID(), world.getCurrentRound(), a, teamIndex, rc.getType() == UnitType.RAT_KING, step, false, buf, mask); }
+                try { rec.write(robot.getID(), world.getCurrentRound(), a, param, teamIndex, rc.getType() == UnitType.RAT_KING, step, false, buf, mask); }
                 catch (IOException e) { throw new UncheckedIOException(e); }
             }
             if (a == Actions.END) return r;
-            try { Actions.execute(rc, a); r[1]++; }
+            try { Actions.execute(rc, m, a, param); r[1]++; }
             catch (GameActionException e) { r[2]++; return r; }
+            catch (battlecode.instrumenter.RobotDeathException e) { world.destroyRobot(robot.getID()); r[1]++; return r; }
         }
         return r;
     }
@@ -183,6 +188,7 @@ public final class Game {
         double recordPBoost = Double.parseDouble(args.get("record-p-boost", Double.toString(recordP)));
         double mixP = Double.parseDouble(args.get("mix-p", "0.5")), mixT = Double.parseDouble(args.get("mix-t", "0"));
         int maxRounds = Integer.parseInt(args.get("max-rounds", "2000"));
+        endActions = args.get("end-actions", "0").equals("1");
 
         TeamControlProvider controls = new TeamControlProvider();
         Map<Team, Object> providers = new LinkedHashMap<>();
@@ -236,6 +242,7 @@ public final class Game {
         Map<String, Object> res = new LinkedHashMap<>();
         res.put("map", mapName); res.put("seed", seed); res.put("a", names[0]); res.put("b", names[1]);
         res.put("obs_version", Obs.VERSION); res.put("action_version", Actions.VERSION);
+        res.put("obs_size", Obs.SIZE); res.put("n_actions", Actions.N); res.put("record_size", Records.SIZE);
         res.put("tournament_limits", Boolean.getBoolean("bc.alpha0.tournamentLimits"));
         res.put("finished", !world.isRunning());
         res.put("rounds", world.getCurrentRound());

@@ -11,7 +11,7 @@ import java.util.*;
  */
 public final class Hook {
     private static final Object NESTED = new Object(), IGNORED = new Object();
-    private static final class Pending { int label; boolean notLegal, king; }
+    private static final class Pending { int label, param; boolean notLegal, king; }
 
     static volatile int activeId = -1;
     static int depth, step, team;
@@ -19,6 +19,7 @@ public final class Hook {
     static Records sink;
     static final byte[] buf = new byte[Obs.SIZE];
     static final boolean[] mask = new boolean[Actions.N];
+    static final int[] param = new int[1];
     public static final TreeMap<String, Integer> unmapped = new TreeMap<>(), ignored = new TreeMap<>();
     public static long recorded, labelNotLegal, failedCalls;
     public static Throwable error;
@@ -33,16 +34,14 @@ public final class Hook {
         if (activeId < 0 || rc.getID() != activeId) return null;
         if (depth++ > 0) return NESTED;
         try {
-            if (op.equals("squeak") || op.equals("writeSharedArray") || op.equals("disintegrate") || op.equals("resign")) {
-                ignored.merge(op, 1, Integer::sum);
-                return IGNORED;
-            }
-            int label = Actions.fromCall(rc, op, args);
+            int label = Actions.fromCall(rc, op, args, param);
             if (label < 0) { unmapped.merge(op, 1, Integer::sum); return IGNORED; }
+            if (step >= Actions.MAX_STEPS) { ignored.merge("beyond_max_steps", 1, Integer::sum); return IGNORED; }
             obs.encode(rc, step, buf);
-            Actions.legal(rc, mask);
+            Actions.legal(rc, obs.memory(rc), mask, true);
             Pending p = new Pending();
             p.label = label;
+            p.param = param[0];
             p.notLegal = !mask[label];
             p.king = rc.getType() == UnitType.RAT_KING;
             return p;
@@ -56,11 +55,12 @@ public final class Hook {
         if (token == null) return;
         depth--;
         if (token == NESTED || token == IGNORED) return;
-        if (failure != null) { failedCalls++; return; }
         Pending p = (Pending) token;
+        if (failure != null && p.label != Actions.DISINTEGRATE) { failedCalls++; return; }   // disintegrate "fails" by dying
         try {
             if (p.notLegal) { labelNotLegal++; mask[p.label] = true; }
-            sink.write(activeId, rc.getRoundNum(), p.label, team, p.king,
+            if (p.label == Actions.SQUEAK) obs.memory(rc).lastSqueakRound = rc.getRoundNum();
+            sink.write(activeId, rc.getRoundNum(), p.label, p.param, team, p.king,
                        step, p.notLegal, buf, mask);
             recorded++;
             step++;
