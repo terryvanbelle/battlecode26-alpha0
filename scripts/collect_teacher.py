@@ -63,6 +63,8 @@ def main():
                '--a', f'bot:{a[0]}:{a[1]}', '--b', f'bot:{b[0]}:{b[1]}', '--out', str(out),
                '--record', g['teacher_sides'], '--record-p', str(cfg['record_p']),
                '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
+        if cfg.get('mix_net'):   # DAgger: student plays a fraction of the teacher's turns
+            cmd += ['--mix-net', str(ROOT / cfg['mix_net']), '--mix-p', str(cfg['mix_p']), '--mix-t', str(cfg.get('mix_t', 0))]
         t0 = time.time()
         try:
             p = subprocess.run(cmd, capture_output=True, text=True, timeout=cfg['game_timeout_seconds'], env={**os.environ, 'JAVA_FLAGS': flags})
