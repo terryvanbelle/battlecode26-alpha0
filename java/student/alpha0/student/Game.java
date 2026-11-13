@@ -56,6 +56,9 @@ public final class Game {
         /** Rare, decisive baby states (state-based, so the recorded P(action | state) stays unbiased). */
         boolean boosted(RobotController rc) {
             if (pBoost == p) return false;
+            int[] al = obs.alert;   // obs-v2 board: a fresh threatened-king alert within defend range
+            if (al != null && al[3] >= 1 && rc.getRoundNum() - al[2] <= 2
+                && rc.getLocation().distanceSquaredTo(new MapLocation(al[0], al[1])) <= Obs.DEFEND_D2) return true;
             try { return rc.canBecomeRatKing() || rc.senseNearbyRobots(-1, rc.getTeam().opponent()).length > 0; }
             catch (GameActionException | RuntimeException e) { return false; }
         }

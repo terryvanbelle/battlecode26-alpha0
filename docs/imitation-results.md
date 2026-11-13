@@ -43,4 +43,26 @@ T=1.0 is the deployment temperature.
 
 Selection panel at T=1.0, wins out of 8: examplefuncsplayer 6, uravt_Version35 0, AlexT101_finalsbot 0.
 
-Next: run the frozen [student gate](../configs/student-gate-v1.json), which uses held-out maps and opponents, with zdb against the same opponents as a reference. The bar is competence, not an exact copy, so the gate decides whether to continue imitation or start self-play RL.
+**Frozen gate, student-v4 at T=1.0** (held-out maps and opponents; [rule](../configs/student-gate-v1.json)). It **fails** on the held-out field.
+
+| Group | Rule | student-v4 | zdb (reference) |
+|---|---|---|---|
+| untrained net | ≥ 0.80 | 0.97 | – |
+| examplefuncsplayer + lectureplayer | ≥ 0.70 | 0.91 | 1.00 |
+| held-out field (5 bots) | ≥ 0.20 | **0.15** (23/150) | 0.33 (52/156) |
+
+Per held-out bot (student / zdb): VarunVejalla 0.00 / 0.47, GuzziFlipFlops 0.91 / 1.00, quesswho_quals 0.06 / 0.07, daannte_v47 0.00 / 0.00, AlexT101_usqualsbot 0.00 / 0.16. Games where the opponent's own code crashed are excluded. Against VarunVejalla, zdb wins most games on the small maps (tiny, knifefight, closeup), where the student's babies are wiped out and its king dies.
+
+**Diagnosis: the student could not see what zdb's babies react to.** Per-group accuracy rules out tactics: attack 0.94, carry 0.96, transfer 0.98, move 0.92. zdb's babies, however, act on the team shared array, which the kings write:
+- a fresh threatened-king alert sends nearby babies to defend (`Baby.threatenedKing`);
+- live king positions from heartbeats set where babies regroup and deliver;
+- a shared enemy-king sighting sends healthy babies to press.
+
+Observation v1 held only what each robot had seen itself, so these decisions looked like noise in the data. That fits the early king deaths on small maps.
+
+**Observation v2** adds a fixed team board that fits the kings-write shared array:
+- Each king publishes its centre and a heartbeat every turn.
+- A king that sees enemies publishes an alert, with threat = enemy babies within distance² 18.
+- Enemy-king sightings are published.
+
+Every robot reads the board as relative vectors to the nearest live king, the alert and the enemy king, plus a "within defend range of a fresh alert" flag. The student can run the same protocol itself in a tournament. Babies in defend range are now always recorded. The obs-v1 data cannot be reused, so the pipeline restarts: teacher-v5 (500 pure zdb games), student-v5, a DAgger round (teacher-v6-dagger, 400 games with student-v5), student-v6, then the zdb check and the gate ([script](../scripts/pipeline_obs_v2.sh)).

@@ -11,10 +11,10 @@ import java.util.*;
  * Layout (uint8 each): local window L*L*CL, then coarse global G*G*CG, then NS scalars.
  */
 public final class Obs {
-    public static final String VERSION = "student-obs-v1";
+    public static final String VERSION = "student-obs-v2";
     public static final int R = 5, L = 2 * R + 1, CL = 16;
     public static final int G = 16, CG = 8;
-    public static final int NS = 32;
+    public static final int NS = 48;
     public static final int LOCAL = L * L * CL, GLOBAL = G * G * CG;
     public static final int SIZE = LOCAL + GLOBAL + NS;
 
@@ -39,6 +39,16 @@ public final class Obs {
         final HashMap<Integer, int[]> enemyKings = new HashMap<>();
         Memory(int w, int h) { this.w = w; this.h = h; flags = new byte[w * h]; seenRound = new int[w * h]; }
     }
+
+    /**
+     * Team board (obs-v2): a fixed protocol that fits the 64-slot shared array, which only kings write.
+     * Each king publishes its centre and a heartbeat every turn; a king that sees enemies publishes an alert with
+     * threat = enemy babies within THREAT_D2 of it (like zdb's Comms.ALERT); enemy-king sightings are published
+     * (by kings directly, by babies through the squeak relay a tournament bot would use). Everyone reads it.
+     */
+    static final int THREAT_D2 = 18, DEFEND_D2 = 100;
+    final HashMap<Integer, int[]> boardKings = new HashMap<>();   // id -> x, y, round
+    int[] alert, eKing;                                           // x, y, round, threat / x, y, round
 
     private final HashMap<Integer, Memory> memories = new HashMap<>();
 
@@ -81,6 +91,19 @@ public final class Obs {
             }
         }
         if (rc.getType() == UnitType.RAT_KING) m.ownKings.put(rc.getID(), new int[]{me.x, me.y, round});
+        // ---- team board writes
+        for (RobotInfo r : robots)
+            if (r.getType() == UnitType.RAT_KING && r.getTeam() != us) eKing = new int[]{r.getLocation().x, r.getLocation().y, round};
+        if (rc.getType() == UnitType.RAT_KING) {
+            boardKings.put(rc.getID(), new int[]{me.x, me.y, round});
+            int threat = 0, enemies = 0;
+            for (RobotInfo r : robots) {
+                if (r.getTeam() == us || r.getType() == UnitType.CAT) continue;
+                enemies++;
+                if (r.getType() != UnitType.RAT_KING && r.getLocation().distanceSquaredTo(me) <= THREAT_D2) threat++;
+            }
+            if (enemies > 0) alert = new int[]{me.x, me.y, round, Math.min(15, threat)};
+        }
         for (HashMap<Integer, int[]> kings : List.of(m.ownKings, m.enemyKings)) {
             kings.entrySet().removeIf(e -> {
                 if (seenIds.contains(e.getKey()) || e.getKey() == rc.getID()) return false;
@@ -152,7 +175,9 @@ public final class Obs {
             out[o + G_SEEN] = (byte) clamp(seen[b] * 255 / cnt[b]);
         }
         for (int[] v : m.ownKings.values()) out[off + bin(m, v[0], v[1]) * CG + G_OWN_KING] = (byte) clamp(255 - (round - v[2]));
+        for (int[] v : boardKings.values()) if (round - v[2] <= 2) out[off + bin(m, v[0], v[1]) * CG + G_OWN_KING] = (byte) 255;
         for (int[] v : m.enemyKings.values()) out[off + bin(m, v[0], v[1]) * CG + G_ENEMY_KING] = (byte) clamp(255 - (round - v[2]) / 4);
+        if (eKing != null) { int o = off + bin(m, eKing[0], eKing[1]) * CG + G_ENEMY_KING; out[o] = (byte) Math.max(out[o] & 255, clamp(255 - (round - eKing[2]) / 4)); }
         int hx = m.home.x, hy = m.home.y;
         out[off + bin(m, m.w - 1 - hx, m.h - 1 - hy) * CG + G_ENEMY_GUESS] = (byte) 255;
         out[off + bin(m, m.w - 1 - hx, hy) * CG + G_ENEMY_GUESS] = (byte) 255;
@@ -189,7 +214,38 @@ public final class Obs {
         out[s + 29] = (byte) clamp(step * 32);
         out[s + 30] = (byte) clamp(rc.getCurrentRatCost() * 2);
         out[s + 31] = (byte) (rc.canBecomeRatKing() ? 255 : 0);
+
+        // ---- team board reads (relative vectors; dx, dy as 128 + 4 * tiles)
+        int[] near = null; int nd = Integer.MAX_VALUE, live = 0;
+        for (int[] v : boardKings.values()) {
+            if (round - v[2] > 2 || (king && v == boardKings.get(rc.getID()))) continue;
+            live++;
+            int d2 = (v[0] - me.x) * (v[0] - me.x) + (v[1] - me.y) * (v[1] - me.y);
+            if (d2 < nd) { nd = d2; near = v; }
+        }
+        if (near != null) {
+            out[s + 32] = (byte) 255;
+            out[s + 33] = rel(near[0] - me.x); out[s + 34] = rel(near[1] - me.y);
+            out[s + 35] = (byte) clamp((int) (Math.sqrt(nd) * 4));
+        }
+        out[s + 36] = (byte) clamp(live * 50);
+        if (alert != null && round - alert[2] <= 3) {
+            int d2 = (alert[0] - me.x) * (alert[0] - me.x) + (alert[1] - me.y) * (alert[1] - me.y);
+            out[s + 37] = (byte) (round - alert[2] <= 2 && alert[3] >= 1 ? 255 : 0);
+            out[s + 38] = (byte) clamp(alert[3] * 16);
+            out[s + 39] = rel(alert[0] - me.x); out[s + 40] = rel(alert[1] - me.y);
+            out[s + 41] = (byte) clamp(255 - (round - alert[2]) * 32);
+            out[s + 45] = (byte) clamp((int) (Math.sqrt(d2) * 4));
+            out[s + 47] = (byte) (out[s + 37] != 0 && d2 <= DEFEND_D2 ? 255 : 0);
+        }
+        if (eKing != null && round - eKing[2] <= 32) {
+            out[s + 42] = (byte) clamp(255 - (round - eKing[2]) * 8);
+            out[s + 43] = rel(eKing[0] - me.x); out[s + 44] = rel(eKing[1] - me.y);
+            out[s + 46] = (byte) clamp((int) (Math.sqrt((eKing[0] - me.x) * (eKing[0] - me.x) + (eKing[1] - me.y) * (eKing[1] - me.y)) * 4));
+        }
     }
+
+    private static byte rel(int d) { return (byte) clamp(128 + 4 * d); }
 
     private static int bin(Memory m, int x, int y) {
         x = Math.max(0, Math.min(m.w - 1, x)); y = Math.max(0, Math.min(m.h - 1, y));

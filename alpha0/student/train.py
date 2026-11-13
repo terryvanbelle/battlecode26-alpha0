@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .data import read_records, unpack_mask
-from .spec import OBS, MASK_BYTES, RECORD, N_ACTIONS, LOCAL, GLOBAL, L, CL, action_group
+from .spec import OBS_VERSION, OBS, MASK_BYTES, RECORD, N_ACTIONS, LOCAL, GLOBAL, L, CL, action_group
 
 MAGIC = 0x53544E31
 
@@ -47,7 +47,8 @@ def _gz_records(f: Path) -> int:
 def rare_state(o):
     """State-based (label-free) test for rare decisive baby states: can become king, or an enemy is in view."""
     loc = o[:, :LOCAL].reshape(len(o), L * L, CL)
-    return (o[:, LOCAL + GLOBAL + 31] > 0) | (loc[:, :, 10] > 0).any(1) | (loc[:, :, 11] > 0).any(1)
+    return ((o[:, LOCAL + GLOBAL + 31] > 0) | (o[:, LOCAL + GLOBAL + 47] > 0)   # can become king / defend alert (obs-v2)
+            | (loc[:, :, 10] > 0).any(1) | (loc[:, :, 11] > 0).any(1))
 
 
 def load_split(runs, split: str, max_games=None, baby_keep=1.0, seed=0):
@@ -66,6 +67,8 @@ def load_split(runs, split: str, max_games=None, baby_keep=1.0, seed=0):
         r = json.loads(res.read_text())
         if r.get('error') or r.get('hook_error') or not r.get('finished'):
             continue
+        if r.get('obs_version') != OBS_VERSION:
+            raise SystemExit(f'{res}: obs {r.get("obs_version")} != {OBS_VERSION}')
         for side in g['teacher_sides']:
             f = d / f'records-{side}.bin.gz'
             if f.exists():

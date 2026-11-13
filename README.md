@@ -12,14 +12,12 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 00:30 PDT).**
-- Four students trained so far. Each round fixed a concrete failure:
-  - v1: the king overbuilt and starved.
-  - v2: the economy works.
-  - v3/v4: DAgger rounds, where the student plays half of zdb's turns and zdb's actions in the states the student reaches become training data. v4 also always records rare decisive states (a baby can become king, or sees an enemy). It now builds a second king.
-- Running now: the frozen [student gate](configs/student-gate-v1.json) for student-v4. It covers held-out maps and opponents, with zdb run against the same opponents as a reference. The gate decides whether imitation is good enough to start self-play RL.
+**Status (November 13, 2026, 01:20 PDT).**
+- Four students trained on observation v1. The best, student-v4, nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
+- Diagnosis: zdb's babies defend, regroup and press using the kings' shared array (threat alerts, live king positions, enemy-king sightings). The student's observation didn't include any of it.
+- Observation v2 adds a fixed team board that fits the shared array. A fresh pipeline is running overnight: new zdb data, student-v5, a DAgger round, student-v6, then the zdb check and the gate.
 
-**Most recent result.** student-v4 vs zdb: 0/32 at sampling temperature 1.0. On the 2000-round maps it now loses narrowly on points (pipes 48–51, 49–50; rift up to 47–52). On small maps zdb still kills its king early. [Results log](docs/imitation-results.md).
+**Most recent result.** student-v4: 0/32 vs zdb (sampling temperature 1.0). Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->
