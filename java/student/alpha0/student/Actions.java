@@ -3,11 +3,12 @@ package alpha0.student;
 import battlecode.common.*;
 
 /**
- * Primitive action space (student-actions-v2). One index = one controller call (or one private-memory write).
+ * Primitive action space (student-actions-v3). One index = one controller call (or one private-memory write).
  * A turn is a sequence of primitives terminated by END (at most MAX_STEPS).
  *
  * 0 END | 1..8 MOVE dir | 9..16 TURN dir | 17.. typed target actions (NT types x 7x7 offsets)
- * | THROW | DROP dir x8 | BECOME_KING | SQUEAK | WRITE_SHARED index x64 | WRITE_REG index x32 | DISINTEGRATE | RESIGN.
+ * | THROW | DROP dir x8 | BECOME_KING | SQUEAK | WRITE_SHARED index x64 | WRITE_REG index x32 | DISINTEGRATE.
+ * resign() is deliberately excluded: it only forfeits the game, so no policy should ever be able to choose it.
  *
  * Some actions take an integer parameter, chosen after the action (docs/capability-principle.md):
  *   AMOUNT (16 bits) for ATTACK (cheese spent on the bite; 0 = plain bite), PICKUP (0 = everything on the tile)
@@ -18,7 +19,7 @@ import battlecode.common.*;
  * WRITE_REG writes the robot's private memory registers (Obs.Memory.reg), which it reads back in its observation.
  */
 public final class Actions {
-    public static final String VERSION = "student-actions-v2";
+    public static final String VERSION = "student-actions-v3";
     public static final int TR = 3, TW = 2 * TR + 1, TC = TW * TW;
     public static final int ATTACK = 0, CARRY = 1, BUILD = 2, RAT_TRAP = 3, CAT_TRAP = 4, PLACE_DIRT = 5,
         REMOVE_DIRT = 6, PICKUP = 7, TRANSFER = 8, REMOVE_RAT_TRAP = 9, REMOVE_CAT_TRAP = 10, NT = 11;
@@ -26,8 +27,8 @@ public final class Actions {
     public static final int THROW = TARGET0 + NT * TC, DROP0 = THROW + 1, BECOME_KING = DROP0 + 8;
     public static final int SHARED_N = GameConstants.SHARED_ARRAY_SIZE, REGS = 32;
     public static final int SQUEAK = BECOME_KING + 1, WRITE_SHARED0 = SQUEAK + 1, WRITE_REG0 = WRITE_SHARED0 + SHARED_N,
-        DISINTEGRATE = WRITE_REG0 + REGS, RESIGN = DISINTEGRATE + 1;
-    public static final int N = RESIGN + 1;
+        DISINTEGRATE = WRITE_REG0 + REGS;
+    public static final int N = DISINTEGRATE + 1;
     public static final int MAX_STEPS = 128;
     /** Parameter kinds and their bit widths. */
     public static final int P_NONE = 0, P_AMOUNT = 1, P_SQUEAK = 2, P_VALUE = 3;
@@ -60,8 +61,8 @@ public final class Actions {
     }
 
     /**
-     * Fill mask[0..N). Returns number of legal actions (END included). endActions: allow DISINTEGRATE and RESIGN
-     * (they are part of the space, but a sampled policy is only given them when the caller opts in).
+     * Fill mask[0..N). Returns number of legal actions (END included). endActions: allow DISINTEGRATE
+     * (it is part of the space, but a sampled policy is only given it when the caller opts in).
      */
     public static int legal(RobotController rc, Obs.Memory m, boolean[] mask, boolean endActions) {
         java.util.Arrays.fill(mask, false);
@@ -72,7 +73,7 @@ public final class Actions {
         boolean king = rc.getType() == UnitType.RAT_KING;
         if (king) for (int i = 0; i < SHARED_N; i++) { mask[WRITE_SHARED0 + i] = true; n++; }
         for (int i = 0; i < REGS; i++) { mask[WRITE_REG0 + i] = true; n++; }
-        if (endActions) { mask[DISINTEGRATE] = true; mask[RESIGN] = true; n += 2; }
+        if (endActions) { mask[DISINTEGRATE] = true; n++; }
         if (rc.isBeingCarried() || rc.isBeingThrown()) return n;
         Direction facing = rc.getDirection();
         if (rc.isMovementReady()) for (int k = 0; k < 8; k++) if (rc.canMove(DIRS[k])) { mask[MOVE0 + k] = true; n++; }
@@ -151,8 +152,7 @@ public final class Actions {
         if (a == SQUEAK) { rc.squeak(param); if (m != null) m.lastSqueakRound = rc.getRoundNum(); return true; }
         if (a < WRITE_REG0) { rc.writeSharedArray(a - WRITE_SHARED0, param & 1023); return true; }
         if (a < DISINTEGRATE) { if (m != null) m.reg[a - WRITE_REG0] = param & 1023; return true; }
-        if (a == DISINTEGRATE) { rc.disintegrate(); return true; }
-        rc.resign();
+        rc.disintegrate();
         return true;
     }
 
@@ -179,7 +179,6 @@ public final class Actions {
                 return WRITE_SHARED0 + i;
             }
             case "disintegrate": return DISINTEGRATE;
-            case "resign": return RESIGN;
             case "attack": type = ATTACK; break;
             case "carryRat": type = CARRY; break;
             case "buildRat": type = BUILD; break;

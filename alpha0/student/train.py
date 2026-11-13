@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .data import read_records, unpack_mask
-from .spec import (OBS_VERSION, OBS, RECORD, N_ACTIONS, LOCAL, GLOBAL, L, CL, DENSE, MAP_BITS, OTHER_BITS, BITS,
+from .spec import (OBS_VERSION, OBS, RECORD, N_ACTIONS, LEGACY_N_ACTIONS, LOCAL, GLOBAL, L, CL, DENSE, MAP_BITS, OTHER_BITS, BITS,
                    PARAM_MAX_BITS, PARAM_BITS, PARAM_KIND_OF, P_NONE, action_group)
 
 MAGIC = 0x53544E32
@@ -88,7 +88,7 @@ def game_files(runs, split: str, max_games=None):
         r = json.loads(res.read_text())
         if r.get('error') or r.get('hook_error') or not r.get('finished'):
             continue
-        if r.get('obs_version') != OBS_VERSION or r.get('obs_size') != OBS or r.get('n_actions') != N_ACTIONS:
+        if r.get('obs_version') != OBS_VERSION or r.get('obs_size') != OBS or r.get('n_actions') not in (N_ACTIONS, *LEGACY_N_ACTIONS):
             raise SystemExit(f'{res}: obs {r.get("obs_version")}/{r.get("obs_size")}/{r.get("n_actions")} != {OBS_VERSION}/{OBS}/{N_ACTIONS}')
         for side in g['teacher_sides']:
             f = d / f'records-{side}.bin.gz'
@@ -105,7 +105,7 @@ def load_files(files, baby_keep=1.0, seed=0, tag=0):
     parts = []
     for i, (f, v) in enumerate(files):
         h, o, m = read_records(f)
-        keep = unpack_mask(m, N_ACTIONS).sum(1) > 1
+        keep = (unpack_mask(m, N_ACTIONS).sum(1) > 1) & (h['label'] < N_ACTIONS)   # legacy-index labels (resign) dropped
         if baby_keep < 1:
             rng = np.random.default_rng([seed, tag, i])
             keep &= (h['king'] != 0) | rare_state(o) | (rng.random(len(keep)) < baby_keep)

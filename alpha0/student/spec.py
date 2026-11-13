@@ -1,7 +1,7 @@
-"""Constants mirrored from java/student/alpha0/student/{Obs,Actions,Records}.java (obs-v4 / actions-v2 / records-v2).
+"""Constants mirrored from java/student/alpha0/student/{Obs,Actions,Records}.java (obs-v4 / actions-v3 / records-v2).
 Game.java writes obs_size, n_actions and record_size into result.json; train.py checks them against these."""
 OBS_VERSION = 'student-obs-v4'
-ACTION_VERSION = 'student-actions-v2'
+ACTION_VERSION = 'student-actions-v3'
 L, CL, G, CG = 11, 25, 16, 8
 NS, SQ, SQM = 96, 16, 8
 LOCAL, GLOBAL = L * L * CL, G * G * CG
@@ -23,8 +23,9 @@ SQUEAK = BECOME_KING + 1
 WRITE_SHARED0 = SQUEAK + 1
 WRITE_REG0 = WRITE_SHARED0 + 64
 DISINTEGRATE = WRITE_REG0 + 32
-RESIGN = DISINTEGRATE + 1
-N_ACTIONS = RESIGN + 1                          # 665
+N_ACTIONS = DISINTEGRATE + 1                    # 664 (resign() is deliberately not an action)
+LEGACY_N_ACTIONS = (665,)                       # actions-v2 records: same layout plus a trailing RESIGN index (marked
+                                                # legal in teacher masks, never a label: zdb never resigns)
 MASK_BYTES = (N_ACTIONS + 63) // 64 * 8         # 88
 HEADER = 24
 RECORD = HEADER + OBS + MASK_BYTES
@@ -69,7 +70,7 @@ def action_name(a: int) -> str:
         return f'write_shared[{a - WRITE_SHARED0}]'
     if a < DISINTEGRATE:
         return f'write_reg[{a - WRITE_REG0}]'
-    return 'disintegrate' if a == DISINTEGRATE else 'resign'
+    return 'disintegrate'
 
 
 def action_group(a: int) -> str:
@@ -101,9 +102,9 @@ def group_index(a: int) -> int:
         return 7 + NT
     if a < DISINTEGRATE:
         return 8 + NT
-    return 9 + NT if a == DISINTEGRATE else 10 + NT
+    return 9 + NT
 
 
 GROUP_OF = [group_index(a) for a in range(N_ACTIONS)]
-N_GROUPS = 11 + NT
+N_GROUPS = 10 + NT
 PARAM_KIND_OF = [param_kind(a) for a in range(N_ACTIONS)]

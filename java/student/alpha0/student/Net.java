@@ -86,7 +86,7 @@ public final class Net {
         return (float) Math.tanh(v);
     }
 
-    /** Action group: END, MOVE, TURN, 11 target types, THROW, DROP, BECOME_KING, SQUEAK, WRITE_SHARED, WRITE_REG, DISINTEGRATE, RESIGN. */
+    /** Action group: END, MOVE, TURN, 11 target types, THROW, DROP, BECOME_KING, SQUEAK, WRITE_SHARED, WRITE_REG, DISINTEGRATE. */
     public static int group(int a) {
         if (a == Actions.END) return 0;
         if (a < Actions.TURN0) return 1;
@@ -98,10 +98,9 @@ public final class Net {
         if (a == Actions.SQUEAK) return 6 + Actions.NT;
         if (a < Actions.WRITE_REG0) return 7 + Actions.NT;
         if (a < Actions.DISINTEGRATE) return 8 + Actions.NT;
-        if (a == Actions.DISINTEGRATE) return 9 + Actions.NT;
-        return 10 + Actions.NT;
+        return 9 + Actions.NT;
     }
-    public static final int GROUPS = 11 + Actions.NT;
+    public static final int GROUPS = 10 + Actions.NT;
     private final double[] groupMass = new double[GROUPS];
 
     /**

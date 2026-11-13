@@ -22,7 +22,7 @@ import java.util.*;
  *      [--record-p-boost P]   babies that can become king or see an enemy are sampled with P (default: record-p)
  *      [--mix-net WEIGHTS --mix-p 0.5 [--mix-t 0]]   DAgger: on recorded bot teams, each robot turn is played by the
  *      student with probability mix-p (not recorded); the bot plays (and is sampled for recording) otherwise.
- *      [--end-actions 1]   let student teams choose disintegrate/resign (off by default: they are in the action
+ *      [--end-actions 1]   let student teams choose disintegrate (off by default: it is in the action
  *      space, but a sampled imitation policy would occasionally pick them by accident).
  */
 public final class Game {

@@ -23,7 +23,8 @@ How this applies:
 | `throwRat`, `dropRat(dir)`, `becomeRatKing` | yes | — |
 | `squeak(int)` | **no**; ignored by the hook (117k zdb calls in teacher-v5) | **missing**: 32-bit message content |
 | `writeSharedArray(index, value)` | **no**; ignored by the hook (1.39M zdb calls in teacher-v5) | **missing**: 64 indices × 10-bit values |
-| `disintegrate`, `resign` | no | missing (rarely useful, but cheap to include) |
+| `disintegrate` | no | missing (rarely useful, but cheap to include) |
+| `resign` | no | deliberately excluded: it only forfeits the game |
 | indicator and timeline calls | no | no game effect; excluded |
 | Turn length | at most 12 primitives per turn | must be long enough for the shared-array writes a king makes in one turn |
 
@@ -54,7 +55,7 @@ How this applies:
    - shared-array write: an index action plus a 10-bit value;
    - a write to the robot's own memory register.
 
-   Each parameter is a vector of independent bits. That covers every integer value, so any API argument is reachable. Add `disintegrate` and `resign`. Raise the per-turn step cap.
+   Each parameter is a vector of independent bits. That covers every integer value, so any API argument is reachable. Add `disintegrate`. Raise the per-turn step cap.
 2. **Writable private memory.** Each robot gets registers (planned: 32 × 10 bits) that it can write as actions and reads back in its observation. This is the network's equivalent of a bot's variables. Imitation can't label them, because zdb's internal state isn't observable, so they start unused and RL can learn to use them.
 3. **Complete observation:**
    - the raw shared array;
@@ -67,14 +68,15 @@ How this applies:
 
 ## Implemented (November 13, 2026): student-actions-v2 / student-obs-v4 / student-mlp-v2
 
-**Actions (665).** The v1 actions plus:
-- `SQUEAK`, 64 `WRITE_SHARED i` (kings only, as in the engine), 32 `WRITE_REG i`, `DISINTEGRATE`, `RESIGN`.
+**Actions (664 in actions-v3; 665 in v2, which also had `RESIGN`).** The v1 actions plus:
+- `SQUEAK`, 64 `WRITE_SHARED i` (kings only, as in the engine), 32 `WRITE_REG i`, `DISINTEGRATE` (no `RESIGN`; see below).
 - A parameter is chosen after the action, as independent bits from a head conditioned on the trunk and on the chosen action:
   - 16-bit amount for attack, pickup and transfer. 0 means the default: a plain bite, the whole tile, or all raw cheese. Amounts above what the engine allows are clamped.
   - 32-bit squeak content.
   - 10-bit value for shared-array and register writes.
 - At most 128 primitives per turn (zdb writes about 1.4 shared-array slots per king turn).
-- `DISINTEGRATE` and `RESIGN` are in the space, but a student team is only offered them with `Game --end-actions 1`. An untrained net at temperature 1.0 resigns in round 1, and an imitation net would pick them by accident about once per game. RL can switch them on.
+- `DISINTEGRATE` is in the space, but a student team is only offered it with `Game --end-actions 1`: an imitation net would pick it by accident about once per game. RL can switch it on.
+- `resign()` is deliberately not an action (student-actions-v3, 664 actions). It does nothing but forfeit the game: every robot on the team is destroyed and the opponent wins by `RESIGNATION`. A capability-complete bot loses nothing by never being able to call it. actions-v2 records (665 actions) still load: the layout is identical apart from that trailing index, which was never a label.
 
 **Observation (9,081 bytes).**
 - Dense values:
