@@ -12,13 +12,14 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 04:45 PDT).**
+**Status (November 13, 2026, 07:50 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
-- Running: the full obs-v3 pipeline (fresh zdb data, student-v7, a DAgger round, student-v8, then the zdb check and the gate), expected around 11:30 PDT. This run is a diagnostic only; it can't produce the RL starting model.
+- student-v7 (observation v3) scored 1/32 against zdb and still loses the small maps, so enemy memory alone isn't enough. The obs-v3 DAgger round (student-v8, then the gate) continues as a diagnostic, expected around 11:30 PDT.
+- Next: implementing actions v2 / observation v4.
 
-**Most recent result.** student-v4: 0/32 vs zdb (sampling temperature 1.0); student-v5 (observation v2): also 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
+**Most recent result.** student-v7 (observation v3): 1/32 vs zdb at sampling temperature 1.0. Earlier, student-v4 and student-v5 (observation v2) both scored 0/32. Gate: untrained 0.97, simple bots 0.91, held-out field 0.15 (zdb 0.33). [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->

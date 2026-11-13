@@ -13,7 +13,7 @@ The check is 32 games: 8 training-distribution maps (mincemeat, jail, rift, pipe
 | student-v3 | + teacher-v3-dagger (400 DAgger games, student-v2 at T=1.0 plays 50% of zdb turns) | 0.854* | 2/32 | 0/32 |
 | student-v4 | + teacher-v4-dagger (DAgger with student-v3, rare baby states always recorded) | 0.846* | – | 0/32 |
 | student-v5 | obs-v2 (team board); teacher-v5, 500 pure zdb games | 0.839 | – | 0/32 |
-| student-v7 | obs-v3 (enemy memory); teacher-v7, 500 pure zdb games | running | | |
+| student-v7 | obs-v3 (enemy memory); teacher-v7, 500 pure zdb games | 0.836 | – | 1/32 |
 
 \* Validation for v3 and v4 includes the harder states the student itself reaches, so the accuracies are not directly comparable.
 
@@ -84,3 +84,10 @@ The engine lets a rat grab an enemy that can't see it, or one that is weaker by 
 - a count of remembered enemies that aren't in view now.
 
 Everything restarts on obs-v3: teacher-v7 (500 pure zdb games), student-v7, teacher-v8-dagger, student-v8, then the zdb check and the gate ([script](../scripts/pipeline_obs_v3.sh)).
+
+**student-v7 (obs-v3): 1/32 against zdb; the small maps are still lost.** Val acc 0.836, value MSE 1.39. Results by map:
+- The only win was gridlock seed 22 (B side), where zdb's king died at round 308. The other small-map games (gridlock, mincemeat, sunandmoon, thunderdome) were all lost to a king kill, in 34–534 rounds.
+- thunderdome is lost by round 60 every time, with no cheese moved by either side.
+- The long maps are no better than v4–v5: pipes 38–40 points of 99, rift 28–40, ZeroDay 28–39, jail 38–43 or a king kill.
+
+Enemy memory alone doesn't close the gap. The obs-v3 DAgger round (teacher-v8, student-v8, gate) keeps running as a diagnostic. The RL starting model will come from the capability-complete spec in [capability-principle.md](capability-principle.md).
