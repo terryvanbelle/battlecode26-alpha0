@@ -13,7 +13,8 @@ import java.util.*;
 /**
  * Runs one full game. Each team is either a sandboxed Java bot ("bot:PACKAGE:CLASSES_DIR")
  * or the student network ("net:WEIGHTS[:TEMPERATURE]"). Optionally records the teacher's
- * (bot team's) decisions, or the student's own decisions, as Records.
+ * (bot team's) decisions, or the student's own decisions, as Records. On net teams --record-p/--record-p-king
+ * sample whole turns (every step of a sampled turn is recorded) from a separate RNG, so recording never changes play.
  *
  * java ... alpha0.student.Game --map M --maps-dir D --seed S --a SPEC --b SPEC --out DIR
  *      [--record AB] [--record-p 0.1] [--record-p-king P (default: record-p)] [--max-rounds 2000]
@@ -102,12 +103,13 @@ public final class Game {
     /** The student network controls this team directly through RobotControllerImpl. */
     static final class Student implements RobotControlProvider {
         final Obs obs = new Obs(); final Net net; final double temperature; final Random rng;
-        final Records rec; final int teamIndex;
+        final Records rec; final int teamIndex; final double p, pKing; final Random recRng;
         final byte[] buf = new byte[Obs.SIZE]; final boolean[] mask = new boolean[Actions.N];
         GameWorld world;
-        long decisions, primitives, errors;
-        Student(Team team, Net net, double temperature, long seed, Records rec) {
+        long decisions, primitives, errors, sampledTurns;
+        Student(Team team, Net net, double temperature, long seed, Records rec, double p, double pKing) {
             this.net = net; this.temperature = temperature; this.rng = new Random(seed); this.rec = rec; this.teamIndex = team.ordinal();
+            this.p = p; this.pKing = pKing; this.recRng = new Random(seed + 31337);   // separate stream: sampling never changes play
         }
         @Override public void matchStarted(GameWorld w) { world = w; }
         @Override public void matchEnded() {}
@@ -118,7 +120,9 @@ public final class Game {
         @Override public int getBytecodesUsed(InternalRobot robot) { return 0; }
         @Override public boolean getTerminated(InternalRobot robot) { return false; }
         @Override public void runRobot(InternalRobot robot) {
-            long[] r = studentTurn(world, robot, obs, net, temperature, rng, buf, mask, rec, teamIndex);
+            boolean sample = rec != null && recRng.nextDouble() < (robot.getType() == UnitType.RAT_KING ? pKing : p);
+            if (sample) sampledTurns++;
+            long[] r = studentTurn(world, robot, obs, net, temperature, rng, buf, mask, sample ? rec : null, teamIndex);
             decisions += r[0]; primitives += r[1]; errors += r[2];
         }
     }
@@ -185,7 +189,7 @@ public final class Game {
                 if (mixNet != null && rec != null) { b.mixNet = mixNet; b.mixP = mixP; b.mixT = mixT; b.mixRng = new Random(seed * 2L + team.ordinal() + 7777); }
                 prov = b;
             }
-            else if (parts[0].equals("net")) prov = new Student(team, new Net(new File(parts[1])), parts.length > 2 ? Double.parseDouble(parts[2]) : 0.0, seed * 2L + team.ordinal() + 99, rec);
+            else if (parts[0].equals("net")) prov = new Student(team, new Net(new File(parts[1])), parts.length > 2 ? Double.parseDouble(parts[2]) : 0.0, seed * 2L + team.ordinal() + 99, rec, recordP, recordPKing);
             else throw new IllegalArgumentException("bad team spec " + spec);
             controls.registerControlProvider(team, prov);
             providers.put(team, prov);
@@ -215,7 +219,7 @@ public final class Game {
             s.put("kings", ti.getNumRatKings(t)); s.put("babies", ti.getNumBabyRats(t)); s.put("points", ti.getPoints(t));
             Object p = providers.get(t);
             if (p instanceof Bot b) { s.put("turns", b.turns); s.put("sampled_turns", b.sampledTurns); s.put("end_records", b.ends); s.put("failures", b.failures); s.put("student_turns", b.studentTurns); s.put("student_primitives", b.studentPrimitives); }
-            if (p instanceof Student st) { s.put("decisions", st.decisions); s.put("primitives", st.primitives); s.put("errors", st.errors); }
+            if (p instanceof Student st) { s.put("decisions", st.decisions); s.put("primitives", st.primitives); s.put("errors", st.errors); s.put("sampled_turns", st.sampledTurns); }
             if (records.containsKey(t)) s.put("records", records.get(t).count);
             res.put(t.name(), s);
         }
