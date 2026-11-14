@@ -19,11 +19,13 @@ def compile_local(name):
     dest = ROOT / 'build/bots' / name
     src = ROOT / 'java/bots' / name
     if not src.is_dir():
+        src = ROOT / 'build/botsrc' / name   # generated bots (scripts/build_dpnet.py)
+    if not src.is_dir():
         src = BC26B / 'bots' / name
     files = sorted(src.glob('*.java'))
     stamp = dest / '.stamp'
     newest = max(f.stat().st_mtime for f in files)
-    if not (dest / name).exists() or (src.parent == ROOT / 'java/bots' and (not stamp.exists() or stamp.stat().st_mtime < newest)):
+    if not (dest / name).exists() or (src.parent in (ROOT / 'java/bots', ROOT / 'build/botsrc') and (not stamp.exists() or stamp.stat().st_mtime < newest)):
         tmp = dest.with_name(name + '.tmp')
         subprocess.run(['rm', '-rf', str(tmp)], check=True)
         tmp.mkdir(parents=True)
@@ -40,7 +42,7 @@ def resolve(name, untrained):
         return name
     if name == '@untrained':
         return f'net:{untrained}:0'
-    if name in ('examplefuncsplayer', 'lectureplayer', 'zdb') or (ROOT / 'java/bots' / name).is_dir():
+    if name in ('examplefuncsplayer', 'lectureplayer', 'zdb') or (ROOT / 'java/bots' / name).is_dir() or (ROOT / 'build/botsrc' / name).is_dir():
         return compile_local(name)
     for line in (BC26B / 'research/field/FIELD.tsv').read_text().splitlines():
         p = line.split('\t')

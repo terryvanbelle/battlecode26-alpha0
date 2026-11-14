@@ -45,6 +45,10 @@ def main():
     (run / 'games').mkdir(parents=True, exist_ok=True)
     fld = field(cfg['field_tsv'])
     t = cfg['teacher']
+    if t.get('compile_local'):   # a repo-local bot (java/bots or build/botsrc), compiled like eval_student.py does
+        sys.path.insert(0, str(ROOT / 'scripts'))
+        from eval_student import compile_local
+        compile_local(t['package'])
     bots = {'zdb': (t['package'], str(ROOT / t['classes']))}
     for name in cfg['train_opponents']:
         bots[name] = fld[name]
@@ -65,10 +69,11 @@ def main():
         zdb, opp = bots['zdb'], bots[g['opponent']]
         a, b = (zdb, opp) if 'A' in g['teacher_sides'] else (opp, zdb)
         cmd = [str(ROOT / 'scripts/student_java.sh'), '--map', g['map'], '--maps-dir', str(ROOT / 'maps'), '--seed', str(g['seed']),
-               '--a', f'bot:{a[0]}:{a[1]}', '--b', f'bot:{b[0]}:{b[1]}', '--out', str(out),
-               '--record', g['teacher_sides'], '--record-p', str(cfg['record_p']),
-               '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
-        if 'record_p_boost' in cfg:
+               '--a', f'bot:{a[0]}:{a[1]}', '--b', f'bot:{b[0]}:{b[1]}', '--out', str(out)]
+        if cfg.get('record_obs', True):   # primitive-level records (false: decision records only)
+            cmd += ['--record', g['teacher_sides'], '--record-p', str(cfg['record_p']),
+                    '--record-p-king', str(cfg.get('record_p_king', cfg['record_p']))]
+        if 'record_p_boost' in cfg and cfg.get('record_obs', True):
             cmd += ['--record-p-boost', str(cfg['record_p_boost'])]
         if cfg.get('decisions'):   # decision records (setIndicatorString channel): true = teacher sides, or a string like "AB"
             cmd += ['--decisions', g['teacher_sides'] if cfg['decisions'] is True else str(cfg['decisions'])]

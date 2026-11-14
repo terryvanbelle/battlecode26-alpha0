@@ -1,0 +1,58 @@
+{
+  "name": "teacher-dp1",
+  "purpose": "Decision-point imitation (docs/decision-points.md): zdp (zdb with decision points, recording build) plays the teacher-v9 schedule shape; decision records only (no primitive records). No bytecode limits (user, 2026-11-13).",
+  "teacher": {
+    "id": "zdp",
+    "package": "zdp",
+    "classes": "build/bots/zdp",
+    "source": "java/bots/zdp (this repo)",
+    "compile_local": true
+  },
+  "field_tsv": "~/projects/vibe/2026b/research/field/FIELD.tsv",
+  "train_opponents": [
+    "uravt_Version35",
+    "daannte_v52_ThisGuy",
+    "AlexT101_finalsbot",
+    "AdamTan12_Finals",
+    "TeamSPAARK_SPAARK",
+    "awu7_awubot_us",
+    "quesswho_bot16",
+    "thewaxmango_PhD",
+    "justinottesen_carbonara",
+    "CS50Crab_protoSaberV7",
+    "XSercia_genies",
+    "nzjt_TheComplexMerlin"
+  ],
+  "heldout_opponents": [
+    "VarunVejalla_final4_run_away10",
+    "GuzziFlipFlops_Hermesv8",
+    "quesswho_quals",
+    "daannte_v47_Skadoosh",
+    "AlexT101_usqualsbot"
+  ],
+  "mirror_fraction": 0.3,
+  "excluded_maps": [
+    "Stash",
+    "Hike",
+    "heart",
+    "ratsareants",
+    "tiny",
+    "DefaultSmall",
+    "DefaultMedium",
+    "DefaultLarge",
+    "closeup",
+    "knifefight",
+    "cheesefarm",
+    "wallsofparadis"
+  ],
+  "excluded_maps_reason": "four ancestral training-excluded maps plus the eight development-v4 benchmark maps",
+  "games": 600,
+  "validation_every": 10,
+  "record_p": 0,
+  "seed_base": 1600000,
+  "tournament_limits": false,
+  "workers": 7,
+  "game_timeout_seconds": 1200,
+  "decisions": true,
+  "record_obs": false
+}
