@@ -34,7 +34,11 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
   - **M1 failed**, the known-answer test ([report](docs/rl-m1-report.md)):
     - A KING_SPAWN sabotage scoring 0.16 against zdpn2 was not undone in 8×128 self-play games.
     - The outcome-only gradient is too noisy (pooled t −0.8, so about 6,000 games per iteration would be needed). The plumbing checks out.
-  - **Now:** a design panel is choosing a better estimator (counterfactual forks that exploit determinism, evolution strategies, or exploration plus a learned value baseline). M1 is then re-run with the winner.
+  - **Now: real self-play PPO run `rl-m2`** (started November 14, 2026, on the Windows box):
+    - Starts from the capability-complete net (zdpn2 widened, with BABY_ROLE softened). The KL leash pulls toward zdpn2.
+    - Trainable points: role, mine pick, king move/spawn/act/formation, king comms, king turn.
+    - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpn2.
+    - Status: `scripts/rl_status.py`.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
   - New options on existing points: strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks.
