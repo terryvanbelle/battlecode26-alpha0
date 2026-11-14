@@ -64,7 +64,9 @@
     "adv_clip": 5.0,
     "value_window": 3,
     "value_val_frac": 0.1,
-    "threads": 8
+    "threads": 8,
+    "critic": "rich",
+    "gae_lambda": 0.9
   },
   "parity": {
     "median_max": 0.001,
