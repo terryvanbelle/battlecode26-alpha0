@@ -3274,6 +3274,11 @@ public final class Baby {
                 && homeMineCount() >= Cfg.KMINE_SKIP) mineTarget = null;
         if (Cfg.TRIP_HALF != 0 && mineTarget != null && Comms.tripSig != tripSigAtPick) mineTarget = null;
         if (mineTarget == null) { D.pickSite = 0; mineTarget = pickMine(); }
+        // the cascade's idle shift (its idle-seek branch is the separate option M_IDLE_SEEK)
+        if (mineTarget != null && Cfg.SEEK_IDLE > 0 && (role == GATHER || Cfg.FIGHT_SHIFT && role == FIGHT) && idle(mineTarget)) {
+            if (Cfg.IDLE_SHIFT) { mineShift++; D.pickSite = 1; mineTarget = pickMine(); }
+            if (mineTarget == null) { D.pickSite = 2; mineTarget = pickMine(); }
+        }
         return mineTarget != null;
     }
 }
