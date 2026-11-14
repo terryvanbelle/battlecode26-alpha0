@@ -3,7 +3,8 @@
 rl_collect.py runs/rl/RUN/iter-NNNN/jobs.json [--workers K] [--slice LO:HI:N] [--deadline UNIX] [--min-done N] [--out DIR]
 
 Each job plays package A vs package B (any two bot packages: java/bots, build/botsrc or 2026b bots, compiled on first
-use as eval_student.py does) with --decisions on the job's recorded sides and --trace (jobs.json trace, default 10).
+use as eval_student.py does) with --decisions on the job's recorded sides (none when record is '') and --trace N
+(jobs.json trace; 0 or a missing key: no --trace, no trace.tsv; the result and traj_hash do not depend on it).
 Games go to DIR/games/<job id>/ (DIR defaults to the jobs.json directory): result.json, trace.tsv, decisions-*.bin.gz.
   --slice LO:HI:N   only jobs whose index i has LO <= i % N < HI (box_split.sh)
   --deadline T      no job starts after unix time T (running games finish) ...
@@ -50,7 +51,7 @@ def main():
     from eval_student import resolve
     specs = {p: resolve(p, '') for p in sorted({j['a'] for j in todo} | {j['b'] for j in todo})}   # compile once
     flags = doc.get('java_flags', '-Xmx2g')
-    trace = str(doc.get('trace', 10))
+    trace = int(doc.get('trace') or 0)
     timeout = doc.get('game_timeout_seconds', 1200)
     lock = threading.Lock()
     state = dict(done=len(done_ids), running=0, skipped=0)
@@ -75,8 +76,9 @@ def main():
                     f.unlink()   # incomplete previous attempt
             g.mkdir(parents=True, exist_ok=True)
             cmd = [str(ROOT / 'scripts/student_java.sh'), '--map', j['map'], '--maps-dir', str(ROOT / 'maps'),
-                   '--seed', str(j['seed']), '--a', specs[j['a']], '--b', specs[j['b']], '--out', str(g),
-                   '--trace', trace]
+                   '--seed', str(j['seed']), '--a', specs[j['a']], '--b', specs[j['b']], '--out', str(g)]
+            if trace > 0:
+                cmd += ['--trace', str(trace)]
             if j.get('record'):
                 cmd += ['--decisions', j['record']]
             err = g / 'stderr.log'

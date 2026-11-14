@@ -1,0 +1,157 @@
+{
+ "name": "es-m1",
+ "purpose": "Revised M1 known-answer test (docs/rl-es-plan.md section 4): head-to-head antithetic ES on point 11 (KING_SPAWN) biases + logT from ks40 (desat-b5 + 40 on S_HOLD = option 21). Box sandbox, single host. Self-play only: every training game is theta+ vs theta-; zdpf005 (frozen zdpn2, floor 0.005) is the anchor only.",
+ "start_net": "runs/m1/ks40/net.json",
+ "package_prefix": "zdpea",
+ "anchor_package": "zdpf005",
+ "points": [
+  11
+ ],
+ "logT": true,
+ "exclude": [],
+ "equiv": "",
+ "sigma": {
+  "11": 10.0
+ },
+ "sigma_logT": 0.3,
+ "n_dir": 32,
+ "units_per_dir": 2,
+ "step_frac": 0.25,
+ "t_dead": 1.0,
+ "t_cap": 2.0,
+ "leash": 0.0,
+ "bias_cap": 30.0,
+ "logT_cap": 1.0,
+ "pool_packages": [],
+ "pool_fraction": 0.0,
+ "floor": 0.005,
+ "temperature": 1.0,
+ "floor_points": {},
+ "seed_base": 2500000,
+ "min_games": 120,
+ "min_units": 32,
+ "collect_deadline_min": 60,
+ "game_timeout_seconds": 1200,
+ "java_flags": "-Xmx2g",
+ "workers_vm": 15,
+ "workers_box": 10,
+ "box_slice": "0:0:4",
+ "vm_slice": "0:4:4",
+ "build_workers": 8,
+ "disk_guard_gb": 5,
+ "planted": [
+  "11:b21"
+ ],
+ "watch": [
+  "11:b21"
+ ],
+ "round_bins": [
+  0,
+  200,
+  500,
+  1000,
+  2001
+ ],
+ "fixed_records": [
+  {
+   "name": "ks40_own_r200",
+   "dirs": [
+    "runs/m1/keep/iter-0000"
+   ],
+   "max_round": 200
+  },
+  {
+   "name": "ks40_own",
+   "dirs": [
+    "runs/m1/keep/iter-0000"
+   ]
+  },
+  {
+   "name": "netv2_fixed",
+   "dirs": [
+    "runs/rl/rl-m0/iter-0000/data"
+   ]
+  }
+ ],
+ "gates": {
+  "anchor_after": [
+   1,
+   3,
+   5,
+   7
+  ],
+  "anchor_every": 0,
+  "anchor_seeds": [
+   41,
+   42
+  ],
+  "anchor_workers": 15,
+  "anchor_background": false
+ },
+ "zmaps": [
+  "mincemeat",
+  "jail",
+  "rift",
+  "pipes",
+  "gridlock",
+  "thunderdome",
+  "sunandmoon",
+  "ZeroDay"
+ ],
+ "training_maps": [
+  "5t4rv4t10n_1337",
+  "EscapeTheNight",
+  "Excavation",
+  "FreeTheCheese",
+  "Meow",
+  "Nofreecheese",
+  "RUN",
+  "TheHeist",
+  "UncomfortablyClose",
+  "arrows",
+  "attack_on_cat",
+  "averyfineline",
+  "averystrangespace",
+  "bed",
+  "canyoudig",
+  "cheesebottles",
+  "cheeseguardians",
+  "clockwisdom",
+  "clouds",
+  "constrictinglattice",
+  "corridorofdoomanddespair",
+  "diamond",
+  "dirtfulcat",
+  "dirtpassageway",
+  "evileye",
+  "externalsustenance",
+  "fullofsecrets",
+  "groveisbeingdesecrated",
+  "hatefullattice",
+  "houseofcards",
+  "keepout",
+  "krotus",
+  "learn_your_lesson",
+  "mercifullattice",
+  "minimaze",
+  "peaceinourtime",
+  "popthecork",
+  "rose",
+  "safelycontained",
+  "seepastyourgreed",
+  "sittingducks",
+  "starvation",
+  "streetsofnewyork",
+  "superioristhmus",
+  "t_minus_five_minutes",
+  "toomuchcheese",
+  "tornadoes",
+  "trapped",
+  "ultimatestarvation",
+  "uneasy_alliance",
+  "uneruesansfin",
+  "whatsthecatdoin",
+  "where_are_you",
+  "whereisthecheese"
+ ]
+}
