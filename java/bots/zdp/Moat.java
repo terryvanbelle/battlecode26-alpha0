@@ -77,7 +77,7 @@ public final class Moat {
             if (d < nd) { nd = d; near = e.location; }
         }
         if (nd <= Cfg.MOAT_D2) seen = G.round;
-        if (up() && rc.isActionReady()) fill(c, 8, near);
+        if (up() && rc.isActionReady() && fill(c, 8, near)) D.lab = DK.A_MOAT_FILL;
     }
 
     /** The live king of ours whose war alert is under MOAT_IDLE rounds old, or null. */

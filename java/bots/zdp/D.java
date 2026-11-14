@@ -13,6 +13,8 @@ import battlecode.common.*;
 public final class D {
     /** Send decision records to the harness (false in tournament builds). */
     static final boolean EMIT = true;
+    /** Net mode (docs/decision-points.md): the decision net picks the option at each point (false: zdb decides). */
+    static final boolean NET = false;
     static final char MAGIC = '\uDEC0';
 
     // decision points
