@@ -39,8 +39,13 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
     - On live rl-m2 data, no estimator shows a consistent gradient. [Results](docs/rl-plan.md#critic-and-gae-november-14-2026-offline-on-rl-m2-iterations-0-2-and-the-m1-data).
   - **Now: real self-play PPO run `rl-m2`** (started November 14, 2026, on the Windows box):
     - Starts from the capability-complete net (zdpn2 widened, with BABY_ROLE softened). The KL leash pulls toward zdpn2.
-    - Trainable points: role, mine pick, king move/spawn/act/formation, king comms, king turn.
-    - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpn2.
+    - Trainable points: role, mine pick, king move/spawn/act/formation, king turn. King comms is frozen for now: its KL to the anchor jumped from 0.06 to 0.59 between iterations 1 and 2, and training refused the update.
+    - Since iteration 3 it trains with the rich critic and GAE λ 0.9.
+    - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpf005 (zdpn2 at floor 0.005), and from v12 on, the same 32 against zdb (for tracking only).
+    - Anchor gates: v3, v6 and v9 each scored 17/32 (0.53) against zdpf005, so it is holding level with its start.
+    - Learner against the start net v0, from the pool games of each iteration (`scripts/plot_rl_vs.py`; iteration 1's learner plays the same policy as v0):
+
+      ![rl-m2: learner score against v0 by iteration](docs/img/rl-m2-vs-v0.svg)
     - Status: `scripts/rl_status.py`.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
