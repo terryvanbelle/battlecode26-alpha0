@@ -55,7 +55,7 @@ public final class Game {
         final byte[] scratch = new byte[Obs.SIZE]; final boolean[] mask = new boolean[Actions.N];
         final List<String> failures = new ArrayList<>();
         GameWorld world;
-        long turns, sampledTurns, ends, studentTurns, studentPrimitives;
+        long turns, sampledTurns, ends, studentTurns, studentPrimitives, exhaustedTurns;
         Net mixNet; double mixP, mixT; Random mixRng;
         Bot(Team team, String pkg, String classes, OutputStream out, Records rec, double p, double pKing, long seed) {
             super(team, pkg, CrossPlayLanguage.JAVA, null, classes, out, false);
@@ -91,6 +91,7 @@ public final class Game {
             if (sample) Hook.start(robot.getID(), teamIndex, obs, rec);
             try { super.runRobot(robot); }
             finally {
+                if (getBytecodesUsed(robot) >= robot.getType().bytecodeLimit) exhaustedTurns++;
                 if (sample) {
                     int step = Hook.stop();
                     sampledTurns++;
@@ -270,7 +271,7 @@ public final class Game {
             s.put("cheese", ti.getCheese(t)); s.put("transferred", ti.getCheeseTransferred(t)); s.put("cat_damage", ti.getDamageToCats(t));
             s.put("kings", ti.getNumRatKings(t)); s.put("babies", ti.getNumBabyRats(t)); s.put("points", ti.getPoints(t));
             Object p = providers.get(t);
-            if (p instanceof Bot b) { s.put("turns", b.turns); s.put("sampled_turns", b.sampledTurns); s.put("end_records", b.ends); s.put("failures", b.failures); s.put("student_turns", b.studentTurns); s.put("student_primitives", b.studentPrimitives); }
+            if (p instanceof Bot b) { s.put("turns", b.turns); s.put("exhausted_turns", b.exhaustedTurns); s.put("sampled_turns", b.sampledTurns); s.put("end_records", b.ends); s.put("failures", b.failures); s.put("student_turns", b.studentTurns); s.put("student_primitives", b.studentPrimitives); }
             if (p instanceof Student st) { s.put("decisions", st.decisions); s.put("primitives", st.primitives); s.put("errors", st.errors); s.put("sampled_turns", st.sampledTurns); }
             if (records.containsKey(t)) s.put("records", records.get(t).count);
             if (decisionTeams.contains(t.name())) s.put("decisions_recorded", Decisions.count[t.ordinal()]);

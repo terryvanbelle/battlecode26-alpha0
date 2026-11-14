@@ -1,7 +1,7 @@
 """Check that bot X plays exactly the games bot REF plays (same opponents, maps, seeds, sides).
 
 replay_check.py --bot zdp --ref zdb --opponents zdb,examplefuncsplayer --maps jail,pipes --seeds 21 --out runs/rc/NAME
-Plays both through eval_student.py (resumable) and compares each game's trajectory hash and final stats.
+Plays both through eval_student.py (resumable; no bytecode limits unless --limits) and compares each game's trajectory hash and final stats.
 """
 import argparse, json, subprocess, sys
 from pathlib import Path
@@ -17,12 +17,14 @@ def main():
     ap.add_argument('--opponents', required=True); ap.add_argument('--maps', required=True)
     ap.add_argument('--seeds', default='21'); ap.add_argument('--sides', default='AB')
     ap.add_argument('--out', required=True); ap.add_argument('--workers', default='7')
+    ap.add_argument('--limits', action='store_true', help='tournament bytecode limits (off by default, user 2026-11-13)')
+    ap.add_argument('--decisions', action='store_true', help='record the bot\'s decision records (not the ref\'s)')
     a = ap.parse_args()
     out = Path(a.out)
     for who in (a.ref, a.bot):
         subprocess.run([sys.executable, str(ROOT / 'scripts/eval_student.py'), '--player', who, '--opponents', a.opponents,
                         '--maps', a.maps, '--seeds', a.seeds, '--sides', a.sides, '--out', str(out / who),
-                        '--workers', a.workers, '--limits'], check=True)
+                        '--workers', a.workers] + (['--limits'] if a.limits else []) + (['--decisions'] if a.decisions and who == a.bot else []), check=True)
     same = diff = missing = 0
     for g in sorted((out / a.ref / 'games').iterdir()):
         r1, r2 = g / 'result.json', out / a.bot / 'games' / g.name / 'result.json'

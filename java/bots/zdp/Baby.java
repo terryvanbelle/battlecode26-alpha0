@@ -189,7 +189,15 @@ public final class Baby {
             return;
         }
         G.settle(cd1, cb1, 18);
-        if (rc.isMovementReady()) moveDecision();
+        if (rc.isMovementReady()) {
+            int cdD = G.debt, cbD = G.bc();   // ledger (K 9): decision record, BABY_MOVE features
+            D.babyMove();
+            G.debt = cdD + G.bc() - cbD + 9;
+            moveDecision();
+            int cdE = G.debt, cbE = G.bc();   // ledger (K 9)
+            D.emit();
+            G.debt = cdE + G.bc() - cbE + 9;
+        }
         // TRIP_HALF times only walks spent walking to the mine: any other errand on the way voids the timing
         if (Cfg.TRIP_HALF != 0 && tripFrom > 0 && tripFrom < G.round && why != 'M') tripFrom = 0;
         boolean moved = !rc.getLocation().equals(before);
@@ -1220,65 +1228,65 @@ public final class Baby {
     static char why = '-';
 
     static void moveDecision() throws GameActionException {
-        if (Cfg.GRAB_MICRO && GrabMicro.round == G.round) return;
+        if (Cfg.GRAB_MICRO && GrabMicro.round == G.round) { D.lab = D.M_GRAB; G.debt += 6; return; }
         why = '-';
         RobotController rc = G.rc;
         int raw = rc.getRawCheese();
         boolean late = G.round > 1960;
 
-        if (Cfg.CAT_DEFEND_R2 > 0 && cat != null && catReach() && catAtKing(cat.location) && approachCat(cat)) { why = 'g'; return; }
+        if (Cfg.CAT_DEFEND_R2 > 0 && cat != null && catReach() && catAtKing(cat.location) && approachCat(cat)) { why = 'g'; D.lab = D.M_CAT_DEFEND; G.debt += 6; return; }
         int cde = G.debt, cbe = G.bc();   // ledger (K 11: 9, iload endGo and ifeq)
         boolean endGo = Cfg.END_CAT > 0 && !G.coop && G.round >= Cfg.END_CAT;
         G.debt = cde + G.bc() - cbe + 11;
-        if (endGo && endCat(raw)) { why = 'e'; return; }
+        if (endGo && endCat(raw)) { why = 'e'; D.lab = D.M_END_CAT; G.debt += 6; return; }
         // keep gatherers out of cat reach
         if (cat != null && role == GATHER && catDist4(cat.location, G.me) <= 4 * Cfg.GATHER_CAT_DIST) {
             // flee the cat's centre (its location is the 2x2 body's low corner, which mirrors to the far corner)
-            if (Cfg.SYM_CENTRE ? Nav.flee2(2 * cat.location.x + 1, 2 * cat.location.y + 1) : Nav.flee(cat.location)) { why = 'c'; return; }
+            if (Cfg.SYM_CENTRE ? Nav.flee2(2 * cat.location.x + 1, 2 * cat.location.y + 1) : Nav.flee(cat.location)) { why = 'c'; D.lab = D.M_FLEE_CAT; G.debt += 6; return; }
         }
-        if (Cfg.YIELD_KING && cat != null && raw == 0 && yieldKing()) { why = 'y'; return; }
-        if (Cfg.CARRY_AIM && !G.coop && rc.getCarrying() != null && rc.getCarrying().team == G.them && aimCarry()) { why = 'T'; return; }
-        if (rescueT != null && rescue()) { why = 'R'; return; }
+        if (Cfg.YIELD_KING && cat != null && raw == 0 && yieldKing()) { why = 'y'; D.lab = D.M_YIELD_KING; G.debt += 6; return; }
+        if (Cfg.CARRY_AIM && !G.coop && rc.getCarrying() != null && rc.getCarrying().team == G.them && aimCarry()) { why = 'T'; D.lab = D.M_AIM_CARRY; G.debt += 6; return; }
+        if (rescueT != null && rescue()) { why = 'R'; D.lab = D.M_RESCUE; G.debt += 6; return; }
         Debug.mark(10);
-        if (Cfg.AMMO_AWAY && !G.coop && ammoAway()) { why = 'A'; return; }
-        if (!G.coop && retreat()) { why = 'r'; return; }
+        if (Cfg.AMMO_AWAY && !G.coop && ammoAway()) { why = 'A'; D.lab = D.M_AMMO_AWAY; G.debt += 6; return; }
+        if (!G.coop && retreat()) { why = 'r'; D.lab = D.M_RETREAT; G.debt += 6; return; }
         // the bank is nearly empty and the king starves at 0: whatever we carry goes home before any fight or errand
-        if (raw > 0 && G.globalCheese < Cfg.HUNGRY && deliver()) { why = 'H'; return; }
-        if (Cfg.FORM_KING && formKing()) { why = 'K'; return; }
+        if (raw > 0 && G.globalCheese < Cfg.HUNGRY && deliver()) { why = 'H'; D.lab = D.M_HUNGRY; G.debt += 6; return; }
+        if (Cfg.FORM_KING && formKing()) { why = 'K'; D.lab = D.M_FORM_KING; G.debt += 6; return; }
         int cd2 = G.debt, cb2 = G.bc();   // ledger (K = 20 with G.settle)
         boolean cashMv = Cfg.CASH_BANK > 0 && cashSite != null && cashMove();
         G.settle(cd2, cb2, 20);
-        if (cashMv) { why = 'Q'; return; }
+        if (cashMv) { why = 'Q'; D.lab = D.M_CASH; G.debt += 6; return; }
         Debug.mark(11);
         if (!G.coop && raider && raw == 0 && rc.getHealth() >= Cfg.RAID_HP && homeHalf(G.me)
-                && (nearestEnemy == null || G.me.distanceSquaredTo(nearestEnemy.location) > Cfg.RAID_ENGAGE) && raid()) { why = 'z'; return; }
+                && (nearestEnemy == null || G.me.distanceSquaredTo(nearestEnemy.location) > Cfg.RAID_ENGAGE) && raid()) { why = 'z'; D.lab = D.M_RAID; G.debt += 6; return; }
         Debug.mark(12);
-        if (!G.coop && Cfg.FLANK && Cfg.NAP && flank(seen)) { why = 'k'; return; }
-        if (!G.coop && Cfg.KING_PRESS && pressKing()) { why = 'p'; return; }
+        if (!G.coop && Cfg.FLANK && Cfg.NAP && flank(seen)) { why = 'k'; D.lab = D.M_FLANK; G.debt += 6; return; }
+        if (!G.coop && Cfg.KING_PRESS && pressKing()) { why = 'p'; D.lab = D.M_PRESS; G.debt += 6; return; }
         Debug.mark(13);
-        if (!G.coop && Cfg.MICRO && role != ATTACK && Micro.act(seen)) { why = 'm'; return; }
+        if (!G.coop && Cfg.MICRO && role != ATTACK && Micro.act(seen)) { why = 'm'; D.lab = D.M_MICRO; G.debt += 6; return; }
         Debug.mark(14);
-        if (!G.coop && Cfg.FACE_ENEMY && (role != GATHER || Cfg.WAR_GATHER < 2 || nearEnemy(2)) && faceEnemy()) { why = 'f'; return; }
-        if (Cfg.ATK_DELIVER > 0 && atkHome(raw) && deliver()) return;
-        if (Cfg.STALL_CAT > 0 && role == ATTACK && G.coop && stallCat()) { why = 'g'; return; }
-        if (role == ATTACK && attack()) { why = 'a'; return; }
+        if (!G.coop && Cfg.FACE_ENEMY && (role != GATHER || Cfg.WAR_GATHER < 2 || nearEnemy(2)) && faceEnemy()) { why = 'f'; D.lab = D.M_FACE; G.debt += 6; return; }
+        if (Cfg.ATK_DELIVER > 0 && atkHome(raw) && deliver()) { D.lab = D.M_ATK_DELIVER; G.debt += 6; return; }
+        if (Cfg.STALL_CAT > 0 && role == ATTACK && G.coop && stallCat()) { why = 'g'; D.lab = D.M_STALL_CAT; G.debt += 6; return; }
+        if (role == ATTACK && attack()) { why = 'a'; D.lab = D.M_ATTACK; G.debt += 6; return; }
         Debug.mark(15);
-        if (!G.coop && war()) { why = 'w'; return; }
-        if (!G.coop && role == FIGHT && Cfg.FORT_R > 0 && fort()) { why = 'h'; return; }
+        if (!G.coop && war()) { why = 'w'; D.lab = D.M_WAR; G.debt += 6; return; }
+        if (!G.coop && role == FIGHT && Cfg.FORT_R > 0 && fort()) { why = 'h'; D.lab = D.M_FORT; G.debt += 6; return; }
         Debug.mark(16);
         why = 'g';
         if (cat != null && role == FIGHT && catReach()) {
-            if (approachCat(cat)) return;
+            if (approachCat(cat)) { D.lab = D.M_FIGHT_CAT; G.debt += 6; return; }
         }
 
         if (loadAt > 0) {
             // full loads: no trip home with a part load; with no pile in sight the gatherer stays at its mine
-            if (fullLoad(raw, late, loadAt) && deliver()) return;
-        } else if ((raw >= Cfg.DELIVER_AT || (raw > 0 && (late || cheeseTarget == null && raw >= Cfg.DELIVER_IDLE))) && deliver()) return;
+            if (fullLoad(raw, late, loadAt) && deliver()) { D.lab = D.M_DELIVER; G.debt += 6; return; }
+        } else if ((raw >= Cfg.DELIVER_AT || (raw > 0 && (late || cheeseTarget == null && raw >= Cfg.DELIVER_IDLE))) && deliver()) { D.lab = D.M_DELIVER; G.debt += 6; return; }
         if (Cfg.COURIER && Comms.numMines == 0 && myMineCount > 0) {
             // we found a mine nobody else knows: squeaks only reach the king from dist2 16, so carry the news home
             MapLocation k = Comms.nearestKing(G.me);
-            if (k != null) { Nav.goTo(k); why = 'm'; return; }
+            if (k != null) { Nav.goTo(k); why = 'm'; D.lab = D.M_COURIER; G.debt += 6; return; }
         }
         if (cheeseTarget != null) {
             if (G.cheb(G.me, cheeseTarget) == 1 && Nav.isDirt(cheeseTarget)) {
@@ -1288,7 +1296,7 @@ public final class Baby {
                 pickUp();
                 if (!rc.canSenseLocation(cheeseTarget) || rc.senseMapInfo(cheeseTarget).getCheeseAmount() == 0) cheeseTarget = null;
                 why = 'P';
-                return;
+                D.lab = D.M_CHEESE_PICK; G.debt += 6; return;
             }
             why = 'C';
             Nav.goTo(cheeseTarget);
@@ -1297,28 +1305,29 @@ public final class Baby {
                 if (Cfg.BREAKOUT_TTL > 0 && walledOff(G.me, cheeseTarget)) wallStrike(G.round, Cfg.BREAKOUT_TTL);
                 cheeseTarget = null;
             }
-            return;
+            D.lab = D.M_CHEESE; G.debt += 6; return;
         }
         if (role == FIGHT) {
             MapLocation ct = catReach() ? knownCat() : null;
-            if (ct != null) { Nav.goTo(ct); catStalled(ct); return; }
-            if (Cfg.RAID && raider && rc.getHealth() >= Cfg.RAID_HP && raid()) { why = 'z'; return; }
+            if (ct != null) { Nav.goTo(ct); catStalled(ct); D.lab = D.M_KNOWN_CAT; G.debt += 6; return; }
+            if (Cfg.RAID && raider && rc.getHealth() >= Cfg.RAID_HP && raid()) { why = 'z'; D.lab = D.M_RAID_FIGHT; G.debt += 6; return; }
         }
         if (scouting()) {
             // a scout with news the king lacks carries it home (squeaks reach the king from dist2 16 only)
             MapLocation k = Comms.nearestKing(G.me);
             if (k != null && unreported() >= 0) {
                 if (Cfg.SWEEP > 0) sweepCell = sweepScan = 0; // the cell's time budget restarts after the walk home
-                Nav.goTo(k); why = 's'; return;
+                Nav.goTo(k); why = 's'; D.lab = D.M_SCOUT_HOME; G.debt += 6; return;
             }
             why = 'S';
+            D.lab = D.M_SCOUT; G.debt += 6; 
             if (Cfg.SCOUT_FRONTIER && exploreFrontier()) return;
             if (!exploreHome()) explore();
             return;
         }
-        if (role == GATHER && G.round < seekUntil && seek()) { why = 'x'; return; }
+        if (role == GATHER && G.round < seekUntil && seek()) { why = 'x'; D.lab = D.M_SEEK; G.debt += 6; return; }
         if (Cfg.MINE_EXPLORE > 0 && role == GATHER && G.round < Cfg.MINE_EXPLORE_UNTIL
-                && explorer(slot, homeMineCount(), Cfg.MINE_EXPLORE) && exploreHome()) { mineTarget = null; why = 'x'; return; }
+                && explorer(slot, homeMineCount(), Cfg.MINE_EXPLORE) && exploreHome()) { mineTarget = null; why = 'x'; D.lab = D.M_MINE_EXPLORE; G.debt += 6; return; }
         if (role == GATHER || role == FIGHT && Cfg.FIGHT_MINE) {
             if (Cfg.MINE_BALANCE && mineTarget != null && (Cfg.HOME_ALL_SYM ? Comms.numMines != minesAtPick || Sym.mask != maskAtPick : Comms.numMines != minesAtPick)) mineTarget = null;
             if (Cfg.MINE_ANY_COOP && !G.coop && mineTarget != null && !homeHalf(mineTarget)) mineTarget = null;
@@ -1330,25 +1339,27 @@ public final class Baby {
             if (mineTarget != null) {
                 if (Cfg.SEEK_IDLE > 0 && (role == GATHER || Cfg.FIGHT_SHIFT && role == FIGHT) && idle(mineTarget)) {
                     if (Cfg.IDLE_SHIFT) { mineShift++; mineTarget = pickMine(); }
-                    if (role == GATHER && idleSeek() && seek()) { why = 'x'; return; }
+                    if (role == GATHER && idleSeek() && seek()) { why = 'x'; D.lab = D.M_IDLE_SEEK; G.debt += 6; return; }
                     if (mineTarget == null) mineTarget = pickMine();
                 }
                 if (atMine(mineTarget, Cfg.MINE_KING_R)) {
                     if (Cfg.TRIP_HALF != 0) tripArrive(mineTarget, G.round);
-                    if (role == GATHER && startSeek(mineTarget) && seek()) { why = 'x'; return; }
+                    if (role == GATHER && startSeek(mineTarget) && seek()) { why = 'x'; D.lab = D.M_START_SEEK; G.debt += 6; return; }
                     if (Cfg.GATHER_STILL) {
                         // hold still (moves set off traps laid at our mines) and sweep the cone around the spawn square
                         Direction t = G.facing.rotateRight().rotateRight();
                         if (rc.canTurn(t)) { rc.turn(t); G.facing = t; }
                         if (Cfg.MINE_TRAPS > 0) mineTrap(mineTarget, Cfg.MINE_TRAPS);
-                        return;
+                        D.lab = D.M_MINE_STILL; G.debt += 6; return;
                     }
                     // wander inside the spawn square, facing outward to see new cheese
                     wanderAround(mineTarget);
                     if (Cfg.MINE_TRAPS > 0) mineTrap(mineTarget, Cfg.MINE_TRAPS);
                     why = 'W';
+                    D.lab = D.M_MINE_WANDER; G.debt += 6; 
                 } else {
                     why = 'M';
+                    D.lab = D.M_MINE_GO; G.debt += 6; 
                     Nav.goTo(mineTarget);
                     if (Nav.stall > 25) mineTarget = null;
                 }
@@ -1356,6 +1367,7 @@ public final class Baby {
             }
         }
         why = 'E';
+        D.lab = D.M_EXPLORE; G.debt += 6; 
         explore();
     }
 
