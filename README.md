@@ -12,7 +12,7 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 14:00 PDT).**
+**Status (November 13, 2026, 19:30 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
@@ -22,9 +22,10 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - **Second worker:** a Windows 11 desktop (WSL2 over Tailscale) now plays 3/4 of each run's games; it is about 4x as fast as the VM and plays identical games. The VM fills in anything it doesn't finish. [box_split.sh](scripts/box_split.sh), [box_helper.sh](scripts/box_helper.sh).
 - **student-v9 (capability-complete): 1/32 against zdb.** Diagnosis: its king writes its own position into the shared array correctly only 2–17% of the time, so babies can't find it to deliver cheese and the king starves. Fix: the parameter head now gets binary copies of the integers it usually writes (student-mlp-v3). [Details](docs/imitation-results.md#student-v9-obs-v4-capability-complete-132-against-zdb-the-king-starves-november-13-2026).
 - **student-v10 (mlp-v3): 1/32 against zdb.** The shared-array writes are now 94–100% correct, but the student still loses every robot fight and delivers a fraction of zdb's cheese. Gate: untrained 0.81, simple bots 0.75, held-out field 0.18 (fails the 0.20 bar; zdb 0.33). [Details](docs/imitation-results.md#student-v10-mlp-v3-writes-fixed-still-132-against-zdb-november-13-2026).
-- **Next: decision-point imitation.** Primitive-level imitation has stalled. A copy of zdb will route its control choices through a few dozen decision points (comms behind an abstraction layer), validated by replaying zdb's games exactly; then a small net that fits the bytecode limits learns those choices.
+- **Decision-point imitation works.** A copy of zdb (`java/bots/zdp`) routes its control choices through 11 decision points (baby move, actions, facing, role, comms, mine pick; king move, spawn, action, formation) and replays zdb's games exactly. A small MLP per point, trained on 600 zdb games, then makes those choices. Bytecode limits are off for now. [Design and results](docs/decision-points.md).
+- **Next:** cleanup pass (bug fixes and deduplication, checked against zdb by test runs), then self-play RL from zdpn1.
 
-**Most recent result.** student-v10: 1/32 vs zdb; held-out field 0.18 (zdb 0.33). [Results log](docs/imitation-results.md).
+**Most recent result (November 13, 2026, 19:21 PDT).** zdpn1: **16/32 against zdb**; held-out field **40/80 (0.50)**, the same as the zdb copy (41/80) on the same jobs (no limits). [Results log](docs/imitation-results.md).
 
 The earlier macro-action line's checkpoint `c6f5655e3a56` scored 83W / 173L (32.4%) on the development-v4 panel.
 <!-- CURRENT_WORK_END -->

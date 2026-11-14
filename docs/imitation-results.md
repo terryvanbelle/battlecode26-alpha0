@@ -147,3 +147,10 @@ into zdb's multi-turn plans. Next: the decision-point line. A copy of zdb whose 
 decision points, with comms behind an abstraction layer, and a small net (within the engine's bytecode limits) that
 replaces only those choices.
 
+
+## zdpn1 (decision points): 16/32 against zdb, held-out field 0.50 (November 13, 2026)
+
+Primitive imitation was replaced by decision-point imitation ([decision-points.md](decision-points.md)): a copy of zdb
+whose control choices go through 11 decision points, each with a small MLP trained on zdb's choices. zdpn1 (600
+games, no bytecode limits) scores 16/32 against zdb and 40/80 against the held-out field, where the zdb copy scores
+41/80 on the same jobs. student-v10, the last primitive student, scored 1/32 and 0.18.
