@@ -43,9 +43,9 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
     - Since iteration 3 it trains with the rich critic and GAE λ 0.9.
     - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpf005 (zdpn2 at floor 0.005), and from v12 on, the same 32 against zdb (for tracking only).
     - Anchor gates: v3, v6 and v9 each scored 17/32 (0.53) against zdpf005, so it is holding level with its start.
-    - Learner against the start net v0, from the pool games of each iteration (`scripts/plot_rl_vs.py`; iteration 1's learner plays the same policy as v0):
+    - Learner score by version (`scripts/plot_rl_vs.py`). Blue: against the start net v0, from each iteration's pool games (iteration 1's learner plays the same policy as v0). Orange: against zdb, on the anchor gate's 32 games; v0 and v9 were measured on the VM, and gates track zdb from v12 on. On the same 32 games, zdpf005 scores 14/32 against zdb.
 
-      ![rl-m2: learner score against v0 by iteration](docs/img/rl-m2-vs-v0.svg)
+      ![rl-m2: learner score against v0 and against zdb by version](docs/img/rl-m2-score.svg)
     - Status: `scripts/rl_status.py`.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
