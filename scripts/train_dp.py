@@ -3,8 +3,9 @@
 train_dp.py --games 'runs/dp/teacher-v1/games/*' --out runs/dp/net-v1 [--hidden 64,64] [--epochs 20] [--device cpu]
 
 Reads decisions-*.bin.gz from each game dir, splits train/val by game, trains a classifier per point
-(label = the option zdb took) and writes net.json (float weights, input normalisation folded into layer 1)
-and metrics.json. scripts/build_dpnet.py packs net.json into a net-mode bot.
+(label = the option zdb took) and writes net.json (float weights, input normalisation folded into layer 1),
+norm.npz (the mu/sd folded in, keys mu_<p>/sd_<p>; rl_train.py unfolds with them) and metrics.json.
+scripts/build_dpnet.py packs net.json into a net-mode bot.
 """
 import argparse, glob, json, re, sys, time
 from pathlib import Path
@@ -14,6 +15,7 @@ import torch.nn as nn
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
+import dpnet_io  # noqa: E402
 
 NONE = 0xFFFF
 
@@ -107,7 +109,7 @@ def main():
     rng = np.random.default_rng(0)
     val_games = set(rng.choice(len(dirs), max(1, int(len(dirs) * a.val_frac)), replace=False).tolist())
     print(f'{len(dirs)} games ({len(val_games)} val), points {sorted(data)}, loaded in {time.time() - t0:.0f}s', flush=True)
-    net_out, metrics = {}, {}
+    net_out, metrics, norm = {}, {}, {}
     for pt, (X, y, g) in sorted(data.items()):
         n_out = max(counts.get(pt, 0), int(y.max()) + 1)
         isval = np.isin(g, list(val_games))
@@ -141,17 +143,15 @@ def main():
               f'val acc {acc} (majority {base}), train acc {tacc:.3f}', flush=True)
         # export with normalisation folded into layer 1: W1 (x - mu) / sd + b1 = (W1 / sd) x + (b1 - W1 mu / sd)
         lins = [m for m in model if isinstance(m, nn.Linear)]
-        layers = []
-        for i, l in enumerate(lins):
-            Wm = l.weight.detach().cpu().double().numpy(); bv = l.bias.detach().cpu().double().numpy()
-            if i == 0:
-                bv = bv - (Wm * (mu / sd)).sum(1); Wm = Wm / sd
-            if i == len(lins) - 1 and keep0.get(pt, 1.0) < 1.0:
-                bv = bv.copy(); bv[0] -= np.log(keep0[pt])   # undo label-0 subsampling: trained odds = true odds * keep0
-            layers.append(dict(n_in=int(Wm.shape[1]), n_out=int(Wm.shape[0]), w=Wm.ravel().tolist(), b=bv.tolist()))
-        net_out[pt] = layers
+        layers = dpnet_io.fold([dict(w=l.weight.detach().cpu().double().numpy(), b=l.bias.detach().cpu().double().numpy())
+                                for l in lins], mu, sd)
+        if keep0.get(pt, 1.0) < 1.0:
+            layers[-1]['b'][0] -= np.log(keep0[pt])   # undo label-0 subsampling: trained odds = true odds * keep0
+        net_out[pt] = [dpnet_io.layer_json(l) for l in layers]
+        norm[pt] = (mu, sd)
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     (out / 'net.json').write_text(json.dumps({'version': 'dpnet-v1', 'hidden': hidden, 'points': {str(k): v for k, v in net_out.items()}}))
+    dpnet_io.save_norm(out / 'norm.npz', norm)   # mu/sd used for folding (rl_train.py unfolds with them)
     (out / 'metrics.json').write_text(json.dumps({'games': len(dirs), 'val_games': len(val_games), 'points': metrics}, indent=1))
     print(f'wrote {out}/net.json in {time.time() - t0:.0f}s')
 

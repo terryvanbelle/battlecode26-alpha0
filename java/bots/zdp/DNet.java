@@ -73,15 +73,22 @@ public final class DNet {
         return (x >>> 8) / 16777216f;
     }
 
+    /** RL builds (D.RL): the last sample()'s option (-1: none allowed), the probability it had (the floor-mixed p[]
+     *  value used), its mask (a reference; null: all allowed) and its option count (z.length). Recording only. */
+    static int lastK = -1, lastN;
+    static float lastP;
+    static boolean[] lastMask;
+
     /** Sample an option: softmax(logits / t) mixed with a uniform floor (probability floor / n each); t = 0 takes the
      *  argmax. allowed (may be null) masks options out. Returns -1 when no option is allowed. */
     static int sample(float[] z, boolean[] allowed, float t, float floor) {
+        if (D.RL) { lastK = -1; lastP = 1f; lastMask = allowed; lastN = z.length; }
         int n = z.length, best = -1;
         for (int k = 0; k < n; k++) if ((allowed == null || allowed[k]) && (best < 0 || z[k] > z[best])) best = k;
         if (best < 0) return -1;
         int m = 0;
         for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) m++;
-        if (t <= 0 && floor <= 0) return best;
+        if (t <= 0 && floor <= 0) { if (D.RL) lastK = best; return best; }
         float[] p = new float[n];
         float tot = 0;
         if (t > 0) {
@@ -90,7 +97,8 @@ public final class DNet {
         } else p[best] = 1 - floor;
         for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) p[k] += floor / m;
         float u = uniform(), acc = 0;
-        for (int k = 0; k < n; k++) { acc += p[k]; if (u < acc) return k; }
+        for (int k = 0; k < n; k++) { acc += p[k]; if (u < acc) { if (D.RL) { lastK = k; lastP = p[k]; } return k; } }
+        if (D.RL) { lastK = best; lastP = p[best]; }
         return best;
     }
 

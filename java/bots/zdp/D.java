@@ -14,6 +14,10 @@ import battlecode.common.*;
  * the slot the last open()/open2() chose; each secondary feature function ends with sec = false.
  *
  * Wire format (chars): [0] MAGIC, [1] point, [2] label (0xFFFF: none), [3] n, [4..4+n) features (unsigned 16-bit).
+ * RL builds (RL true) append a trailer to the features, counted in n (docs/rl-plan.md section 4): k (0xFFFF: no pick),
+ * q = min(65535, round(-ln p_k * 4096)), flags (bit0 fallback, bit1 secondary slot), ceil(nOpt/16) mask words (bit i of
+ * word w: option 16w + i allowed; all ones when the mask is null), NET_VERSION, trailerLen = 5 + ceil(nOpt/16)
+ * (scripts/decisions.py split_trailer/read_rl).
  */
 public final class D {
     /** Send decision records to the harness (false in tournament builds). */
@@ -26,6 +30,10 @@ public final class D {
     static final float NET_T = 1f;   // net-mode sampling temperature (build_dpnet.py sets it)
     static final float NET_FLOOR = 0.02f;   // net-mode probability floor, spread over allowed options (build_dpnet.py)
     static final char MAGIC = '\uDEC0';
+    /** RL build: append the sampling trailer to each record (recording only; build_dpnet.py --rl sets it). */
+    static final boolean RL = false;
+    /** RL build: the net version written into each trailer (build_dpnet.py --version). */
+    static final int NET_VERSION = 0;
 
     // decision points (BABY_* 1-9; king points 10-19 live in DK)
     static final int BABY_MOVE = 1;
@@ -83,10 +91,47 @@ public final class D {
     static boolean sec;
     /** MINE_PICK: which moveDecision call site asked (0 fresh/reset, 1 IDLE_SHIFT, 2 retry). */
     static int pickSite;
+    /** RL build: the net's sample for the open primary / secondary point (DNet's last*): option (-1: none), its
+     *  probability, the option count (0: no sample) and a copy of its mask (null: all allowed). */
+    static int pk = -1, pn, pk2 = -1, pn2;
+    static float pp, pp2;
+    static boolean[] pmask, pmask2;
 
-    static void open(int p) { F[0] = MAGIC; F[1] = (char) p; n = 4; point = p; lab = -1; sec = false; }
+    static void open(int p) { F[0] = MAGIC; F[1] = (char) p; n = 4; point = p; lab = -1; sec = false; if (RL) { pk = -1; pn = 0; pmask = null; } }
 
-    static void open2(int p) { F2[0] = MAGIC; F2[1] = (char) p; n2 = 4; point2 = p; lab2 = -1; sec = true; }
+    static void open2(int p) { F2[0] = MAGIC; F2[1] = (char) p; n2 = 4; point2 = p; lab2 = -1; sec = true; if (RL) { pk2 = -1; pn2 = 0; pmask2 = null; } }
+
+    /** RL build: copy DNet's last sample into the primary (second false) or secondary slot. */
+    static void take(boolean second) {
+        boolean[] m = DNet.lastMask == null ? null : DNet.lastMask.clone();
+        if (second) { pk2 = DNet.lastK; pp2 = DNet.lastP; pn2 = DNet.lastN; pmask2 = m; }
+        else { pk = DNet.lastK; pp = DNet.lastP; pn = DNet.lastN; pmask = m; }
+    }
+
+    /** RL build: write the trailer into B at `at`; returns the new length (unchanged when it would not fit). */
+    static int trailer(char[] B, int at, int k, float p, int nOpt, boolean[] mask, int flags) {
+        int words = (nOpt + 15) >> 4;
+        if (at + 5 + words > B.length) return at;
+        B[at++] = (char) (k < 0 ? 0xFFFF : k);
+        long q = k < 0 ? 0 : Math.round(-Math.log(p) * 4096);
+        B[at++] = (char) (q < 0 ? 0 : q > 65535 ? 65535 : q);
+        B[at++] = (char) flags;
+        for (int w = 0; w < words; w++) {
+            int v = 0;
+            if (mask == null) v = 0xFFFF;
+            else for (int i = 0; i < 16; i++) { int o = 16 * w + i; if (o < nOpt && o < mask.length && mask[o]) v |= 1 << i; }
+            B[at++] = (char) v;
+        }
+        B[at++] = (char) NET_VERSION;
+        B[at++] = (char) (5 + words);
+        return at;
+    }
+
+    /** RL build: the fallback flag (zdb's code ran instead of the net's option); a diagnostic only. */
+    static int fallback(int p, int k, int l) {
+        if (p == BABY_MOVE) return l >= 0 && (l & 0x8000) != 0 ? 1 : 0;
+        return k >= 0 && l != k ? 1 : 0;
+    }
 
     static void f(int v) {
         char c = (char) (v < 0 ? 0 : v > 65535 ? 65535 : v);
@@ -101,6 +146,7 @@ public final class D {
     static void emit() {
         if (!EMIT || point == 0) return;
         F[2] = (char) (lab < 0 ? 0xFFFF : lab);
+        if (RL) n = trailer(F, n, pk, pp, pn, pmask, fallback(point, pk, lab));
         F[3] = (char) (n - 4);
         G.rc.setIndicatorString(new String(F, 0, n));
         point = 0;
@@ -110,6 +156,7 @@ public final class D {
     static void emit2() {
         if (!EMIT || point2 == 0) return;
         F2[2] = (char) (lab2 < 0 ? 0xFFFF : lab2);
+        if (RL) n2 = trailer(F2, n2, pk2, pp2, pn2, pmask2, fallback(point2, pk2, lab2) | 2);
         F2[3] = (char) (n2 - 4);
         G.rc.setIndicatorString(new String(F2, 0, n2));
         point2 = 0;
@@ -127,13 +174,19 @@ public final class D {
     /** Net mode: the net's option for the open primary point (-1: no net for it, or nothing allowed). */
     static int pick(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F, n);
-        return z == null ? -1 : DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        if (z == null) return -1;
+        int k = DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        if (RL) take(false);
+        return k;
     }
 
     /** Net mode: the net's option for the open secondary point. */
     static int pick2(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F2, n2);
-        return z == null ? -1 : DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        if (z == null) return -1;
+        int k = DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        if (RL) take(true);
+        return k;
     }
 
     /** An allowed mask sized to the net's output (options past the mask are not allowed). */

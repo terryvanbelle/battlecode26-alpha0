@@ -327,7 +327,9 @@ public final class DK {
         if (D.point != point) return -1;
         float[] z = DNet.logits(point, D.F, D.n);
         if (z == null) return -1;
-        return DNet.sample(z, D.fit(allowed, z.length), NET_T, NET_FLOOR);
+        int k = DNet.sample(z, D.fit(allowed, z.length), NET_T, NET_FLOOR);
+        if (D.RL) D.take(false);   // king records go through D.emit (primary slot)
+        return k;
     }
 
     /** KING_MOVE in net mode: true when the net's option acted (move() is then skipped this turn). */
