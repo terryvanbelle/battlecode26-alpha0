@@ -8,6 +8,10 @@
    point 6 and the other point's layers are byte-identical.
 4. Outcome reward through V and the paired baseline: z favours team-games that chose option 2 more often on point 5;
    P(option 2) rises.
+5. --no-kl: a far anchor neither refuses the export nor changes it.
+6. rl_critic: GAE (lambda 1 = z - V, lambda 0 = one-step TD), record -> bin mapping, the critic's antisymmetry, AUC.
+7. Critic + GAE in rl_train (--critic trace|rich --gae-lambda 0.8): each option-2 pick on point 5 adds a baby to the
+   team's next trace bin and the outcome is a noisy function of the final babies difference; P(option 2) rises.
 """
 import argparse, json, subprocess, sys, tempfile
 from pathlib import Path
@@ -15,7 +19,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-import dpnet_io  # noqa: E402
+import dpnet_io, rl_critic  # noqa: E402
 
 FLOOR = 0.005
 NOPT = {5: 5, 6: 13}
@@ -79,6 +83,95 @@ def sample_data(net_path, out_dir, seed, games=40, per=150, reward=None, points=
     for p, parts in recs.items():
         np.savez(out_dir / f'p{p}.npz', **{k: np.concatenate([r[k] for r in parts]) for k in parts[0]})
     np.savez(out_dir / 'trace.npz', **{k: np.concatenate([r[k] for r in trace_rows]) for k in trace_rows[0]})
+
+
+def sample_gae_data(net_path, out_dir, seed, games=40, bins=40, per_bin=6, opt=2):
+    """Point-5 records whose option `opt` adds a baby to the team's trace from the next 10-round bin on; z is a noisy
+    function of the final babies difference. 20-column traces (rl_train.TRACE_COLS order), seat-swapped pairs."""
+    rng = np.random.default_rng(seed)
+    net = dpnet_io.load_net(net_path)[5]
+    nf, no = net[0]['w'].shape[1], net[-1]['w'].shape[0]
+    recs, trace_rows = [], []
+    for g in range(games):
+        babies, team_recs = {}, {}
+        for team in (0, 1):
+            b = np.zeros(bins + 1)
+            parts = []
+            for t in range(bins):
+                x = rng.integers(0, 40, (per_bin, nf)).astype(np.int32)
+                mask = rng.random((per_bin, no)) < 0.8
+                mask[:, 0] = True; mask[:, opt] = True
+                pr = dpnet_io.probs(dpnet_io.forward(net, x), mask, 1.0, FLOOR).astype(np.float64)
+                k = np.array([rng.choice(no, p=row / row.sum()) for row in pr])
+                q = np.minimum(65535, np.round(-np.log(pr[np.arange(per_bin), k]) * 4096))
+                b[t + 1] = b[t] + (k == opt).sum() + rng.poisson(1.0)
+                parts.append(dict(x=x.astype(np.uint16), k=k.astype(np.int32), logq=(-q / 4096).astype(np.float32), mask=mask,
+                                  flags=np.zeros(per_bin, np.uint8), round=(10 * t + rng.integers(0, 10, per_bin)).astype(np.int32)))
+            babies[team], team_recs[team] = b, {key: np.concatenate([pt[key] for pt in parts]) for key in parts[0]}
+        w = int(rng.random() < 1 / (1 + np.exp(-(babies[0][bins] - babies[1][bins]) / 4)))   # 1: team 0 wins
+        for team in (0, 1):
+            z = 1.0 if (team == 0) == bool(w) else -1.0
+            rounds = 10 * np.arange(bins)
+
+            def side(s_):
+                bb = babies[s_][:bins]
+                return np.stack([bb, np.ones(bins), 500 + 5 * rounds / 10 + rng.normal(0, 20, bins), np.zeros(bins),
+                                 np.zeros(bins), np.zeros(bins)], 1)
+            us, them = side(team), side(1 - team)
+            tr = np.concatenate([us, them, us - them, (rounds / 2000)[:, None], np.full((bins, 1), 0.5)], 1).astype(np.float32)
+            trace_rows.append(dict(game=np.full(bins, g), team=np.full(bins, team), round=rounds, pair=np.full(bins, g // 2),
+                                   z=np.full(bins, z, np.float32), trace=tr))
+            r = dict(team_recs[team])
+            n = len(r['k'])
+            r.update(team=np.full(n, team, np.int32), game=np.full(n, g, np.int64), pair=np.full(n, g // 2, np.int64),
+                     z=np.full(n, z, np.float32), trace=tr[r['round'] // 10])
+            recs.append(r)
+    out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
+    np.savez(out_dir / 'p5.npz', **{k: np.concatenate([r[k] for r in recs]) for k in recs[0]})
+    np.savez(out_dir / 'trace.npz', **{k: np.concatenate([r[k] for r in trace_rows]) for k in trace_rows[0]})
+
+
+def check_critic():
+    rng = np.random.default_rng(7)
+    # two team-games (game 3 team 0: 4 bins; game 3 team 1: 3 bins), rows shuffled
+    rows = dict(game=np.array([3, 3, 3, 3, 3, 3, 3]), team=np.array([0, 0, 0, 0, 1, 1, 1]),
+                round=np.array([0, 10, 20, 30, 10, 20, 30]), z=np.array([1, 1, 1, 1, -1, -1, -1], np.float32))
+    v = np.array([0.1, 0.3, -0.2, 0.5, 0.0, -0.4, -0.6])
+    perm = rng.permutation(7)
+    rp = {k: a[perm] for k, a in rows.items()}
+    for lam in (1.0, 0.0, 0.7):
+        A = rl_critic.gae(rp, v[perm], lam)[np.argsort(perm)]
+        exp = []
+        for idx in ([0, 1, 2, 3], [4, 5, 6]):
+            vs, z = v[idx], rows['z'][idx[0]]
+            dl = np.r_[vs[1:], z] - vs
+            exp += [sum(lam ** l * dl[t + l] for l in range(len(dl) - t)) for t in range(len(dl))]
+        assert np.allclose(A, exp), (lam, A, exp)
+    assert np.allclose(rl_critic.gae(rows, v, 1.0), rows['z'] - v)
+    # record -> bin: before the first row -> first row; between rows -> latest row <= round; unknown team-game -> -1
+    ri = rl_critic.record_rows(rp, np.array([3, 3, 3, 3, 4]), np.array([0, 1, 1, 0, 0]), np.array([25, 5, 30, 999, 10]))
+    got = [None if i < 0 else (int(rp['team'][i]), int(rp['round'][i])) for i in ri]
+    assert got == [(0, 20), (1, 10), (1, 30), (0, 30), None], got
+    # antisymmetry: swapping us/them and the seat negates V
+    n = 600
+    tr = rng.normal(0, 1, (n, 20)).astype(np.float32); tr[:, 18] = rng.random(n); tr[:, 19] = 0.5
+    tr[:, 12:18] = tr[:, :6] - tr[:, 6:12]
+    rr = dict(game=np.repeat(np.arange(n // 20), 20), team=np.tile([0, 1], n // 2), round=np.tile(np.arange(20) * 10, n // 20),
+              z=np.sign(tr[:, 0] - tr[:, 6] + rng.normal(0, 1, n)).astype(np.float32), trace=tr)
+    c = rl_critic.Critic('rich', epochs=3, seed=1).fit(rl_critic.features(rr), (rr['z'] + 1) / 2, rr['game'])
+    sw = dict(rr); sw['trace'] = np.concatenate([tr[:, 6:12], tr[:, :6], -tr[:, 12:18], tr[:, 18:]], 1); sw['team'] = 1 - rr['team']
+    va, vb = c.predict(rl_critic.features(rr)), c.predict(rl_critic.features(sw))
+    assert np.abs(va + vb).max() < 1e-5, np.abs(va + vb).max()
+    # AUC with ties matches the trainer's
+    sc = rng.integers(0, 5, 300).astype(float); y = (rng.random(300) < 0.4).astype(float)
+    assert abs(rl_critic.auc(sc, y) - auc_ref(sc, y)) < 1e-12
+    print('rl_critic ok: gae, record_rows, antisymmetry max', float(np.abs(va + vb).max()))
+
+
+def auc_ref(score, y):
+    sys.path.insert(0, str(ROOT / 'scripts'))
+    import rl_train
+    return rl_train.auc(score, y)
 
 
 def run_train(*args):
@@ -177,6 +270,23 @@ def main(work=None, real_net=None):
     assert mt['kl_anchor_start'] > 0.5, mt['kl_anchor_start']
     assert outs[0] == outs[1], '--no-kl: the anchor changed the trained net'
     print('--no-kl ok: far anchor KL', mt['kl_anchor_start'], 'no refusal, identical export')
+    # 6. rl_critic units
+    check_critic()
+    # 7. critic + GAE through rl_train: option 2 adds babies; P(option 2) must rise
+    d = work / 'gae/data'
+    sample_gae_data(n0 / 'net.json', d, seed=21)
+    for crit in ('trace', 'rich'):
+        o = work / f'gae/{crit}'
+        assert run_train('--net', n0 / 'net.json', '--data', d, '--out', o, '--points', '5', '--lr', 3e-3, '--epochs', 4,
+                         '--critic', crit, '--gae-lambda', 0.8) == 0, crit
+        m = json.loads((o / 'metrics.json').read_text())
+        mt = m['points']['5']
+        print(f'GAE {crit} lambda 0.8: P(option 2)', mt['mean_probs_start'][2], '->', mt['mean_probs_end'][2], 'snr',
+              mt.get('grad_snr_cos'), 'critic', {k: v for k, v in m['critic'].items() if k != 'heldout'})
+        assert m['critic']['gae_lambda'] == 0.8 and mt['no_bin'] == 0 and m['pairs_with_baseline'] == 0
+        assert mt['mean_probs_end'][2] > mt['mean_probs_start'][2]
+        if crit == 'rich':
+            assert m['critic']['oof_frac'] == 1.0 and m['critic']['heldout']['all']['auc'] is not None
     print('ALL OK', work)
 
 

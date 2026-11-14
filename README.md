@@ -34,6 +34,9 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
   - **M1 failed**, the known-answer test ([report](docs/rl-m1-report.md)):
     - A KING_SPAWN sabotage scoring 0.16 against zdpn2 was not undone in 8×128 self-play games.
     - The outcome-only gradient is too noisy (pooled t −0.8, so about 6,000 games per iteration would be needed). The plumbing checks out.
+  - **Critic + GAE (November 14, 2026; offline):** `rl_train.py --critic rich --gae-lambda 0.8` (config `train.critic`, `train.gae_lambda`; the default is unchanged). It is a cross-fitted, antisymmetric critic on the team trace history, with GAE over 10-round bins.
+    - On the M1 data, the pooled t on the sabotaged bias goes from −0.8 to −5.3 (−6.4 with the old logistic V), and point 11's split-half gradient cosine goes from 0.00 to 0.17-0.21.
+    - On live rl-m2 data, no estimator shows a consistent gradient. [Results](docs/rl-plan.md#critic-and-gae-november-14-2026-offline-on-rl-m2-iterations-0-2-and-the-m1-data).
   - **Now: real self-play PPO run `rl-m2`** (started November 14, 2026, on the Windows box):
     - Starts from the capability-complete net (zdpn2 widened, with BABY_ROLE softened). The KL leash pulls toward zdpn2.
     - Trainable points: role, mine pick, king move/spawn/act/formation, king comms, king turn.

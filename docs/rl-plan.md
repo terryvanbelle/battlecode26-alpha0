@@ -304,3 +304,72 @@ A 3-design, 3-judge panel compared counterfactual forks, ES and exploration-plus
 - **Update:** a thresholded-t sign step.
 
 The plan, the revised M1 and the M2 staging are in [rl-es-plan.md](rl-es-plan.md). PPO remains the planned source of proposals for the baby points (stage B), with ES as the judge.
+
+### Critic and GAE (November 14, 2026; offline on rl-m2 iterations 0-2 and the M1 data)
+
+The goal is per-decision credit instead of outcome-only advantages. This is plain PPO with a learned critic: `scripts/rl_critic.py`, wired into `rl_train.py` behind `--critic {trace,richlin,rich}` and `--gae-lambda L` (config `train.critic`, `train.gae_lambda`, optional `train.critic_folds`). The defaults (`trace`, 1.0) are the old estimator, byte for byte.
+
+**Critics.**
+- `trace` is the existing logistic V on the bin's 20 trace columns.
+- `rich` uses the team's trace history up to the bin. Per side (the same function for us and them), it takes counts, log cheese and log transfers, changes over 1, 5 and 20 bins, and babies and kings lost since their running maximum. It adds round, round², map area and seat.
+- The model is antisymmetric: logit = f(us, them) − f(them, us). So V_A = −V_B in mirror games, and V = 0 at an even state. f is a (32, 32) MLP for `rich` and linear for `richlin`.
+- Training uses a game-level inner split for early stopping plus a fitted logit temperature, so it doesn't get overconfident on a few hundred outcomes.
+- **Cross-fitted:** the current iteration's games are predicted out of fold (4 folds, each trained on the rest of the 3-iteration window). A game's own outcome therefore never enters its own baseline, and the out-of-fold predictions give honest held-out metrics (`metrics.json` → `critic.heldout`).
+- Cost: about 10-20 s per iteration on 8 CPU threads.
+
+**GAE** (γ = 1) runs per team-game over its 10-round trace bins: δ_t = V(s_{t+1}) − V(s_t), and the last bin has δ = z − V. Each record gets the GAE advantage of its bin, then the usual per-point normalisation and ±5 clip. λ = 1 reproduces z − V. The pair baseline is kept only at λ = 1: it changed no number below by more than 0.05.
+
+**Critic quality.** These are game-level 5-fold out-of-fold predictions. Each cell is Brier / AUC; the constant-0.5 predictor's Brier is 0.250.
+
+| Data | Critic | all | r < 200 | 200-500 | 500-1000 | 1000-1500 | ≥ 1500 |
+|---|---|---|---|---|---|---|---|
+| rl-m2 iterations 0-2 (384 games) | trace (current) | 0.235 / 0.618 | 0.253 / 0.49 | 0.251 / 0.53 | 0.249 / 0.56 | 0.218 / 0.69 | 0.205 / 0.75 |
+| | richlin | 0.231 / 0.645 | 0.250 / 0.53 | 0.241 / 0.61 | 0.239 / 0.61 | 0.218 / 0.69 | 0.206 / 0.74 |
+| | **rich** | **0.227 / 0.656** | 0.249 / 0.55 | 0.239 / 0.61 | 0.233 / 0.64 | 0.210 / 0.72 | 0.204 / 0.73 |
+| M1 iterations 0-7 (1,024 games) | trace (current) | 0.194 / 0.768 | 0.219 / 0.72 | 0.231 / 0.65 | 0.204 / 0.74 | 0.163 / 0.84 | 0.137 / 0.89 |
+| | richlin | 0.185 / 0.793 | 0.209 / 0.73 | 0.226 / 0.68 | 0.195 / 0.77 | 0.155 / 0.86 | 0.124 / 0.91 |
+| | **rich** | **0.172 / 0.822** | 0.205 / 0.74 | 0.213 / 0.72 | 0.173 / 0.82 | 0.133 / 0.89 | 0.123 / 0.91 |
+
+- The in-loop "V at chance" readings (val AUC 0.36-0.45) came from 13 held-out games. Out of fold, the current V has AUC 0.62 on rl-m2; it is weak, not broken.
+- Mirror self-play of a near-zdb policy is hard to call before round 1000 with any of these critics.
+- An uncalibrated (64, 64) MLP overfits 256 games (Brier 0.27-0.33). That is why the early stop and temperature are there.
+- In-trainer check on rl-m2 iteration 2 (window 0-2): out-of-fold Brier 0.229 / AUC 0.639; the critic took 13 s.
+
+**M1 known answer: pooled t of the gradient on the sabotaged bias b_hold.** This uses point 11, 8 × 128 games, the trainer's normalised and clipped advantage, and the V window of 3 iterations (`runs/m1/gbias.py` with the new advantages). Negative is the correct direction, toward less hold.
+
+| Critic | λ 1 | 0.95 | 0.9 | 0.8 | 0.6 |
+|---|---|---|---|---|---|
+| trace | **−0.81** (M1's number) | −3.53 | −4.91 | **−6.37** | −8.49 |
+| richlin | −0.69 | −2.92 | −4.18 | −5.81 | −8.42 |
+| rich | −0.10 | −2.50 | −3.82 | −5.25 | −7.16 |
+
+- At λ 0.8, the per-128-game-iteration t is −2.2 / −0.7 / −2.3 / −4.4 / −1.7 / −0.9 / −2.8 / −4.0 (trace), against ±0.5 at λ 1.
+- The pair baseline changes every cell by ≤ 0.05.
+- The gain comes from λ: credit goes to the bins after a choice rather than to the whole game. The critic matters less.
+
+**Gradient SNR (trainer's split-half cosine).** Per-game policy-gradient vectors are computed in the trainer's parametrisation, and the cosine is averaged over 300 random game halves.
+
+| Data | Critic | λ 1 | 0.95 | 0.9 | 0.8 | 0.6 |
+|---|---|---|---|---|---|---|
+| M1 point 11, mean of 8 iterations | trace | +0.006 | +0.092 | +0.147 | +0.209 | +0.298 |
+| | rich | −0.000 | +0.070 | +0.109 | +0.167 | +0.274 |
+| rl-m2, 8 trainable points × iterations 0-2, mean | trace | −0.001 | +0.040 | +0.026 | −0.000 | −0.039 |
+| | rich | −0.030 | +0.020 | +0.011 | −0.022 | −0.033 |
+
+- On M1, where a real gradient exists, λ < 1 turns a cosine of 0 into 0.15-0.3.
+- On the live rl-m2 data, no estimator gives a consistent gradient at 128 games: the per-point cosines scatter ±0.4 around 0. The current policy shows no large improvement direction that any of these estimators can see, so this metric can't rank them there.
+- Raw A sd drops from 0.91 (λ 1) to 0.15 (λ 0.8). The share of A's variance that is between team-games drops from 0.94 to 0.14.
+
+**Planted check: is a choice credited with its immediate trace effect?**
+- **M1.** Per team-bin, I took excess holds (realised minus behaviour-expected, so conditioned on state). Their correlation with babies 3 bins later is −0.061 (the truth). Their correlation with the bin's A is −0.003 at λ 1 and −0.022 / −0.019 at λ 0.8 (trace / rich), with naive t −8 / −7. The advantage now carries the hold's effect.
+- **Live rl-m2, KING_SPAWN excess builds.** The truth is clear: babies 3 bins later rise, corr +0.015, t +4.2. But A credits extra builds slightly *negatively*: λ 0.8 trace −0.004 (t −1.0), rich −0.009 (t −2.5). At λ 1, z alone says nothing (t ±0.2).
+  - So on the live run, GAE will lean against extra spawns. z can't confirm or refute that at this sample size.
+  - This is the price of λ < 1: the step is biased toward whatever the critic believes about the next ~50 rounds. On rl-m2 the critic mostly values the transfer lead and the king lead.
+
+**Recommendation:** `"critic": "rich", "gae_lambda": 0.8` in the config's `train` block.
+- The M1 bias-gradient t is 6.5 × λ 1's at λ 0.8.
+- rich is the best-predicting critic on the live data, and λ < 1 bias scales with critic error.
+- λ 0.9 is the conservative alternative (t −3.8, SNR +0.11 on M1).
+- `"critic": "trace", "gae_lambda": 0.8` adds no new model and gave the largest M1 t.
+- The per-record critic V_R was not built: the team-bin GAE already carries the M1 signal, and V_R would only add per-record state baselines within a bin.
+- Lab scripts live on the VM in `~/critic/lab` (lab1 critic CV, lab2 M1 t, lab3 SNR, lab4 planted spawn).

@@ -107,13 +107,17 @@ print(t['beta_end'] + (t['beta_start'] - t['beta_end']) * max(0.0, 1 - $k / t['b
   [ -n "$lr" ] || { lr=$(cfgv "['train']['lr']"); st set lr $lr; }
   local T="['train']"
   local nokl=$($PY -c "import json; print('--no-kl' if json.load(open('$CFG'))['train'].get('no_kl') else '')")   # M1 only
+  # optional critic / GAE (rl_train --critic, --gae-lambda): absent keys keep rl_train's defaults (trace, lambda 1)
+  local crit=$($PY -c "
+import json; t = json.load(open('$CFG'))['train']
+print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda', 'gae-lambda'), ('critic_folds', 'critic-folds')) if k in t))")
   $PY -u scripts/rl_train.py --net $RD/nets/$k/net.json --anchor $(cfgv "['anchor_net']") --data $I/data --value-data $vd \
     --out $RD/nets/$((k + 1)) --points $POINTS --floor $FLOOR ${FPTS:+--floor-points $FPTS} --temperature $TEMP --version $k \
     --beta $beta --beta-state $RD/beta.json --lr $lr --epochs $(cfgv "$T['epochs']") --batch $(cfgv "$T['batch']") \
     --clip $(cfgv "$T['ppo_clip']") --target-kl $(cfgv "$T['target_kl']") --grad-clip $(cfgv "$T['grad_clip']") \
     --c-ent $(cfgv "$T['c_ent']") --collapse-kl $(cfgv "$T['collapse_kl']") --max-anchor-kl $(cfgv "$T['max_anchor_kl']") \
     --adv-clip $(cfgv "$T['adv_clip']") --val-frac $(cfgv "$T['value_val_frac']") --threads $(cfgv "$T['threads']") \
-    --seed $k $nokl > $I/train.log 2>&1
+    --seed $k $nokl $crit > $I/train.log 2>&1
   rc=$?
   if [ $rc -eq 3 ]; then rollback $((k + 1)) "KL collapse refusal at iter $k"; return $?; fi
   return $rc
@@ -178,7 +182,7 @@ s = js(f'{I}/data/summary.json') or {}
 row.update(games=s.get('valid'), score=s.get('score'), parity=s.get('parity'),
            points={p: {k2: v.get(k2) for k2 in ('rows', 'picked', 'fallback', 'saturated', 'parity_median')} for p, v in s.get('points', {}).items()})
 m = js(f'{rd}/nets/{k + 1}/metrics.json') or {}
-row.update(value=m.get('value'), exported=m.get('exported'), refused=m.get('refused'),
+row.update(value=m.get('value'), critic=m.get('critic'), exported=m.get('exported'), refused=m.get('refused'),
            train={p: {k2: v.get(k2) for k2 in ('used', 'kl_anchor_end', 'kl_old_new', 'entropy_end', 'clip_frac', 'early_stop', 'grad_snr_cos', 'alarms')}
                   for p, v in (m.get('points') or {}).items()})
 row['rollback'] = js(f'{rd}/nets/{k + 1}/ROLLBACK.json')
@@ -222,7 +226,7 @@ while [ $k -lt $MAX_ITER ]; do
   tail -1 $I/data.log | tee -a $LOG
   over && exit 0
   stage $I trained train $k || { log "train iter $k failed; see $I/train.log"; exit 1; }
-  grep '^point\|^value\|^wrote\|^REFUSED' $I/train.log | cut -c1-200 >> $LOG
+  grep '^point\|^value\|^critic\|^wrote\|^REFUSED' $I/train.log | cut -c1-200 >> $LOG
   build_pkg $((k + 1)) || { log "build v$((k + 1)) failed"; exit 1; }
   stage $I gated gates $((k + 1))
   prune $k

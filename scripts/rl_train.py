@@ -6,6 +6,7 @@ rl_train.py --net runs/rl/R/nets/3/net.json --anchor runs/dp/net-v2/net.json --d
     [--beta 0.03] [--beta-state runs/rl/R/beta.json] [--lr 3e-4] [--epochs 2] [--batch 4096]
 rl_train.py ... --lr 0                      identity: the exported net.json (and so W.java) is byte-identical
 rl_train.py ... --points 6 --fake-reward 6:0 --no-kl     planted reward: A = 1 if k == 0 else 0 on point 6
+rl_train.py ... --critic rich --gae-lambda 0.9          learned critic + GAE (docs/rl-plan.md, "Critic and GAE")
 
 Inputs. --net is the learner theta_k (the net that played the data); its fold normalisation comes from norm.npz beside
 it (train_dp.py / rl_train.py write one), else from the data (any mu/sd unfolds exactly). Each --data / --value-data
@@ -31,6 +32,13 @@ directory holds, written by rl_data.py, only the learner's recorded sides:
 TRACE_COLS (the writer's order; the trainer only needs the same Ftrace everywhere, it standardises each column):
   us_{babies, kings, cheese, xfer, xfer_d50, traps}, them_{same 6}, (us - them) of the 6, round / 2000, map_area / 3600.
 
+Advantages. Default (--critic trace --gae-lambda 1): A = z - V(trace at the record's bin), V the logistic regression
+below, minus the paired seat-swap baseline. Otherwise (rl_critic.py): V is --critic ('trace': the same logistic V;
+'richlin' / 'rich': an antisymmetric critic on the team's trace history, cross-fitted so the current iteration's games
+are predicted out of fold), and each record gets the GAE(gamma 1, --gae-lambda) advantage of its 10-round bin:
+delta_t = V(s_{t+1}) - V(s_t), the last bin's delta = z - V. The pair baseline is kept only at lambda 1 (with GAE it
+removed nothing measurable). Then, as always, A is normalised per point and clipped.
+
 Outputs in --out: net.json (frozen and unchanged points copied value-for-value, so W.java is byte-identical; the whole
 file is copied byte-for-byte when nothing changed), norm.npz, metrics.json. With the collapse rule triggered (a point's
 KL to the anchor > --max-anchor-kl) nothing but metrics.json is written and the exit code is 3.
@@ -41,7 +49,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-import dpnet_io  # noqa: E402
+import dpnet_io, rl_critic  # noqa: E402
 
 NONE = 0xFFFF
 TRACE_COLS = [f'{s}_{c}' for s in ('us', 'them', 'diff') for c in ('babies', 'kings', 'cheese', 'xfer', 'xfer_d50', 'traps')] \
@@ -209,6 +217,43 @@ def pair_baseline(vrows, V):
             for i in sel:
                 out[int(uk[i])] = b
     return out
+
+
+def pair_baseline_rows(rows, A_rows):
+    """pair_baseline for per-row advantages A_rows (the GAE path): {(game, team): mean over the pair's learner
+    team-games of the team-game's mean row advantage}."""
+    key = rows['game'] * 2 + rows['team'].astype(np.int64)
+    uk, inv = np.unique(key, return_inverse=True)
+    rbar = np.bincount(inv, weights=A_rows) / np.bincount(inv)
+    kpair = np.full(len(uk), -1, np.int64); kpair[inv] = rows['pair']
+    out = {}
+    for pr in np.unique(kpair[kpair >= 0]):
+        sel = np.nonzero(kpair == pr)[0]
+        if len(sel) >= 2:
+            b = float(rbar[sel].mean())
+            for i in sel:
+                out[int(uk[i])] = b
+    return out
+
+
+def gae_rows(a, vdirs, dir_index, V):
+    """(rows, A_rows, metrics): the current iteration's team-game bins (--data) and their GAE advantages under
+    --critic / --gae-lambda. V (the logistic trace critic, fitted in sample as before) is used for --critic trace."""
+    allrows = value_rows(list(dict.fromkeys(list(vdirs) + list(a.data))), dir_index)
+    tgt = np.isin(allrows['game'] >> 32, [dir_index[str(d)] for d in a.data])
+    m = dict(critic=a.critic, gae_lambda=a.gae_lambda)
+    if a.critic == 'trace':
+        v = V(allrows['trace'][tgt])
+    else:
+        t0 = time.time()
+        vall, oof = rl_critic.fit_crossed(allrows, tgt, a.critic, folds=a.critic_folds, seed=a.seed)
+        v = vall[tgt]
+        m.update(seconds=round(time.time() - t0, 1), oof_frac=float(oof[tgt].mean()),
+                 heldout=rl_critic.metrics(vall, allrows, tgt & oof))
+    rows = {k: x[tgt] for k, x in allrows.items()}
+    A_rows = rl_critic.gae(rows, v, a.gae_lambda)
+    m.update(rows=int(len(v)), adv_rows_sd=float(A_rows.std()))
+    return rows, A_rows, m
 
 
 # ---------------------------------------------------------------------------------------------------- policy
@@ -415,6 +460,10 @@ def main():
     ap.add_argument('--adv-clip', type=float, default=5.0)
     ap.add_argument('--no-pair', action='store_true', help='no paired-game baseline')
     ap.add_argument('--no-value', action='store_true', help='no value baseline: V = 0, A = z (then normalised)')
+    ap.add_argument('--critic', default='trace', choices=('trace', 'richlin', 'rich'),
+                    help='value model: trace = logistic V on the bin trace (default); rich / richlin = rl_critic.py')
+    ap.add_argument('--gae-lambda', type=float, default=1.0, help='GAE lambda over 10-round bins (1 = z - V, default)')
+    ap.add_argument('--critic-folds', type=int, default=4, help='cross-fitting folds of the rich critics')
     ap.add_argument('--fake-reward', default='', help='point:option planted test: A = 1 if k == option else 0')
     ap.add_argument('--max-rows', type=int, default=2_000_000, help='per-point uniform subsample cap')
     ap.add_argument('--val-frac', type=float, default=0.1)
@@ -446,10 +495,24 @@ def main():
     vdirs = a.value_data if a.value_data else a.data
     dir_index = {str(d): i for i, d in enumerate(dict.fromkeys(list(a.data) + list(vdirs)))}
     data = load_dirs(a.data, [p for p in points if p in nets], dir_index)
-    V = Value(None if a.no_value else value_rows(vdirs, dir_index), a.val_frac, a.seed)   # no rows: V = 0
-    base = {} if a.no_pair else pair_baseline(value_rows(a.data, dir_index), V)
+    if not 0 <= a.gae_lambda <= 1:
+        raise SystemExit('--gae-lambda must be in [0, 1]')
+    use_gae = not a.fake_reward and not a.no_value and (a.critic != 'trace' or a.gae_lambda < 1)
+    V = Value(None if a.no_value or (use_gae and a.critic != 'trace') else value_rows(vdirs, dir_index), a.val_frac,
+              a.seed)   # no rows: V = 0
+    gae = None
+    if use_gae:
+        grows, gA, gm = gae_rows(a, vdirs, dir_index, V)
+        gae = (grows, gA)
+        base = {} if a.no_pair or a.gae_lambda < 1 else pair_baseline_rows(grows, gA)
+        print(f'critic: {gm}', flush=True)
+    else:
+        gm = None
+        base = {} if a.no_pair else pair_baseline(value_rows(a.data, dir_index), V)
     print(f'value model: {V.metrics}', flush=True)
     metrics = dict(args={k: v for k, v in vars(a).items()}, value=V.metrics, points={}, pairs_with_baseline=len(base))
+    if gm is not None:
+        metrics['critic'] = gm
 
     new_layers, new_norm, refused = {}, dict(norm), []
     for p in points:
@@ -490,7 +553,12 @@ def main():
         if a.fake_reward:
             A = (d['k'] == a.fake_reward[1]).astype(np.float64)
         else:
-            A = d['z'].astype(np.float64) - V(d['trace'])
+            if gae is not None:
+                ri = rl_critic.record_rows(gae[0], d['game'], d['team'], d['round'])
+                mt['no_bin'] = int((ri < 0).sum())   # records of a team-game without bins: A = 0 (none expected)
+                A = np.where(ri >= 0, gae[1][np.maximum(ri, 0)], 0.0)
+            else:
+                A = d['z'].astype(np.float64) - V(d['trace'])
             if base:
                 gk = d['game'] * 2 + d['team'].astype(np.int64)
                 b = np.array([base.get(int(g), np.nan) for g in gk])
