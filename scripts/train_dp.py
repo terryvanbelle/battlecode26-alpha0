@@ -16,17 +16,20 @@ import torch.nn as nn
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import dpnet_io  # noqa: E402
+import dp_points  # noqa: E402
 
 NONE = 0xFFFF
 
 
 def option_counts(src=ROOT / 'java/bots/zdp'):
-    """{point id: option count} from the D*.java constants (NAME = id and NAME_OPTIONS = count)."""
-    consts = {}
-    for f in sorted(Path(src).glob('D*.java')):
-        for m in re.finditer(r'\b([A-Z][A-Z0-9_]*)\s*=\s*(\d+)\b', f.read_text()):
-            consts.setdefault(m.group(1), int(m.group(2)))
-    return {consts[k[:-8]]: v for k, v in consts.items() if k.endswith('_OPTIONS') and k[:-8] in consts}
+    """{point id: option count} from the D*.java constants (scripts/dp_points.py: NAME_NET_OPTIONS preferred, so
+    BABY_MOVE's net head has its primitives)."""
+    return dp_points.option_counts(src)
+
+
+def feature_counts(src=ROOT / 'java/bots/zdp'):
+    """{point id: feature count} (NAME_FEATS)."""
+    return dp_points.feature_counts(src)
 
 
 def read_fast(path, keep, rng, keep0={}):

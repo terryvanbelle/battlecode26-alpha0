@@ -290,4 +290,9 @@ public final class Cfg {
     public static final boolean FIX_SEEK_NEWS = true;
     /** Pass 2B fix: a FORM_KING centre rat promotes when action-ready (not only movement-ready) and on its step-on turn. false = zdb's original behaviour. */
     public static final boolean FIX_FORM_PROMOTE = true;
+    /** Pass 3 (decision points): BABY_ROLE reviews every DP_ROLE_EVERY rounds of a rat's life (10: the recording
+     *  default; RL configs use 50). */
+    public static final int DP_ROLE_EVERY = 10;
+    /** Pass 3: the net's BABY_ACT option A_X_DISINTEGRATE is allowed (off, as in student-actions-v2). */
+    public static final boolean DP_ALLOW_DISINTEGRATE = false;
 }

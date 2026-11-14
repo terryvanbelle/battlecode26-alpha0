@@ -107,3 +107,13 @@ but wrote its king's position correctly only 2–17% of the time, so its babies 
 ([results](imitation-results.md#student-v9-obs-v4-capability-complete-132-against-zdb-the-king-starves-november-13-2026)).
 mlp-v3 gives the parameter head binary copies of the integers values are usually built from (`Net.ctx`) and a second hidden
 layer. This adds no restriction: every bit is still chosen freely.
+
+## Update: zdp pass 3 (November 14, 2026)
+
+The decision-point line (zdp, [decision-points.md](decision-points.md#pass-3-capability-completion)) now covers the
+gaps the pass-2 points left: free shared-array writes and squeaks (KING_COMMS, KING_VAL, BABY_COMMS C_RAW/C_RELAY,
+BABY_VAL), pickup and trap removal (BABY_FREE), strafe and risky steps, bite amounts, drops, transfers and
+disintegrate, king facing (KING_TURN) and a keep/review role. Still open: per-robot writable memory registers, babies
+reading the whole shared array (only BABY_ROLE and KING_COMMS see all 64 slots), more than the newest heard squeak as a
+feature, the comms block on BABY_FACE / MINE_PICK, king pickup control, bite and transfer amounts as ladders rather
+than every integer, `resign` (excluded on purpose) and bytecode budgets for the hooks.

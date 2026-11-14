@@ -66,6 +66,14 @@ CASES = [
     (13, 18, 29, -1, 1.0, 30, [False] * 30, 0, 1),          # KING_FORM: nothing allowed (k none, mask words kept)
     (12, 0, 30, -1, 1.0, 0, None, 0, 1),                    # KING_ACT: no sample at all (no mask words)
     (10, 37, 40, 36, 1e-30, 37, [True] * 37, 1, 2),         # KING_MOVE: tiny p -> q clamps to 65535
+    # pass 3 points
+    (14, 0, 94, 80, 0.002, 81, [i != 5 for i in range(81)], 0, 4),   # KING_COMMS: 81 options, 6 mask words
+    (15, 0xFFFF, 22, 31, 0.03125, 32, None, 2, 4),          # KING_VAL (secondary, no zdb label)
+    (9, 0xFFFF, 30, 7, 0.03125, 32, None, 2, 4),            # BABY_VAL (secondary)
+    (8, 0, 36, 0, 0.99, 16, [i < 3 for i in range(16)], 0, 4),   # BABY_FREE
+    (16, 0, 24, -1, 1.0, 0, None, 0, 4),                    # KING_TURN without a net: no sample, no mask words
+    (2, 21, 74, 38, 0.001, 39, [True] * 39, 0, 4),          # BABY_ACT_PRE, 39 options
+    (5, 5, 112, 5, 0.97, 6, [True, True, False, True, True, True], 0, 4),   # BABY_ROLE review: R_KEEP
 ]
 
 
@@ -83,7 +91,7 @@ class TrailerRoundTrip(unittest.TestCase):
         for case in CASES:
             point, label, nf, k, p, n_opt, mask, flags, version = case
             feats, tr, s = build(case, rng)
-            self.assertLessEqual(len(s), 96, 'record must fit D.F (96 chars)')
+            self.assertLessEqual(len(s), 192, 'record must fit D.F (192 chars)')
             self.assertIsNotNone(harness_record(s))
             got, t = DEC.split_trailer(s[4:], point)
             self.assertEqual(got, feats)

@@ -18,6 +18,18 @@ public final class DNet {
         return point < w.length && w[point] != null;
     }
 
+    /** The net's output count for point p (0: no net). */
+    static int nOut(int p) { return has(p) ? dims[p][dims[p].length - 1] : 0; }
+
+    /** The options of point p the net may pick: the first W.A[p] (missing or 0: all of its outputs). */
+    static int reach(int p) {
+        int a = p < W.A.length ? W.A[p] : 0, n = nOut(p);
+        return a > 0 && a < n ? a : n;
+    }
+
+    /** Point p's sampling floor (W.FL[p]; missing or < 0: D.NET_FLOOR). */
+    static float floor(int p) { return p < W.FL.length && W.FL[p] >= 0 ? W.FL[p] : D.NET_FLOOR; }
+
     static void load() {
         int np = W.P.length;
         w = new float[np][][]; b = new float[np][][]; dims = new int[np][];
@@ -73,6 +85,17 @@ public final class DNet {
         return (x >>> 8) / 16777216f;
     }
 
+    /** The second sampling stream (pass 3's new points, D.alt): their samples never shift the draws of the others. */
+    static int rng2;
+
+    static float uniform2() {
+        int x = rng2;
+        if (x == 0) x = G.myId * 0x2545F491 + G.round * 0x27D4EB2F + 7;
+        x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+        rng2 = x;
+        return (x >>> 8) / 16777216f;
+    }
+
     /** RL builds (D.RL): the last sample()'s option (-1: none allowed), the probability it had (the floor-mixed p[]
      *  value used), its mask (a reference; null: all allowed) and its option count (z.length). Recording only. */
     static int lastK = -1, lastN;
@@ -81,7 +104,10 @@ public final class DNet {
 
     /** Sample an option: softmax(logits / t) mixed with a uniform floor (probability floor / n each); t = 0 takes the
      *  argmax. allowed (may be null) masks options out. Returns -1 when no option is allowed. */
-    static int sample(float[] z, boolean[] allowed, float t, float floor) {
+    static int sample(float[] z, boolean[] allowed, float t, float floor) { return sample(z, allowed, t, floor, false); }
+
+    /** sample() drawing from the second stream (uniform2) when alt. */
+    static int sample(float[] z, boolean[] allowed, float t, float floor, boolean alt) {
         if (D.RL) { lastK = -1; lastP = 1f; lastMask = allowed; lastN = z.length; }
         int n = z.length, best = -1;
         for (int k = 0; k < n; k++) if ((allowed == null || allowed[k]) && (best < 0 || z[k] > z[best])) best = k;
@@ -96,7 +122,7 @@ public final class DNet {
             for (int k = 0; k < n; k++) p[k] = p[k] / tot * (1 - floor);
         } else p[best] = 1 - floor;
         for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) p[k] += floor / m;
-        float u = uniform(), acc = 0;
+        float u = alt ? uniform2() : uniform(), acc = 0;
         for (int k = 0; k < n; k++) { acc += p[k]; if (u < acc) { if (D.RL) { lastK = k; lastP = p[k]; } return k; } }
         if (D.RL) { lastK = best; lastP = p[best]; }
         return best;

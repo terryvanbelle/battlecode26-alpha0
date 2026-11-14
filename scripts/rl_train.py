@@ -397,6 +397,7 @@ def main():
     ap.add_argument('--out', required=True, help='output dir: net.json, norm.npz, metrics.json')
     ap.add_argument('--points', default='5,7,10,11,12,13', help='trainable points (others are copied unchanged)')
     ap.add_argument('--floor', type=float, default=0.005, help="the build's NET_FLOOR (behaviour and trained policy)")
+    ap.add_argument('--floor-points', default='', help='per-point floors P:F,... (the build\'s W.FL; others --floor)')
     ap.add_argument('--temperature', type=float, default=1.0)
     ap.add_argument('--version', type=int, default=None, help='keep only records with this trailer NET_VERSION')
     ap.add_argument('--epochs', type=int, default=2)
@@ -426,6 +427,7 @@ def main():
     rng = np.random.default_rng(a.seed)
     t0 = time.time()
     points = parse_points(a.points)
+    fpts = {int(k): float(v) for k, v in (x.split(':') for x in a.floor_points.split(',') if x)}
     if a.fake_reward:
         fp, fo = (int(v) for v in a.fake_reward.split(':'))
         a.fake_reward = (fp, fo)
@@ -506,7 +508,12 @@ def main():
         beta = 0.0 if a.no_kl else a.beta * beta_mult.get(p, 1.0)
         mt['beta'] = beta
         tp = time.time()
-        folded, _ = train_point(p, d, nets[p], (mu, sd), anchor.get(p), A, a, beta, rng, mt)
+        if anchor.get(p) is not None and anchor[p][-1]['w'].shape[0] != n_out:
+            raise SystemExit(f'point {p}: the anchor has {anchor[p][-1]["w"].shape[0]} outputs, the net {n_out} '
+                             '(widen the anchor with widen_dpnet.py too)')
+        ap_ = argparse.Namespace(**{**vars(a), 'floor': fpts.get(p, a.floor)})   # this point's floor
+        mt['floor'] = ap_.floor
+        folded, _ = train_point(p, d, nets[p], (mu, sd), anchor.get(p), A, ap_, beta, rng, mt)
         mt['seconds'] = round(time.time() - tp, 1)
         new_norm[p] = (mu, sd)
         if folded is not None:

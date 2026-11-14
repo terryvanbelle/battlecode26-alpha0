@@ -37,16 +37,18 @@ public final class Baby {
         D.point = 0;
         D.point2 = 0;
         mute = false;   // net mode: an exception last turn may have left zdb's squeaks muted
+        pickCap = Integer.MAX_VALUE;   // net mode: BABY_FREE's pickup cap holds for one turn
         if (role < 0) {
             born();
             if (D.ON) {   // BABY_ROLE at birth
                 D.babyRole(0, -1);
-                if (D.NET) { int k = D.pick(D.BABY_ROLE, null); if (k >= 0) roleExec(k); }
+                if (D.NET) { int k = D.pick(D.BABY_ROLE, D.roleOk(0)); if (k >= 0) roleExec(k); }
                 D.lab = D.roleLab();
                 D.emit();
             }
         }
         int roleAt0 = role;
+        int labAt0 = D.ON ? D.roleLab() : -1;
         // a carry we hold 12+ rounds after our last grab came from the engine's role swap: its hold starts now
         if (Cfg.FIX_SWAP_HOLD && rc.getCarrying() != null && G.round - carryRound > 11) carryRound = G.round;
         Comms.readKings();
@@ -72,7 +74,7 @@ public final class Baby {
         if (cat != null) { catSeen = cat.location; catSeenRound = G.round; }
 
         Debug.mark(2);
-        if (role != ATTACK) pickUp();
+        freePoint(0);   // BABY_FREE (pass 3); zdb: if (role != ATTACK) pickUp();
         Nav.avoid = cat != null ? laneMask(cat) : 0;
         // a newborn's first turn pays for array allocation and a full first sense: skip optional work when short
         if (!G.coop && Flow.left() > Cfg.BC_OPTIONAL) {
@@ -81,10 +83,10 @@ public final class Baby {
 
         Debug.mark(3);
         eKing = enemyKing;
-        if (D.ON && (role != roleAt0 || G.round > birthRound && (G.round - birthRound) % 10 == 0)) {   // BABY_ROLE review
+        if (D.ON && (role != roleAt0 || G.round > birthRound && (G.round - birthRound) % Cfg.DP_ROLE_EVERY == 0)) {   // BABY_ROLE review
             D.babyRole(1, roleAt0);
-            if (D.NET) { int k = D.pick(D.BABY_ROLE, null); if (k >= 0) roleExec(k); }
-            D.lab = D.roleLab();
+            if (D.NET) { int k = D.pick(D.BABY_ROLE, D.roleOk(1)); if (k >= 0) roleExec(k); }
+            D.lab = D.roleLab() == labAt0 ? D.R_KEEP : D.roleLab();
             D.emit();
         }
         nearestEnemy = null;
@@ -118,7 +120,7 @@ public final class Baby {
         if (D.ON && rc.isActionReady()) D.babyAct(D.BABY_ACT_PRE, robots, false, '-');   // BABY_ACT_PRE opens
         boolean netAct = false;
         if (D.NET && D.point == D.BABY_ACT_PRE) {
-            int k = D.pick(D.BABY_ACT_PRE, null);
+            int k = D.pick(D.BABY_ACT_PRE, actOk(D.BABY_ACT_PRE));
             netAct = k >= 0 && actExec(k, robots);
             if (netAct) D.lab = k;
             G.facing = rc.getDirection();
@@ -148,7 +150,7 @@ public final class Baby {
         if (D.NET && D.point2 == D.BABY_COMMS) {
             // the net's squeak replaces zdb's: cashTick/report still run (listening, cash state) but muted, then the
             // net's option squeaks (C_NONE: silence); when it cannot, zdb's held squeak goes out instead
-            netC = D.pick2(D.BABY_COMMS, commsOk);
+            netC = D.pick2(D.BABY_COMMS, commsOk());
             if (netC >= 0) { mute = true; mutedAny = false; }
         }
         // ledger (K = 20 with G.settle): the hook's bytecodes outside the two reads (u6x runs only the report() call)
@@ -194,13 +196,11 @@ public final class Baby {
         boolean moved = !rc.getLocation().equals(before);
         if (rc.getType() == UnitType.RAT_KING) return;   // just promoted: the king code runs from next turn
         Debug.mark(20);
-        pickUp();
+        freePoint(1);   // BABY_FREE (pass 3); zdb: pickUp();
         if (D.ON && rc.isActionReady()) D.babyAct(D.BABY_ACT_POST, rc.senseNearbyRobots(-1, null), moved, moved ? why : '-');
         boolean netAct2 = false;
         if (D.NET && D.point == D.BABY_ACT_POST) {
-            boolean[] ok = new boolean[D.BABY_ACT_POST_OPTIONS];
-            for (int i = 0; i < ok.length; i++) ok[i] = i != D.A_CASH_KING || cashSite != null && rc.getLocation().equals(cashSite);
-            int k = D.pick(D.BABY_ACT_POST, ok);
+            int k = D.pick(D.BABY_ACT_POST, actOk(D.BABY_ACT_POST));
             netAct2 = k >= 0 && actExec(k, null);
             if (netAct2) D.lab = k;
             G.facing = rc.getDirection();
@@ -417,6 +417,7 @@ public final class Baby {
 
     static void pickUp() throws GameActionException {
         RobotController rc = G.rc;
+        if (D.NET && pickCap != Integer.MAX_VALUE) { capped(); return; }
         MapLocation c = rc.getLocation();
         if (rc.canPickUpCheese(c)) { rc.pickUpCheese(c); picked++; }
         Direction f = rc.getDirection();
@@ -426,6 +427,87 @@ public final class Baby {
             if (rc.canPickUpCheese(l)) { rc.pickUpCheese(l); picked++; }
         }
         G.rawCheese = rc.getRawCheese();
+    }
+
+    /** Net mode (BABY_FREE): this turn's cap on raw cheese held after a pickup (MAX: none; -1: no pickup). */
+    static int pickCap = Integer.MAX_VALUE;
+
+    /** pickUp under pickCap: the same tiles in the same order, each taking at most what keeps raw <= pickCap. */
+    static void capped() throws GameActionException {
+        RobotController rc = G.rc;
+        for (MapLocation l : D.freeTiles()) {
+            int amt = Math.min(D.pickable(l), pickCap - rc.getRawCheese());
+            if (amt <= 0) continue;
+            rc.pickUpCheese(l, amt);
+            picked++;
+        }
+        G.rawCheese = rc.getRawCheese();
+    }
+
+    /** BABY_FREE at pickup site ph (0: zdb picks up unless an attacker; 1: zdb picks up). Net mode: the net's option,
+     *  with trap removals chained (at most D.FREE_CHAIN; each its own record); option 0 or no net runs zdb's code. */
+    static void freePoint(int ph) throws GameActionException {
+        boolean f = D.ON && D.babyFree(ph, 0);
+        int k = D.NET && f ? D.pick(D.BABY_FREE, freeOk(ph, 0)) : -1;
+        int step = 0;
+        while (k >= D.FR_RM0 && D.point == D.BABY_FREE) {
+            boolean done;
+            try { done = freeExec(k); } catch (GameActionException e) { done = false; }
+            if (!done) { D.point = 0; k = -1; break; }
+            D.lab = k;
+            D.emit();
+            step++;
+            if (!D.babyFree(ph, step)) { k = -1; break; }
+            k = D.pick(D.BABY_FREE, freeOk(ph, step));
+        }
+        if (k > 0 && k < D.FR_RM0) {
+            try { freeExec(k); } catch (GameActionException e) { /* the cap stays set; nothing else to undo */ }
+        } else if (ph == 1 || role != ATTACK) pickUp();
+        if (D.point == D.BABY_FREE) { if (D.lab < 0) D.lab = k > 0 ? k : D.FR_ZDB; D.emit(); }
+    }
+
+    /** BABY_FREE net mask at site ph, chain step step (past D.FREE_CHAIN: terminal options only). */
+    static boolean[] freeOk(int ph, int step) throws GameActionException {
+        RobotController rc = G.rc;
+        boolean[] a = new boolean[D.BABY_FREE_OPTIONS];
+        boolean zdbNone = ph == 0 && role == ATTACK, capSet = pickCap != Integer.MAX_VALUE;
+        MapLocation[] ts = D.freeTiles();
+        int reach = 0;
+        for (MapLocation l : ts) reach += D.pickable(l);
+        int raw = rc.getRawCheese();
+        a[D.FR_ZDB] = true;
+        a[D.FR_ALL] = (zdbNone || capSet) && reach > 0;
+        a[D.FR_NONE] = !zdbNone && reach > 0;
+        for (int i = 0; i < 5; i++) { int c = D.FREE_CAP[i]; a[D.FR_CAP0 + i] = raw < c && c < raw + reach; }
+        if (step < D.FREE_CHAIN) for (int i = 0; i < 4; i++) {
+            MapLocation l = ts[i];
+            boolean on = rc.onTheMap(l);
+            a[D.FR_RM_RAT0 + i] = on && rc.canRemoveRatTrap(l);
+            a[D.FR_RM_CAT0 + i] = on && rc.canRemoveCatTrap(l);
+        }
+        return a;
+    }
+
+    /** Run BABY_FREE option k (not FR_ZDB); true when it acted. */
+    static boolean freeExec(int k) throws GameActionException {
+        RobotController rc = G.rc;
+        if (k == D.FR_ALL) { pickCap = Integer.MAX_VALUE; pickUp(); return true; }
+        if (k == D.FR_NONE) { pickCap = -1; return true; }
+        if (k >= D.FR_CAP0 && k < D.FR_RM0) { pickCap = D.FREE_CAP[k - D.FR_CAP0]; pickUp(); return true; }
+        MapLocation[] ts = D.freeTiles();
+        if (k >= D.FR_RM_RAT0 && k < D.FR_RM_RAT0 + 4) {
+            MapLocation l = ts[k - D.FR_RM_RAT0];
+            if (!rc.onTheMap(l) || !rc.canRemoveRatTrap(l)) return false;
+            rc.removeRatTrap(l);
+            return true;
+        }
+        if (k >= D.FR_RM_CAT0 && k < D.FR_RM_CAT0 + 4) {
+            MapLocation l = ts[k - D.FR_RM_CAT0];
+            if (!rc.onTheMap(l) || !rc.canRemoveCatTrap(l)) return false;
+            rc.removeCatTrap(l);
+            return true;
+        }
+        return false;
     }
 
     static RobotInfo eKing, nearestEnemy;
@@ -1823,6 +1905,21 @@ public final class Baby {
 
     /** BABY_ROLE: set the role option k (no guard needed). */
     static void roleExec(int k) {
+        int r0 = role;
+        boolean s0 = scout, d0 = raider;
+        roleSet(k);
+        // pass 3: a real change resets role-specific state (only in builds whose net has R_KEEP: zdpn2 replays as before)
+        if (!D.has(D.BABY_ROLE, D.R_KEEP) || role == r0 && scout == s0 && raider == d0) return;
+        seekUntil = 0; seekNext = G.round; idleTurns = 0; exploreTarget = null; Nav.target = null; Nav.stall = 0;
+        if (r0 == ATTACK && role != ATTACK) {
+            if (catHunt) { catHunt = false; catHunters--; }
+            stallAt = null; lastEKing = null; noKing = 0;
+        }
+        if (role == ATTACK && r0 != ATTACK) { mineTarget = null; stallAt = null; }
+        if (raider != d0) { raidTarget = null; raidSince = -1; }
+    }
+
+    static void roleSet(int k) {
         switch (k) {
             case D.R_GATHER: role = GATHER; scout = false; raider = false; break;
             case D.R_SCOUT: role = GATHER; scout = true; raider = false; break;
@@ -1911,8 +2008,75 @@ public final class Baby {
                 if (!rc.canBecomeRatKing()) return false;
                 rc.becomeRatKing(); formed++;
                 return true;
-            default: return false;
+            case D.A_X_DISINTEGRATE:
+                if (!Cfg.DP_ALLOW_DISINTEGRATE) return false;
+                rc.disintegrate();
+                return true;
+            default: {
+                if (k >= D.A_X_BITE_C0 && k < D.A_X_BITE_C0 + 6) {
+                    int c = D.BITE_C[k - D.A_X_BITE_C0];
+                    if (!rc.onTheMap(l) || !rc.canAttack(l, c)) return false;
+                    rc.attack(l, c);
+                    return true;
+                }
+                if (k >= D.A_X_DROP_DIR0 && k < D.A_X_DROP_DIR0 + 8) {
+                    Direction d = G.DIRS[k - D.A_X_DROP_DIR0];
+                    if (rc.getCarrying() == null || !rc.canDropRat(d)) return false;
+                    rc.dropRat(d);
+                    return true;
+                }
+                if (k >= D.A_X_XFER_10 && k <= D.A_X_XFER_HALF) {
+                    int amt = xferAmt(k);
+                    MapLocation kt = xferTile(amt);
+                    if (kt == null) return false;
+                    rc.transferCheese(kt, amt);
+                    delivered += amt;
+                    G.rawCheese = rc.getRawCheese();
+                    return true;
+                }
+                return false;
+            }
         }
+    }
+
+    /** A_X_XFER_*: the amount (10, 50, half the raw cheese). */
+    static int xferAmt(int k) {
+        return k == D.A_X_XFER_10 ? 10 : k == D.A_X_XFER_50 ? 50 : G.rc.getRawCheese() / 2;
+    }
+
+    /** The nearest tile of an allied king that accepts amt raw cheese now, or null. */
+    static MapLocation xferTile(int amt) throws GameActionException {
+        RobotController rc = G.rc;
+        if (amt <= 0 || amt > rc.getRawCheese()) return null;
+        MapLocation me = rc.getLocation(), best = null;
+        int bd = Integer.MAX_VALUE;
+        for (RobotInfo r : rc.senseNearbyRobots(18, G.us)) {
+            if (r.type != UnitType.RAT_KING) continue;
+            for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++) {
+                MapLocation t = r.location.translate(dx, dy);
+                int d = me.distanceSquaredTo(t);
+                if (d < bd && rc.canTransferCheese(t, amt)) { bd = d; best = t; }
+            }
+        }
+        return best;
+    }
+
+    /** BABY_ACT_PRE / POST net mask (pass 3): options 0..20 as before (all, but CASH_KING after the move only on the
+     *  rescue site); the new ones where they can act. */
+    static boolean[] actOk(int p) throws GameActionException {
+        RobotController rc = G.rc;
+        boolean[] a = new boolean[D.BABY_ACT_OPTIONS];
+        for (int i = 0; i < D.A_X_BITE_C0; i++)
+            a[i] = p == D.BABY_ACT_PRE || i != D.A_CASH_KING || cashSite != null && rc.getLocation().equals(cashSite);
+        MapLocation me = rc.getLocation(), l = me.add(rc.getDirection());
+        boolean on = rc.onTheMap(l);
+        for (int i = 0; i < 6; i++) a[D.A_X_BITE_C0 + i] = on && rc.canAttack(l, D.BITE_C[i]);
+        boolean carry = rc.getCarrying() != null;
+        for (int i = 0; i < 8; i++)
+            a[D.A_X_DROP_DIR0 + i] = carry && G.DIRS[i] != rc.getDirection() && rc.canDropRat(G.DIRS[i]);
+        for (int k = D.A_X_XFER_10; k <= D.A_X_XFER_HALF; k++) a[k] = xferTile(xferAmt(k)) != null;
+        a[D.A_X_DISINTEGRATE] = Cfg.DP_ALLOW_DISINTEGRATE;
+        return a;
     }
 
     /** actExec's bites: biteEnemies over the enemy kings (kings) or the enemy rats (!kings) in robots; true when it
@@ -1934,10 +2098,14 @@ public final class Baby {
 
     /** BABY_COMMS net mask: C_EKING (nobody acts on it: KING_PRESS, PRESS_SHARED and TRAP_SHARE are off), C_TRAP
      *  (TRAP_SHARE off), C_BURN and C_TRIP (retired) never do anything. */
-    static final boolean[] commsOk = new boolean[D.BABY_COMMS_OPTIONS];
-    static {
-        for (int i = 0; i < commsOk.length; i++)
-            commsOk[i] = i != D.C_EKING && i != D.C_TRAP && i != D.C_BURN && i != D.C_TRIP;
+    static boolean[] commsOk() {
+        boolean[] a = new boolean[D.BABY_COMMS_OPTIONS];
+        for (int i = 0; i < D.C_RAW; i++) a[i] = i != D.C_EKING && i != D.C_TRAP && i != D.C_BURN && i != D.C_TRIP;
+        // pass 3: a raw squeak needs the BABY_VAL net for its digits; a relay needs a net-type squeak heard
+        a[D.C_RAW] = DNet.has(D.BABY_VAL);
+        D.hear(G.me);
+        a[D.C_RELAY] = D.HM != null;
+        return a;
     }
 
     /** MINE_PICK net mask (ranks < m: pickMine's eligible candidates; set per pick). */
@@ -2009,6 +2177,17 @@ public final class Baby {
             case D.C_EKING:
                 if (eKing == null) return false;
                 return rc.squeak(Comms.squeak(Comms.SQ_EKING, eKing.location.x, eKing.location.y, (G.round & 1023) << 2));
+            case D.C_RAW: {
+                // close the COMMS record first (the digits use the secondary slot), then 7 digits of 32 bits
+                D.lab2 = D.C_RAW;
+                D.emit2();
+                int v = D.digits(32, 0, false, 64, 0);
+                return !D.dfail && rc.squeak(v);
+            }
+            case D.C_RELAY: {
+                D.hear(G.me);
+                return D.HM != null && rc.squeak(D.HM.getBytes());
+            }
             default: return false;   // C_BURN, C_TRIP, C_TRAP (masked out by commsOk): never squeak
         }
     }
@@ -2133,6 +2312,8 @@ public final class Baby {
             Direction d = G.DIRS[i];
             a[D.P_STEP0 + i] = rc.canMove(d) && (Nav.avoid & (1 << i)) == 0;
             a[D.P_TURN0 + i] = rc.isTurningReady() && rc.getDirection() != d;
+            a[D.P_STRAFE0 + i] = rc.canMove(d) && d != rc.getDirection() && (Nav.avoid & (1 << i)) == 0;
+            a[D.P_RISK0 + i] = rc.canMove(d) && (Nav.avoid & (1 << i)) != 0;
         }
         a[D.P_HOLD] = true;
     }
@@ -2266,8 +2447,15 @@ public final class Baby {
             case D.P_HOLD:
                 why = 'v'; return true;
             default:
-                if (k >= D.P_STEP0 && k < D.P_STEP0 + 8) {
-                    Direction d = G.DIRS[k - D.P_STEP0];
+                if (k >= D.P_STRAFE0 && k < D.P_STRAFE0 + 8) {
+                    Direction d = G.DIRS[k - D.P_STRAFE0];
+                    if (!rc.canMove(d)) return false;
+                    rc.move(d);
+                    G.me = rc.getLocation();
+                    why = 'v'; return true;
+                }
+                if (k >= D.P_STEP0 && k < D.P_STEP0 + 8 || k >= D.P_RISK0 && k < D.P_RISK0 + 8) {
+                    Direction d = G.DIRS[k >= D.P_RISK0 ? k - D.P_RISK0 : k - D.P_STEP0];
                     if (!rc.canMove(d)) return false;
                     if (rc.getDirection() != d && rc.canTurn(d)) rc.turn(d);
                     if (!rc.canMove(d)) return false;

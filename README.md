@@ -31,6 +31,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - **Self-play RL** ([plan](docs/rl-plan.md)): PPO-lite over the decision points, using outcome reward only and a KL leash to zdpn2. Field bots are used only to benchmark.
   - Plumbing is done: the RL build replays the normal build exactly; recorded log-probabilities match the Python mirror to quantisation; an lr-0 update exports a byte-identical net.
   - **Now:** milestone M0 checks on zdpn2 (floor, saturation, planted-reward test), then M1, a known-answer sabotage-recovery test.
+- **zdp pass 3, capability completion (November 14, 2026, 04:40 PDT).** Five new decision points (BABY_FREE pickup/trap removal, KING_COMMS shared-array edits, KING_TURN facing, and the value-digit points BABY_VAL/KING_VAL for free squeaks and slot writes) plus appended options (strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks), so the RL start net can do anything zdb's code can. The recording build still replays zdb 24/24; net-v2 widened with zdb-hard new points still replays zdpn2 16/16. [Pass 3](docs/decision-points.md#pass-3-capability-completion).
 
 **Most recent result (November 13, 2026, 23:07 PDT).** zdpn2: **33/64 against zdb** (95% CI 0.40–0.63); held-out field **113/192 (0.59)**, the same as the zdb copy (114/192). [Results](docs/decision-points.md#zdpn2-november-13-2026-2307-pdt).
 

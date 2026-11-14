@@ -43,8 +43,10 @@ def soft_probs(layers, x, mask):
     return dpnet_io.probs(dpnet_io.forward(layers, x), mask, 1.0, 0.0).astype(np.float64)
 
 
-def report(dirs, net, net2, points, floor, max_rows=200000, seed=0):
+def report(dirs, net, net2, points, floor, max_rows=200000, seed=0, floor_points=None):
+    """floor_points: {point: floor} overrides (the build's W.FL)."""
     rng = np.random.default_rng(seed)
+    floor0 = floor
     a = dpnet_io.load_net(net)
     b = dpnet_io.load_net(net2) if net2 else None
     out = {}
@@ -52,6 +54,7 @@ def report(dirs, net, net2, points, floor, max_rows=200000, seed=0):
         parts = [np.load(Path(d) / f'p{p}.npz') for d in dirs if (Path(d) / f'p{p}.npz').exists()]
         if not parts or p not in a:
             continue
+        floor = (floor_points or {}).get(p, floor0)
         n_out = a[p][-1]['w'].shape[0]
         x = np.concatenate([np.pad(z['x'], ((0, 0), (0, max(0, a[p][0]['w'].shape[1] - z['x'].shape[1])))) for z in parts])
         k = np.concatenate([z['k'] for z in parts]).astype(np.int64)
@@ -62,7 +65,7 @@ def report(dirs, net, net2, points, floor, max_rows=200000, seed=0):
         if len(idx) > max_rows:
             idx = np.sort(rng.choice(idx, max_rows, replace=False))
         x, k, mask = x[idx], k[idx], mask[idx]
-        row = dict(records=int(len(idx)), options=int(n_out), mean_allowed=round(float(mask.sum(1).mean()), 3))
+        row = dict(records=int(len(idx)), options=int(n_out), mean_allowed=round(float(mask.sum(1).mean()), 3), floor=floor)
         for tag, nets in (('net', a), ('net2', b)):
             if nets is None:
                 continue
@@ -125,13 +128,15 @@ def main(argv=None):
     ap.add_argument('--report', nargs='+', help='rl_data.py data dirs: print the saturation report')
     ap.add_argument('--net2', default='')
     ap.add_argument('--floor', type=float, default=0.005)
+    ap.add_argument('--floor-points', default='', help='per-point floors P:F,... (the build\'s W.FL)')
     ap.add_argument('--self-test', action='store_true')
     a = ap.parse_args(argv)
     if a.self_test:
         return self_test()
     points = {int(v) for v in a.points.split(',') if v}
     if a.report:
-        r = report(a.report, a.net, a.net2, sorted(points), a.floor)
+        fp = {int(k): float(v) for k, v in (x.split(':') for x in a.floor_points.split(',') if x)}
+        r = report(a.report, a.net, a.net2, sorted(points), a.floor, floor_points=fp)
         print(json.dumps({str(k): v for k, v in r.items()}, indent=1))
         return
     if not (a.net and a.out) or a.tau <= 0:

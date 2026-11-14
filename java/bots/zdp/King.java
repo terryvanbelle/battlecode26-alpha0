@@ -20,6 +20,7 @@ public final class King {
         RobotController rc = G.rc;
         spawnWhy = '-';
         DK.hold = false;   // net mode's KING_ACT A_NONE flag: this turn's only
+        if (D.ON) DK.saPre();   // KING_COMMS (pass 3): the array before this king's writes
         if (slot < 0) {
             claimSlot();
             start = G.me;
@@ -43,6 +44,11 @@ public final class King {
         pickUp();
         if (!Cfg.FIX_KING_PICKUP_INCOME) Econ.received(rc.getGlobalCheese() - before);
         Debug.mark(45);
+        // KING_TURN (pass 3): the newborn's facing, when a spawn is possible
+        boolean dT = D.ON && rc.isTurningReady() && rc.isActionReady() && rc.getGlobalCheese() >= rc.getCurrentRatCost();
+        if (dT) DK.kingTurn(cats, enemies);
+        if (D.NET && D.point == DK.KING_TURN) DK.netKingTurn();
+        if (D.point == DK.KING_TURN) { if (D.lab < 0) D.lab = DK.KT_ZDB; D.emit(); }
         // a fresh rat (100 HP, bites every turn) is worth far more than one king bite: spawn first
         try { spawn(cats, enemies); } finally { if (D.point == DK.KING_SPAWN) D.emit(); }
         Debug.mark(46);
@@ -77,6 +83,10 @@ public final class King {
         Debug.mark(48);
         publish();
         Comms.write(Comms.BUDGET, Math.max(0, Math.min(1023, Econ.surplus() / 4)));
+        // KING_COMMS (pass 3): zdb's writes of this turn are a proposal the net may edit
+        if (D.ON) DK.kingComms(0, enemies, cats);
+        if (D.NET && D.point == DK.KING_COMMS) DK.netKingComms(enemies, cats);
+        if (D.point == DK.KING_COMMS) { if (D.lab < 0) D.lab = DK.KC_ZDB; D.emit(); }
         Econ.endTurn();
     }
 

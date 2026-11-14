@@ -184,6 +184,13 @@ Not reused: alpha0/ MCTS and replay code, which is tied to the macro-action form
     2. lambda = 0.95 per 10-round bin, using V as a potential with gamma = 1, keeping lambda = 1 as the control arm.
     3. Double the games per iteration.
 
+**Pass 3 points ([decision-points.md](decision-points.md#pass-3-capability-completion)).** The start net is
+net-v2 desaturated, then `widen_dpnet.py --active old --init-new calibrated` (the KL anchor is widened the same way, so
+n_out matches). New options unlock as their own net versions, each gated by the 3-point sanity rule, not strength:
+phase A adds BABY_ROLE with R_KEEP, KING_COMMS, KING_VAL, KING_TURN and KING_ACT's bite amounts; phase B stage 1 adds
+BABY_FREE, BABY_VAL, BABY_COMMS C_RAW/C_RELAY and the new BABY_ACT options; BABY_MOVE's strafe/risk options come last.
+Per-point floors go in through `build_dpnet.py --floor-points` (W.FL; rl_data/rl_train/desaturate read them).
+
 ### Ongoing reporting
 
 - **Bradley–Terry Elo** over the payoff matrix of pool members, filled for free from training games, with zdpn2 = 0. zdb and zdp-fixed are placed from gate games. This is the headline progress curve.
