@@ -154,3 +154,10 @@ Primitive imitation was replaced by decision-point imitation ([decision-points.m
 whose control choices go through 11 decision points, each with a small MLP trained on zdb's choices. zdpn1 (600
 games, no bytecode limits) scores 16/32 against zdb and 40/80 against the held-out field, where the zdb copy scores
 41/80 on the same jobs. student-v10, the last primitive student, scored 1/32 and 0.18.
+
+## zdpn2 (decision points, round 2): 33/64 against zdb, held-out field 113/192 (November 13, 2026)
+
+The teacher is zdp after the pass 2 cleanup, with its 16 bug fixes on; it scores 40/64 against zdb. zdpn2 is trained
+on 1000 of its games. It scores 33/64 against zdb and 113/192 against the held-out field, where the zdb copy scores
+114/192. zdpn1 scored 26/64 and 109/192 on the same jobs. Details: [decision-points.md](decision-points.md#zdpn2-november-13-2026-2307-pdt).
+zdpn2 is the starting point for self-play RL ([rl-plan.md](rl-plan.md)).

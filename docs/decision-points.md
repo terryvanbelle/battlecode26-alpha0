@@ -114,3 +114,25 @@ verification. Each fix sits behind its own `Cfg.FIX_*` flag (false gives zdb's b
 
 Test tooling: [strength_check.sh](../scripts/strength_check.sh) (box split, Wilson intervals);
 `build_dpnet.py --name X --cfg FLAG=value,...` builds a variant without nets.
+
+**2C, net-mode fixes and facing/comms control (commit e6120e9).** In net mode the executors now match the cascade: mine
+blocking, the idle features, the stall/hunt split, attacker bookkeeping, and BABY_FACE opens on every turn where the
+robot can turn. Choosing "no squeak" on BABY_COMMS now really mutes zdb's squeak. Check: the recording build replays
+the 2B build 40/40 identically.
+
+### zdpn2 (November 13, 2026, 23:07 PDT)
+
+zdpn2 is trained on teacher-dp2: 1000 games of zdp after pass 2 with fixes on, decision records only. It uses the
+same 11 points and (64,64) MLPs as before, built with floor 0.001 and T 1.
+- Validation accuracy: BABY_MOVE 0.992, KING_MOVE 0.935, KING_SPAWN 0.964; every other point is at least 0.994.
+
+| Check (no limits; same jobs as above) | Result |
+|---|---|
+| zdpn2 vs zdb (64) | **33/64 (0.516, 95% CI 0.40–0.63)**, up from zdpn1's 26/64 |
+| zdpn2 vs held-out field (192) | **113/192 (0.589)**; the zdb copy scores 114/192 |
+| teacher (zdp, fixes on) vs zdb | 40/64 |
+
+zdpn2 is the starting point and KL anchor for self-play RL ([rl-plan.md](rl-plan.md)).
+
+Open capability gap: king comms (shared-array alerts, budget, enemy-king and cat publishing) are still hard-coded
+rather than a decision point. A KING_COMMS point is planned.
