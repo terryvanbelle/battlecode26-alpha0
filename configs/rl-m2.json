@@ -1,6 +1,6 @@
 {
   "name": "rl-m2",
-  "purpose": "M2: real self-play PPO-lite (docs/rl-plan.md sections 2-5), box sandbox single host. Start = desat-b5 widened capability-complete (widen_dpnet.py --active full --init-new calibrated, floor 0.005, no calib records: new options of widened points at bias -20, R_KEEP 60; new points 8/9/14/15/16 calibrated); anchor (KL leash) = net-v2 widened the same way; point 5 floor 0.001 so random role flips stay rare. Trainable 5, 7, 10, 11, 12, 13 + KING_COMMS 14 + KING_TURN 16. M1 step settings (lr 1e-3, target_kl 0.1). Mirror + pool as rl-v1; anchor gate every 3 versions vs zdpf005 (32 games, ZMAPS). Promotion gate off on the box (the held-out field bots for strength_check are not on the box); no promotions, so lr stays 1e-3 and no field rollbacks. Self-play only.",
+  "purpose": "M2: real self-play PPO-lite (docs/rl-plan.md sections 2-5), box sandbox single host (workers 5 after the box reboot, WSL 8 GB). Start = desat-b5 widened capability-complete (widen_dpnet.py --active full --init-new calibrated, floor 0.005, no calib records: new options of widened points at bias -20, R_KEEP 60; new points 8/9/14/15/16 calibrated); anchor (KL leash) = net-v2 widened the same way; point 5 floor 0.001 so random role flips stay rare. Trainable 5, 7, 10, 11, 12, 13 (14/16 dropped after iteration 0: one PPO step on their fresh nets gave KL 6 to the anchor, so rl_train refused every export; they stay live at their calibrated init). M1 step settings (lr 1e-3, target_kl 0.1). Mirror + pool as rl-v1; anchor gate every 3 versions vs zdpf005 (32 games, ZMAPS). Promotion gate off on the box (the held-out field bots for strength_check are not on the box); no promotions, so lr stays 1e-3 and no field rollbacks. Self-play only.",
   "start_net": "runs/m2/start/net.json",
   "anchor_net": "runs/m2/anchor/net.json",
   "anchor_package": "zdpf005",
@@ -29,9 +29,7 @@
     10,
     11,
     12,
-    13,
-    14,
-    16
+    13
   ],
   "phase_b_unlocks": [
     [
