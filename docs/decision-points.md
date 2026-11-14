@@ -85,3 +85,32 @@ weight quantisation after folding the normalisation (constant features got ~1000
 never spawned) — weights are now exact float32 and constant features get unit scale; (2) the MINE_GO/WANDER executors
 skipped zdb's idle-mine shift. With nets trained on only 32 games, each point alone was fine (3–6/8 vs zdb) but all
 together lost 0/8: small per-point errors compound. 600 games fixed that.
+
+## Pass 2: cleanup, checked against zdb
+
+**2A, behaviour-exact cleanup (commit 0ac0a97).** zdp went from 10,403 to 5,948 lines. The removed code was dead
+under zdb's constant `Cfg` values in both builds: 7 whole files (KPath, BitFlow, GrabMicro, Seal, TrapRows, Trail,
+PathOracle), about 1.1k lines of Baby, 380 of King, 580 of Flow and 227 unused `Cfg` constants. Duplicates between
+the cascade and the net-mode executors are now shared helpers. Check: zdp against zdb was 60/60 identical games,
+and a net-mode build of the cleaned source with the zdpn1 nets replayed zdpn1 24/24 identically.
+
+**2B, bug fixes (commit 0bdf161).** 21 suspected zdb bugs were found by six area reviewers; 16 survived adversarial
+verification. Each fix sits behind its own `Cfg.FIX_*` flag (false gives zdb's behaviour), so it can be bisected.
+- Babies: bite any reachable tile of an enemy king (not just the nearest tile); throw enemies into cats, which kills
+  them; THROW_HOLD after a carry swap; forget a stale enemy-king sighting; wander inside the mine box that `atMine`
+  counts; change mine when a stalled one is abandoned; end a seek only on real news; FORM_KING centre rats promote
+  as soon as they are action-ready.
+- Kings: pickup income reaches the income estimate; skip piles under the king; bite enemy kings on a reachable tile;
+  the shared alert keeps the most-threatened king's alert.
+- Navigation and traps: DIG_FIRST only applies to an old target; the robot-blocked counter resets on a new search;
+  trap marks fix the arrival round and ignore carried rats.
+
+| Check (no limits) | Result |
+|---|---|
+| all `FIX_*` false vs zdb | replay identical 24/24 |
+| fixes on vs zdb (8 maps × 4 seeds × 2 sides) | **40/64 (0.625, 95% CI 0.50–0.73)** |
+| fixes on vs held-out field (6 bots × 8 maps × 2 seeds × 2 sides) | 114/192, the same as zdb (114/192) |
+| zdpn1 (nets) on the same jobs | vs zdb 26/64; field 109/192 |
+
+Test tooling: [strength_check.sh](../scripts/strength_check.sh) (box split, Wilson intervals);
+`build_dpnet.py --name X --cfg FLAG=value,...` builds a variant without nets.
