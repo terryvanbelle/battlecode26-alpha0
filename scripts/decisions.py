@@ -9,6 +9,7 @@ RL builds (zdp D.RL, docs/rl-plan.md section 4) append a sampling trailer to the
 split_trailer() splits one record's features; read_rl() reads a whole file's trailer records (vectorised).
 
     python3 scripts/decisions.py FILE [FILE ...]   # per-point counts and label histograms (+ trailer stats)
+    python3 scripts/decisions.py --check-feats FILE ...   # also check each record's feature count against NAME_FEATS
 """
 import gzip, sys
 from collections import Counter
@@ -20,8 +21,8 @@ except ImportError:   # split_trailer works without numpy (tests/test_trailer.py
 
 HEAD = 14
 NONE = 0xFFFF
-SECONDARY = (6, 7)    # BABY_COMMS, MINE_PICK: recorded from D's secondary slot (flags bit1)
-MAX_WORDS = 8         # sanity bound on mask words (BABY_MOVE's 56 options need 4)
+SECONDARY = (6, 7, 9, 15)   # BABY_COMMS, MINE_PICK, BABY_VAL, KING_VAL: D's secondary slot (flags bit1)
+MAX_WORDS = 8         # sanity bound on mask words (the largest, KING_COMMS's 81 options, needs 6)
 
 
 def _trailer_ok(L, n, flags, k, point):
@@ -153,10 +154,42 @@ def read_rl(path, nopt=None):
     return out
 
 
+def check_feats(paths):
+    """Per point: records whose feature count (n minus any RL trailer) differs from the Java NAME_FEATS. Returns the
+    number of bad records (prints a line per point)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import dp_points
+    want = dp_points.feature_counts()
+    seen, bad = {}, {}
+    for path in paths:
+        buf = gzip.decompress(Path(path).read_bytes())
+        raw = np.frombuffer(buf, dtype=np.uint8)
+        for (pt, n), offs in _scan(buf).items():
+            nf = n
+            if n >= 5:
+                o = offs[0]
+                L = (int(raw[o + HEAD + 2 * (n - 1)]) << 8) | int(raw[o + HEAD + 2 * (n - 1) + 1])
+                if 5 <= L <= min(n, 5 + MAX_WORDS) and n - L == want.get(pt, -1):
+                    nf = n - L
+            seen.setdefault(pt, set()).add(nf)
+            if nf != want.get(pt):
+                bad[pt] = bad.get(pt, 0) + len(offs)
+    for pt in sorted(seen):
+        print(f'feats point {pt}: n {sorted(seen[pt])} want {want.get(pt)} {"OK" if pt not in bad else "BAD %d" % bad[pt]}')
+    return sum(bad.values())
+
+
 def main():
-    if len(sys.argv) < 2:
+    args = sys.argv[1:]
+    chk = '--check-feats' in args
+    args = [x for x in args if x != '--check-feats']
+    if not args:
         raise SystemExit(__doc__)
-    d = [read(p) for p in sys.argv[1:]]
+    if chk and check_feats(args):
+        print('check-feats: FAILED')
+    elif chk:
+        print('check-feats: OK')
+    d = [read(p) for p in args]
     cat = {k: np.concatenate([x[k] for x in d]) for k in ('robot', 'round', 'king', 'point', 'label', 'n')}
     print(f'{len(cat["point"])} records from {len(d)} file(s)')
     for pt in sorted(set(cat['point'].tolist())):
@@ -166,7 +199,7 @@ def main():
         print(f'point {pt}: {sel.sum()} records (king {int(cat["king"][sel].sum())}), n {ns.min()}..{ns.max()}, '
               f'robots {len(set(cat["robot"][sel].tolist()))}')
         print('   labels: ' + ', '.join(f'{l}:{c}' for l, c in sorted(hist.items())))
-    rl = [read_rl(p) for p in sys.argv[1:]]
+    rl = [read_rl(p) for p in args]
     for pt in sorted({pt for r in rl for pt in r}):
         parts = [r[pt] for r in rl if pt in r]
         k = np.concatenate([p['k'] for p in parts]); fl = np.concatenate([p['flags'] for p in parts])

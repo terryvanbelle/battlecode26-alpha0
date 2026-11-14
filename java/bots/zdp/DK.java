@@ -14,6 +14,13 @@ import battlecode.common.*;
 public final class DK {
     // decision points (BABY_* use 1..9, KING_* 10..19)
     static final int KING_MOVE = 10, KING_SPAWN = 11, KING_ACT = 12, KING_FORM = 13;
+    /** Pass 3: the king's end-of-turn shared-array / squeak / trap-removal edits, its value values (secondary slot),
+     *  and the newborn's facing. */
+    static final int KING_COMMS = 14, KING_VAL = 15, KING_TURN = 16;
+
+    // feature counts per point (scripts/train_dp.py feature_counts)
+    static final int KING_MOVE_FEATS = 48, KING_SPAWN_FEATS = 41, KING_ACT_FEATS = 38, KING_FORM_FEATS = 38,
+        KING_COMMS_FEATS = 94, KING_VAL_FEATS = 22, KING_TURN_FEATS = 24;
 
     // KING_MOVE options: the exits of King.move in zdb's order, then primitives (never labelled by zdb)
     static final int K_DODGE = 0, K_CAT_FLEE = 1, K_LANE = 2, K_NO_MINE = 3, K_FORM_STILL = 4, K_OFF_SITE = 5,
@@ -29,13 +36,34 @@ public final class DK {
     // KING_ACT options
     static final int A_NONE = 0, A_BITE_KILL = 1, A_BITE = 2, A_BITE_CAT = 3, A_TRAP_FOE = 4, A_TRAP_FORT = 5,
         A_MOAT_FILL = 6, A_BITE_NEAREST = 7, A_BITE_KING = 8, A_CAT_TRAP = 9, A_DIG_RING = 10;
-    static final int KING_ACT_OPTIONS = 11;
+    /** Pass 3: bite the weakest reachable enemy with cheese D.BITE_C[i] (A_BITE_C0 + i). */
+    static final int A_BITE_C0 = 11;
+    static final int KING_ACT_OPTIONS = 17;
 
     // KING_FORM options: formation's exits, the kinds of site it opens, then a site at each RING offset
     static final int F_WAR_OFF = 0, F_CAP_OFF = 1, F_CAP_GAP = 2, F_RICH_DROP = 3, F_RICH_GAP = 4, F_DROP_FORMED = 5,
         F_DROP_TIMEOUT = 6, F_HOLD = 7, F_END_WAIT = 8, F_END_NONE = 9, F_IDLE = 10, F_NO_INCOME = 11, F_NO_SITE = 12,
         F_START_MINE = 13, F_START_BACK = 14, F_START_RING = 15, F_START_CROWD = 16, F_START_MSITE = 17, F_RING_0 = 18;
     static final int KING_FORM_OPTIONS = 30;
+
+    // KING_COMMS options (pass 3). KC_ZDB keeps zdb's writes of this turn (its label); the rest edit them. T terminal,
+    // C continue (the loop reopens the point, at most KC_CHAIN times).
+    static final int KC_ZDB = 0, KC_DROP_ALL = 1, KC_DROP0 = 2, KC_BUDGET0 = 9, KC_ALERT_CALL = 12, KC_ALERT_CLEAR = 13,
+        KC_SQUEAK = 14, KC_RM_RAT = 15, KC_RM_CAT = 16, KC_SET0 = 17;
+    static final int KING_COMMS_OPTIONS = 81;
+    static final int KC_CHAIN = 12;
+    static final int[] KC_BUDGET = {0, 100, 1023};
+    /** KC_DROP0 + g reverts group g's pending writes: SLOT (1..16), ALERT (17..19), REG (20..22, the free registers
+     *  R0-R2), FORM (0, 23, 63), MINE (24..55), CAT (56..61), BUDGET (62). */
+    static final long[] KC_GROUP = {((1L << 17) - 1) & ~1L, 7L << 17, 7L << 20, 1L | 1L << 23 | 1L << 63,
+        ((1L << 32) - 1) << 24, 63L << 56, 1L << 62};
+
+    // KING_VAL options: a base-32 value
+    static final int KING_VAL_OPTIONS = 32;
+
+    // KING_TURN options (pass 3): keep the facing (zdb), or turn to G.DIRS[i] (KT_DIR0 + i)
+    static final int KT_ZDB = 0, KT_DIR0 = 1;
+    static final int KING_TURN_OPTIONS = 9;
 
     /** The ring index (King.RX/RY) of offset (dx, dy) from the king, or -1. spawn's 5x5-minus-3x3 loop covers exactly
      *  these 16 tiles. */
@@ -125,6 +153,7 @@ public final class DK {
             D.f(c.y);
             D.f(G.W);
             D.f(G.H);
+            D.kmini(c);   // pass 3 (40..47)
         } catch (Exception e) { D.point = 0; }
     }
 
@@ -182,6 +211,7 @@ public final class DK {
             D.f(c.y);
             D.f(G.W);
             D.f(G.H);
+            D.kmini(c);   // pass 3 (33..40)
         } catch (Exception e) { D.point = 0; }
     }
 
@@ -254,6 +284,7 @@ public final class DK {
             D.f(me.y);
             D.f(G.W);
             D.f(G.H);
+            D.kmini(me);   // pass 3 (30..37)
         } catch (Exception e) { D.point = 0; }
     }
 
@@ -306,6 +337,7 @@ public final class DK {
             D.f(me.y);
             D.f(G.W);
             D.f(G.H);
+            D.kmini(me);   // pass 3 (30..37)
         } catch (Exception e) { D.point = 0; }
     }
 
@@ -313,7 +345,7 @@ public final class DK {
     // net mode (D.NET): the net picks an option for the open point; its executor runs it. An executor returns false
     // when the option cannot act, and zdb's own code then runs as the fallback. Dead code in the recording build.
 
-    static final float NET_T = D.NET_T, NET_FLOOR = D.NET_FLOOR;   // set in D (build_dpnet.py)
+    static final float NET_T = D.NET_T;   // set in D (build_dpnet.py); the floor is per point (DNet.floor)
 
     /** KING_MOVE options masked out of the net head: Cfg-dead in zdb and always failing or meaningless here. */
     static final boolean[] MOVE_ALLOWED = new boolean[KING_MOVE_OPTIONS];
@@ -327,7 +359,7 @@ public final class DK {
         if (D.point != point) return -1;
         float[] z = DNet.logits(point, D.F, D.n);
         if (z == null) return -1;
-        int k = DNet.sample(z, D.fit(allowed, z.length), NET_T, NET_FLOOR);
+        int k = DNet.sample(z, D.fit(allowed, z.length, DNet.reach(point)), NET_T, DNet.floor(point), D.alt(point));
         if (D.RL) D.take(false);   // king records go through D.emit (primary slot)
         return k;
     }
@@ -460,7 +492,7 @@ public final class DK {
 
     static void netKingAct(RobotInfo[] enemies, RobotInfo[] cats) {
         hold = false;
-        int k = netPick(KING_ACT, null);
+        int k = netPick(KING_ACT, actOk(enemies));
         if (k < 0) return;
         try {
             if (execKingAct(k, enemies, cats)) D.lab = k;
@@ -532,8 +564,37 @@ public final class DK {
             case A_DIG_RING:
                 King.digRing(new MapLocation(G.W / 2, G.H / 2));
                 return !rc.isActionReady();
-            default: return false;
+            default: {
+                if (k < A_BITE_C0 || k >= A_BITE_C0 + 6) return false;
+                MapLocation at = weakestLoc(enemies);
+                int c = D.BITE_C[k - A_BITE_C0];
+                if (at == null || !rc.canAttack(at, c)) return false;
+                rc.attack(at, c);
+                return true;
+            }
         }
+    }
+
+    /** King.weakest's target tile without its side effect (King.weakAt untouched), or null. */
+    static MapLocation weakestLoc(RobotInfo[] enemies) {
+        RobotInfo best = null;
+        MapLocation at = null;
+        for (RobotInfo e : enemies) {
+            MapLocation t = e.location;
+            if (Cfg.FIX_KING_BITE_KING && e.type == UnitType.RAT_KING) { if ((t = King.kingTile(t)) == null) continue; }
+            else if (!G.rc.canAttack(t)) continue;
+            if (best == null || e.health < best.health) { best = e; at = t; }
+        }
+        return at;
+    }
+
+    /** KING_ACT net mask: options 0..10 as before (all), the bites where they can land. */
+    static boolean[] actOk(RobotInfo[] enemies) {
+        boolean[] a = new boolean[KING_ACT_OPTIONS];
+        for (int i = 0; i < A_BITE_C0; i++) a[i] = true;
+        MapLocation at = weakestLoc(enemies);
+        for (int i = 0; i < 6; i++) a[A_BITE_C0 + i] = at != null && G.rc.canAttack(at, D.BITE_C[i]);
+        return a;
     }
 
     /** ratTrap's ring pick toward goal (no cheese floor or trap cap: the engine's can* checks only); a cat trap with
@@ -619,6 +680,267 @@ public final class DK {
                 return King.clearNow(s) && formOpen(s);
             }
         }
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------
+    // pass 3: KING_COMMS (the end-of-turn edit loop), KING_VAL (its values), KING_TURN (the newborn's facing)
+
+    /** The shared array at the start of this king's turn: what differs at the end is this king's own writes (robots
+     *  run one at a time). netSet: slots the net wrote (KC_SET_i; not zdb's pending writes any more). */
+    static final int[] pre = new int[64];
+    static long netSet;
+    static int kcEdits;
+    static boolean kcSqueaked;
+
+    /** Snapshot the array (hook state only). */
+    static void saPre() {
+        for (int i = 0; i < 64; i++) pre[i] = Comms.read(i);
+        netSet = 0; kcEdits = 0; kcSqueaked = false;
+    }
+
+    /** Slots that differ from the snapshot. */
+    static long changed() {
+        long m = 0;
+        for (int i = 0; i < 64; i++) if (Comms.read(i) != pre[i]) m |= 1L << i;
+        return m;
+    }
+
+    /** zdb's pending writes this turn (changed slots the net did not set). */
+    static long pending() { return changed() & ~netSet; }
+
+    /** Own traps of one kind within dist2 8 (the 5x5 around the king; bit (dy + 2) * 5 + dx + 2). */
+    static int trapMask(boolean cat) {
+        RobotController rc = G.rc;
+        MapLocation c = rc.getLocation();
+        int m = 0;
+        for (int dy = -2; dy <= 2; dy++) for (int dx = -2; dx <= 2; dx++) {
+            MapLocation l = c.translate(dx, dy);
+            if (rc.onTheMap(l) && (cat ? rc.canRemoveCatTrap(l) : rc.canRemoveRatTrap(l))) m |= 1 << ((dy + 2) * 5 + dx + 2);
+        }
+        return m;
+    }
+
+    /** KING_COMMS features (94) at loop step step. Side-effect free. */
+    static void kingComms(int step, RobotInfo[] enemies, RobotInfo[] cats) {
+        D.open(KING_COMMS);
+        try {
+            RobotController rc = G.rc;
+            MapLocation me = rc.getLocation();
+            long P = pending(), ch = changed();
+            D.f(step);
+            D.f(kcEdits);
+            D.f(kcSqueaked);
+            int gm = 0;
+            for (int g = 0; g < 7; g++) if ((P & KC_GROUP[g]) != 0) gm |= 1 << g;
+            D.f(gm);
+            D.f(Long.bitCount(P));
+            D.f(G.coop);
+            D.f(G.round / 10);
+            D.f(D.cap(rc.getGlobalCheese() / 10, 2000));
+            D.f(Math.min(65535, Econ.surplus() / 10 + 32768));
+            D.f(D.cap(Econ.rate100() / 10, 65535));
+            D.f(Comms.numKings);
+            D.f(King.slot);
+            D.f(rc.getHealth());
+            D.f(D.cap(enemies.length, 15));
+            D.f(D.cap(cats.length, 4));
+            int nb = 0;
+            for (RobotInfo r : rc.senseNearbyRobots(-1, G.us)) if (r.type == UnitType.BABY_RAT) nb++;
+            D.f(D.cap(nb, 63));
+            D.f(rc.isActionReady());
+            D.f(King.sawEnemy);
+            D.f(Integer.bitCount(trapMask(false)));
+            D.f(Integer.bitCount(trapMask(true)));
+            D.heard(me);
+            for (int i = 0; i < 64; i++) D.f(Comms.read(i));
+            for (int w = 0; w < 4; w++) D.f((int) (ch >>> (16 * w)) & 0xFFFF);
+        } catch (Exception e) { D.point = 0; }
+    }
+
+    /** KING_VAL features (22, secondary slot): value pos of total for purpose (0 a slot value, 1 a squeak, 2 / 3 a
+     *  rat / cat trap tile), the values so far (prefix), the target slot idx (64: none), the own-trap mask. */
+    static void kingVal(int purpose, int pos, int total, int prefix, int idx, int traps) {
+        D.open2(KING_VAL);
+        try {
+            RobotController rc = G.rc;
+            MapLocation me = rc.getLocation();
+            D.f(purpose);
+            D.f(pos);
+            D.f(total);
+            D.f(prefix >>> 16);
+            D.f(prefix & 0xFFFF);
+            D.f(idx);
+            D.f(idx < 64 ? Comms.read(idx) : 1024);
+            D.f(idx < 64 && (pending() >>> idx & 1) != 0);
+            D.f(traps & 0xFFFF);
+            D.f(traps >>> 16);
+            D.f(G.coop);
+            D.f(G.round / 10);
+            D.f(D.cap(rc.getGlobalCheese() / 10, 2000));
+            D.f(Comms.numKings);
+            D.f(King.slot);
+            D.f(me.x);
+            D.heard(me);
+        } catch (Exception e) { D.point2 = 0; }
+        D.sec = false;
+    }
+
+    /** KING_COMMS net mask at loop step step (past KC_CHAIN: the terminal options only). */
+    static boolean[] commsOk(int step) {
+        boolean[] a = new boolean[KING_COMMS_OPTIONS];
+        long P = pending();
+        boolean cont = step < KC_CHAIN, val = cont && DNet.has(KING_VAL);
+        a[KC_ZDB] = true;
+        a[KC_DROP_ALL] = P != 0;
+        for (int g = 0; g < 7; g++) a[KC_DROP0 + g] = cont && (P & KC_GROUP[g]) != 0;
+        int b = Comms.read(Comms.BUDGET), band = b < 50 ? 0 : b < 150 ? 1 : 2;
+        for (int i = 0; i < 3; i++) a[KC_BUDGET0 + i] = cont && band != i;
+        a[KC_ALERT_CALL] = cont && !alertHere();
+        a[KC_ALERT_CLEAR] = cont && Comms.read(Comms.ALERT + 2) != 0;
+        a[KC_SQUEAK] = val && !kcSqueaked;
+        a[KC_RM_RAT] = val && trapMask(false) != 0;
+        a[KC_RM_CAT] = val && trapMask(true) != 0;
+        for (int i = 0; i < 64; i++) a[KC_SET0 + i] = val;
+        return a;
+    }
+
+    /** The ALERT already puts threat >= 1 at this king this round. */
+    static boolean alertHere() {
+        MapLocation a = Comms.alertLoc();
+        return Comms.read(Comms.ALERT + 2) == Comms.stamp() && a != null && a.equals(G.rc.getLocation())
+            && Comms.alertThreat() >= 1;
+    }
+
+    /** Revert the pending writes in mask m. */
+    static void revert(long m) {
+        for (int i = 0; i < 64; i++) if ((m >>> i & 1) != 0) Comms.write(i, pre[i]);
+    }
+
+    /** KING_COMMS in net mode: the edit loop (each continue option is its own record; the final, terminal pick is
+     *  the open record King.turn emits). No net: zdb's writes stand (label KC_ZDB). */
+    static void netKingComms(RobotInfo[] enemies, RobotInfo[] cats) {
+        for (int step = 0; ; ) {
+            int k = netPick(KING_COMMS, commsOk(step));
+            if (k < 0) return;
+            if (k == KC_ZDB || k == KC_DROP_ALL) {
+                if (k == KC_DROP_ALL) revert(pending());
+                D.lab = k;
+                return;
+            }
+            boolean ok;
+            try { ok = execKingComms(k); } catch (Exception e) { ok = false; }
+            if (!ok) { D.point = 0; return; }   // whatever was written stands; the record is dropped
+            D.lab = k;
+            D.emit();
+            kcEdits++;
+            step++;
+            kingComms(step, enemies, cats);
+            if (D.point != KING_COMMS) return;
+        }
+    }
+
+    /** Run a continue option of KING_COMMS; true when it acted. */
+    static boolean execKingComms(int k) throws GameActionException {
+        RobotController rc = G.rc;
+        MapLocation me = rc.getLocation();
+        if (k >= KC_DROP0 && k < KC_DROP0 + 7) { revert(pending() & KC_GROUP[k - KC_DROP0]); return true; }
+        if (k >= KC_BUDGET0 && k < KC_BUDGET0 + 3) { Comms.write(Comms.BUDGET, KC_BUDGET[k - KC_BUDGET0]); return true; }
+        if (k == KC_ALERT_CALL) {
+            MapLocation a = Comms.alertLoc();
+            int t = Comms.read(Comms.ALERT + 2) == Comms.stamp() && a != null && a.equals(me) ? Comms.alertThreat() : 0;
+            Comms.write(Comms.ALERT, (me.x + 1) | (Math.max(1, t) << 6));
+            Comms.write(Comms.ALERT + 1, me.y + 1);
+            Comms.write(Comms.ALERT + 2, Comms.stamp());
+            return true;
+        }
+        if (k == KC_ALERT_CLEAR) { Comms.write(Comms.ALERT + 2, 0); return true; }
+        if (k == KC_SQUEAK) {
+            int v = D.digits(32, 1, true, 64, 0);
+            if (D.dfail) return false;
+            kcSqueaked = true;
+            return rc.squeak(v);
+        }
+        if (k == KC_RM_RAT || k == KC_RM_CAT) {
+            boolean cat = k == KC_RM_CAT;
+            int m = trapMask(cat);
+            if (m == 0) return false;
+            int v = D.digits(5, cat ? 3 : 2, true, 64, m);
+            if (D.dfail) return false;
+            MapLocation l = me.translate(v % 5 - 2, v / 5 - 2);
+            if (cat) { if (!rc.canRemoveCatTrap(l)) return false; rc.removeCatTrap(l); }
+            else { if (!rc.canRemoveRatTrap(l)) return false; rc.removeRatTrap(l); }
+            return true;
+        }
+        if (k >= KC_SET0 && k < KC_SET0 + 64) {
+            int i = k - KC_SET0;
+            int v = D.digits(10, 0, true, i, 0);
+            if (D.dfail) return false;
+            Comms.write(i, v);
+            netSet |= 1L << i;
+            return true;
+        }
+        return false;
+    }
+
+    /** The compass direction + 1 from c to t (0: none or here). */
+    static int dir1(MapLocation c, MapLocation t) {
+        if (t == null) return 0;
+        Direction d = c.directionTo(t);
+        return d == Direction.CENTER ? 0 : d.ordinal() + 1;
+    }
+
+    /** KING_TURN features (24): opens when a spawn is possible (turning- and action-ready, rat cost covered), the only
+     *  time the king's facing matters (a newborn faces it). Side-effect free. */
+    static void kingTurn(RobotInfo[] cats, RobotInfo[] enemies) {
+        D.open(KING_TURN);
+        try {
+            RobotController rc = G.rc;
+            MapLocation c = rc.getLocation();
+            D.f(rc.getDirection().ordinal());
+            D.f(G.round / 10);
+            D.f(G.coop);
+            D.f(D.cap(rc.getGlobalCheese() / 10, 2000));
+            D.f(D.cap((rc.getCurrentRatCost() - 10) / 10, 255));
+            D.f(Math.min(65535, Econ.surplus() / 10 + 32768));
+            MapLocation ne = null, nc = null;
+            int ed = 400, cd = 400;
+            for (RobotInfo e : enemies) { int d = c.distanceSquaredTo(e.location); if (d < ed) { ed = d; ne = e.location; } }
+            for (RobotInfo k : cats) { int d = c.distanceSquaredTo(k.location); if (d < cd) { cd = d; nc = k.location; } }
+            D.f(dir1(c, ne));
+            D.f(ed);
+            D.f(dir1(c, nc));
+            D.f(cd);
+            D.f(dir1(c, King.homeMine));
+            D.f(King.start != null ? dir1(c, G.mirror(King.start, King.sym())) : 0);
+            D.f(dir1(c, new MapLocation(G.W / 2, G.H / 2)));
+            int nb = 0;
+            for (RobotInfo r : rc.senseNearbyRobots(-1, G.us)) if (r.type == UnitType.BABY_RAT) nb++;
+            D.f(D.cap(nb, 63));
+            D.f(Comms.numKings);
+            D.f(Comms.numMines);
+            D.f(King.slot);
+            D.f(King.sawEnemy);
+            D.f(rc.getHealth());
+            D.f(D.cap(King.spawned, 255));
+            D.f(c.x);
+            D.f(c.y);
+            D.f(G.W);
+            D.f(G.H);
+        } catch (Exception e) { D.point = 0; }
+    }
+
+    /** KING_TURN in net mode: KT_ZDB keeps the facing; KT_DIR0 + i turns to G.DIRS[i]. */
+    static void netKingTurn() {
+        RobotController rc = G.rc;
+        boolean[] a = new boolean[KING_TURN_OPTIONS];
+        a[KT_ZDB] = true;
+        for (int i = 0; i < 8; i++) a[KT_DIR0 + i] = G.DIRS[i] != rc.getDirection() && rc.canTurn(G.DIRS[i]);
+        int k = netPick(KING_TURN, a);
+        if (k < 0) return;
+        try {
+            if (k >= KT_DIR0) rc.turn(G.DIRS[k - KT_DIR0]);
+            D.lab = k;
+        } catch (GameActionException e) { /* the facing stays; label KT_ZDB */ }
     }
 
     /** Close the formation site (none open is fine). */

@@ -43,6 +43,12 @@ public final class D {
     static final int BABY_ROLE = 5;
     static final int BABY_COMMS = 6;
     static final int MINE_PICK = 7;
+    static final int BABY_FREE = 8;   // pass 3: cheese pickup and own-trap removal (free actions)
+    static final int BABY_VAL = 9;    // pass 3: a base-32 value digit (secondary slot; BABY_COMMS C_RAW's squeak)
+
+    // feature counts per point (scripts/train_dp.py feature_counts; a record's n minus its RL trailer)
+    static final int BABY_MOVE_FEATS = 76, BABY_ACT_PRE_FEATS = 74, BABY_ACT_POST_FEATS = 74, BABY_FACE_FEATS = 32,
+        BABY_ROLE_FEATS = 112, BABY_COMMS_FEATS = 53, MINE_PICK_FEATS = 45, BABY_FREE_FEATS = 36, BABY_VAL_FEATS = 30;
 
     // BABY_MOVE options: the branches of Baby.moveDecision, in zdb's priority order
     static final int M_GRAB = 0, M_CAT_DEFEND = 1, M_END_CAT = 2, M_FLEE_CAT = 3, M_YIELD_KING = 4, M_AIM_CARRY = 5,
@@ -54,16 +60,24 @@ public final class D {
     static final int BABY_MOVE_OPTIONS = 39;
     /** Net-mode BABY_MOVE primitives (never labelled by zdb): step in G.DIRS[i], face G.DIRS[i], hold. */
     static final int P_STEP0 = 39, P_TURN0 = 47, P_HOLD = 55;
-    static final int BABY_MOVE_NET_OPTIONS = 56;
+    /** Pass 3: step in G.DIRS[i] without turning (strafe; avoid-free tiles only), and a step onto a tile Nav.avoid
+     *  forbids (the exact complement of P_STEP). */
+    static final int P_STRAFE0 = 56, P_RISK0 = 64;
+    static final int BABY_MOVE_NET_OPTIONS = 72;
 
     // BABY_ACT_PRE / BABY_ACT_POST options (shared): the action behaviour that fired (A_X_*: primitives zdb never takes)
     static final int A_PASS = 0, A_DROP_ALLY = 1, A_THROW = 2, A_NAP = 3, A_BITE_KING = 4, A_BITE_RAT = 5,
         A_BITE_CAT = 6, A_CAT_TRAP = 7, A_LAY_LANE = 8, A_DELIVER = 9, A_CASH_KING = 10, A_RAT_TRAP = 11,
         A_X_BITE_FWD = 12, A_X_CARRY_FWD = 13, A_X_THROW_NOW = 14, A_X_DROP_FWD = 15, A_X_RAT_TRAP_FWD = 16,
         A_X_CAT_TRAP_FWD = 17, A_X_DIRT_PLACE_FWD = 18, A_X_DIRT_REMOVE_FWD = 19, A_X_BECOME_KING = 20;
-    static final int BABY_ACT_PRE_OPTIONS = 21;
-    static final int BABY_ACT_POST_OPTIONS = 21;
-    static final int BABY_ACT_OPTIONS = 21;
+    /** Pass 3: bite forward with cheese BITE_C[i] (A_X_BITE_C0 + i), drop the carried rat in G.DIRS[i] (not forward),
+     *  transfer 10 / 50 / half the raw cheese to the nearest allied king tile, disintegrate (Cfg.DP_ALLOW_DISINTEGRATE). */
+    static final int A_X_BITE_C0 = 21, A_X_DROP_DIR0 = 27, A_X_XFER_10 = 35, A_X_XFER_50 = 36, A_X_XFER_HALF = 37,
+        A_X_DISINTEGRATE = 38;
+    static final int[] BITE_C = {1, 4, 9, 16, 36, 100};
+    static final int BABY_ACT_PRE_OPTIONS = 39;
+    static final int BABY_ACT_POST_OPTIONS = 39;
+    static final int BABY_ACT_OPTIONS = 39;
 
     // BABY_FACE options: guardTurn's target (F_DIR0 + i: face G.DIRS[i], primitives)
     static final int F_NONE = 0, F_SEEN = 1, F_MEMORY = 2, F_HEARD = 3, F_GUARD = 4, F_DIR0 = 5;
@@ -71,17 +85,31 @@ public final class D {
 
     // BABY_ROLE options
     static final int R_GATHER = 0, R_SCOUT = 1, R_FIGHT = 2, R_RAIDER = 3, R_ATTACK = 4;
-    static final int BABY_ROLE_OPTIONS = 5;
+    /** Pass 3: keep the current role (a review's only encoding of "no change": the current role is masked). */
+    static final int R_KEEP = 5;
+    static final int BABY_ROLE_OPTIONS = 6;
 
     // BABY_COMMS options: the squeak this turn
     static final int C_NONE = 0, C_MINE_GOSSIP = 1, C_MINE_RELAY = 2, C_SYM_KING = 3, C_MINE_KING = 4, C_CAT = 5,
         C_CASH_LEAD = 6, C_CASH_RELAY = 7, C_EKING = 8, C_SYM_GOSSIP = 9, C_BURN = 10, C_TRIP = 11, C_TRAP = 12;
-    static final int BABY_COMMS_OPTIONS = 13;
+    /** Pass 3: a 32-bit squeak chosen as 7 BABY_VAL digits; re-squeak the newest net-type squeak heard. */
+    static final int C_RAW = 13, C_RELAY = 14;
+    static final int BABY_COMMS_OPTIONS = 15;
 
     // MINE_PICK options: rank i in pickMine's candidate order
     static final int MINE_PICK_OPTIONS = 40;
 
-    static final char[] F = new char[96], F2 = new char[96];
+    // BABY_FREE options (pass 3): zdb's pickup here, take all, take none, take up to a cap of raw cheese (this turn),
+    // then (chained, at most FREE_CHAIN) remove our rat / cat trap on our tile or fan tile 0..2 (G.fan order)
+    static final int FR_ZDB = 0, FR_ALL = 1, FR_NONE = 2, FR_CAP0 = 3, FR_RM0 = 8, FR_RM_RAT0 = 8, FR_RM_CAT0 = 12;
+    static final int[] FREE_CAP = {10, 25, 50, 100, 200};
+    static final int FREE_CHAIN = 2;
+    static final int BABY_FREE_OPTIONS = 16;
+
+    // BABY_VAL options: a base-32 value digit
+    static final int BABY_VAL_OPTIONS = 32;
+
+    static final char[] F = new char[192], F2 = new char[192];
     static int n, point;
     /** The option the open point's decision took (set at each branch; -1: none yet). */
     static int lab = -1;
@@ -175,7 +203,7 @@ public final class D {
     static int pick(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F, n);
         if (z == null) return -1;
-        int k = DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        int k = DNet.sample(z, fit(ok, z.length, DNet.reach(p)), NET_T, DNet.floor(p), alt(p));
         if (RL) take(false);
         return k;
     }
@@ -184,9 +212,23 @@ public final class D {
     static int pick2(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F2, n2);
         if (z == null) return -1;
-        int k = DNet.sample(z, fit(ok, z.length), NET_T, NET_FLOOR);
+        int k = DNet.sample(z, fit(ok, z.length, DNet.reach(p)), NET_T, DNet.floor(p), alt(p));
         if (RL) take(true);
         return k;
+    }
+
+    /** Pass 3's new points sample from DNet's second stream. */
+    static boolean alt(int p) { return p == BABY_FREE || p == BABY_VAL || p >= DK.KING_COMMS; }
+
+    /** Option k of point p is reachable in this build (gates behaviour that is not an option, e.g. role resets). */
+    static boolean has(int p, int k) { return k < DNet.reach(p); }
+
+    /** fit(ok, len) cut to the first act options (act >= len: unchanged, null stays null). */
+    static boolean[] fit(boolean[] ok, int len, int act) {
+        if (act >= len) return fit(ok, len);
+        boolean[] a = new boolean[len];
+        for (int i = 0; i < act; i++) a[i] = ok == null || i < ok.length && ok[i];
+        return a;
     }
 
     /** An allowed mask sized to the net's output (options past the mask are not allowed). */
@@ -279,6 +321,7 @@ public final class D {
         f(Baby.mineTarget != null && Baby.nearerAllies(Baby.mineTarget) >= Cfg.SEEK_CROWD);   // M_START_SEEK's crowd
         f(cat != null && Baby.catAtKing(cat.location));   // M_CAT_DEFEND
         f(G.round < Baby.seekUntil);             // a seek is running (M_SEEK; also feature 31)
+        cb(me);                                  // pass 3 (60..75): the comms block
     }
 
     /** BABY_ACT_PRE / BABY_ACT_POST features (53, shared layout; feature 0 is the phase). Side-effect free. */
@@ -384,6 +427,30 @@ public final class D {
         f(me.y);
         f(G.W);
         f(G.H);
+        // pass 3 (53..57): the new act options' state, then the comms block (58..73)
+        f(fr == null ? 0 : cap(fr.health, 255));
+        int dm = 0;
+        if (c != null) for (int i = 0; i < 8; i++) if (rc.canDropRat(G.DIRS[i])) dm |= 1 << i;
+        f(dm);
+        f(on && rc.canAttack(fl));
+        int kd = 255;
+        for (RobotInfo r : robots) {
+            if (r.team != G.us || r.type != UnitType.RAT_KING) continue;
+            for (int dx = -1; dx <= 1; dx++) for (int dy = -1; dy <= 1; dy++) {
+                int d = me.distanceSquaredTo(r.location.translate(dx, dy));
+                if (d < kd) kd = d;
+            }
+        }
+        f(kd);
+        f(trapCode(me, fl, on));
+        cb(me);
+    }
+
+    /** Own traps on our tile and the tile ahead: bit0 rat trap here, bit1 cat trap here, bit2 / bit3 the same ahead. */
+    static int trapCode(MapLocation me, MapLocation fl, boolean on) {
+        RobotController rc = G.rc;
+        return (rc.canRemoveRatTrap(me) ? 1 : 0) | (rc.canRemoveCatTrap(me) ? 2 : 0)
+            | (on && rc.canRemoveRatTrap(fl) ? 4 : 0) | (on && rc.canRemoveCatTrap(fl) ? 8 : 0);
     }
 
     /** BABY_FACE features (34): guardTurn's view. Opens on every turning-ready turn. Side-effect free. */
@@ -479,6 +546,19 @@ public final class D {
         f(me.y);
         f(G.W);
         f(G.H);
+        cb(me);                                   // pass 3 (32..47): the comms block
+        for (int i = 0; i < 64; i++) f(Comms.read(i));   // (48..111): the raw shared array
+    }
+
+    /** BABY_ROLE net mask (pass 3): ph 0 the five roles; at a review with R_KEEP reachable, KEEP and the four other
+     *  roles (one encoding of "no change"); otherwise (a net without R_KEEP) the five roles, as before. */
+    static boolean[] roleOk(int ph) {
+        boolean[] a = new boolean[BABY_ROLE_OPTIONS];
+        boolean keep = ph == 1 && has(BABY_ROLE, R_KEEP);
+        int cur = keep ? roleLab() : -1;
+        for (int i = 0; i < R_KEEP; i++) a[i] = i != cur;
+        a[R_KEEP] = keep;
+        return a;
     }
 
     /** BABY_ROLE's label: zdb's final role combination. */
@@ -551,7 +631,192 @@ public final class D {
         f(me.y);
         f(G.W);
         f(G.H);
+        cb(me);                                   // pass 3 (37..52): the comms block
         sec = false;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------
+    // pass 3: read side of comms, BABY_FREE, BABY_VAL
+
+    /** Age in rounds of a round%1024 stamp (Comms.stamp). */
+    static int age(int stamp) { return ((G.round & 1023) - stamp + 1024) & 1023; }
+
+    /** A zdb-protocol squeak type (Comms.SQ_*); every other top nibble is "net-type". */
+    static boolean zdbType(int t) { return t >= 1 && t <= 4 || t == Comms.SQ_CASH; }
+
+    /** Squeaks heard in the last 2 rounds (side-effect free; filled by hear()): H[0] count (cap 15), H[1] newest
+     *  net-type squeak's age (7: none), H[2] / H[3] its content's high / low 16 bits, H[4] its sender's dist2 (cap
+     *  255), H[5] zdb-type count (cap 15), H[6] the newest net-type sender is a live king, H[7] the newest king
+     *  squeak's type + 1 (0: none). HM: the newest net-type message (null: none). */
+    static final int[] H = new int[8];
+    static Message HM;
+
+    static boolean kingAt(MapLocation l) {
+        for (int k = 0; k < Comms.numKings; k++) if (Comms.kings[k] != null && Comms.kings[k].equals(l)) return true;
+        return false;
+    }
+
+    static void hear(MapLocation me) {
+        Message nn = null, nk = null;
+        int cnt = 0, zc = 0;
+        for (Message m : G.rc.readSqueaks(-1)) {
+            if (G.round - m.getRound() > 2) continue;
+            cnt++;
+            if (zdbType(Comms.sqType(m.getBytes()))) zc++;
+            else if (nn == null || m.getRound() >= nn.getRound()) nn = m;
+            if (m.getSource() != null && kingAt(m.getSource()) && (nk == null || m.getRound() >= nk.getRound())) nk = m;
+        }
+        HM = nn;
+        H[0] = cap(cnt, 15);
+        H[1] = nn == null ? 7 : G.round - nn.getRound();
+        H[2] = nn == null ? 0 : nn.getBytes() >>> 16;
+        H[3] = nn == null ? 0 : nn.getBytes() & 0xFFFF;
+        H[4] = nn == null || nn.getSource() == null ? 255 : cap(me.distanceSquaredTo(nn.getSource()), 255);
+        H[5] = cap(zc, 15);
+        H[6] = nn != null && nn.getSource() != null && kingAt(nn.getSource()) ? 1 : 0;
+        H[7] = nk == null ? 0 : Comms.sqType(nk.getBytes()) + 1;
+    }
+
+    /** The heard block (6). */
+    static void heard(MapLocation me) {
+        hear(me);
+        for (int i = 0; i < 6; i++) f(H[i]);
+    }
+
+    /** The baby comms block CB (16): registers R0-R2 (slots 20-22), raw BUDGET, ALERT age / threat / distance,
+     *  formation age, the heard block, then H[6] and H[7]. Side-effect free. */
+    static void cb(MapLocation me) {
+        f(Comms.read(Comms.EKING));
+        f(Comms.read(Comms.EKING + 1));
+        f(Comms.read(Comms.EKING + 2));
+        f(Comms.read(Comms.BUDGET));
+        int st = Comms.read(Comms.ALERT + 2);
+        f(st == 0 ? 63 : cap(age(st), 63));
+        f(Comms.read(Comms.ALERT) >> 6);
+        MapLocation al = Comms.alertLoc();
+        f(al != null ? cap(G.cheb(me, al), 63) : 63);
+        f(Comms.read(Comms.FORM_X) == 0 ? 63 : cap(age(Comms.read(Comms.FORM_T)), 62));
+        heard(me);
+        f(H[6]);
+        f(H[7]);
+    }
+
+    /** The king block (8): the heard block, then registers R0 and R1. */
+    static void kmini(MapLocation me) {
+        heard(me);
+        f(Comms.read(Comms.EKING));
+        f(Comms.read(Comms.EKING + 1));
+    }
+
+    /** Cheese pickable at l (0: none, or out of reach). */
+    static int pickable(MapLocation l) throws GameActionException {
+        RobotController rc = G.rc;
+        return rc.onTheMap(l) && rc.canPickUpCheese(l) ? rc.senseMapInfo(l).getCheeseAmount() : 0;
+    }
+
+    /** BABY_FREE's tiles: our own, then G.fan's three (the tiles pickUp scans). */
+    static MapLocation[] freeTiles() {
+        MapLocation c = G.rc.getLocation();
+        Direction[] fr = G.fan(c, G.rc.getDirection());
+        return new MapLocation[]{c, c.add(fr[0]), c.add(fr[1]), c.add(fr[2])};
+    }
+
+    /** BABY_FREE (36): opens at pickup site ph (0 before the role review, 1 after the move) when cheese is pickable
+     *  or an own trap is removable on freeTiles, or always when step > 0 (the chain reopens it). True when open. */
+    static boolean babyFree(int ph, int step) {
+        try { return babyFree0(ph, step); } catch (Exception e) { point = 0; return false; }
+    }
+
+    static boolean babyFree0(int ph, int step) throws GameActionException {
+        RobotController rc = G.rc;
+        MapLocation[] ts = freeTiles();
+        int[] av = new int[4];
+        int reach = 0, traps = 0;
+        for (int i = 0; i < 4; i++) {
+            MapLocation l = ts[i];
+            boolean on = rc.onTheMap(l);
+            av[i] = pickable(l);
+            reach += av[i];
+            traps |= ((on && rc.canRemoveRatTrap(l) ? 1 : 0) | (on && rc.canRemoveCatTrap(l) ? 2 : 0)) << (2 * i);
+        }
+        if (step == 0 && reach == 0 && traps == 0) return false;
+        open(BABY_FREE);
+        MapLocation me = ts[0];
+        f(step);
+        f(ph);
+        f(roleLab());
+        int raw = rc.getRawCheese();
+        f(cap(raw, 1000));
+        f(cap(reach, 1000));
+        for (int i = 0; i < 4; i++) f(cap(av[i], 1023));
+        f(traps);
+        f(cap(G.globalCheese / 10, 2000));
+        f(G.coop);
+        f(G.round / 10);
+        f(rc.getHealth());
+        f(rc.isMovementReady());
+        f(rc.isActionReady());
+        RobotInfo c = rc.getCarrying();
+        f(c == null ? 0 : c.team == G.us ? 1 : 2);
+        RobotInfo cat = Baby.cat;
+        f(cat != null);
+        f(cat != null ? cap(Baby.catDist4(cat.location, me), 400) : 400);
+        int nd = 100;
+        for (RobotInfo r : Baby.seen) if (r.team == G.them) nd = Math.min(nd, me.distanceSquaredTo(r.location));
+        f(nd);
+        cb(me);
+        return true;
+    }
+
+    /** BABY_VAL (30, secondary slot): digit pos of a value chosen for purpose (0: a squeak), prefix the digits so
+     *  far. Side-effect free. */
+    static void babyVal(int purpose, int pos, int prefix) {
+        RobotController rc = G.rc;
+        open2(BABY_VAL);
+        MapLocation me = G.me;
+        f(purpose);
+        f(pos);
+        f(prefix >>> 16);
+        f(prefix & 0xFFFF);
+        f(roleLab());
+        f(G.round / 10);
+        f(cap(rc.getRawCheese(), 1000));
+        f(rc.getHealth());
+        MapLocation k = Comms.nearestKing(me);
+        f(k != null ? cap(G.cheb(me, k), 63) : 63);
+        f(Baby.cat != null);
+        RobotInfo ne = Baby.nearestEnemy;
+        f(ne != null ? cap(me.distanceSquaredTo(ne.location), 100) : 100);
+        f(me.x);
+        f(me.y);
+        RobotInfo c = rc.getCarrying();
+        f(c == null ? 0 : c.team == G.us ? 1 : 2);
+        cb(me);
+        sec = false;
+    }
+
+    /** Net mode: a bits-wide value as base-32 values, most significant first (the first masked to its bits), each a
+     *  BABY_VAL (baby) or DK.KING_VAL (king) pick in the secondary slot, each its own record. dfail: a pick failed
+     *  (no net, or the features threw); the value is then 0. */
+    static boolean dfail;
+
+    static int digits(int bits, int purpose, boolean king, int idx, int trapMask) {
+        int nd = (bits + 4) / 5, v = 0;
+        dfail = false;
+        for (int d = 0; d < nd; d++) {
+            int b = bits - 5 * (nd - 1 - d);
+            if (b > 5) b = 5;
+            boolean[] ok = new boolean[32];
+            for (int i = 0; i < 32; i++) ok[i] = i < (1 << b) && (trapMask == 0 || (trapMask >> i & 1) != 0);
+            int p = king ? DK.KING_VAL : BABY_VAL, k = -1;
+            if (king) DK.kingVal(purpose, d, nd, v, idx, trapMask); else babyVal(purpose, d, v);
+            if (point2 == p) k = pick2(p, ok);
+            if (k < 0) { point2 = 0; dfail = true; return 0; }
+            lab2 = k;
+            emit2();
+            v = v << 5 | k;
+        }
+        return v;
     }
 
     /** MINE_PICK features (45, secondary slot): pickMine's candidates cand[0..n) (the first m eligible, ours on our

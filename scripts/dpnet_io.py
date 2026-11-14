@@ -201,6 +201,122 @@ def save_net(path, nets, meta=None):
     Path(path).write_text(json.dumps(doc))
 
 
+NEW_POINTS = (8, 9, 14, 15, 16)   # pass 3's new points (BABY_FREE, BABY_VAL, KING_COMMS, KING_VAL, KING_TURN)
+VALUE_POINTS = (9, 15)            # value values: no zdb label, uniform start
+R_KEEP_POINT, R_KEEP = 5, 5
+
+
+def kaiming(rng, n_in, n_out):
+    """A ReLU hidden layer (Kaiming-uniform weights, zero bias), float64."""
+    bound = np.sqrt(6.0 / n_in)
+    return dict(w=rng.uniform(-bound, bound, (n_out, n_in)), b=np.zeros(n_out))
+
+
+def widen(raw, opts, feats, active='old', calib=None, floor=0.005, init_new=None, keep_bias=None, hidden=(64, 64),
+          seed=0, points=None, norm=None, delta=None):
+    """Widen a net.json dict to the Java points (pass 3, scripts/widen_dpnet.py). Returns (doc, norm, info).
+
+    opts / feats: {point: Java option / feature count} (dp_points). For each point of raw whose net is smaller:
+    zero input columns appended to layer 1 (old logits bit-identical: features are >= 0 and 0 * x adds +0), output
+    rows appended with zero weights and bias b_new = median(max old logit on calib) - ln(10 m / floor) (m = the new
+    option count: a new option's softmax share is about 0.1 floor / m, so its policy gradient stays alive); without
+    calib records b_new = -20. BABY_ROLE's R_KEEP row instead gets p99.9 (max old logit on review records) + 8 (no
+    calib: keep_bias, default 60), so KEEP dominates reviews. active: 'old' writes doc['active'][p] = the old output
+    count (the build samples only those: exact replay), 'full' none, or {point: n}.
+    init_new 'zdb-hard' / 'calibrated' adds nets for the new points missing from raw: (feats, *hidden, opts) MLPs,
+    Kaiming-uniform hidden layers (seed), input normalisation from calib (else mu 0, sd 1) folded in, last layer zero;
+    biases 0 on option 0 (zdb's choice) and -30 (zdb-hard: replays zdb) or -delta (calibrated, default
+    ln(10 m / floor)) on the rest; the value points (9, 15) get all-zero biases (uniform).
+    calib: {point: raw features [N, n] (any width)}. norm: {point: (mu, sd)} from norm.npz (padded here)."""
+    rng = np.random.default_rng(seed)
+    calib = calib or {}
+    norm = dict(norm or {})
+    doc = {k: v for k, v in raw.items() if k != 'points'}
+    pts, info, act = {}, {}, dict(doc.get('active') or {})
+    sel = set(points) if points else None
+    for ps, layers in raw['points'].items():
+        p = int(ps)
+        n_in, n_out = layers[0]['n_in'], layers[-1]['n_out']
+        tin, tout = max(n_in, feats.get(p, n_in)), max(n_out, opts.get(p, n_out))
+        if (sel is not None and p not in sel) or (tin == n_in and tout == n_out):
+            pts[ps] = layers
+            continue
+        ls = layers_from_raw(layers)
+        old = [dict(w=l['w'].copy(), b=l['b'].copy()) for l in ls]
+        w0 = np.zeros((ls[0]['w'].shape[0], tin), F32)
+        w0[:, :n_in] = ls[0]['w']
+        ls[0]['w'] = w0
+        b_new = None
+        if tout > n_out:
+            X = calib.get(p)
+            if X is not None and len(X):
+                z = forward(old, np.asarray(X)[:, :n_in], exact=False).astype(np.float64)
+                b_new = float(np.median(z.max(1)) - np.log(10.0 * tout / max(floor, 1e-9)))
+            else:
+                b_new = -20.0
+            last = ls[-1]
+            w = np.zeros((tout, last['w'].shape[1]), F32)
+            w[:n_out] = last['w']
+            b = np.full(tout, b_new, F32)
+            b[:n_out] = last['b']
+            if p == R_KEEP_POINT and n_out <= R_KEEP < tout:
+                if X is not None and len(X) and (np.asarray(X)[:, 0] == 1).any():
+                    zr = z[np.asarray(X)[:, 0] == 1]
+                    b[R_KEEP] = float(np.quantile(zr.max(1), 0.999) + 8.0)
+                else:
+                    b[R_KEEP] = 60.0 if keep_bias is None else keep_bias
+            last['w'], last['b'] = w, b
+            if active == 'old':
+                act[ps] = n_out
+            elif isinstance(active, dict) and p in active:
+                act[ps] = int(active[p])
+        pts[ps] = [layer_json(l) for l in ls]
+        if p in norm:
+            mu, sd = (np.asarray(v, np.float64) for v in norm[p])
+            X = calib.get(p)
+            mu2, sd2 = np.zeros(tin), np.ones(tin)
+            if X is not None and len(X) and np.asarray(X).shape[1] >= tin:
+                xs = np.asarray(X, np.float64)[:, :tin]
+                mu2, sd2 = xs.mean(0), np.where(xs.std(0) < 1e-3, 1.0, xs.std(0))
+            mu2[:len(mu)], sd2[:len(sd)] = mu[:tin], sd[:tin]
+            norm[p] = (mu2.astype(np.float32), sd2.astype(np.float32))
+        info[ps] = dict(cols_added=int(tin - n_in), rows_added=int(tout - n_out), b_new=b_new,
+                        r_keep_bias=float(ls[-1]['b'][R_KEEP]) if p == R_KEEP_POINT and tout > R_KEEP >= n_out else None)
+    if active == 'full':
+        act = {k: v for k, v in act.items() if k not in info}
+    if init_new:
+        for p in NEW_POINTS:
+            if str(p) in pts or (sel is not None and p not in sel) or p not in opts or p not in feats:
+                continue
+            tin, tout = feats[p], opts[p]
+            X = calib.get(p)
+            if X is not None and len(X) and np.asarray(X).shape[1] >= tin:
+                xs = np.asarray(X, np.float64)[:, :tin]
+                mu, sd = xs.mean(0), np.where(xs.std(0) < 1e-3, 1.0, xs.std(0))
+            else:
+                mu, sd = np.zeros(tin), np.ones(tin)
+            dims = [tin, *hidden]
+            ls = [kaiming(rng, i, o) for i, o in zip(dims, dims[1:])]
+            b = np.zeros(tout)
+            d = None
+            if p not in VALUE_POINTS:
+                d = 30.0 if init_new == 'zdb-hard' else (delta if delta is not None else float(np.log(10.0 * tout / max(floor, 1e-9))))
+                b[1:] = -d
+            ls.append(dict(w=np.zeros((tout, dims[-1])), b=b))
+            ls = fold(ls, mu, sd)
+            pts[str(p)] = [layer_json(l) for l in ls]
+            norm[p] = (mu.astype(np.float32), sd.astype(np.float32))
+            info[str(p)] = dict(new=init_new, n_in=tin, n_out=tout, delta=d)
+    doc['points'] = {k: pts[k] for k in sorted(pts, key=int)}
+    if act:
+        doc['active'] = {k: act[k] for k in sorted(act, key=int)}
+    else:
+        doc.pop('active', None)
+    doc['widened'] = dict(points=info, active=active if isinstance(active, str) else {str(k): v for k, v in active.items()},
+                          floor=floor, init_new=init_new, **({'from': raw['widened']} if 'widened' in raw else {}))
+    return doc, norm, info
+
+
 def main():
     if len(sys.argv) < 2:
         raise SystemExit(__doc__)

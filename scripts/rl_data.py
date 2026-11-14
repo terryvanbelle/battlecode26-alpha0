@@ -150,6 +150,8 @@ def main():
     build = ROOT / 'build/botsrc' / doc['learner']['package'] / 'BUILD.json'
     bj = json.loads(build.read_text()) if build.exists() else {}
     floor = a.floor if a.floor is not None else bj.get('floor', cfg['floor'])
+    # per-point floors (build_dpnet.py --floor-points; W.FL): the learner build's, else the config's
+    fpts = {int(k): float(v) for k, v in (bj.get('floor_points') or cfg.get('floor_points') or {}).items()}
     T = a.temperature if a.temperature is not None else bj.get('temperature', cfg.get('temperature', 1.0))
     pcfg = cfg.get('parity', {})
     rng = np.random.default_rng(cfg['seed_base'] + a.iter)
@@ -221,7 +223,8 @@ def main():
                 acc.setdefault(p, Acc(cap if p in points else 0, rng)).add(row)
 
     # parity, per point
-    summary = dict(iter=a.iter, run=rd.name, learner=doc['learner'], floor=floor, temperature=T, games=len(doc['jobs']),
+    summary = dict(iter=a.iter, run=rd.name, learner=doc['learner'], floor=floor, floor_points=fpts, temperature=T,
+                   games=len(doc['jobs']),
                    valid=nvalid, invalid=nbad, missing_decisions=missing, trainable=sorted(points), frozen_sample=fs,
                    score={o: dict(points=v[0], games=v[1], score=round(v[0] / v[1], 4) if v[1] else None)
                           for o, v in sorted(score.items())}, points={})
@@ -240,7 +243,8 @@ def main():
                 continue
             ls = nv[p]
             n_out = ls[-1]['w'].shape[0]
-            pr = dpnet_io.probs(dpnet_io.forward(ls, d['x'][sel]), dpnet_io.fit_mask(d['mask'][sel], int(sel.sum()), n_out), T, floor)
+            pr = dpnet_io.probs(dpnet_io.forward(ls, d['x'][sel]), dpnet_io.fit_mask(d['mask'][sel], int(sel.sum()), n_out), T,
+                                fpts.get(p, floor))
             k = d['k'][sel]
             inr = k < n_out
             pk = np.zeros(len(k), np.float32)
@@ -259,7 +263,7 @@ def main():
                   fallback_by_option={str(o): round(float(r), 4) for o, (r, c) in
                                       enumerate(zip(np.bincount(ks, weights=fl, minlength=no) / np.maximum(hist, 1), hist)) if c},
                   option_hist={str(o): int(c) for o, c in enumerate(hist) if c},
-                  saturated=saturation(d, picked, floor),
+                  saturated=saturation(d, picked, fpts.get(p, floor)), floor=fpts.get(p, floor),
                   single_option=int((picked & (d['mask'].sum(1) <= 1)).sum()),
                   versions=sorted(set(d['version'].tolist())),
                   parity_n=int(len(dv)), parity_median=float(np.median(dv)) if len(dv) else None,
