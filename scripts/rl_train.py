@@ -498,13 +498,21 @@ def main():
                 A = A - np.where(np.isfinite(b), b, 0.0)
             mt['adv_raw_mean'], mt['adv_raw_sd'] = float(A.mean()), float(A.std())
             A = np.clip((A - A.mean()) / (A.std() + 1e-8), -a.adv_clip, a.adv_clip)
+        n_in = nets[p][0]['w'].shape[1]
+        dmu = d['x'].astype(np.float32).mean(0); dsd = d['x'].astype(np.float32).std(0)
+        dsd = np.where(dsd < 1e-3, 1.0, dsd).astype(np.float32)
+        dmu = np.pad(dmu, (0, max(0, n_in - len(dmu))))[:n_in]; dsd = np.pad(dsd, (0, max(0, n_in - len(dsd))), constant_values=1)[:n_in]
         if p in norm:
-            mu, sd = (np.asarray(v) for v in norm[p])
+            mu, sd = (np.asarray(v, np.float32).copy() for v in norm[p])
+            # Identity entries (mu 0, sd 1: widen_dpnet padding for appended features / new points) get the data's
+            # statistics. Unfold/fold is exact for any (mu, sd), so the function is unchanged, but raw-scale inputs
+            # (shared-array values up to 1023) otherwise make one Adam step move the logits by tens.
+            ident = (mu == 0) & (sd == 1)
+            if ident.any():
+                mu[ident] = dmu[ident]; sd[ident] = dsd[ident]
+                mt['norm_from_data_cols'] = int(ident.sum())
         else:
-            mu = d['x'].astype(np.float32).mean(0); sd = d['x'].astype(np.float32).std(0)
-            sd = np.where(sd < 1e-3, 1.0, sd).astype(np.float32)
-            n_in = nets[p][0]['w'].shape[1]
-            mu = np.pad(mu, (0, max(0, n_in - len(mu))))[:n_in]; sd = np.pad(sd, (0, max(0, n_in - len(sd))), constant_values=1)[:n_in]
+            mu, sd = dmu, dsd
             mt['norm_from_data'] = True
         beta = 0.0 if a.no_kl else a.beta * beta_mult.get(p, 1.0)
         mt['beta'] = beta
