@@ -82,6 +82,7 @@ public final class Flow {
         base = gen * SPAN;
         for (int b = 0; b < NB; b++) { head[b] = 0; tail[b] = 0; }
         pending = 0;
+        if (Cfg.FIX_FLOW_HELD) held = 0;
         builds++;
         startRound = G.round;
         if (g != null && bucket != null) seed();

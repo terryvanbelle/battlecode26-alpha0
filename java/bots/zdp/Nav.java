@@ -81,7 +81,9 @@ public final class Nav {
         if (!G.rc.isMovementReady()) return false;
         // a dirt tile straight ahead with no closer free side step is dug and entered at once; flow (below) is for
         // stalls the local rule cannot see past. Not while a flow path is being followed or searched.
-        if (!(Flow.ready(t) || Flow.building) && digToward(t)) {
+        // (FIX_DIG_FIRST_TGT: only a search toward t; a stale search toward an old target does not block the dig)
+        if (!(Flow.ready(t) || Flow.building
+              && (!Cfg.FIX_DIG_FIRST_TGT || Flow.tgt != null && G.cheb(Flow.tgt, t) <= 1)) && digToward(t)) {
             Direction d = G.me.directionTo(t);
             return free(d) && step(d);
         }

@@ -46,6 +46,8 @@ public final class Baby {
             }
         }
         int roleAt0 = role;
+        // a carry we hold 12+ rounds after our last grab came from the engine's role swap: its hold starts now
+        if (Cfg.FIX_SWAP_HOLD && rc.getCarrying() != null && G.round - carryRound > 11) carryRound = G.round;
         Comms.readKings();
         Nav.markKings();
         Comms.readMines();
@@ -168,6 +170,12 @@ public final class Baby {
             return;
         }
         G.settle(cd1, cb1, 18);
+        // Cfg.FIX_FORM_PROMOTE: the rat on a formation centre promotes once it can, movement-ready or not
+        if (!netAct && Cfg.FIX_FORM_PROMOTE && rc.canBecomeRatKing()) {
+            MapLocation fs = formSite();
+            // labelled as the existing become-king option (not A_PASS), so net mode can repeat it through actExec
+            if (fs != null && G.me.equals(fs)) { rc.becomeRatKing(); formed++; D.act(D.A_X_BECOME_KING); D.emit(); return; }
+        }
         D.emit();   // BABY_ACT_PRE closes
         if (rc.isMovementReady()) {
             int cdD = G.debt, cbD = G.bc();   // ledger (K 9): decision record, BABY_MOVE features
@@ -574,7 +582,7 @@ public final class Baby {
                     boolean far = k > 2 && r.type == UnitType.BABY_RAT;
                     if (r.team == G.them) s2 = far ? dmg * 2 * Cfg.THROW_FAR_PCT / 100 : dmg * (r.type == UnitType.RAT_KING ? 3 : 2);
                     else if (r.team == G.us) s2 = -dmg;
-                    else s2 = -50; // a cat eats the rat: no damage, it sleeps
+                    else s2 = Cfg.FIX_THROW_CAT ? 200 : -50; // a cat eats the (enemy) rat: a sure kill, and it sleeps
                     break;
                 }
             }
@@ -637,8 +645,11 @@ public final class Baby {
             MapLocation t = r.location;
             if (r.type == UnitType.RAT_KING) {
                 // any king tile adjacent to us
-                int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
-                t = t.translate(dx, dy);
+                if (Cfg.FIX_BITE_KING_TILE) t = kingTile(rc, me, t);
+                else {
+                    int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
+                    t = t.translate(dx, dy);
+                }
             }
             if (me.distanceSquaredTo(t) > 2) continue;
             int s = r.type == UnitType.RAT_KING ? r.health : 1000 + r.health;
@@ -651,8 +662,11 @@ public final class Baby {
         if (r == null) return false;
         MapLocation t = r.location;
         if (r.type == UnitType.RAT_KING) {
-            int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
-            t = t.translate(dx, dy);
+            if (Cfg.FIX_BITE_KING_TILE) t = kingTile(rc, me, t);
+            else {
+                int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
+                t = t.translate(dx, dy);
+            }
         }
         if (!rc.canAttack(t)) {
             Direction d = me.directionTo(t);
@@ -667,6 +681,18 @@ public final class Baby {
             return true;
         }
         return false;
+    }
+
+    /** Cfg.FIX_BITE_KING_TILE: a tile of the king centred on c we can bite now, else its tile nearest us (to turn to). */
+    static MapLocation kingTile(RobotController rc, MapLocation me, MapLocation c) throws GameActionException {
+        for (int ex = -1; ex <= 1; ex++)
+            for (int ey = -1; ey <= 1; ey++) {
+                MapLocation l = c.translate(ex, ey);
+                int d = me.distanceSquaredTo(l);
+                if (d >= 1 && d <= 2 && rc.canAttack(l)) return l;
+            }
+        int dx = Math.max(-1, Math.min(1, me.x - c.x)), dy = Math.max(-1, Math.min(1, me.y - c.y));
+        return c.translate(dx, dy);
     }
 
     /** Cheese that turns a bite on a target with hp into a kill (k*k for +k, k <= FINISH_K), else 0. */
@@ -1007,7 +1033,10 @@ public final class Baby {
     /** Walk to mineTarget; a walk stalled past 25 turns gives it up. */
     static void goMine() throws GameActionException {
         Nav.goTo(mineTarget);
-        if (Nav.stall > 25) mineTarget = null;
+        if (Nav.stall > 25) {
+            if (Cfg.FIX_STALL_SHIFT) mineShift++;   // the re-pick moves on to the next mine
+            mineTarget = null;
+        }
     }
 
     /** Head for the nearest king to hand over our cheese (face it once in transfer reach); false with no king known. */
@@ -1058,6 +1087,9 @@ public final class Baby {
     /** Attacker movement: the visible enemy king, else the last place we saw it, else the nearest live mirror spot. */
     static boolean attack() throws GameActionException {
         if (eKing != null) { lastEKing = eKing.location; lastEKingRound = G.round; Nav.goTo(eKing.location); return true; }
+        // reached the sighting and can sense it: no king there, so forget it (a king just outside our cone is kept)
+        if (Cfg.FIX_EKING_FORGET && lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
+                && G.rc.canSenseLocation(lastEKing)) lastEKing = null;
         if (lastEKing != null && G.round - lastEKingRound < 30 && G.me.distanceSquaredTo(lastEKing) > 8) {
             Nav.goTo(lastEKing);
             return true;
@@ -1416,6 +1448,8 @@ public final class Baby {
                 if (rc.getDirection() != d && rc.canTurn(d)) { rc.turn(d); G.facing = d; }
                 if (rc.canMove(d)) { rc.move(d); G.me = rc.getLocation(); }
             }
+            // Cfg.FIX_FORM_PROMOTE: promote on the turn we step onto the centre
+            if (Cfg.FIX_FORM_PROMOTE && G.me.equals(site) && rc.canBecomeRatKing()) { rc.becomeRatKing(); formed++; }
             return true;
         }
         Nav.goTo(site);
@@ -1632,8 +1666,10 @@ public final class Baby {
     }
 
     static void wanderAround(MapLocation m) throws GameActionException {
-        if (exploreTarget == null || G.me.equals(exploreTarget) || G.cheb(exploreTarget, m) > 3 || Nav.stall > 6) {
-            exploreTarget = new MapLocation(clampX(m.x + fu * (G.rand(7) - 3)), clampY(m.y + fv * (G.rand(7) - 3)));
+        // Cfg.FIX_WANDER_BOX: a 5x5 box, inside atMine's (and raid's) Chebyshev 2
+        int b = Cfg.FIX_WANDER_BOX ? 2 : 3;
+        if (exploreTarget == null || G.me.equals(exploreTarget) || G.cheb(exploreTarget, m) > b || Nav.stall > 6) {
+            exploreTarget = new MapLocation(clampX(m.x + fu * (G.rand(2 * b + 1) - b)), clampY(m.y + fv * (G.rand(2 * b + 1) - b)));
         }
         Nav.goTo(exploreTarget);
     }
@@ -1692,6 +1728,8 @@ public final class Baby {
     /** Mine seeking (Cfg.SEEK_CROWD) runs until round seekUntil and may start again from seekNext; seekMines is
      *  myMineCount when it started. */
     static int seekUntil, seekNext, seekMines;
+    /** Cfg.FIX_SEEK_NEWS: this seek found a mine the king lacked (and carries it home). */
+    static boolean seekNews;
 
     /** Cfg.SEEK_IDLE: turns spent near the mine since the last pickup (idlePicked: Baby.picked then); mineShift is
      *  Cfg.IDLE_SHIFT's offset into the pick list. */
@@ -1712,6 +1750,7 @@ public final class Baby {
         seekUntil = G.round + Cfg.SEEK_TTL;
         seekNext = G.round + Cfg.SEEK_RETRY;
         seekMines = myMineCount;
+        seekNews = false;
         exploreTarget = null;
         return true;
     }
@@ -1722,6 +1761,7 @@ public final class Baby {
         seekUntil = G.round + Cfg.SEEK_TTL;
         seekNext = G.round + Cfg.SEEK_RETRY;
         seekMines = myMineCount;
+        seekNews = false;
         exploreTarget = null;
         return true;
     }
@@ -1731,9 +1771,11 @@ public final class Baby {
         if (myMineCount > seekMines) {
             // squeaks reach the king from dist2 16 only: carry the news home, then gather (the new mine included)
             MapLocation k = Comms.nearestKing(G.me);
-            if (k != null && unreported() >= 0) { Nav.goTo(k); return true; }
-            mineTarget = null;
-        } else if (exploreHome()) return true;
+            if (k != null && unreported() >= 0) { seekNews = true; Nav.goTo(k); return true; }
+            if (!Cfg.FIX_SEEK_NEWS || seekNews || k == null) { mineTarget = null; seekUntil = 0; return false; }
+            seekMines = myMineCount;   // Cfg.FIX_SEEK_NEWS: only mines the king lists, no news: seek on
+        }
+        if (exploreHome()) return true;
         seekUntil = 0;
         return false;
     }

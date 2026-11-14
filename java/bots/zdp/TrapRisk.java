@@ -24,7 +24,10 @@ public final class TrapRisk {
         if (mark == null && Flow.left() < 3 * G.W * G.H + Cfg.BC_OPTIONAL) return;
         init();
         MapLocation me = G.rc.getLocation();
-        if (last == null || !last.equals(me)) { last = me; arrived = G.round; }
+        // FIX_TRAP_CARRIED: a carried or flying rat triggers no traps, so its tiles prove nothing
+        boolean grounded = !Cfg.FIX_TRAP_CARRIED || !G.rc.isBeingCarried() && !G.rc.isBeingThrown();
+        // FIX_TRAP_ARRIVED: the move came after last round's observe, so keep that round's marks
+        if (grounded && (last == null || !last.equals(me))) { last = me; arrived = Cfg.FIX_TRAP_ARRIVED ? G.round - 1 : G.round; }
         for (RobotInfo r : robots) {
             if (r.team != G.them || r.type != UnitType.BABY_RAT) continue;
             Direction f = r.direction;
@@ -33,6 +36,7 @@ public final class TrapRisk {
             put(r.location.add(f.rotateLeft()));
             put(r.location.add(f.rotateRight()));
         }
+        if (!grounded) return;
         // clear marks we have proven safe: anything within 1 of our tile marked before we arrived
         for (int dx = -1; dx <= 1; dx++)
             for (int dy = -1; dy <= 1; dy++) {

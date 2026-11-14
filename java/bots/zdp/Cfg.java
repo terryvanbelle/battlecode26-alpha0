@@ -256,4 +256,38 @@ public final class Cfg {
      *  on zd312, and on ov4 the overrun is z3x's own cashTick in the r1880 CASH_END recall crowd (rat 13481, r1884-1891,
      *  stage 6 to 7 costing 11k; no trap laid that turn). z7m's rats overran the same way on arrows (z7u's evidence). */
     public static final int CASH_READ_LEFT = 6000;
+
+    // ---- Pass 2B fixes ----
+    /** Pass 2B fix: count cheese the king picks up after moving (move()'s pickUp) as Econ income. false = zdb's original behaviour. */
+    public static final boolean FIX_KING_PICKUP_INCOME = true;
+    /** Pass 2B fix: the king's nearCheese skips piles under its own 3x3 (pickUp empties them this turn). false = zdb's original behaviour. */
+    public static final boolean FIX_KING_NEAR_CHEESE = true;
+    /** Pass 2B fix: the king bites an enemy king on any body tile in reach, not only its (never reachable) centre. false = zdb's original behaviour. */
+    public static final boolean FIX_KING_BITE_KING = true;
+    /** Pass 2B fix: dig-first is skipped only for a flow search toward t, not one toward an old target. false = zdb's original behaviour. */
+    public static final boolean FIX_DIG_FIRST_TGT = true;
+    /** Pass 2B fix: Flow.start resets the robot-blocked counter held. false = zdb's original behaviour. */
+    public static final boolean FIX_FLOW_HELD = true;
+    /** Pass 2B fix: ALERT keeps the round's most-threatened king instead of the last writer. false = zdb's original behaviour. */
+    public static final boolean FIX_ALERT_MAX = true;
+    /** Pass 2B fix: TrapRisk dates arrival to the round before (the move followed that round's observe). false = zdb's original behaviour. */
+    public static final boolean FIX_TRAP_ARRIVED = true;
+    /** Pass 2B fix: a carried or thrown baby neither updates its TrapRisk arrival nor clears marks. false = zdb's original behaviour. */
+    public static final boolean FIX_TRAP_CARRIED = true;
+    /** Pass 2B fix: a baby bites any enemy-king tile it can attack, not only the one nearest it. false = zdb's original behaviour. */
+    public static final boolean FIX_BITE_KING_TILE = true;
+    /** Pass 2B fix: a throw into a cat scores 200 (it kills the carried enemy), not -50. false = zdb's original behaviour. */
+    public static final boolean FIX_THROW_CAT = true;
+    /** Pass 2B fix: a carry from the engine's role swap restarts carryRound, so THROW_HOLD applies to it. false = zdb's original behaviour. */
+    public static final boolean FIX_SWAP_HOLD = true;
+    /** Pass 2B fix: an attacker forgets lastEKing once it senses that spot with no king in view. false = zdb's original behaviour. */
+    public static final boolean FIX_EKING_FORGET = true;
+    /** Pass 2B fix: wanderAround draws within Chebyshev 2 (atMine's radius), not 3, ending the 2-tile bounce. false = zdb's original behaviour. */
+    public static final boolean FIX_WANDER_BOX = true;
+    /** Pass 2B fix: a mine walk stalled past 25 turns bumps mineShift, so the re-pick is a different mine. false = zdb's original behaviour. */
+    public static final boolean FIX_STALL_SHIFT = true;
+    /** Pass 2B fix: a seek ends only on real news (a mine the king lacked), not on sensing a listed mine. false = zdb's original behaviour. */
+    public static final boolean FIX_SEEK_NEWS = true;
+    /** Pass 2B fix: a FORM_KING centre rat promotes when action-ready (not only movement-ready) and on its step-on turn. false = zdb's original behaviour. */
+    public static final boolean FIX_FORM_PROMOTE = true;
 }

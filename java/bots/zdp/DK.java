@@ -473,10 +473,11 @@ public final class DK {
             case A_BITE_KILL: case A_BITE: {
                 RobotInfo b = King.weakest(enemies);
                 if (b == null) return false;
-                if (k == A_BITE) { rc.attack(b.location); return true; }
+                MapLocation at = King.weakAt;
+                if (k == A_BITE) { rc.attack(at); return true; }
                 int c = King.biteCheese(b.health, rc.getGlobalCheese());
-                if (c <= 0 || !rc.canAttack(b.location, c)) return false;
-                rc.attack(b.location, c);
+                if (c <= 0 || !rc.canAttack(at, c)) return false;
+                rc.attack(at, c);
                 return true;
             }
             case A_BITE_CAT: King.biteCat(cats); return !rc.isActionReady();

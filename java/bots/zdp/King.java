@@ -40,7 +40,7 @@ public final class King {
 
         int before = rc.getGlobalCheese();
         pickUp();
-        Econ.received(rc.getGlobalCheese() - before);
+        if (!Cfg.FIX_KING_PICKUP_INCOME) Econ.received(rc.getGlobalCheese() - before);
         Debug.mark(45);
         // a fresh rat (100 HP, bites every turn) is worth far more than one king bite: spawn first
         try { spawn(cats, enemies); } finally { if (D.point == DK.KING_SPAWN) D.emit(); }
@@ -54,9 +54,13 @@ public final class King {
             int threat = 0;
             for (RobotInfo e : enemies)
                 if (e.type != UnitType.RAT_KING && e.location.distanceSquaredTo(G.me) <= Cfg.KING_THREAT_D2) threat++;
-            Comms.write(Comms.ALERT, (G.me.x + 1) | (Math.min(15, threat) << 6));
-            Comms.write(Comms.ALERT + 1, G.me.y + 1);
-            Comms.write(Comms.ALERT + 2, Comms.stamp());
+            // FIX_ALERT_MAX: a king that wrote earlier this round with at least our threat keeps the alert
+            if (!(Cfg.FIX_ALERT_MAX && Comms.read(Comms.ALERT + 2) == Comms.stamp()
+                  && (Comms.read(Comms.ALERT) >> 6) >= Math.min(15, threat))) {
+                Comms.write(Comms.ALERT, (G.me.x + 1) | (Math.min(15, threat) << 6));
+                Comms.write(Comms.ALERT + 1, G.me.y + 1);
+                Comms.write(Comms.ALERT + 2, Comms.stamp());
+            }
         }
         } finally { if (dA && D.point == DK.KING_ACT) { if (D.lab < 0) D.lab = DK.A_NONE; D.emit(); } }
         // KING_FORM decision point (the slot-0 king)
@@ -107,7 +111,8 @@ public final class King {
             boolean mine = mi.hasCheeseMine();
             Sym.record(l.x, l.y, mi.isWall(), mi.isDirt(), mine);
             if (mine) Comms.addMine(l.x, l.y);
-            if (anchor != null && mi.getCheeseAmount() > 0 && G.cheb(l, anchor) <= Cfg.KING_ROAM) {
+            if (anchor != null && mi.getCheeseAmount() > 0 && G.cheb(l, anchor) <= Cfg.KING_ROAM
+                && !(Cfg.FIX_KING_NEAR_CHEESE && G.cheb(l, me) <= 1)) {
                 int d = me.distanceSquaredTo(l);
                 if (d < bd) { bd = d; nearCheese = l; }
             }
@@ -161,33 +166,53 @@ public final class King {
         Comms.write(Comms.SYM, mask);
     }
 
+    /** Picks up every pile under our 3x3 (FIX_KING_PICKUP_INCOME: and counts it as Econ income, every caller). */
     static void pickUp() throws GameActionException {
+        int b = Cfg.FIX_KING_PICKUP_INCOME ? G.rc.getGlobalCheese() : 0;
         MapLocation c = G.rc.getLocation();
         for (int dx = -1; dx <= 1; dx++)
             for (int dy = -1; dy <= 1; dy++) {
                 MapLocation l = c.translate(dx, dy);
                 if (G.rc.canPickUpCheese(l)) G.rc.pickUpCheese(l);
             }
+        if (Cfg.FIX_KING_PICKUP_INCOME) Econ.received(G.rc.getGlobalCheese() - b);
     }
 
     static void bite(RobotInfo[] enemies) throws GameActionException {
         if (!G.rc.isActionReady()) return;
         RobotInfo best = weakest(enemies);
         if (best == null) return;
+        MapLocation at = weakAt;
         int c = biteCheese(best.health, G.rc.getGlobalCheese());
-        if (c > 0 && G.rc.canAttack(best.location, c)) { G.rc.attack(best.location, c); D.lab = DK.A_BITE_KILL; }
-        else { G.rc.attack(best.location); D.lab = DK.A_BITE; }
+        if (c > 0 && G.rc.canAttack(at, c)) { G.rc.attack(at, c); D.lab = DK.A_BITE_KILL; }
+        else { G.rc.attack(at); D.lab = DK.A_BITE; }
     }
 
-    /** The enemy in attack reach with the least health (the first such in sense order), or null. Also net mode's
+    static MapLocation weakAt;   // weakest()'s tile to bite
+
+    /** The enemy in attack reach with the least health (the first such in sense order), or null; weakAt is the tile
+     *  to bite (its location; FIX_KING_BITE_KING: any reachable tile of an enemy king's 3x3). Also net mode's
      *  A_BITE_KILL / A_BITE target. */
     static RobotInfo weakest(RobotInfo[] enemies) {
         RobotInfo best = null;
+        weakAt = null;
         for (RobotInfo e : enemies) {
-            if (!G.rc.canAttack(e.location)) continue;
-            if (best == null || e.health < best.health) best = e;
+            MapLocation t = e.location;
+            if (Cfg.FIX_KING_BITE_KING && e.type == UnitType.RAT_KING) { if ((t = kingTile(t)) == null) continue; }
+            else if (!G.rc.canAttack(t)) continue;
+            if (best == null || e.health < best.health) { best = e; weakAt = t; }
         }
         return best;
+    }
+
+    /** A tile of the enemy king's 3x3 (centre ctr) we can attack, or null. */
+    static MapLocation kingTile(MapLocation ctr) {
+        for (int dx = -1; dx <= 1; dx++)
+            for (int dy = -1; dy <= 1; dy++) {
+                MapLocation t = ctr.translate(dx, dy);
+                if (G.rc.canAttack(t)) return t;
+            }
+        return null;
     }
 
     /** Net option A_BITE_CAT: bite the weakest cat in reach (nearest to our centre on equal health), any tile of its 2x2. */
