@@ -413,6 +413,7 @@ def main():
     ap.add_argument('--max-anchor-kl', type=float, default=0.5, help='KL to anchor above this refuses the export')
     ap.add_argument('--adv-clip', type=float, default=5.0)
     ap.add_argument('--no-pair', action='store_true', help='no paired-game baseline')
+    ap.add_argument('--no-value', action='store_true', help='no value baseline: V = 0, A = z (then normalised)')
     ap.add_argument('--fake-reward', default='', help='point:option planted test: A = 1 if k == option else 0')
     ap.add_argument('--max-rows', type=int, default=2_000_000, help='per-point uniform subsample cap')
     ap.add_argument('--val-frac', type=float, default=0.1)
@@ -443,7 +444,7 @@ def main():
     vdirs = a.value_data if a.value_data else a.data
     dir_index = {str(d): i for i, d in enumerate(dict.fromkeys(list(a.data) + list(vdirs)))}
     data = load_dirs(a.data, [p for p in points if p in nets], dir_index)
-    V = Value(value_rows(vdirs, dir_index), a.val_frac, a.seed)
+    V = Value(None if a.no_value else value_rows(vdirs, dir_index), a.val_frac, a.seed)   # no rows: V = 0
     base = {} if a.no_pair else pair_baseline(value_rows(a.data, dir_index), V)
     print(f'value model: {V.metrics}', flush=True)
     metrics = dict(args={k: v for k, v in vars(a).items()}, value=V.metrics, points={}, pairs_with_baseline=len(base))

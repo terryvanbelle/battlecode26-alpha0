@@ -266,3 +266,25 @@ Throughput is about 12 games/min combined: box 3/4 with 10 workers at -Xmx2g, VM
 - **RL start net:** net-v2 with point 5 scaled by tau 5. The KL anchor stays net-v2.
 - Points 12 and 13 stay saturated and explore only through the floor. If they turn out not to learn, retrain them with label smoothing.
 - None of these 64-game differences is significant (p ≥ 0.19).
+
+### M1 known-answer test (November 14, 2026, 00:20–04:50 PDT): FAIL
+
+The full report and an independent review are in [rl-m1-report.md](rl-m1-report.md).
+
+**Sabotage.** The plan's BABY_ROLE R_SCOUT sabotage did not hurt: +3, +5 and even +15 still scored about 0.45 vs zdpn2, because point 5's logit margins are about 12. The test therefore used the alternate:
+- KING_SPAWN S_HOLD at +40, giving P(hold) 0.28 on fixed records.
+- Against frozen zdpn2 (floor 0.005) it scores **20/128 = 0.16**.
+
+**Run.** 8 iterations × 128 self-play games, only point 11 trainable, no KL leash, pool of the sabotaged net and its own snapshots.
+- P(hold) went the wrong way: 0.283 → 0.316.
+- Score vs zdpn2: 11/64 → 12/64 on the same seeds.
+
+**Plumbing is fine:**
+- the advantage has the right sign per team, with corr(team hold fraction, z) between −0.2 and −0.4;
+- parity passes and clipping is about 0.02;
+- frozen points are byte-identical;
+- the planted test passed in M0.
+
+**Diagnosis: signal-to-noise.** The score-function gradient credits only a team's sampling *deviations* (realised minus expected holds, sd about 5 per team-game), and those barely correlate with z. The outcome effect of the sabotage comes from the states the policy reaches, which a state baseline absorbs. With the trainer's advantage, the pooled t for the sabotaged bias over all 1,024 games is −0.82. That works out to about 6,000 games per iteration for a reliable step. More games, desaturation (tau 2) and 256-game iterations did not help.
+
+**Decision.** M2 does not start with the plain outcome-only PPO estimator. The next step is a design panel on the estimator (see below).

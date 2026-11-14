@@ -78,9 +78,11 @@ collect() {   # k
   for v in $($PY -c "import json; print(' '.join(sorted({p[len('$PREFIX'):] for j in json.load(open('$I/jobs.json'))['jobs'] for p in (j['a'], j['b']) if p.startswith('$PREFIX')})))"); do
     build_pkg $v || { log "build v$v (pool member) failed"; return 1; }   # a pruned or rolled-back member
   done
-  box_request $tag $I "$I/jobs.json build/botsrc/$PREFIX$k" $BOXPY -u scripts/rl_collect.py $I/jobs.json --slice $(cfgv "['box_slice']") --workers $(cfgv "['workers_box']") --deadline $D
+  local BS=$(cfgv "['box_slice']")
+  local box=$(echo $BS | awk -F: '{print ($1 < $2) ? 1 : 0}')   # an empty box slice (LO == HI): single host, no box helper
+  [ $box -eq 1 ] && box_request $tag $I "$I/jobs.json build/botsrc/$PREFIX$k" $BOXPY -u scripts/rl_collect.py $I/jobs.json --slice $BS --workers $(cfgv "['workers_box']") --deadline $D
   $PY -u scripts/rl_collect.py $I/jobs.json --slice $(cfgv "['vm_slice']") --workers $WV --deadline $D >> $I/collect.log 2>&1
-  box_wait $tag | tee -a $LOG
+  [ $box -eq 1 ] && box_wait $tag | tee -a $LOG
   for attempt in 1 2 3; do
     $PY -u scripts/rl_collect.py $I/jobs.json --workers $WV --deadline $D --min-done $MIN >> $I/collect.log 2>&1
     n=$(ls $I/games/*/result.json 2>/dev/null | wc -l)
@@ -102,13 +104,14 @@ print(t['beta_end'] + (t['beta_start'] - t['beta_end']) * max(0.0, 1 - $k / t['b
   local lr=$(st get lr)
   [ -n "$lr" ] || { lr=$(cfgv "['train']['lr']"); st set lr $lr; }
   local T="['train']"
+  local nokl=$($PY -c "import json; print('--no-kl' if json.load(open('$CFG'))['train'].get('no_kl') else '')")   # M1 only
   $PY -u scripts/rl_train.py --net $RD/nets/$k/net.json --anchor $(cfgv "['anchor_net']") --data $I/data --value-data $vd \
     --out $RD/nets/$((k + 1)) --points $POINTS --floor $FLOOR --temperature $TEMP --version $k \
     --beta $beta --beta-state $RD/beta.json --lr $lr --epochs $(cfgv "$T['epochs']") --batch $(cfgv "$T['batch']") \
     --clip $(cfgv "$T['ppo_clip']") --target-kl $(cfgv "$T['target_kl']") --grad-clip $(cfgv "$T['grad_clip']") \
     --c-ent $(cfgv "$T['c_ent']") --collapse-kl $(cfgv "$T['collapse_kl']") --max-anchor-kl $(cfgv "$T['max_anchor_kl']") \
     --adv-clip $(cfgv "$T['adv_clip']") --val-frac $(cfgv "$T['value_val_frac']") --threads $(cfgv "$T['threads']") \
-    --seed $k > $I/train.log 2>&1
+    --seed $k $nokl > $I/train.log 2>&1
   rc=$?
   if [ $rc -eq 3 ]; then rollback $((k + 1)) "KL collapse refusal at iter $k"; return $?; fi
   return $rc

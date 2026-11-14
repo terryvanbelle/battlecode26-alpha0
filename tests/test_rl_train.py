@@ -161,6 +161,22 @@ def main(work=None, real_net=None):
     mt = json.loads((work / 'reward/net/metrics.json').read_text())['points']['5']
     print('reward on option 2: mean P', mt['mean_probs_start'][2], '->', mt['mean_probs_end'][2], 'snr', mt.get('grad_snr_cos'))
     assert mt['mean_probs_end'][2] > mt['mean_probs_start'][2]
+    # 5. --no-kl (M1): a far anchor (KL far above --max-anchor-kl) neither refuses the export nor leaks into the gradient
+    far = work / 'far'; far.mkdir(exist_ok=True)
+    raw = dpnet_io.load_raw(n0 / 'net.json')
+    raw['points']['5'][-1]['b'][1] += 8.0
+    (far / 'net.json').write_text(json.dumps(raw))
+    outs = []
+    for tag, anc in (('self', n0 / 'net.json'), ('far', far / 'net.json')):
+        o = work / f'nokl-{tag}'
+        assert run_train('--net', n0 / 'net.json', '--anchor', anc, '--data', d, '--out', o, '--points', '5', '--lr', 3e-3,
+                         '--no-kl', '--max-anchor-kl', 0.01, '--collapse-kl', 0.01, '--no-snr') == 0, f'--no-kl refused ({tag})'
+        outs.append((o / 'net.json').read_bytes())
+        mt = json.loads((o / 'metrics.json').read_text())['points']['5']
+        assert mt['beta'] == 0.0 and mt['changed']
+    assert mt['kl_anchor_start'] > 0.5, mt['kl_anchor_start']
+    assert outs[0] == outs[1], '--no-kl: the anchor changed the trained net'
+    print('--no-kl ok: far anchor KL', mt['kl_anchor_start'], 'no refusal, identical export')
     print('ALL OK', work)
 
 
