@@ -227,7 +227,7 @@ def main():
                           for o, v in sorted(score.items())}, points={})
     data, alld, fail = {}, [], []
     for p in sorted(acc):
-        d = acc[p].cat(); d.pop('_key')
+        acc[p].shrink(); d = acc[p].cat(); d.pop('_key')
         data[p] = d
         N = len(d['k'])
         picked = d['k'] != NONE

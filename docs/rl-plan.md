@@ -238,3 +238,31 @@ Throughput is about 12 games/min combined: box 3/4 with 10 workers at -Xmx2g, VM
 | Day 2 | M1 sabotage recovery (about 3 h), then start P2. |
 | Days 2–3 | P2, about 30 iterations, promotion gates. M2 result, README update. |
 | After M2 | P3 staged unlocks, with SNR-driven variance reducers as needed. |
+
+## Results
+
+### M0 on zdpn2 (November 14, 2026, 00:50 PDT; box sandbox; independently re-checked)
+
+| Check | Result |
+|---|---|
+| a. RL build vs non-RL build | replay identical 8/8 |
+| b. lr = 0 iteration (64 games) | Parity median 6.0e-5, max 1.22e-4 over 5.7M records. net.json is byte-identical and W.java's `P[]` is identical. V held-out Brier 0.18 on only 6 games; out-of-fold 0.255. |
+| c. Floor vs zdb (64 games each) | 0.001: 33/64; **0.005: 33/64**; 0.01: 26/64. **The floor is 0.005.** |
+| d. Saturation (share of records with p_k > 0.999) | 5: 0.99, 7: 0.86, 10: 0.43, 11: 0.88, 12: 0.995, 13: 0.96 |
+| e. Planted `--fake-reward 6:0` (lr 1e-3, target_kl 0.1, 2 iterations) | Mean P(C_NONE) on the same records: 0.959 → 0.966 → 0.979. On matched seeds the bot's own C_NONE rate went from 0.973 to 0.988 (higher in 24 games, lower in 3; sign test p 5e-5). Only point 6 changed. |
+| f. V AUC at rounds 500/1000/1500 | 0.51 / 0.64 / 0.69 out of fold. V is a weak baseline in mirror self-play; lambda = 1 still works. |
+
+**Desaturation** (`scripts/desaturate.py`, scored vs zdb at floor 0.005, 64 games):
+
+| Variant | Score |
+|---|---|
+| tau 2 on 5, 11, 12, 13 | 26/64 |
+| tau 3 on 5, 11, 12, 13 | 27/64 |
+| tau 2 on 11, 12, 13 | 27/64 |
+| **tau 5 on 5 only** | **37/64**. Saturation on point 5 drops from 0.99 to 0.63. |
+
+- Softening the king points costs strength.
+- BABY_ROLE needs tau 5 to move at all.
+- **RL start net:** net-v2 with point 5 scaled by tau 5. The KL anchor stays net-v2.
+- Points 12 and 13 stay saturated and explore only through the floor. If they turn out not to learn, retrain them with label smoothing.
+- None of these 64-game differences is significant (p ≥ 0.19).
