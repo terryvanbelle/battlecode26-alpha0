@@ -12,7 +12,7 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 14, 2026, 08:00 PDT).**
+**Status (November 14, 2026, 05:00 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
