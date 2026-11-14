@@ -5,9 +5,8 @@ package zdp;
  * (scripts/build_dpnet.py). Each point's net maps the point's raw features (D.F[4..4+n)) to option logits;
  * input normalisation is folded into the first layer. Hidden layers use ReLU.
  *
- * W.P[point] packs the net as chars: nLayers, then (in, out) per layer, then per layer the weight scale and bias scale
- * (float bits, 2 chars each, high first), in*out weights (row-major [out][in]) and out biases, each stored as
- * (value / scale + 32768) rounded to a char.
+ * W.P[point] packs the net as chars: nLayers, then (in, out) per layer, then per layer in*out weights (row-major
+ * [out][in]) and out biases, each a float's bits in two chars (high first).
  */
 public final class DNet {
     static float[][][] w;   // [point][layer][out * in]
@@ -31,12 +30,10 @@ public final class DNet {
             float[][] wl = new float[nl][], bl = new float[nl][];
             for (int l = 0; l < nl; l++) {
                 int in = d[2 * l], out = d[2 * l + 1];
-                float sw = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1)); i += 2;
-                float sb = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1)); i += 2;
                 float[] a = new float[in * out];
-                for (int k = 0; k < a.length; k++) a[k] = (s.charAt(i++) - 32768) * sw;
+                for (int k = 0; k < a.length; k++, i += 2) a[k] = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1));
                 float[] c = new float[out];
-                for (int k = 0; k < out; k++) c[k] = (s.charAt(i++) - 32768) * sb;
+                for (int k = 0; k < out; k++, i += 2) c[k] = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1));
                 wl[l] = a; bl[l] = c;
             }
             w[p] = wl; b[p] = bl; dims[p] = d;

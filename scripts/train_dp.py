@@ -112,7 +112,8 @@ def main():
         n_out = max(counts.get(pt, 0), int(y.max()) + 1)
         isval = np.isin(g, list(val_games))
         Xt, yt, Xv, yv = X[~isval], y[~isval], X[isval], y[isval]
-        mu, sd = Xt.mean(0), Xt.std(0) + 1e-3
+        mu, sd = Xt.mean(0), Xt.std(0)
+        sd = np.where(sd < 1e-3, 1.0, sd)   # a constant feature: unit scale (else folding divides by ~0)
         model = mlp(X.shape[1], hidden, n_out).to(a.device)
         opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
         tX = torch.tensor((Xt - mu) / sd, device=a.device); ty = torch.tensor(yt, device=a.device)

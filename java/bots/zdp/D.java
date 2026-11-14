@@ -23,7 +23,8 @@ public final class D {
     /** Compute features at all (recording or net mode). */
     static final boolean ON = EMIT || NET;
     /** Net-mode sampling: softmax temperature and uniform probability floor. */
-    static final float NET_T = 1f, NET_FLOOR = 0.02f;
+    static final float NET_T = 1f;   // net-mode sampling temperature (build_dpnet.py sets it)
+    static final float NET_FLOOR = 0.02f;   // net-mode probability floor, spread over allowed options (build_dpnet.py)
     static final char MAGIC = '\uDEC0';
 
     // decision points (BABY_* 1-9; king points 10-19 live in DK)

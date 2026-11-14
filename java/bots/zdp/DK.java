@@ -316,7 +316,7 @@ public final class DK {
     // net mode (D.NET): the net picks an option for the open point; its executor runs it. An executor returns false
     // when the option cannot act, and zdb's own code then runs as the fallback. Dead code in the recording build.
 
-    static final float NET_T = 1f, NET_FLOOR = 0.02f;
+    static final float NET_T = D.NET_T, NET_FLOOR = D.NET_FLOOR;   // set in D (build_dpnet.py)
 
     /** KING_MOVE options masked out of the net head: Cfg-dead in zdb and always failing or meaningless here. */
     static final boolean[] MOVE_ALLOWED = new boolean[KING_MOVE_OPTIONS];

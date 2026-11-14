@@ -14,25 +14,26 @@ SRC = ROOT / 'java/bots/zdp'
 
 
 def pack(layers):
+    """DNet's char layout: nLayers, (in, out) per layer, then per layer the weights ([out][in]) and biases as float32
+    bits, two chars each (high first)."""
     chars = [len(layers)]
     for l in layers:
         chars += [l['n_in'], l['n_out']]
     for l in layers:
         for key in ('w', 'b'):
-            v = np.asarray(l[key], dtype=np.float64)
-            s = float(np.abs(v).max()) / 32000.0 or 1e-9
-            s = struct.unpack('>f', struct.pack('>f', s))[0]   # what Java will see
-            bits = struct.unpack('>I', struct.pack('>f', s))[0]
-            chars += [bits >> 16, bits & 0xFFFF]
-            l[key + '_q'] = (np.rint(v / s) + 32768).clip(0, 65535).astype(np.int64).tolist()
-        chars += l['w_q'] + l['b_q']
+            bits = np.asarray(l[key], dtype='>f4').view('>u4').astype(np.int64)
+            chars += np.stack([bits >> 16, bits & 0xFFFF], 1).ravel().tolist()
     return chars
+
+
+# javac expands \\uXXXX before lexing, so these four must use ordinary escapes inside a literal
+SAFE = {0x0a: '\\n', 0x0d: '\\r', 0x22: '\\"', 0x5c: '\\\\'}
 
 
 def java_string(chars, chunk=8000):
     parts = []
     for i in range(0, len(chars), chunk):
-        parts.append('"' + ''.join(f'\\u{c:04x}' for c in chars[i:i + chunk]) + '"')
+        parts.append('"' + ''.join(SAFE.get(c, f'\\u{c:04x}') for c in chars[i:i + chunk]) + '"')
     return 'j(' + ', '.join(parts) + ')'
 
 
