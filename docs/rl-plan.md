@@ -295,3 +295,12 @@ The full report and an independent review are in [rl-m1-report.md](rl-m1-report.
 **Diagnosis: signal-to-noise.** The score-function gradient credits only a team's sampling *deviations* (realised minus expected holds, sd about 5 per team-game), and those barely correlate with z. The outcome effect of the sabotage comes from the states the policy reaches, which a state baseline absorbs. With the trainer's advantage, the pooled t for the sabotaged bias over all 1,024 games is −0.82. That works out to about 6,000 games per iteration for a reliable step. More games, desaturation (tau 2) and 256-game iterations did not help.
 
 **Decision.** M2 does not start with the plain outcome-only PPO estimator. The next step is a design panel on the estimator (see below).
+
+### Estimator decision after M1 (November 14, 2026)
+
+A 3-design, 3-judge panel compared counterfactual forks, ES and exploration-plus-TD. It chose **antithetic ES on per-point output-bias offsets plus a log-temperature**:
+- **Fitness:** θ+ plays θ− head-to-head in seat-swapped games on the same map and seed. This is still self-play.
+- **Search:** block-coordinate, one decision point's block per direction.
+- **Update:** a thresholded-t sign step.
+
+The plan, the revised M1 and the M2 staging are in [rl-es-plan.md](rl-es-plan.md). PPO remains the planned source of proposals for the baby points (stage B), with ES as the judge.
