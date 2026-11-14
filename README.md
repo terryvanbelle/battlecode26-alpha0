@@ -12,7 +12,7 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 13, 2026, 23:10 PDT).**
+**Status (November 14, 2026, 08:00 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
@@ -30,8 +30,16 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - **zdpn2** (1000 games of the fixed zdp): **33/64 against zdb** (zdpn1: 26/64); held-out field **113/192**, against 114/192 for the zdb copy.
 - **Self-play RL** ([plan](docs/rl-plan.md)): PPO-lite over the decision points, using outcome reward only and a KL leash to zdpn2. Field bots are used only to benchmark.
   - Plumbing is done: the RL build replays the normal build exactly; recorded log-probabilities match the Python mirror to quantisation; an lr-0 update exports a byte-identical net.
-  - **Now:** milestone M0 checks on zdpn2 (floor, saturation, planted-reward test), then M1, a known-answer sabotage-recovery test.
-- **zdp pass 3, capability completion (November 14, 2026, 04:40 PDT).** Five new decision points (BABY_FREE pickup/trap removal, KING_COMMS shared-array edits, KING_TURN facing, and the value-digit points BABY_VAL/KING_VAL for free squeaks and slot writes) plus appended options (strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks), so the RL start net can do anything zdb's code can. The recording build still replays zdb 24/24; net-v2 widened with zdb-hard new points still replays zdpn2 16/16. [Pass 3](docs/decision-points.md#pass-3-capability-completion).
+  - **M0 passed:** floor 0.005; BABY_ROLE softened (tau 5) for exploration.
+  - **M1 failed**, the known-answer test ([report](docs/rl-m1-report.md)):
+    - A KING_SPAWN sabotage scoring 0.16 against zdpn2 was not undone in 8×128 self-play games.
+    - The outcome-only gradient is too noisy (pooled t −0.8, so about 6,000 games per iteration would be needed). The plumbing checks out.
+  - **Now:** a design panel is choosing a better estimator (counterfactual forks that exploit determinism, evolution strategies, or exploration plus a learned value baseline). M1 is then re-run with the winner.
+- **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
+  - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
+  - New options on existing points: strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks.
+  - The recording build still replays zdb 24/24. net-v2, widened with zdb-hard new points, still replays zdpn2 16/16.
+  - [Pass 3](docs/decision-points.md#pass-3-capability-completion).
 
 **Most recent result (November 13, 2026, 23:07 PDT).** zdpn2: **33/64 against zdb** (95% CI 0.40–0.63); held-out field **113/192 (0.59)**, the same as the zdb copy (114/192). [Results](docs/decision-points.md#zdpn2-november-13-2026-2307-pdt).
 
