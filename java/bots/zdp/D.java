@@ -213,6 +213,19 @@ public final class D {
         f(Baby.knownCat() != null);
         f(Baby.cheeseTarget != null && G.cheb(me, Baby.cheeseTarget) == 1);
         f(G.round >= Baby.seekNext);
+        // appended (53..63): the state behind labels and counters the features above miss (pass 2C)
+        f(Baby.idleDue());                       // Cfg.SEEK_IDLE: the idle tick trips this turn (M_IDLE_SEEK)
+        f(cap(Baby.idleCount(), 63));
+        f(Baby.catHunt);                         // Cfg.STALL_CAT (M_STALL_CAT)
+        f(Baby.stallAt != null && G.cheb(me, Baby.stallAt) <= 3 ? cap(G.round - Baby.stallSince, 255) : 0);
+        f(Baby.cheeseTarget != null && Nav.isDirt(Baby.cheeseTarget));   // M_CHEESE_PICK vs M_CHEESE
+        f(Baby.unreported() >= 0);               // M_SCOUT_HOME, seek's carry-home
+        t = Baby.formSite();
+        f(t != null && me.distanceSquaredTo(t) <= Cfg.FORM_PULL_R2);   // M_FORM_KING's pull
+        f(Baby.mineTarget != null && Baby.atMine(Baby.mineTarget));   // M_START_SEEK / M_MINE_WANDER vs M_MINE_GO
+        f(Baby.mineTarget != null && Baby.nearerAllies(Baby.mineTarget) >= Cfg.SEEK_CROWD);   // M_START_SEEK's crowd
+        f(cat != null && Baby.catAtKing(cat.location));   // M_CAT_DEFEND
+        f(G.round < Baby.seekUntil);             // a seek is running (M_SEEK; also feature 31)
     }
 
     /** BABY_ACT_PRE / BABY_ACT_POST features (53, shared layout; feature 0 is the phase). Side-effect free. */
@@ -320,7 +333,7 @@ public final class D {
         f(G.H);
     }
 
-    /** BABY_FACE features (31): guardTurn's view. Side-effect free. */
+    /** BABY_FACE features (34): guardTurn's view. Opens on every turning-ready turn. Side-effect free. */
     static void babyFace(boolean moved) throws GameActionException {
         RobotController rc = G.rc;
         open(BABY_FACE);
@@ -365,6 +378,11 @@ public final class D {
         f(me.y);
         f(G.W);
         f(G.H);
+        // appended (31..33): the point opens in coop and while carrying too (pass 2C), where zdb keeps F_NONE
+        f(G.coop);
+        RobotInfo c = rc.getCarrying();
+        f(c == null ? 0 : c.team == G.us ? 1 : 2);
+        f(Nav.guard != null);
     }
 
     /** BABY_ROLE features (32): ph 0 at birth (after born()), 1 at a review; prev is the role before the review

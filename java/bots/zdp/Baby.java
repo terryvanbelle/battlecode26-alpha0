@@ -36,6 +36,7 @@ public final class Baby {
         RobotController rc = G.rc;
         D.point = 0;
         D.point2 = 0;
+        mute = false;   // net mode: an exception last turn may have left zdb's squeaks muted
         if (role < 0) {
             born();
             if (D.ON) {   // BABY_ROLE at birth
@@ -145,10 +146,10 @@ public final class Baby {
         if (D.ON) D.babyComms();   // BABY_COMMS opens (secondary slot)
         int netC = -1;
         if (D.NET && D.point2 == D.BABY_COMMS) {
-            // the net's squeak goes first; zdb's cashTick/report still run (listening, cash state) and their squeak
-            // then fails (one squeak a turn)
-            int k = D.pick2(D.BABY_COMMS, null);
-            if (k >= 0 && commsExec(k)) netC = k;
+            // the net's squeak replaces zdb's: cashTick/report still run (listening, cash state) but muted, then the
+            // net's option squeaks (C_NONE: silence); when it cannot, zdb's held squeak goes out instead
+            netC = D.pick2(D.BABY_COMMS, commsOk);
+            if (netC >= 0) { mute = true; mutedAny = false; }
         }
         // ledger (K = 20 with G.settle): the hook's bytecodes outside the two reads (u6x runs only the report() call)
         int cd0 = G.debt, cb0 = G.bc();
@@ -156,7 +157,11 @@ public final class Baby {
         G.settle(cd0, cb0, 20);
         if (cashSq) D.lab2 = cashLead ? D.C_CASH_LEAD : D.C_CASH_RELAY;
         if (!cashSq) report();
-        if (netC >= 0) D.lab2 = netC;
+        if (D.NET && netC >= 0) {
+            mute = false;
+            if (commsExec(netC)) D.lab2 = netC;
+            else if (mutedAny) rc.squeak(mutedMsg);
+        }
         D.emit2();
 
         // 3. movement
@@ -220,9 +225,10 @@ public final class Baby {
         tryDeliver();
         }
         D.emit();   // BABY_ACT_POST closes
-        if (D.ON && !G.coop && rc.isTurningReady() && rc.getCarrying() == null) D.babyFace(moved);
+        // BABY_FACE opens on every turning-ready turn (coop and carrying too, where guardTurn keeps F_NONE)
+        if (D.ON && rc.isTurningReady()) D.babyFace(moved);
         if (D.NET && D.point == D.BABY_FACE) {
-            int k = D.pick(D.BABY_FACE, null);
+            int k = D.pick(D.BABY_FACE, faceOk);
             if (k >= 0 && faceExec(k)) D.lab = k; else guardTurn();
         } else guardTurn();
         D.emit();   // BABY_FACE closes
@@ -278,12 +284,24 @@ public final class Baby {
     /** Cfg.STALL_CAT: once this attacker has stayed within Chebyshev 3 of one tile for STALL_CAT rounds it hunts cats:
      *  it walks to a cat in view, else the cat last known, else the centre (centreTile). False while it has not. */
     static boolean stallCat() throws GameActionException {
+        if (!stallTick()) return false;
+        return huntCat();
+    }
+
+    /** stallCat's tracker: update stallAt/stallSince and latch catHunt; true once hunting. Idempotent within a turn
+     *  (net mode runs it every coop turn for attackers, whatever the net picks). */
+    static boolean stallTick() {
         if (!catHunt) {
             if (stallAt == null || G.cheb(G.me, stallAt) > 3) { stallAt = G.me; stallSince = G.round; return false; }
             if (G.round - stallSince < Cfg.STALL_CAT) return false;
             catHunt = true;
             catHunters++;
         }
+        return true;
+    }
+
+    /** stallCat's movement once hunting: a cat in view, else the cat last known, else the centre. */
+    static boolean huntCat() throws GameActionException {
         if (cat != null && approachCat(cat)) return true;
         MapLocation ct = knownCat();
         if (ct == null) ct = centreTile(home, G.cx2, G.cy2);
@@ -852,9 +870,23 @@ public final class Baby {
         }
     }
 
+    /** Net mode (BABY_COMMS): zdb's cashTick/report run muted so the net's squeak replaces theirs; a muted squeak is
+     *  held in mutedMsg (the first one; mutedAny) and counts as sent, so their control flow and state are zdb's. */
+    static boolean mute, mutedAny;
+    static int mutedMsg;
+
+    /** Every zdb squeak goes through here (rc.squeak unless muted). */
+    static boolean squeak(int msg) {
+        if (mute) {
+            if (!mutedAny) { mutedAny = true; mutedMsg = msg; }
+            return true;
+        }
+        return G.rc.squeak(msg);
+    }
+
     /** Squeak the mine at key = x * 64 + y; true when it went out. */
     static boolean squeakMine(int key) {
-        return G.rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0));
+        return squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0));
     }
 
     /** Our symmetry mask is sharper than the kings' shared one. */
@@ -864,7 +896,7 @@ public final class Baby {
     }
 
     static boolean squeakSym() {
-        return G.rc.squeak(Comms.squeak(Comms.SQ_SYM, 0, 0, Sym.mask));
+        return squeak(Comms.squeak(Comms.SQ_SYM, 0, 0, Sym.mask));
     }
 
     /** The first of our mines the king's list lacks (x * 64 + y), else -1. */
@@ -880,7 +912,7 @@ public final class Baby {
     static boolean catNews() { return catSeen != null && G.round - catSeenRound <= 2; }
 
     static boolean squeakCat() {
-        return G.rc.squeak(Comms.squeak(Comms.SQ_CAT, catSeen.x, catSeen.y, 0));
+        return squeak(Comms.squeak(Comms.SQ_CAT, catSeen.x, catSeen.y, 0));
     }
 
     /** Some tile of a cat (2x2 from catBL) is within squeak range (d2 16) of p. */
@@ -1392,7 +1424,8 @@ public final class Baby {
         minesAtPick = Comms.numMines;
         if (D.ON) D.minePick(n, ours, m);   // MINE_PICK opens (secondary slot; BABY_MOVE is open)
         if (D.NET && D.point2 == D.MINE_PICK) {
-            MapLocation p = minePickExec(D.pick2(D.MINE_PICK, null), n);
+            for (int i = 0; i < mineOk.length; i++) mineOk[i] = i < m;
+            MapLocation p = minePickExec(D.pick2(D.MINE_PICK, mineOk), m);
             if (p != null) { D.emit2(); return p; }
         }
         // Cfg.MINE_BALANCE: the rat's slot spreads the pick, shifted by Cfg.IDLE_SHIFT
@@ -1546,7 +1579,7 @@ public final class Baby {
         }
         if (G.cheb(G.me, cashSite) > Cfg.CASH_PULL) { if (!cashLead) cashSite = null; return false; }
         if (cat != null && catInEarshot(cat.location, G.me)) return false;
-        return rc.squeak(Comms.squeak(Comms.SQ_CASH, cashSite.x, cashSite.y, cashTag(cashSite.x, cashSite.y) << 10 | (cashStart & 1023)));
+        return squeak(Comms.squeak(Comms.SQ_CASH, cashSite.x, cashSite.y, cashTag(cashSite.x, cashSite.y) << 10 | (cashStart & 1023)));
     }
 
     /** p is at least Chebyshev CASH_FAR from every king's centre. */
@@ -1895,6 +1928,21 @@ public final class Baby {
         return biteEnemies(a) || G.rc.getDirection() != f0;
     }
 
+    /** BABY_FACE net mask: F_HEARD never acts (nothing is heard: Cfg.TRAP_SHARE is off). */
+    static final boolean[] faceOk = new boolean[D.BABY_FACE_OPTIONS];
+    static { for (int i = 0; i < faceOk.length; i++) faceOk[i] = i != D.F_HEARD; }
+
+    /** BABY_COMMS net mask: C_EKING (nobody acts on it: KING_PRESS, PRESS_SHARED and TRAP_SHARE are off), C_TRAP
+     *  (TRAP_SHARE off), C_BURN and C_TRIP (retired) never do anything. */
+    static final boolean[] commsOk = new boolean[D.BABY_COMMS_OPTIONS];
+    static {
+        for (int i = 0; i < commsOk.length; i++)
+            commsOk[i] = i != D.C_EKING && i != D.C_TRAP && i != D.C_BURN && i != D.C_TRIP;
+    }
+
+    /** MINE_PICK net mask (ranks < m: pickMine's eligible candidates; set per pick). */
+    static final boolean[] mineOk = new boolean[D.MINE_PICK_OPTIONS];
+
     /** BABY_FACE: face option k. */
     static boolean faceExec(int k) throws GameActionException {
         RobotController rc = G.rc;
@@ -1927,10 +1975,11 @@ public final class Baby {
         return rc.getDirection() == to;
     }
 
-    /** BABY_COMMS: squeak option k (true when it squeaked). C_NONE cannot silence zdb's report in pass 1: false. */
+    /** BABY_COMMS: squeak option k (true when it squeaked, or C_NONE: stay silent; zdb's squeak is muted). */
     static boolean commsExec(int k) throws GameActionException {
         RobotController rc = G.rc;
         switch (k) {
+            case D.C_NONE: return true;
             case D.C_MINE_GOSSIP:
                 return myMineCount > 0 && squeakMine(myMines[G.round % myMineCount]);
             case D.C_MINE_RELAY: {
@@ -1960,13 +2009,13 @@ public final class Baby {
             case D.C_EKING:
                 if (eKing == null) return false;
                 return rc.squeak(Comms.squeak(Comms.SQ_EKING, eKing.location.x, eKing.location.y, (G.round & 1023) << 2));
-            default: return false;   // C_NONE, C_BURN, C_TRIP, C_TRAP (Cfg.TRAP_SHARE off): never squeak
+            default: return false;   // C_BURN, C_TRIP, C_TRAP (masked out by commsOk): never squeak
         }
     }
 
-    /** MINE_PICK: candidate rank k of pickMine's cand[0..n) (sets the label), else null (zdb's pick). */
-    static MapLocation minePickExec(int k, int n) {
-        if (k < 0 || k >= n) return null;
+    /** MINE_PICK: candidate rank k of pickMine's eligible cand[0..m) (sets the label), else null (zdb's pick). */
+    static MapLocation minePickExec(int k, int m) {
+        if (k < 0 || k >= m) return null;
         D.lab2 = k;
         return cand[k];
     }
@@ -1976,6 +2025,7 @@ public final class Baby {
 
     /** Net-mode movement: the net's option, or zdb's cascade when it cannot act (label 0x8000 | k << 6 | zdb's). */
     static void netMove() throws GameActionException {
+        netBook();
         int k = -1;
         if (D.point == D.BABY_MOVE) { netAllowed(); k = D.pick(D.BABY_MOVE, netOk); }
         boolean acted = false;
@@ -1988,6 +2038,47 @@ public final class Baby {
             moveDecision();
             if (k >= 0) D.lab = 0x8000 | (k << 6) | (D.lab & 63);
         }
+    }
+
+    /** Net mode, every movement-ready turn before the pick: the bookkeeping zdb's cascade does inside branches the net
+     *  may not take. Cfg.STALL_CAT's tracker (stallCat, attackers in coop) and attack()'s enemy-king memory
+     *  (lastEKing, the FIX_EKING_FORGET forget and rushTarget's noKing marks, via markNoKing). Each is idempotent within a turn, so a
+     *  later stallCat()/attack() (the option or zdb's fallback cascade) repeats it harmlessly. */
+    static void netBook() throws GameActionException {
+        if (role == ATTACK && G.coop) stallTick();
+        if (role != ATTACK) return;
+        if (eKing != null) { lastEKing = eKing.location; lastEKingRound = G.round; return; }
+        if (Cfg.FIX_EKING_FORGET && lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
+                && G.rc.canSenseLocation(lastEKing)) lastEKing = null;
+        if (lastEKing != null && G.round - lastEKingRound < 30 && G.me.distanceSquaredTo(lastEKing) > 8) return;
+        markNoKing();
+    }
+
+    /** rushTarget's noKing marks without its reset (that reset is not idempotent: run here and again in attack() it
+     *  would clear noKing and let attack() rush a spot zdb's single call gives up on). */
+    static void markNoKing() throws GameActionException {
+        RobotController rc = G.rc;
+        for (int s = 1; s <= 4; s <<= 1) {
+            if ((Sym.mask & s) == 0 || (noKing & s) != 0) continue;
+            MapLocation c = G.mirror(home, s);
+            if (G.me.distanceSquaredTo(c) <= 13 && rc.canSenseLocation(c)) {
+                RobotInfo r = rc.senseRobotAtLocation(c);
+                if (r == null || r.type != UnitType.RAT_KING || r.team != G.them) noKing |= s;
+            }
+        }
+    }
+
+    /** Cfg.SEEK_IDLE: idle(mineTarget) would trip this turn (side-effect free; as the cascade's mine block sees it, its
+     *  refreshMine keeping the target). */
+    static boolean idleDue() {
+        MapLocation m = mineTarget;
+        if (m == null || Comms.numMines != minesAtPick || role != GATHER && role != FIGHT) return false;
+        return G.cheb(G.me, m) <= Cfg.SEEK_IDLE_R && idleCount() + 1 >= Cfg.SEEK_IDLE;
+    }
+
+    /** Cfg.SEEK_IDLE's idle turns as idle() will count from (0 after a pickup since the last count). */
+    static int idleCount() {
+        return picked != idlePicked ? 0 : idleTurns;
     }
 
     /** Fill netOk: side-effect-free applicability of each BABY_MOVE option. */
@@ -2016,7 +2107,7 @@ public final class Baby {
         a[D.M_MICRO] = nearestEnemy != null;
         a[D.M_FACE] = nearEnemy(8);
         a[D.M_ATK_DELIVER] = false;   // alias of M_DELIVER
-        a[D.M_STALL_CAT] = role == ATTACK;
+        a[D.M_STALL_CAT] = role == ATTACK && G.coop && catHunt;
         a[D.M_ATTACK] = true;
         a[D.M_WAR] = nearestEnemy != null || eKing != null || threatenedKing() != null || Comms.fresh(Comms.read(Comms.ALERT + 2), 3);
         a[D.M_FORT] = false;   // Cfg.FORT_R is 0
@@ -2031,8 +2122,9 @@ public final class Baby {
         a[D.M_SCOUT] = true;
         a[D.M_SEEK] = true;
         a[D.M_MINE_EXPLORE] = true;
-        a[D.M_IDLE_SEEK] = G.round >= seekNext;
-        a[D.M_START_SEEK] = mineTarget != null && G.round >= seekNext;
+        a[D.M_IDLE_SEEK] = role == GATHER && G.round >= seekNext && idleDue();
+        a[D.M_START_SEEK] = role == GATHER && mineTarget != null && G.round >= seekNext && atMine(mineTarget)
+            && nearerAllies(mineTarget) >= Cfg.SEEK_CROWD;
         a[D.M_MINE_STILL] = true;
         a[D.M_MINE_WANDER] = mineOk;
         a[D.M_MINE_GO] = mineOk;
@@ -2102,7 +2194,8 @@ public final class Baby {
             case D.M_ATK_DELIVER:
                 return rc.getRawCheese() > 0 && deliver();
             case D.M_STALL_CAT:
-                if (!stallCat()) return false;
+                // the tracker already ran this turn (netBook)
+                if (!(role == ATTACK && G.coop && catHunt) || !huntCat()) return false;
                 why = 'g'; return true;
             case D.M_ATTACK:
                 if (!attack()) return false;
@@ -2154,11 +2247,11 @@ public final class Baby {
                 if (!exploreHome()) return false;
                 mineTarget = null; why = 'x'; return true;
             case D.M_IDLE_SEEK:
-                if (!idleSeek() || !seek()) return false;
-                why = 'x'; return true;
+                if (role != GATHER || !idleDue()) return false;
+                return netMineBlock(k);
             case D.M_START_SEEK:
-                if (mineTarget == null || !startSeek(mineTarget) || !seek()) return false;
-                why = 'x'; return true;
+                if (role != GATHER || mineTarget == null || !atMine(mineTarget)) return false;
+                return netMineBlock(k);
             case D.M_MINE_STILL: {
                 // hold still and sweep the cone around the spawn square (zdb's Cfg.GATHER_STILL, off in the cascade)
                 Direction t = G.facing.rotateRight().rotateRight();
@@ -2166,14 +2259,8 @@ public final class Baby {
                 return true;
             }
             case D.M_MINE_WANDER:
-                if (!netMine()) return false;
-                wanderAround(mineTarget);
-                why = 'W'; return true;
             case D.M_MINE_GO:
-                if (!netMine()) return false;
-                why = 'M';
-                goMine();
-                return true;
+                return netMineBlock(k);
             case D.M_EXPLORE:
                 why = 'E'; explore(); return true;
             case D.P_HOLD:
@@ -2186,7 +2273,8 @@ public final class Baby {
                     if (!rc.canMove(d)) return false;
                     rc.move(d);
                     G.me = rc.getLocation(); G.facing = rc.getDirection();
-                    Nav.stall++;
+                    // Nav.stall is left alone: it is the macro walk's no-progress count (goTo resets it on a new
+                    // target), and a primitive step must not make the next errand give up its target early
                     why = 'v'; return true;
                 }
                 if (k >= D.P_TURN0 && k < D.P_TURN0 + 8) {
@@ -2199,14 +2287,29 @@ public final class Baby {
         }
     }
 
-    /** The cascade's mine refresh and idle shift (its idle-seek branch is the separate option M_IDLE_SEEK); true with
-     *  a mine. */
-    static boolean netMine() {
+    /** Net mode: the cascade's mine block for option k (M_IDLE_SEEK, M_START_SEEK, M_MINE_WANDER, M_MINE_GO): the
+     *  mine refresh, the idle tick (gatherers and fighters) with its IDLE_SHIFT re-pick, then the move. M_IDLE_SEEK
+     *  seeks on the idle trip and M_START_SEEK at a crowded mine; when that seek cannot run they move as the cascade
+     *  does after it (wander at the mine, else walk to it). M_MINE_WANDER wanders and M_MINE_GO walks wherever the
+     *  rat is. False only with no mine (only the refresh ran). */
+    static boolean netMineBlock(int k) throws GameActionException {
         refreshMine();
-        if (mineTarget != null && (role == GATHER || role == FIGHT) && idle(mineTarget)) {
+        if (mineTarget == null) return false;
+        if ((role == GATHER || role == FIGHT) && idle(mineTarget)) {
             shiftMine();
+            if (k == D.M_IDLE_SEEK && role == GATHER && idleSeek() && seek()) { why = 'x'; return true; }
             if (mineTarget == null) { D.pickSite = 2; mineTarget = pickMine(); }
+            if (mineTarget == null) return true;   // unreachable (the refresh found candidates); the tick is spent
         }
-        return mineTarget != null;
+        boolean at = atMine(mineTarget);
+        if (k == D.M_START_SEEK && at && role == GATHER && startSeek(mineTarget) && seek()) { why = 'x'; return true; }
+        if (k == D.M_MINE_WANDER || k != D.M_MINE_GO && at) {
+            wanderAround(mineTarget);
+            why = 'W';
+        } else {
+            why = 'M';
+            goMine();
+        }
+        return true;
     }
 }

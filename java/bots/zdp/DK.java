@@ -119,7 +119,7 @@ public final class DK {
             D.f(D.cap(Comms.numKings, 8));
             D.f(D.cap(Comms.numMines, 63));
             D.f(King.start != null ? D.cap(G.cheb(c, King.start), 63) : 63);
-            D.f("-nsfcbd".indexOf(King.spawnWhy) + 1);
+            D.f("-nsfcbdh".indexOf(King.spawnWhy) + 1);
             D.f(D.cap((rc.getCurrentRatCost() - 10) / 10 * 4, 255));
             D.f(c.x);
             D.f(c.y);
@@ -247,7 +247,7 @@ public final class DK {
             D.f(nr);
             D.f(D.cap(rc.getDirt(), 255));
             D.f(false);   // Moat.up(): never true (Cfg.MOAT off)
-            D.f("-nsfcbd".indexOf(King.spawnWhy));
+            D.f("-nsfcbdh".indexOf(King.spawnWhy));
             D.f(D.cap(King.spawned, 255));
             D.f(Comms.numKings);
             D.f(me.x);
@@ -327,7 +327,7 @@ public final class DK {
         if (D.point != point) return -1;
         float[] z = DNet.logits(point, D.F, D.n);
         if (z == null) return -1;
-        return DNet.sample(z, allowed, NET_T, NET_FLOOR);
+        return DNet.sample(z, D.fit(allowed, z.length), NET_T, NET_FLOOR);
     }
 
     /** KING_MOVE in net mode: true when the net's option acted (move() is then skipped this turn). */
@@ -441,7 +441,7 @@ public final class DK {
                 return true;
             }
             case S_BLOCKED: King.spawnWhy = 'd'; return true;
-            case S_HOLD: return true;
+            case S_HOLD: King.spawnWhy = 'h'; return true;
             default: {
                 int i = k - S_BUILD_0;
                 if (i < 0 || i >= 16) return false;
@@ -453,7 +453,7 @@ public final class DK {
         }
     }
 
-    /** KING_ACT net mode: A_NONE sets hold, which skips zdb's bite for the turn. */
+    /** KING_ACT net mode: A_NONE sets hold, which skips zdb's bite for the turn (King.turn clears it each turn). */
     static boolean hold;
 
     static void netKingAct(RobotInfo[] enemies, RobotInfo[] cats) {
@@ -554,13 +554,26 @@ public final class DK {
 
     /** KING_FORM net mode: true when the option acted (formation() is then skipped this turn). */
     static boolean netKingForm() {
-        int k = netPick(KING_FORM, null);
+        int k = netPick(KING_FORM, formAllowed());
         if (k < 0) return false;
         try {
             if (!execKingForm(k)) return false;
         } catch (GameActionException e) { return false; }
         D.lab = k;
         return true;
+    }
+
+    /** KING_FORM options the net may pick now: with a site open the 'no site' exits (which would fail and fall back
+     *  to formation()) are masked; with none open the exits that need one (drop, hold) are. */
+    static boolean[] formAllowed() {
+        boolean[] a = new boolean[KING_FORM_OPTIONS];
+        boolean open = King.formSite != null;
+        for (int k = 0; k < KING_FORM_OPTIONS; k++) a[k] = true;
+        a[F_RICH_DROP] = a[F_RICH_GAP] = a[F_DROP_FORMED] = a[F_DROP_TIMEOUT] = a[F_HOLD] = open;
+        a[F_END_WAIT] = a[F_END_NONE] = a[F_IDLE] = a[F_NO_INCOME] = a[F_NO_SITE] = !open;
+        boolean full = Comms.numKings >= Comms.KING_SLOTS;
+        for (int k = F_START_MINE; k < KING_FORM_OPTIONS; k++) a[k] = !open && !full;   // formOpen refuses these
+        return a;
     }
 
     static boolean execKingForm(int k) throws GameActionException {

@@ -19,6 +19,7 @@ public final class King {
     public static void turn() throws GameActionException {
         RobotController rc = G.rc;
         spawnWhy = '-';
+        DK.hold = false;   // net mode's KING_ACT A_NONE flag: this turn's only
         if (slot < 0) {
             claimSlot();
             start = G.me;
@@ -46,7 +47,7 @@ public final class King {
         try { spawn(cats, enemies); } finally { if (D.point == DK.KING_SPAWN) D.emit(); }
         Debug.mark(46);
         boolean dA = rc.isActionReady();   // KING_ACT decision point
-        if (D.EMIT && dA) DK.kingAct(enemies, cats);
+        if (D.ON && dA) DK.kingAct(enemies, cats);
         try {
         if (D.NET && dA) DK.netKingAct(enemies, cats);
         if (!G.coop && !(D.NET && DK.hold)) bite(enemies);
@@ -65,12 +66,12 @@ public final class King {
         } finally { if (dA && D.point == DK.KING_ACT) { if (D.lab < 0) D.lab = DK.A_NONE; D.emit(); } }
         // KING_FORM decision point (the slot-0 king)
         boolean dF = slot == 0;
-        if (D.EMIT && dF) DK.kingForm();
+        if (D.ON && dF) DK.kingForm();
         try { if (!(D.NET && dF && DK.netKingForm())) formation(); } finally { if (dF && D.point == DK.KING_FORM) D.emit(); }
         Debug.mark(47);
         // KING_MOVE decision point
         boolean dM = rc.isMovementReady();
-        if (D.EMIT && dM) DK.kingMove(cats, enemies);
+        if (D.ON && dM) DK.kingMove(cats, enemies);
         try { if (!(D.NET && dM && DK.netKingMove(cats, enemies))) move(cats, enemies); }
         finally { if (dM && D.point == DK.KING_MOVE) D.emit(); }
         Debug.mark(48);
@@ -269,7 +270,7 @@ public final class King {
     }
 
     /** The last spawn() outcome (Debug.KWHY): n not action-ready, s no surplus, f under the floor, c at the cap,
-     *  b built, d no free tile (dug the ring). sawEnemy: enemies in view after cooperation. */
+     *  b built, d no free tile (dug the ring), h net mode's S_HOLD (never in zdb). sawEnemy: enemies in view after cooperation. */
     static char spawnWhy = '-';
     static boolean sawEnemy;
 
@@ -296,7 +297,7 @@ public final class King {
         boolean boot = babies < core && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Cfg.CORE_FLOOR, low, sf));
         // at war with enemies in sight, bodies now beat cheese later: spawn down to a short upkeep floor
         boolean war = siege && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Cfg.WAR_FLOOR, low, sf));
-        if (D.EMIT) DK.kingSpawn(cats, enemies, cost, babies, low, sf, core, boot, war);   // KING_SPAWN decision point
+        if (D.ON) DK.kingSpawn(cats, enemies, cost, babies, low, sf, core, boot, war);   // KING_SPAWN decision point
         if (D.NET && DK.netKingSpawn(cats, enemies)) return;
         spawnWhy = 's';
         if (!boot && !war && Econ.surplus() < cost + Cfg.SPAWN_MARGIN) { D.lab = DK.S_NO_SURPLUS; return; }
@@ -721,10 +722,9 @@ public final class King {
     /** Kings we form up to (war or peace alike). */
     static int formCap() { return Cfg.FORM_MAX; }
 
-    /** Net option F_RICH_DROP: close the site; in rich() mode it is banned and the next opens RICH_FIX_RETRY rounds
-     *  later. */
+    /** Net option F_RICH_DROP: close the site. zdb's rich-fix ban (ban the site, retry RICH_FIX_RETRY rounds later)
+     *  is off, so zdb never bans and neither does the net. */
     static void richDrop() {
-        if (richRetry()) { ban(formSite); formStart = G.round + Cfg.RICH_FIX_RETRY - Cfg.FORM_TTL - Cfg.FORM_RETRY; }
         closeForm();
     }
 
@@ -733,8 +733,6 @@ public final class King {
         closeForm();
         formStart = G.round - Cfg.FORM_TTL - Cfg.FORM_RETRY;
     }
-
-    static boolean richRetry() { return rich(); }
 
     /** One of our kings stands within Chebyshev 2 of s (its body is in the site's 3x3): a KING_FORM feature. */
     static boolean kingOn(MapLocation s) {
@@ -816,7 +814,8 @@ public final class King {
         return false;
     }
 
-    /** Sites banned by richDrop; mineSite and net option F_START_BACK do not name them again. */
+    /** Banned formation sites (zdb's rich-fix ban, off: nothing bans today); mineSite and net option F_START_BACK
+     *  skip them. */
     static final MapLocation[] siteBans = new MapLocation[8];
     static int nBans;
 
