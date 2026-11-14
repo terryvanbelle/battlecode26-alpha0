@@ -1,6 +1,7 @@
 #!/bin/bash
 # RL gates (docs/rl-plan.md section 5): a thin wrapper over eval_student.py / strength_check.sh for zdpr<V>.
-#   scripts/rl_gate.sh CONFIG RUN anchor   V   zdpr<V> vs the reference (zdpn2): ZMAPS x anchor_seeds x 2 sides (32), VM only
+#   scripts/rl_gate.sh CONFIG RUN anchor   V   zdpr<V> vs the reference (zdpn2): ZMAPS x anchor_seeds x 2 sides (32), VM only;
+#                                              then the same games vs each gates.track_opponents entry (tracking only)
 #   scripts/rl_gate.sh CONFIG RUN promote  V   ZMAPS x promote_seeds x 2 sides (128), split with the box; pass = Wilson lo > 0.50
 #   scripts/rl_gate.sh CONFIG RUN strength V   strength_check.sh (64 vs zdb + 192 held-out field) and the field rule:
 #                                              pass = field score >= the reference's field score - field_margin
@@ -55,6 +56,15 @@ case $MODE in
       --sides AB --out $OUT --workers $(cfgv "['workers_vm']") > $OUT.log 2>&1 || exit 2
     J=$(verdict $OUT) || exit 2
     record "$($PY -c "import json,sys; d=json.loads(sys.argv[1]); d['pass']=d['score']>=$(cfgv "['gates']['promote_if_anchor']"); print(json.dumps(d))" "$J")"
+    # tracking only (gates.track_opponents, e.g. zdb): same maps and seeds, recorded as mode anchor-<opp>, never gates anything
+    M0=$MODE O0=$OUT
+    for T in $($PY -c "import json; print(' '.join(json.load(open('$CFG'))['gates'].get('track_opponents', [])))"); do
+      MODE=anchor-$T OUT=$GD/anchor-$T-v$V
+      $PY -u scripts/eval_student.py --player $NAME --opponents $T --maps $ZMAPS --seeds $(cfgv "['gates']['anchor_seeds']") \
+        --sides AB --out $OUT --workers $(cfgv "['workers_vm']") > $OUT.log 2>&1 || { echo "track $T v$V: eval error"; continue; }
+      J=$(verdict $OUT) && record "$J"
+    done
+    MODE=$M0 OUT=$O0
     ;;
   promote)
     ARGS="--player $NAME --opponents $REF --maps $ZMAPS --seeds $(cfgv "['gates']['promote_seeds']") --sides AB"

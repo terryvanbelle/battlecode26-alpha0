@@ -116,7 +116,10 @@
     ],
     "promote_wilson_lo": 0.5,
     "field_margin": 0.05,
-    "field_fail_stop": 2
+    "field_fail_stop": 2,
+    "track_opponents": [
+      "zdb"
+    ]
   },
   "disk_guard_gb": 5.0,
   "keep_npz_iters": 2,
