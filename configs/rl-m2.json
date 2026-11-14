@@ -1,0 +1,211 @@
+{
+  "name": "rl-m2",
+  "purpose": "M2: real self-play PPO-lite (docs/rl-plan.md sections 2-5), box sandbox single host. Start = desat-b5 widened capability-complete (widen_dpnet.py --active full --init-new calibrated, floor 0.005, no calib records: new options of widened points at bias -20, R_KEEP 60; new points 8/9/14/15/16 calibrated); anchor (KL leash) = net-v2 widened the same way; point 5 floor 0.001 so random role flips stay rare. Trainable 5, 7, 10, 11, 12, 13 + KING_COMMS 14 + KING_TURN 16. M1 step settings (lr 1e-3, target_kl 0.1). Mirror + pool as rl-v1; anchor gate every 3 versions vs zdpf005 (32 games, ZMAPS). Promotion gate off on the box (the held-out field bots for strength_check are not on the box); no promotions, so lr stays 1e-3 and no field rollbacks. Self-play only.",
+  "start_net": "runs/m2/start/net.json",
+  "anchor_net": "runs/m2/anchor/net.json",
+  "anchor_package": "zdpf005",
+  "package_prefix": "zdpg",
+  "bootstrap_zdb": 0.0,
+  "floor": 0.005,
+  "temperature": 1.0,
+  "floor_test": {
+    "reference": 0.001,
+    "candidates": [
+      0.001,
+      0.005,
+      0.01
+    ],
+    "max_cost_pp": 3,
+    "seeds": [
+      31,
+      32,
+      33,
+      34
+    ]
+  },
+  "trainable_points": [
+    5,
+    7,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+  ],
+  "phase_b_unlocks": [
+    [
+      2,
+      3,
+      4
+    ],
+    [
+      6
+    ],
+    [
+      1
+    ]
+  ],
+  "frozen_sample": 0.05,
+  "max_rows_per_point": 2000000,
+  "train": {
+    "epochs": 2,
+    "batch": 4096,
+    "lr": 0.001,
+    "lr_after_promotion": 0.001,
+    "ppo_clip": 0.2,
+    "target_kl": 0.1,
+    "grad_clip": 0.5,
+    "beta_start": 0.03,
+    "beta_end": 0.01,
+    "beta_anneal_iters": 20,
+    "collapse_kl": 0.3,
+    "max_anchor_kl": 0.5,
+    "c_ent": 0.003,
+    "adv_clip": 5.0,
+    "value_window": 3,
+    "value_val_frac": 0.1,
+    "threads": 8
+  },
+  "parity": {
+    "median_max": 0.001,
+    "p999_max": 0.002
+  },
+  "games_per_iter": 128,
+  "games_per_iter_phase_b": 256,
+  "mirror_fraction": 0.6,
+  "min_games": 120,
+  "collect_deadline_min": 120,
+  "collect_deadline_min_phase_b": 30,
+  "seed_base": 2600000,
+  "seed_iter_stride": 1000,
+  "trace": 10,
+  "game_timeout_seconds": 1200,
+  "java_flags": "-Xmx2g",
+  "workers_vm": 15,
+  "workers_box": 0,
+  "box_slice": "0:0:4",
+  "vm_slice": "0:4:4",
+  "pool": {
+    "snapshot_every": 2,
+    "keep_last": 8,
+    "pfsp_from_iter": 10,
+    "pfsp_power": 1.0,
+    "winrate_ema_iters": 2,
+    "base_min_share": 0.1,
+    "base_permanent": true
+  },
+  "gates": {
+    "anchor_every": 3,
+    "anchor_seeds": [
+      41,
+      42
+    ],
+    "promote_every": 1000,
+    "promote_if_anchor": 2.0,
+    "promote_seeds": [
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58
+    ],
+    "promote_wilson_lo": 0.5,
+    "field_margin": 0.05,
+    "field_fail_stop": 2
+  },
+  "disk_guard_gb": 5.0,
+  "keep_npz_iters": 2,
+  "zmaps": [
+    "mincemeat",
+    "jail",
+    "rift",
+    "pipes",
+    "gridlock",
+    "thunderdome",
+    "sunandmoon",
+    "ZeroDay"
+  ],
+  "gmaps": [
+    "tiny",
+    "DefaultSmall",
+    "DefaultMedium",
+    "DefaultLarge",
+    "closeup",
+    "knifefight",
+    "cheesefarm",
+    "wallsofparadis"
+  ],
+  "heldout_field": [
+    "VarunVejalla_final4_run_away10",
+    "GuzziFlipFlops_Hermesv8",
+    "quesswho_quals",
+    "daannte_v47_Skadoosh",
+    "AlexT101_usqualsbot",
+    "examplefuncsplayer"
+  ],
+  "excluded_maps_from": "configs/teacher-dp2.json",
+  "training_maps_rule": "all 74 maps minus teacher-dp2 excluded_maps (4 ancestral + 8 GMAPS) minus the 8 ZMAPS",
+  "training_maps": [
+    "5t4rv4t10n_1337",
+    "EscapeTheNight",
+    "Excavation",
+    "FreeTheCheese",
+    "Meow",
+    "Nofreecheese",
+    "RUN",
+    "TheHeist",
+    "UncomfortablyClose",
+    "arrows",
+    "attack_on_cat",
+    "averyfineline",
+    "averystrangespace",
+    "bed",
+    "canyoudig",
+    "cheesebottles",
+    "cheeseguardians",
+    "clockwisdom",
+    "clouds",
+    "constrictinglattice",
+    "corridorofdoomanddespair",
+    "diamond",
+    "dirtfulcat",
+    "dirtpassageway",
+    "evileye",
+    "externalsustenance",
+    "fullofsecrets",
+    "groveisbeingdesecrated",
+    "hatefullattice",
+    "houseofcards",
+    "keepout",
+    "krotus",
+    "learn_your_lesson",
+    "mercifullattice",
+    "minimaze",
+    "peaceinourtime",
+    "popthecork",
+    "rose",
+    "safelycontained",
+    "seepastyourgreed",
+    "sittingducks",
+    "starvation",
+    "streetsofnewyork",
+    "superioristhmus",
+    "t_minus_five_minutes",
+    "toomuchcheese",
+    "tornadoes",
+    "trapped",
+    "ultimatestarvation",
+    "uneasy_alliance",
+    "uneruesansfin",
+    "whatsthecatdoin",
+    "where_are_you",
+    "whereisthecheese"
+  ],
+  "floor_points": {
+    "5": 0.001
+  }
+}
