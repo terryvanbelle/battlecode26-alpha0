@@ -15,6 +15,7 @@ source scripts/box_split.sh
 CFG=$1 RUN=$2 MODE=$3 V=$4
 [ -n "$V" ] || { sed -n 2,9p "$0"; exit 2; }
 cfgv() { $PY -c "import json,sys; c=json.load(open('$CFG')); v=eval('c'+sys.argv[1]); print(','.join(map(str,v)) if isinstance(v,list) else v)" "$1"; }
+export BC_JAVA_FLAGS=$(cfgv "['java_flags']" 2>/dev/null || echo -Xmx2g)
 PREFIX=$(cfgv "['package_prefix']") REF=$(cfgv "['anchor_package']")
 ZMAPS=$(cfgv "['zmaps']")
 NAME=$PREFIX$V

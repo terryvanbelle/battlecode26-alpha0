@@ -78,7 +78,7 @@ def main():
     if a.slice:
         lo, hi, n = map(int, a.slice.split(':'))
         jobs = [j for i, j in enumerate(jobs) if lo <= i % n < hi]
-    flags = '-Xmx2g' + (' -Dbc.alpha0.tournamentLimits=true' if a.limits else '')
+    flags = os.environ.get('BC_JAVA_FLAGS', '-Xmx2g') + (' -Dbc.alpha0.tournamentLimits=true' if a.limits else '')
 
     def play(j):
         d = out / 'games' / j['id']
