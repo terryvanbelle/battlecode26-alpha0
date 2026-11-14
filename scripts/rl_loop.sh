@@ -61,8 +61,8 @@ build_pkg() {   # version: zdpr<v> from nets/<v>, RL build, compiled; marker net
   $PY -c "import sys; sys.path.insert(0, 'scripts'); from eval_student import compile_local; compile_local('$PREFIX$v')" >> $LOG 2>&1 || return 1
   touch $RD/nets/$v/.built
 }
-rollback() {   # rollback V REASON: nets/V := nets/best (net.json, norm.npz), rebuild zdpr<V>
-  local v=$1 best=$(st get best)
+rollback() {   # rollback V REASON [TO]: nets/V := nets/TO (default: the best), rebuild zdpr<V>
+  local v=$1 best=${3:-$(st get best)}
   best=${best:-0}
   log "ROLLBACK v$v -> v$best ($2)"
   mkdir -p $RD/nets/$v
@@ -119,7 +119,7 @@ print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda',
     --adv-clip $(cfgv "$T['adv_clip']") --val-frac $(cfgv "$T['value_val_frac']") --threads $(cfgv "$T['threads']") \
     --seed $k $nokl $crit > $I/train.log 2>&1
   rc=$?
-  if [ $rc -eq 3 ]; then rollback $((k + 1)) "KL collapse refusal at iter $k"; return $?; fi
+  if [ $rc -eq 3 ]; then rollback $((k + 1)) "KL collapse refusal at iter $k" $k; return $?; fi   # nothing exported: keep the input net
   return $rc
 }
 
