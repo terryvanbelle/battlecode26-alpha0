@@ -162,8 +162,8 @@ public final class D {
         f(ne != null);
         f(ne != null ? cap(me.distanceSquaredTo(ne.location), 100) : 100);
         f(Baby.hunting);
-        f(Baby.rescueT != null);
-        f(Baby.guardCarry);
+        f(false);   // rescue target (Cfg.RESCUE off: never set)
+        f(false);   // carrier guard (Cfg.GUARD_CARRY_R off: never set)
         RobotInfo c = rc.getCarrying();
         f(c == null ? 0 : c.team == G.us ? 1 : 2);
         MapLocation t = Baby.cheeseTarget;
@@ -210,7 +210,7 @@ public final class D {
         f(mv);
         f(Nav.avoid & 255);
         f(rc.isTurningReady());
-        f(Baby.catReach() && Baby.knownCat() != null);
+        f(Baby.knownCat() != null);
         f(Baby.cheeseTarget != null && G.cheb(me, Baby.cheeseTarget) == 1);
         f(G.round >= Baby.seekNext);
     }
@@ -352,15 +352,10 @@ public final class D {
         }
         f(mt != null ? me.directionTo(mt).ordinal() + 1 : 0);
         f(mt != null ? md : 0);
-        MapLocation ht = null;
-        int hd = Integer.MAX_VALUE;
-        for (int i = 0; i < TrapRisk.nHeard; i++) {
-            int d = me.distanceSquaredTo(TrapRisk.heardE[i]);
-            if (d <= 8 && d < hd) { hd = d; ht = TrapRisk.heardE[i]; }
-        }
-        f(cap(TrapRisk.nHeard, 15));
-        f(ht != null ? me.directionTo(ht).ordinal() + 1 : 0);
-        f(ht != null ? hd : 0);
+        // heard enemies (count, direction + 1, dist2): none, since no ally squeaks them (Cfg.TRAP_SHARE off)
+        f(0);
+        f(0);
+        f(0);
         f(Nav.guard != null ? me.directionTo(Nav.guard).ordinal() + 1 : 0);
         int[] cnt = new int[9];
         for (RobotInfo r : rc.senseNearbyRobots(-1, G.them)) cnt[me.directionTo(r.location).ordinal()]++;
@@ -384,7 +379,7 @@ public final class D {
         f(cap(G.round / 10, 255));
         f(G.round % Cfg.FIGHT_EVERY);
         f(G.round < Cfg.RUSH_UNTIL);
-        f(Cfg.SCOUT_EVERY > 0 ? (Baby.slot >>> 4) % Cfg.SCOUT_EVERY : 0);
+        f((Baby.slot >>> 4) % Cfg.SCOUT_EVERY);
         f(G.coop);
         f(cap(G.globalCheese / 10, 2000));
         f(Comms.numKings);
@@ -440,7 +435,7 @@ public final class D {
         for (int i = 0; i < Baby.myMineCount; i++) if (!Comms.hasMine(Baby.myMines[i] / 64, Baby.myMines[i] % 64)) u++;
         f(u);
         f(Baby.unreported() >= 0);
-        int s = Cfg.BURN ? Comms.read(Comms.SYM) & 7 : Comms.read(Comms.SYM);
+        int s = Comms.read(Comms.SYM);
         f(s != 0 && (Sym.mask & s) != s);
         f(Sym.count());
         f(Baby.catSeen != null && G.round - Baby.catSeenRound <= 2);

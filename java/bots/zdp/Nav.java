@@ -20,21 +20,10 @@ public final class Nav {
     /** Avoid-mask: bit d set means do not step in DIRS[d] this turn (cat lanes etc). */
     public static int avoid;
     public static int digs;
-    /** Cfg.NAV_SAME_R (a field so tests can set it). */
-    static int sameR = Cfg.NAV_SAME_R;
-    /** Cfg.FLOW_PROGRESS (a field so tests can set it). */
-    static boolean progress = Cfg.FLOW_PROGRESS;
-    /** Cfg.SWAP_HOLD (a field so tests can set it). */
-    static int swapHold = Cfg.SWAP_HOLD;
-    /** The tile the ally we carry past was taken from (where Baby sets it down when it is still beside us), or null. */
-    static MapLocation swapFrom;
-    public static int swaps;
 
-    public static void reset() { bugging = false; bugTurns = 0; }
-
-    /** Tile bits that block greedy steps and start bug walks: walls, dirt, and our kings' bodies with Cfg.KING_BLOCK
-     *  (not KING_FLOW, which marks them for flow paths only). A field so tests can set it. */
-    static int terrain = Sym.WALL | Sym.DIRT | (Cfg.KING_BLOCK ? Sym.KING : 0);
+    /** Tile bits that block greedy steps and start bug walks: walls and dirt (our kings' bodies, Sym.KING, block
+     *  flow paths only). A field so tests can set it. */
+    static int terrain = Sym.WALL | Sym.DIRT;
 
     /** Static blocker (wall/dirt) from memory or sensing; robots are not static blockers. */
     static boolean terrainBlocked(MapLocation l) {
@@ -45,7 +34,7 @@ public final class Nav {
     static MapLocation[] kingMarks = new MapLocation[Comms.KING_SLOTS];
     static int kingMarkN;
 
-    /** Keep Sym.KING on our kings' 3x3 bodies (from the shared array; Cfg.KING_BLOCK, KING_FLOW): re-marked when a king moves,
+    /** Keep Sym.KING on our kings' 3x3 bodies (from the shared array; Cfg.KING_FLOW): re-marked when a king moves,
      *  appears or dies. */
     public static void markKings() {
         int n = Comms.numKings;
@@ -83,114 +72,34 @@ public final class Nav {
     public static boolean goTo(MapLocation t) throws GameActionException {
         if (t == null) return false;
         if (target == null || !target.equals(t)) {
-            // a target that only moved a little (a roaming king) is the same errand: keep the stall and bug state
-            boolean same = target != null && sameR > 0 && G.cheb(target, t) <= sameR;
             target = t;
-            if (!same) {
-                bugging = false;
-                bestDist = G.me.distanceSquaredTo(t);
-                stall = 0;
-            }
+            bugging = false;
+            bestDist = G.me.distanceSquaredTo(t);
+            stall = 0;
         }
         if (G.me.equals(t)) return false;
         if (!G.rc.isMovementReady()) return false;
         // a dirt tile straight ahead with no closer free side step is dug and entered at once; flow (below) is for
         // stalls the local rule cannot see past. Not while a flow path is being followed or searched.
-        if (Cfg.BFLOW) {
-            if (Cfg.DIG_FIRST && !BitFlow.active(t) && digToward(t)) {
-                Direction d = G.me.directionTo(t);
-                return free(d) && step(d);
-            }
-        } else if (Cfg.DIG_FIRST && !(Cfg.FLOW && (Flow.ready(t) || Flow.building)) && digToward(t)) {
+        if (!(Flow.ready(t) || Flow.building) && digToward(t)) {
             Direction d = G.me.directionTo(t);
             return free(d) && step(d);
         }
-        int d0 = G.me.distanceSquaredTo(t), s0 = stall;
+        int d0 = G.me.distanceSquaredTo(t);
         if (d0 < bestDist) { bestDist = d0; stall = 0; } else stall++;
-        if (Cfg.BFLOW && G.cheb(G.me, t) > 1) {
-            // a distance field toward t (BitFlow): walk down it from wherever we stand; greedy and bug walks meanwhile
-            if (stall >= Cfg.FLOW_STALL || bugging && bugTurns >= Cfg.FLOW_STALL) BitFlow.request(t);
-            MapLocation was = G.me;
-            if (BitFlow.follow(t)) {
-                if (!G.me.equals(was)) stall = 0;
-                return !G.me.equals(was);
-            }
-        } else if (Cfg.FLOW && G.cheb(G.me, t) > 1) {
+        if (G.cheb(G.me, t) > 1) {
             if (stall >= Cfg.FLOW_STALL || bugging && bugTurns >= Cfg.FLOW_STALL) Flow.request(t);
             MapLocation was = G.me;
-            boolean on = Flow.ready(t);
-            int pp = Flow.ppos;
-            if (Flow.follow(t)) {
-                if (progress && on && Flow.ppos > pp) stall = 0;
-                return !G.me.equals(was);
-            }
-            // hold while a search toward t runs: it starts from here, so moving would strand the path
-            // (a reverse search grows from the target and takes the path from wherever we are: walk on)
-            // a detour around a newly seen wall on the path (Cfg.FLOW_SPLICE) is short: hold for it
-            if (Cfg.FLOW_SPLICE > 0 && Flow.splicing && Flow.searching(t)) { if (progress) stall = Math.min(stall, s0); return false; }
-            if (Flow.searching(t) && !Flow.rev) { if (progress) stall = Math.min(stall, s0); return false; }
+            if (Flow.follow(t)) return !G.me.equals(was);
+            // no hold while the search runs: it grows from the target and takes the path from wherever we are, so
+            // walk on. The call still gives up a search that has run too long.
+            Flow.searching(t);
         }
-        if (!Cfg.FLOW && !Cfg.DIG_FIRST && digToward(t)) return false;
         Direction d = choose(t);
         if (d == null) {
-            Direction s = G.me.directionTo(t);
-            if (swapHold > 0 && stall >= swapHold && !terrainBlocked(G.me.add(s)) && swapPast(s)) return true;
             tryDig(t);
             return false;
         }
-        return step(d);
-    }
-
-    /** Cfg.SWAP_HEADON: an ally facing f blocks our step d head-on (f within 45 degrees of d's opposite). */
-    static boolean headOn(Direction f, Direction d) {
-        Direction o = d.opposite();
-        return f == o || f == o.rotateLeft() || f == o.rotateRight();
-    }
-
-    /** Cfg.SWAP_NO_ALONG: an ally facing f faces along our step d (f within 45 degrees of d). */
-    static boolean along(Direction f, Direction d) {
-        return f == d || f == d.rotateLeft() || f == d.rotateRight();
-    }
-
-    /** Cfg.SWAP_PAIR: the ally `id` is the one we last carried past (lastId, in round lastRound) less than ttl rounds ago. */
-    static boolean pairBlocked(int id, int round, int lastId, int lastRound, int ttl) {
-        return ttl > 0 && id == lastId && round - lastRound < ttl;
-    }
-
-    /** Whether the SWAP filters let us carry past an ally facing f with id `id` on our step d. */
-    static boolean swapAllowed(Direction f, int id, Direction d) {
-        if (Cfg.SWAP_HEADON && !headOn(f, d)) return false;
-        if (Cfg.SWAP_NO_ALONG && along(f, d)) return false;
-        return !pairBlocked(id, G.round, swapId, swapRound, Cfg.SWAP_PAIR);
-    }
-
-    /** The ally we last carried past and the round. */
-    static int swapId = -1, swapRound = -1000;
-
-    /** Cfg.SWAP_HOLD: carry the ally baby on the next step (direction d, not avoided) and step into its tile, unless
-     *  an enemy rat is near (the carry costs 20 action cooldown, the drop 20 more). True when we moved. */
-    static boolean swapPast(Direction d) throws GameActionException {
-        RobotController rc = G.rc;
-        if ((avoid & (1 << d.ordinal())) != 0 || rc.getCarrying() != null || Baby.nearestEnemy != null
-                || !rc.isActionReady() || !rc.isMovementReady()) return false;
-        MapLocation n = G.me.add(d);
-        if ((Cfg.SWAP_HEADON || Cfg.SWAP_NO_ALONG || Cfg.SWAP_PAIR > 0) && rc.canSenseLocation(n)) {
-            RobotInfo a = rc.senseRobotAtLocation(n);
-            if (a != null && a.team == G.us && !swapAllowed(a.direction, a.ID, d)) return false;
-        }
-        if (rc.getDirection() != d) {
-            if (!rc.canTurn(d)) return false;
-            rc.turn(d);
-            G.facing = d;
-        }
-        RobotInfo r = rc.canSenseLocation(n) ? rc.senseRobotAtLocation(n) : null;
-        if (r == null || r.team != G.us || r.type != UnitType.BABY_RAT || r.carryingRobot != null || !rc.canCarryRat(n)) return false;
-        if (!swapAllowed(r.direction, r.ID, d)) return false;
-        rc.carryRat(n);
-        swapFrom = G.me;
-        swapId = r.ID;
-        swapRound = G.round;
-        swaps++;
         return step(d);
     }
 
@@ -254,39 +163,11 @@ public final class Nav {
         }
         // Wall follow: start pointing back into the wall, then sweep away from it.
         Direction d = bugHand > 0 ? bugDir.rotateRight().rotateRight() : bugDir.rotateLeft().rotateLeft();
-        if (Cfg.BUG_DIG && bugDig(d)) return null;
         for (int i = 0; i < 8; i++) {
             if (free(d)) { bugDir = d; return d; }
             d = bugHand > 0 ? d.rotateLeft() : d.rotateRight();
         }
         return null;
-    }
-
-    /** Cfg.BUG_DIG: the bug walk's sweep from d; true when a dirt tile comes before any free step and we dig it now
-     *  (or hold for our action to dig it next turn). */
-    static boolean bugDig(Direction d) {
-        if (!Cfg.DIG || G.globalCheese + G.rawCheese < Cfg.DIG_MIN_CHEESE) return false;
-        RobotController rc = G.rc;
-        try {
-            for (int i = 0; i < 8; i++) {
-                if (free(d)) return false;
-                MapLocation n = G.me.add(d);
-                if (isDirt(n)) {
-                    if (!rc.isActionReady()) return true;
-                    if (rc.getDirection() != d && rc.canTurn(d)) rc.turn(d);
-                    if (Cfg.MOAT && Moat.keep(n) || !rc.canRemoveDirt(n)) return false;
-                    rc.removeDirt(n);
-                    digs++;
-                    Sym.mem[G.idx(n)] &= ~Sym.DIRT;
-                    if (Cfg.BFLOW) BitFlow.undirt(n.x, n.y);
-                    return true;
-                }
-                d = bugHand > 0 ? d.rotateLeft() : d.rotateRight();
-            }
-        } catch (GameActionException e) {
-            return false;
-        }
-        return false;
     }
 
     static boolean isDirt(MapLocation l) {
@@ -298,7 +179,7 @@ public final class Nav {
      * a dig costs 5 cheese and 2.5 turns, a detour around a dirt field usually far more.
      */
     static boolean digToward(MapLocation t) throws GameActionException {
-        if (!Cfg.DIG || G.globalCheese + G.rawCheese < Cfg.DIG_MIN_CHEESE) return false;
+        if (G.globalCheese + G.rawCheese < Cfg.DIG_MIN_CHEESE) return false;
         RobotController rc = G.rc;
         if (!rc.isActionReady()) return false;
         Direction toT = G.me.directionTo(t);
@@ -309,11 +190,8 @@ public final class Nav {
         if (free(l) && G.me.add(l).distanceSquaredTo(t) < d0) return false;
         if (free(r) && G.me.add(r).distanceSquaredTo(t) < d0) return false;
         if (rc.getDirection() != toT && rc.canTurn(toT)) rc.turn(toT);
-        if (!(Cfg.MOAT && Moat.keep(n)) && rc.canRemoveDirt(n)) {
-            rc.removeDirt(n);
-            digs++;
-            Sym.mem[G.idx(n)] &= ~Sym.DIRT;
-            if (Cfg.BFLOW) BitFlow.undirt(n.x, n.y);
+        if (rc.canRemoveDirt(n)) {
+            dig(n);
             bugging = false;
             return true;
         }
@@ -327,12 +205,14 @@ public final class Nav {
         MapLocation n = G.me.add(toT);
         RobotController rc = G.rc;
         if (rc.getDirection() != toT && rc.canTurn(toT)) rc.turn(toT);
-        if (!(Cfg.MOAT && Moat.keep(n)) && rc.canRemoveDirt(n)) {
-            rc.removeDirt(n);
-            digs++;
-            Sym.mem[G.idx(n)] &= ~Sym.DIRT;
-            if (Cfg.BFLOW) BitFlow.undirt(n.x, n.y);
-        }
+        if (rc.canRemoveDirt(n)) dig(n);
+    }
+
+    /** Dig out the dirt tile n (the caller checked canRemoveDirt) and forget it in memory. */
+    static void dig(MapLocation n) throws GameActionException {
+        G.rc.removeDirt(n);
+        digs++;
+        Sym.mem[G.idx(n)] &= ~Sym.DIRT;
     }
 
     /** Step away from a threat location, preferring directions that increase distance most. */

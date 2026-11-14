@@ -3,9 +3,6 @@ package zdp;
 /** Indicator-string telemetry. Tags are stable so replay tools can grep them. */
 public final class Debug {
     public static final boolean ON = false;
-    /** Bytecode probe: search pops and work() bytecodes, and the indicator's own cost, in the indicator (fx=). */
-    public static final boolean PROBE = false;
-    public static int indBc;
 
     /** Overrun locator: mark(k) at turn stages; the first stage reached after the round advanced is kept. */
     public static int stage, ovStage = -1, startRound;
@@ -37,19 +34,15 @@ public final class Debug {
               .append(" bc=").append(Baby.bitesCat)
               .append(" br=").append(Baby.bitesRat)
               .append(" tr=").append(Baby.trapsPlaced)
-              .append(" rt=").append(Baby.ratTraps).append(" nap=").append(Baby.naps).append(" th=").append(Baby.throwsDone).append(" gl=").append(Baby.glances)
+              .append(" rt=").append(Baby.ratTraps).append(" nap=").append(Baby.naps).append(" th=").append(Baby.throwsDone).append(" gl=").append(0)
               .append(" dg=").append(Nav.digs).append(" fl=").append(Flow.builds).append(":").append(Flow.done).append(":").append(Flow.lastTurns).append(":").append(Flow.steps).append(" mv=").append(Baby.why);
             if (Baby.mineTarget != null) sb.append(" mt=").append(Baby.mineTarget.x).append(',').append(Baby.mineTarget.y);
             // navigation state: nav target and stall, flow target (b building, r ready, - stale) and robot-held turns
             if (Nav.target != null) sb.append(" nt=").append(Nav.target.x).append(',').append(Nav.target.y).append('/').append(Nav.stall);
             if (Flow.tgt != null) sb.append(" ft=").append(Flow.tgt.x).append(',').append(Flow.tgt.y)
               .append(Flow.building ? 'b' : Flow.builtRound >= 0 ? 'r' : '-').append(Flow.held).append('/').append(Flow.plen - Flow.ppos);
-            if (Cfg.BFLOW && BitFlow.tgt != null) sb.append(" bf=").append(BitFlow.tgt.x).append(',').append(BitFlow.tgt.y)
-              .append(BitFlow.building ? 'b' : '-').append(BitFlow.wave).append(':').append(BitFlow.meD).append(':').append(BitFlow.builds)
-              .append(':').append(BitFlow.steps).append(':').append(BitFlow.fails).append(':').append(BitFlow.restarts).append(':').append(BitFlow.held);
             int[] fe = Flow.ends;
-            sb.append(" fe=").append(fe[0]).append(':').append(fe[1]).append(':').append(fe[2]).append(':').append(fe[3]).append(':').append(fe[4]).append(':').append(fe[5]).append(':').append(Flow.fails).append(':').append(Flow.hits);
-            if (PROBE) sb.append(" fx=").append(Flow.pops).append(':').append(Flow.workBc).append(':').append(indBc);
+            sb.append(" fe=").append(fe[0]).append(':').append(fe[1]).append(':').append(fe[2]).append(':').append(fe[3]).append(':').append(fe[4]).append(':').append(fe[5]).append(':').append(Flow.fails).append(':').append(0);
             if (Cfg.CASH_BANK > 0 && Baby.cashSite != null)
                 sb.append(" cs=").append(Baby.cashSite.x).append(',').append(Baby.cashSite.y).append(Baby.cashLead ? 'L' : 'J').append(Baby.cashStart);
         }
@@ -57,14 +50,8 @@ public final class Debug {
         sb.append(" sym=").append(Sym.mask);
         if (Sym.contradictions > 0) sb.append(" SYMX=").append(Sym.contradictions);
         if (!G.king && Baby.lowBc > 0) sb.append(" lb=").append(Baby.lowBc);
-        if (Cfg.FACE_HOLD) sb.append(" fh=").append(Baby.faceHolds);
-        if (Cfg.BURN) sb.append(" burn=").append(G.king ? (King.burnHeard ? 1 : 0) : Baby.burnRound).append(Baby.adaptRisk ? "*" : "");
-        if (Cfg.WOUNDED_HP > 0 && !G.king && Baby.wounded > 0) sb.append(" wd=").append(Baby.wounded);
         if (!G.king && Baby.defends > 0) sb.append(" df=").append(Baby.defends);
-        if (!G.king && Baby.rescues > 0) sb.append(" rs=").append(Baby.rescues);
-        if (Cfg.GUARD_CARRY_R > 0 && !G.king && Baby.carryGuards > 0) sb.append(" cg=").append(Baby.carryGuards);
         if (!G.king && Baby.presses > 0) sb.append(" pk=").append(Baby.presses);
-        if (!G.king && Baby.guards > 0) sb.append(" gd=").append(Baby.guards);
         if (RobotPlayer.overruns > 0) sb.append(" OVR=").append(RobotPlayer.overruns).append(" OVS=").append(ovStage);
         if (RobotPlayer.nearMiss > 0) sb.append(" NEAR=").append(RobotPlayer.nearMiss);
         if (RobotPlayer.exceptions > 0) sb.append(" EXC=").append(RobotPlayer.exceptions).append(':').append(lastExc);

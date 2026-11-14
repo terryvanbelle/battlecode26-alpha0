@@ -12,8 +12,8 @@ public final class Econ {
 
     static int kings() { return Math.max(1, Comms.numKings); }
 
-    /** A cheese floor f for our live kings (Cfg.FLOOR_PER_KING), else f. */
-    static int floor(int f) { return Cfg.FLOOR_PER_KING ? f * kings() : f; }
+    /** A cheese floor f (Cfg.FLOOR_PER_KING, which scaled it by our live kings, is off). */
+    static int floor(int f) { return f; }
 
     public static void startTurn() {
         int c = G.rc.getGlobalCheese();
@@ -34,12 +34,9 @@ public final class Econ {
     public static int rate100() { return n == 0 ? 0 : sum * 100 / n; }
 
     /** Projected global cheese at the end of the game, minus nothing spent: negative means we would starve. */
-    public static int surplus() { return surplus(kings()); }
-
-    /** surplus() as if we had k kings. */
-    public static int surplus(int k) {
+    public static int surplus() {
         int left = Math.max(0, 2000 - G.round);
-        int net100 = rate100() * Cfg.INCOME_TRUST / 100 - 200 * k;
+        int net100 = rate100() * Cfg.INCOME_TRUST / 100 - 200 * kings();
         return G.rc.getGlobalCheese() + net100 * left / 100;
     }
 }

@@ -16,12 +16,9 @@ public final class Comms {
     public static final int MINE0 = 24, MINE_SLOTS = 16;         // 2 ints each
     public static final int CAT0 = 56, CAT_SLOTS = 2;            // 3 ints each: x+1, y+1, round%1024
     public static final int BUDGET = 62;                         // spendable surplus / 4 (kings' projection)
-    public static final int SYM_BURN = 512;                      // SYM slot bit (Cfg.RISK_ADAPT): enemy rat traps fired on us
 
     // squeak types (top 4 bits)
-    public static final int SQ_MINE = 1, SQ_SYM = 2, SQ_EKING = 3, SQ_CAT = 4, SQ_TRAP = 5, SQ_START = 6;
-    public static final int SQ_BURN = 7;                         // Cfg.RISK_ADAPT: an enemy rat trap fired on us
-    public static final int SQ_TRIP = 8;                         // Cfg.TRIP_HALF: a timed walk to mine x, y (extra: steps)
+    public static final int SQ_MINE = 1, SQ_SYM = 2, SQ_EKING = 3, SQ_CAT = 4;   // 5-8: retired types (none sent)
     public static final int SQ_CASH = 9;                         // Cfg.CASH_BANK: rescue site x, y (extra: tag<<10 | start)
 
     public static int squeak(int type, int x, int y, int extra) {
@@ -83,46 +80,11 @@ public final class Comms {
     public static MapLocation[] mines = new MapLocation[MINE_SLOTS];
 
     public static void readMines() {
-        if (Cfg.TRIP_HALF != 0) { readMinesTrip(); return; }
         numMines = 0;
         for (int k = 0; k < MINE_SLOTS; k++) {
             int x = read(MINE0 + 2 * k);
             if (x == 0) break;
             mines[numMines++] = new MapLocation(x - 1, read(MINE0 + 2 * k + 1) - 1);
-        }
-    }
-
-    /** Cfg.TRIP_HALF: each listed mine's fastest timed walk in steps / 4, rounded up (0: none yet), from bits 6-9 of
-     *  its x word (low four) and 6-7 of its y word; tripSig changes whenever one does. */
-    public static int[] trip;
-    public static int tripSig;
-
-    /** readMines with the walk bits masked off the coordinates and kept in trip. */
-    static void readMinesTrip() {
-        if (trip == null) trip = new int[MINE_SLOTS];
-        numMines = 0;
-        int sig = 0;
-        for (int k = 0; k < MINE_SLOTS; k++) {
-            int x = read(MINE0 + 2 * k);
-            if (x == 0) break;
-            int y = read(MINE0 + 2 * k + 1), q = x >> 6 | (y >> 6) << 4;
-            trip[numMines] = q;
-            sig = sig * 31 + q;
-            mines[numMines++] = new MapLocation((x & 63) - 1, (y & 63) - 1);
-        }
-        tripSig = sig;
-    }
-
-    /** King: a timed walk of t steps to listed mine (x, y) becomes its walk when faster than the one kept. */
-    static void noteTrip(int x, int y, int t) {
-        int q = Math.max(1, Math.min(63, (t + 3) / 4));
-        for (int k = 0; k < numMines; k++) {
-            if (mines[k].x != x || mines[k].y != y) continue;
-            if (trip[k] != 0 && trip[k] <= q) return;
-            trip[k] = q;
-            write(MINE0 + 2 * k, x + 1 | (q & 15) << 6);
-            write(MINE0 + 2 * k + 1, y + 1 | (q >> 4) << 6);
-            return;
         }
     }
 

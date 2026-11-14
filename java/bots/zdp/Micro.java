@@ -48,7 +48,7 @@ public final class Micro {
             if (!rc.canMove(d) || (Nav.avoid & (1 << i)) != 0) continue;
             MapLocation t = me.add(d);
             // pickup is free: a step onto cheese mid-fight takes it from them
-            int c = Cfg.MICRO_CHEESE > 0 && rc.canSenseLocation(t) && rc.senseMapInfo(t).getCheeseAmount() > 0 ? Cfg.MICRO_CHEESE : 0;
+            int c = rc.canSenseLocation(t) && rc.senseMapInfo(t).getCheeseAmount() > 0 ? Cfg.MICRO_CHEESE : 0;
             int s = (score(t, ours, canBite, hp) + c) * 2 + (G.hand(me, d) > 0 ? 1 : 0);
             if (s > bs * 2) { bs = s / 2; best = d; }
         }

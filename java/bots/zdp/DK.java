@@ -4,10 +4,10 @@ import battlecode.common.*;
 
 /**
  * King decision points (docs/decision-points.md): KING_MOVE (King.move), KING_SPAWN (King.spawn), KING_ACT (the action
- * block after spawn: bite, biteCat, ratTrap, Moat.king) and KING_FORM (King.formation). D holds the record buffer;
+ * block after spawn: King.bite) and KING_FORM (King.formation). D holds the record buffer;
  * this class holds the king points' ids, option constants, feature snapshots and (net mode, D.NET) option executors.
  *
- * Feature code has no side effects on bot state (no Comms.write, no King.arcsHere, no KPath.follow, no King.rich(),
+ * Feature code has no side effects on bot state (no Comms.write, no King.arcsHere, no King.rich(),
  * no assignment to King fields) and never aborts the king's turn: an exception drops the record (point = 0).
  * Bytecode limits are off for this work, so these hooks are not credited to the G.debt ledger.
  */
@@ -45,16 +45,14 @@ public final class DK {
     }
 
     /** The kind of a site formation just opened, from its Chebyshev distance to the king (G.me equals formation's
-     *  `from`: the king has not moved yet this turn). ringSite/crowdSite sites are at 3 (RING offsets), the back spot at
-     *  4 (0 when the enemy start mirrors onto us and back is CENTER), mine-list and mineSite sites at 5 or more. */
-    static int formKind(MapLocation s, boolean end) {
+     *  `from`: the king has not moved yet this turn). ringSite sites are at 3 (RING offsets), the back spot at 4 (0 when
+     *  the enemy start mirrors onto us and back is CENTER), mine-list sites at 5 or more. */
+    static int formKind(MapLocation s) {
         int c = G.cheb(G.me, s);
-        if (c == 3) return end && Cfg.END_KING_CROWD ? F_START_CROWD : F_START_RING;
+        if (c == 3) return F_START_RING;
         if (c <= 4) return F_START_BACK;
-        return Cfg.FORM_MINE || end && Cfg.END_KING_MSITE ? F_START_MSITE : F_START_MINE;
+        return F_START_MINE;
     }
-
-    static int sym() { return (Sym.mask & Sym.ROT) != 0 ? Sym.ROT : (Sym.mask & Sym.HOR) != 0 ? Sym.HOR : Sym.VER; }
 
     // ---------------------------------------------------------------------------------------------------------------
     // features (recording)
@@ -248,7 +246,7 @@ public final class DK {
             D.f(np);
             D.f(nr);
             D.f(D.cap(rc.getDirt(), 255));
-            D.f(Moat.up());
+            D.f(false);   // Moat.up(): never true (Cfg.MOAT off)
             D.f("-nsfcbd".indexOf(King.spawnWhy));
             D.f(D.cap(King.spawned, 255));
             D.f(Comms.numKings);
@@ -279,13 +277,12 @@ public final class DK {
             D.f(D.cap(gc, 65535));
             D.f(D.cap(Econ.rate100() / 10, 65535));
             D.f(D.cap(Econ.surplus() / 10 + 10000, 65535));
-            D.f(Cfg.FORM_WAR_FROM > 0 && !G.coop && G.round < Cfg.FORM_WAR_FROM);
-            D.f(nk >= Math.min(King.formCap(G.coop), Comms.KING_SLOTS));
-            D.f(Cfg.FORM_RICH_BANK > 0 && (King.rich0() || Cfg.RICH_LATE > 0 && King.lateRich(G.round, nk, gc)
-                || Cfg.RICH_MORE > 0 && King.moreRich(G.round, nk, gc)));
-            D.f(Cfg.END_KING > 0 && King.endKing(G.round, nk, babies, gc, King.formStart));
+            D.f(!G.coop && G.round < Cfg.FORM_WAR_FROM);
+            D.f(nk >= Math.min(King.formCap(), Comms.KING_SLOTS));
+            D.f(King.rich0());
+            D.f(King.endKing(G.round, nk, babies, gc, King.formStart));
             D.f(King.formIncome());
-            D.f(!(G.round < Cfg.FORM_FROM || G.round > (Cfg.FORM_LATE && nk < 2 ? 1940 : 1150)
+            D.f(!(G.round < Cfg.FORM_FROM || G.round > 1150
                 || G.round - King.formStart < Cfg.FORM_TTL + Cfg.FORM_RETRY || babies < Cfg.FORM_BABIES || gc < Cfg.FORM_CHEESE));
             D.f(fs != null ? D.cap(G.cheb(me, fs), 63) : 63);
             D.f(fs != null && King.kingOn(fs));
@@ -297,7 +294,7 @@ public final class DK {
             for (int i = 0; i < 12; i++)
                 if (King.clearNow(me.translate(King.RING[i][0] * sx, King.RING[i][1] * sy))) rm |= 1 << i;
             D.f(rm);
-            MapLocation ek = G.mirror(King.start, sym());
+            MapLocation ek = G.mirror(King.start, King.sym());
             D.f(D.cap(G.cheb(me, ek), 63));
             D.f(D.cap(Comms.numMines, 63));
             D.f(Integer.bitCount(Sym.mask));
@@ -351,25 +348,19 @@ public final class DK {
             case K_DODGE:
                 if (King.dodge(c, cats)) { King.mineWhy = 'c'; return true; }
                 return false;
-            case K_CAT_FLEE:
+            case K_CAT_FLEE: {
                 // zdb's cat flee, G.me left stale as zdb does
-                for (RobotInfo cat : cats) {
-                    MapLocation b = cat.location;
-                    if (Cfg.SYM_CENTRE ? Baby.catDist4(b, c) <= 80 : c.distanceSquaredTo(b) <= 20) {
-                        Direction away = Cfg.SYM_CENTRE ? G.dirOf(2 * c.x - 2 * b.x - 1, 2 * c.y - 2 * b.y - 1) : b.directionTo(c);
-                        for (Direction d : G.fan(c, away)) if (rc.canMove(d)) { rc.move(d); return true; }
-                    }
-                }
-                return false;
-            case K_LANE: return Cfg.CAT_LANE && King.offLane(c, cats);
+                Direction d = King.fleeDir(c, cats);
+                if (d == null) return false;
+                rc.move(d);
+                return true;
+            }
             case K_FORM_STILL: return King.formSite != null;
-            case K_OFF_SITE: return King.offSite(c);
             case K_UNPLUG:
                 if (King.unplug(c)) { King.mineWhy = 'u'; return true; }
                 return false;
-            case K_PATH: return Cfg.KING_PATH && KPath.follow(c);
             case K_PILE:
-                if (King.nearCheese != null && G.cheb(c, King.nearCheese) > 1 && King.walkStep(c, King.nearCheese)) {
+                if (King.nearCheese != null && G.cheb(c, King.nearCheese) > 1 && King.step(c, King.nearCheese)) {
                     King.mineWhy = 'p'; King.pickUp(); return true;
                 }
                 return false;
@@ -381,7 +372,7 @@ public final class DK {
             case K_WALK_HOME:
             case K_SIDESTEP: {
                 MapLocation h = home();
-                if (h != null && G.cheb(c, h) > 1 && King.walkStep(c, h)) { King.mineWhy = 'z'; King.pickUp(); return true; }
+                if (h != null && G.cheb(c, h) > 1 && King.step(c, h)) { King.mineWhy = 'z'; King.pickUp(); return true; }
                 return false;
             }
             case K_DIG: {
@@ -390,7 +381,7 @@ public final class DK {
                 MapLocation t = King.digTile(c, h);
                 return t != null && dig(t);
             }
-            case K_NO_MINE: case K_THREAT_HOLD: case K_NO_HOME: case K_AT_HOME: case K_DIG_WAIT: case K_DIG_POOR:
+            case K_THREAT_HOLD: case K_NO_HOME: case K_AT_HOME: case K_DIG_WAIT: case K_DIG_POOR:
             case K_STUCK: case K_DIG_REFUSED: case K_STAY:
                 return true;
             default:
@@ -418,12 +409,8 @@ public final class DK {
 
     /** move()'s dig of a dirt tile t, without its KING_DIG_MIN policy guard (canRemoveDirt covers cooldown and cost). */
     static boolean dig(MapLocation t) throws GameActionException {
-        RobotController rc = G.rc;
-        if (!rc.canRemoveDirt(t)) return false;
-        rc.removeDirt(t);
-        King.digs++;
-        Sym.mem[G.idx(t)] &= ~Sym.DIRT;
-        King.mineWhy = 'D';
+        if (!G.rc.canRemoveDirt(t)) return false;
+        King.digAt(t, 'D');
         return true;
     }
 
@@ -460,16 +447,13 @@ public final class DK {
                 if (i < 0 || i >= 16) return false;
                 MapLocation c = rc.getLocation(), l = c.translate(King.RX[i], King.RY[i]);
                 if (!rc.isActionReady() || !rc.canBuildRat(l)) return false;
-                if (King.faceSpawn) { Direction f = c.directionTo(l); if (rc.getDirection() != f && rc.canTurn(f)) rc.turn(f); }
-                rc.buildRat(l);
-                King.spawned++;
-                King.spawnWhy = 'b';
+                King.build(l);
                 return true;
             }
         }
     }
 
-    /** KING_ACT net mode: A_NONE sets hold, which skips zdb's bite/biteCat/ratTrap lines for the turn. */
+    /** KING_ACT net mode: A_NONE sets hold, which skips zdb's bite for the turn. */
     static boolean hold;
 
     static void netKingAct(RobotInfo[] enemies, RobotInfo[] cats) {
@@ -487,11 +471,7 @@ public final class DK {
         switch (k) {
             case A_NONE: hold = true; return true;
             case A_BITE_KILL: case A_BITE: {
-                RobotInfo b = null;
-                for (RobotInfo e : enemies) {
-                    if (!rc.canAttack(e.location)) continue;
-                    if (b == null || e.health < b.health) b = e;
-                }
+                RobotInfo b = King.weakest(enemies);
                 if (b == null) return false;
                 if (k == A_BITE) { rc.attack(b.location); return true; }
                 int c = King.biteCheese(b.health, rc.getGlobalCheese());
@@ -584,10 +564,9 @@ public final class DK {
 
     static boolean execKingForm(int k) throws GameActionException {
         MapLocation me = G.me, fs = King.formSite;
-        MapLocation ek = G.mirror(King.start, sym());
+        MapLocation ek = G.mirror(King.start, King.sym());
         switch (k) {
-            case F_WAR_OFF: case F_CAP_OFF: return formClose(0);
-            case F_CAP_GAP: return formClose(Cfg.RICH_GAP);
+            case F_WAR_OFF: case F_CAP_OFF: case F_CAP_GAP: return formClose();   // F_CAP_GAP: Cfg.RICH_GAP 0, no gap
             case F_RICH_DROP:
                 if (fs == null) return false;
                 King.richDrop();
@@ -596,11 +575,7 @@ public final class DK {
                 if (fs == null) return false;
                 King.richGap();
                 return true;
-            case F_DROP_FORMED: return fs != null && formClose(Cfg.FORM_GAP);
-            case F_DROP_TIMEOUT:
-                if (fs == null) return false;
-                if ((Cfg.FORM_MINE || Cfg.END_KING_MSITE) && Comms.numKings <= King.formKings) King.ban(fs);
-                return formClose(0);
+            case F_DROP_FORMED: case F_DROP_TIMEOUT: return fs != null && formClose();   // F_DROP_FORMED: Cfg.FORM_GAP 0
             case F_HOLD:
                 if (fs == null) return false;
                 Comms.write(Comms.FORM_T, Comms.stamp());
@@ -630,11 +605,9 @@ public final class DK {
         }
     }
 
-    /** Close the formation site (none open is fine); gap > 0 starts that gap timer as formation's gap branches do. */
-    static boolean formClose(int gap) {
-        King.formSite = null;
-        Comms.write(Comms.FORM_T, 0);
-        if (gap > 0) King.formStart = G.round + gap - Cfg.FORM_TTL - Cfg.FORM_RETRY;
+    /** Close the formation site (none open is fine). */
+    static boolean formClose() {
+        King.closeForm();
         return true;
     }
 
@@ -642,12 +615,7 @@ public final class DK {
      *  king would then take over slot 0 through claimSlot's fallback). */
     static boolean formOpen(MapLocation s) {
         if (s == null || King.formSite != null || Comms.numKings >= Comms.KING_SLOTS) return false;
-        King.formSite = s;
-        King.formStart = G.round;
-        King.formKings = Comms.numKings;
-        Comms.write(Comms.FORM_X, s.x + 1);
-        Comms.write(Comms.FORM_Y, s.y + 1);
-        Comms.write(Comms.FORM_T, Comms.stamp());
+        King.openForm(s);
         return true;
     }
 
