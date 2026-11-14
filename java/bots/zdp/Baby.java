@@ -54,7 +54,18 @@ public final class Baby {
 
     public static void turn() throws GameActionException {
         RobotController rc = G.rc;
-        if (role < 0) born();
+        D.point = 0;
+        D.point2 = 0;
+        if (role < 0) {
+            born();
+            if (D.ON) {   // BABY_ROLE at birth
+                D.babyRole(0, -1);
+                if (D.NET) { int k = D.pick(D.BABY_ROLE, null); if (k >= 0) roleExec(k); }
+                D.lab = D.roleLab();
+                D.emit();
+            }
+        }
+        int roleAt0 = role;
         if (Cfg.WAR_STRIKE > 0 && !G.coop && striker(role, birthRound, Cfg.WAR_STRIKE)) role = ATTACK;
         if (Cfg.TRAIL) Trail.record();
         Comms.readKings();
@@ -103,6 +114,12 @@ public final class Baby {
         }
         if (Cfg.RUSH_BURN > 0 && role == ATTACK && trapsKnown(burnRound, Comms.read(Comms.SYM))
                 && rushStands(G.me, ref(), Cfg.RUSH_BURN)) { role = GATHER; demoted++; }
+        if (D.ON && (role != roleAt0 || G.round > birthRound && (G.round - birthRound) % 10 == 0)) {   // BABY_ROLE review
+            D.babyRole(1, roleAt0);
+            if (D.NET) { int k = D.pick(D.BABY_ROLE, null); if (k >= 0) roleExec(k); }
+            D.lab = D.roleLab();
+            D.emit();
+        }
         if (enemyKing != null && Cfg.KING_PRESS) { lastEKing = enemyKing.location; lastEKingRound = G.round; ekHops = 0; }
         nearestEnemy = null;
         hunting = false;
@@ -152,12 +169,24 @@ public final class Baby {
             wounded++;
         }
         Debug.mark(31);
+        if (D.ON && rc.isActionReady()) D.babyAct(D.BABY_ACT_PRE, robots, false, '-');   // BABY_ACT_PRE opens
+        boolean netAct = false;
+        if (D.NET && D.point == D.BABY_ACT_PRE) {
+            int k = D.pick(D.BABY_ACT_PRE, null);
+            netAct = k >= 0 && actExec(k, robots);
+            if (netAct) D.lab = k;
+            G.facing = rc.getDirection();
+            if (rc.getType() == UnitType.RAT_KING) { D.emit(); return; }
+        }
         // 0. a carried enemy is thrown as soon as we can act
+        if (!netAct) {
         if (rc.getCarrying() != null) { if (rc.getCarrying().team == G.us) dropAlly(); else tryThrow(robots); }
+        }
         // 1. bites: enemy rats once cooperation is over (they shoot back; cats wait), then cats.
         //    Attackers open the war themselves, but only on the enemy king.
         Debug.mark(4);
         boolean hostile = hostile();
+        if (!netAct) {
         if (hostile && Cfg.NAP) tryCarry(robots);
         // a rescue one step away keeps the action for the grab after the move
         boolean saving = rescueT != null && rc.isMovementReady() && rc.isActionReady();
@@ -169,31 +198,46 @@ public final class Baby {
         if (cat != null) tryBiteCat(cat);
         // 2. cat trap ahead of an approaching cat
         if (cat != null && Cfg.CAT_TRAPS) tryCatTrap(cat);
+        }
 
         Debug.mark(6);
+        if (D.ON) D.babyComms();   // BABY_COMMS opens (secondary slot)
+        int netC = -1;
+        if (D.NET && D.point2 == D.BABY_COMMS) {
+            // the net's squeak goes first; zdb's cashTick/report still run (listening, cash state) and their squeak
+            // then fails (one squeak a turn)
+            int k = D.pick2(D.BABY_COMMS, null);
+            if (k >= 0 && commsExec(k)) netC = k;
+        }
         // ledger (K = 20 with G.settle): the hook's bytecodes outside the two reads (u6x runs only the report() call)
         int cd0 = G.debt, cb0 = G.bc();
         boolean cashSq = Cfg.CASH_BANK > 0 && cashTick();
         G.settle(cd0, cb0, 20);
+        if (cashSq) D.lab2 = cashLead ? D.C_CASH_LEAD : D.C_CASH_RELAY;
         if (!cashSq) report();
+        if (netC >= 0) D.lab2 = netC;
+        D.emit2();
 
         // 3. movement
         Debug.mark(7);
         MapLocation before = rc.getLocation();
         // Cfg.CASH_BANK: the rat on a rescue site promotes once it can, movement-ready or not (heavy rats rarely are)
         int cd1 = G.debt, cb1 = G.bc();   // ledger (K = 18 with G.settle)
-        if (Cfg.CASH_BANK > 0 && cashSite != null && G.me.equals(cashSite) && rc.canBecomeRatKing()) {
+        if (!netAct && Cfg.CASH_BANK > 0 && cashSite != null && G.me.equals(cashSite) && rc.canBecomeRatKing()) {
             rc.becomeRatKing();
             formed++;
             cashed++;
+            D.act(D.A_CASH_KING);
+            D.emit();
             return;
         }
         G.settle(cd1, cb1, 18);
+        D.emit();   // BABY_ACT_PRE closes
         if (rc.isMovementReady()) {
             int cdD = G.debt, cbD = G.bc();   // ledger (K 9): decision record, BABY_MOVE features
             D.babyMove();
             G.debt = cdD + G.bc() - cbD + 9;
-            moveDecision();
+            if (D.NET) netMove(); else moveDecision();
             int cdE = G.debt, cbE = G.bc();   // ledger (K 9)
             D.emit();
             G.debt = cdE + G.bc() - cbE + 9;
@@ -204,6 +248,18 @@ public final class Baby {
         if (rc.getType() == UnitType.RAT_KING) return;   // just promoted: the king code runs from next turn
         Debug.mark(20);
         pickUp();
+        if (D.ON && rc.isActionReady()) D.babyAct(D.BABY_ACT_POST, rc.senseNearbyRobots(-1, null), moved, moved ? why : '-');
+        boolean netAct2 = false;
+        if (D.NET && D.point == D.BABY_ACT_POST) {
+            boolean[] ok = new boolean[D.BABY_ACT_POST_OPTIONS];
+            for (int i = 0; i < ok.length; i++) ok[i] = i != D.A_CASH_KING || cashSite != null && rc.getLocation().equals(cashSite);
+            int k = D.pick(D.BABY_ACT_POST, ok);
+            netAct2 = k >= 0 && actExec(k, null);
+            if (netAct2) D.lab = k;
+            G.facing = rc.getDirection();
+            if (rc.getType() == UnitType.RAT_KING) { D.emit(); return; }
+        }
+        if (!netAct2) {
         if (rc.getCarrying() != null && moved) {
             if (rc.getCarrying().team == G.us) dropAlly();
             else if (Clock.getBytecodesLeft() + (G.debt += 8) - 6 > Cfg.THROW_BC) tryThrow(rc.senseNearbyRobots(-1, null));
@@ -221,7 +277,14 @@ public final class Baby {
         if (Cfg.CAT_LAY && G.coop) layLane();
         Debug.mark(8);
         tryDeliver();
-        guardTurn();
+        }
+        D.emit();   // BABY_ACT_POST closes
+        if (D.ON && !G.coop && Cfg.GUARD_DIST2 != 0 && rc.isTurningReady() && rc.getCarrying() == null) D.babyFace(moved);
+        if (D.NET && D.point == D.BABY_FACE) {
+            int k = D.pick(D.BABY_FACE, null);
+            if (k >= 0 && faceExec(k)) D.lab = k; else guardTurn();
+        } else guardTurn();
+        D.emit();   // BABY_FACE closes
         if (Cfg.MOAT && !G.coop) Moat.baby(nearestEnemy != null ? nearestEnemy.location : null);
         Debug.mark(9);
         if (Cfg.SEALED > 0) Seal.work();
@@ -303,19 +366,20 @@ public final class Baby {
             if (d < bd) { bd = d; best = r; }
         }
         MapLocation t = best != null ? best.location : null;
+        if (best != null) D.face(D.F_SEEN);
         if (t == null && Cfg.GUARD_MEMORY) {
             // nothing in view: an enemy we saw at the start of the turn, or one an ally squeaked, may be behind us
             for (RobotInfo r : seen) {
                 if (r.team != G.them || r.type != UnitType.BABY_RAT) continue;
                 int d = G.me.distanceSquaredTo(r.location);
-                if (d <= Cfg.GUARD_DIST2 && d < bd) { bd = d; t = r.location; }
+                if (d <= Cfg.GUARD_DIST2 && d < bd) { bd = d; t = r.location; D.face(D.F_MEMORY); }
             }
             for (int i = 0; i < TrapRisk.nHeard; i++) {
                 int d = G.me.distanceSquaredTo(TrapRisk.heardE[i]);
-                if (d <= 8 && d < bd) { bd = d; t = TrapRisk.heardE[i]; }
+                if (d <= 8 && d < bd) { bd = d; t = TrapRisk.heardE[i]; D.face(D.F_HEARD); }
             }
         }
-        if (t == null) t = Nav.guard;
+        if (t == null) { t = Nav.guard; if (t != null) D.face(D.F_GUARD); }
         if (TrapRisk.nHeard > 0) threatRound = G.round;
         if (t == null) { if (glanceDue(G.round, threatRound, Cfg.GLANCE_MEM)) glance(); return; }
         Direction to = G.me.directionTo(t);
@@ -601,6 +665,7 @@ public final class Baby {
         }
         if (best == null) return false;
         rc.carryRat(best.location);
+        D.act(D.A_NAP);
         carryRound = G.round;
         naps++;
         return true;
@@ -724,7 +789,7 @@ public final class Baby {
             int s = (l.equals(f) ? 1 << 24 : 0) + 2 * (t != null ? l.distanceSquaredTo(t) : 0) + (G.hand(me, d) > 0 ? 1 : 0);
             if (s > bs) { bs = s; best = d; }
         }
-        if (best != null) { rc.dropRat(best); Nav.swapFrom = null; }
+        if (best != null) { rc.dropRat(best); D.act(D.A_DROP_ALLY); Nav.swapFrom = null; }
     }
 
     static boolean tryThrow(RobotInfo[] robots) throws GameActionException {
@@ -766,9 +831,10 @@ public final class Baby {
         if (bestD == null) return false;
         // no point-blank hit (42) yet: keep holding (the carried rat is out of the fight) while the carry lasts
         if (bs / 2 < Cfg.THROW_MIN && G.round - carryRound < Cfg.THROW_HOLD) return false;
-        if (rc.getDirection() != bestD) { if (!rc.canTurn(bestD)) return false; rc.turn(bestD); G.facing = bestD; }
+        if (rc.getDirection() != bestD) { if (!rc.canTurn(bestD)) return false; rc.turn(bestD); G.facing = bestD; D.turnOnly(D.A_THROW); }
         if (!rc.canThrowRat()) return false;
         rc.throwRat();
+        D.act(D.A_THROW);
         throwsDone++;
         return true;
     }
@@ -837,6 +903,7 @@ public final class Baby {
             if (!rc.canTurn(bestD)) return false;
             rc.turn(bestD);
             G.facing = bestD;
+            D.turnOnly(D.A_THROW);
             // the flight is in view now: one of ours on it, unseen before the turn, stops the throw
             if (!late) {
                 MapLocation l = me.add(bestD);
@@ -852,6 +919,7 @@ public final class Baby {
         }
         if (!rc.canThrowRat()) return false;
         rc.throwRat();
+        D.act(D.A_THROW);
         throwsDone++;
         return true;
     }
@@ -867,6 +935,7 @@ public final class Baby {
         MapLocation best = trapTile(rc.getLocation(), rc.getDirection(), nearestEnemy.location, d0, Cfg.TRAP_ADJ);
         if (best == null) return false;
         rc.placeRatTrap(best);
+        D.act(D.A_RAT_TRAP);
         ratTraps++;
         return true;
     }
@@ -970,12 +1039,13 @@ public final class Baby {
         }
         if (!rc.canAttack(t)) {
             Direction d = me.directionTo(t);
-            if (rc.getDirection() != d && rc.canTurn(d)) rc.turn(d);
+            if (rc.getDirection() != d && rc.canTurn(d)) { rc.turn(d); D.turnOnly(r.type == UnitType.RAT_KING ? D.A_BITE_KING : D.A_BITE_RAT); }
             G.facing = rc.getDirection();
         }
         if (rc.canAttack(t)) {
             int c = r.type == UnitType.BABY_RAT ? finishCheese(r.health, rc.getGlobalCheese()) : 0;
             if (c > 0 && rc.canAttack(t, c)) rc.attack(t, c); else rc.attack(t);
+            D.act(r.type == UnitType.RAT_KING ? D.A_BITE_KING : D.A_BITE_RAT);
             bitesRat++;
             return true;
         }
@@ -1023,6 +1093,7 @@ public final class Baby {
             if (rc.canAttack(t)) {
                 int cheese = Comms.read(Comms.BUDGET) * 4 >= Cfg.CHEESE_BITE_SURPLUS ? 1 : 0;
                 if (cheese > 0 && rc.canAttack(t, cheese)) rc.attack(t, cheese); else rc.attack(t);
+                D.act(D.A_BITE_CAT);
                 bitesCat++;
                 return true;
             }
@@ -1030,7 +1101,8 @@ public final class Baby {
         }
         if (turnTo != null && rc.canTurn()) {
             rc.turn(me.directionTo(turnTo));
-            if (rc.canAttack(turnTo)) { rc.attack(turnTo); bitesCat++; return true; }
+            D.turnOnly(D.A_BITE_CAT);
+            if (rc.canAttack(turnTo)) { rc.attack(turnTo); D.act(D.A_BITE_CAT); bitesCat++; return true; }
         }
         return false;
     }
@@ -1051,7 +1123,7 @@ public final class Baby {
             int s = laneKey(a, l, G.pickBit(me, l));
             if (s < bs || Cfg.SYM_TIE && s == bs && G.tieFirst(me, l, best)) { bs = s; best = l; }
         }
-        if (best != null) { rc.placeCatTrap(best); trapsPlaced++; }
+        if (best != null) { rc.placeCatTrap(best); D.act(D.A_LAY_LANE); trapsPlaced++; }
     }
 
     /** layLane's rank: age, then dist2 from the map centre (doubled coords; both mirror-invariant), then the pick bit. */
@@ -1087,7 +1159,7 @@ public final class Baby {
             int score = s * 100 + catDist4(c.location, l);
             if (score < bs) { bs = score; best = l; }
         }
-        if (best != null) { rc.placeCatTrap(best); trapsPlaced++; }
+        if (best != null) { rc.placeCatTrap(best); D.act(D.A_CAT_TRAP); trapsPlaced++; }
     }
 
     static int chebToBody(MapLocation bl, MapLocation p) {
@@ -1109,6 +1181,7 @@ public final class Baby {
                     MapLocation t = k.location.translate(dx, dy);
                     if (rc.canTransferCheese(t, raw)) {
                         rc.transferCheese(t, raw);
+                        D.act(D.A_DELIVER);
                         delivered += raw;
                         G.rawCheese = 0;
                         if (Cfg.TRIP_HALF != 0) tripFrom = G.round;
@@ -1127,6 +1200,7 @@ public final class Baby {
                 && (Comms.read(Comms.SYM) & Comms.SYM_BURN) == 0) {
             G.rc.squeak(Comms.squeak(Comms.SQ_BURN, G.me.x, G.me.y, 0));
             burnSqueaked = G.round;
+            D.lab2 = D.C_BURN;
             return;
         }
         if (Cfg.GOSSIP && Comms.numMines == 0) {
@@ -1139,6 +1213,7 @@ public final class Baby {
             if (symGossip(Cfg.SYM_GOSSIP, near)) return;
             if (myMineCount > 0 && !near) {
                 int key = myMines[G.round % myMineCount];
+                D.lab2 = D.C_MINE_GOSSIP;
                 G.rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0));
                 return;
             }
@@ -1151,21 +1226,21 @@ public final class Baby {
             if (symGossip(Cfg.SYM_GOSSIP, near)) return;
             if (!near) {
                 int key = unreported();
-                if (key >= 0) { G.rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0)); return; }
+                if (key >= 0) { D.lab2 = D.C_MINE_RELAY; G.rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0)); return; }
             }
         }
         // a squeak reaches robots with any tile within dist2 16 of us: the king's centre within 16 is always heard
         if (near) {
             int sharedSym = Cfg.BURN ? Comms.read(Comms.SYM) & 7 : Comms.read(Comms.SYM);
-            if (sharedSym != 0 && (Sym.mask & sharedSym) != sharedSym) {
+            if (sharedSym != 0 && (Sym.mask & sharedSym) != sharedSym) { D.lab2 = D.C_SYM_KING;
                 G.rc.squeak(Comms.squeak(Comms.SQ_SYM, 0, 0, Sym.mask));
                 return;
             }
             for (int i = 0; i < myMineCount; i++) {
                 int x = myMines[i] / 64, y = myMines[i] % 64;
-                if (!Comms.hasMine(x, y)) { G.rc.squeak(Comms.squeak(Comms.SQ_MINE, x, y, 0)); return; }
+                if (!Comms.hasMine(x, y)) { D.lab2 = D.C_MINE_KING; G.rc.squeak(Comms.squeak(Comms.SQ_MINE, x, y, 0)); return; }
             }
-            if (Cfg.TRIP_HALF != 0 && tripT > 0) { G.rc.squeak(Comms.squeak(Comms.SQ_TRIP, tripKey / 64, tripKey % 64, Math.min(tripT, 0xFFFF))); tripT = 0; return; }
+            if (Cfg.TRIP_HALF != 0 && tripT > 0) { D.lab2 = D.C_TRIP; G.rc.squeak(Comms.squeak(Comms.SQ_TRIP, tripKey / 64, tripKey % 64, Math.min(tripT, 0xFFFF))); tripT = 0; return; }
         }
         // at war: the enemy king first (seen, or news to relay once per sighting), then an enemy's front
         if (!G.coop && Cfg.KING_PRESS && lastEKing != null && G.round - lastEKingRound <= 2
@@ -1173,14 +1248,17 @@ public final class Baby {
             int hops = eKing != null ? 0 : ekHops + 1;
             G.rc.squeak(Comms.squeak(Comms.SQ_EKING, lastEKing.x, lastEKing.y, hops | (lastEKingRound & 1023) << 2));
             ekRelayed = lastEKingRound;
+            D.lab2 = D.C_EKING;
             return;
         }
         if (!G.coop && Cfg.TRAP_SHARE && nearestEnemy != null && nearestEnemy.direction != null) {
+            D.lab2 = D.C_TRAP;
             int d = nearestEnemy.direction.ordinal();
             G.rc.squeak(Comms.squeak(Comms.SQ_TRAP, nearestEnemy.location.x, nearestEnemy.location.y, d));
             return;
         }
         if (k != null && G.me.distanceSquaredTo(k) <= 16 && catSeen != null && G.round - catSeenRound <= 2) {
+            D.lab2 = D.C_CAT;
             G.rc.squeak(Comms.squeak(Comms.SQ_CAT, catSeen.x, catSeen.y, 0));
         }
     }
@@ -1216,6 +1294,7 @@ public final class Baby {
         if (!ally) return false;
         G.rc.squeak(Comms.squeak(Comms.SQ_SYM, 0, 0, Sym.mask));
         symSqueaked = G.round;
+        D.lab2 = D.C_SYM_GOSSIP;
         return true;
     }
 
@@ -1335,12 +1414,12 @@ public final class Baby {
             if (Cfg.KMINE_SKIP > 0 && mineTarget != null && G.round % 10 == 0 && kingHeld(mineTarget)
                     && homeMineCount() >= Cfg.KMINE_SKIP) mineTarget = null;
             if (Cfg.TRIP_HALF != 0 && mineTarget != null && Comms.tripSig != tripSigAtPick) mineTarget = null;
-            if (mineTarget == null) mineTarget = pickMine();
+            if (mineTarget == null) { D.pickSite = 0; mineTarget = pickMine(); }
             if (mineTarget != null) {
                 if (Cfg.SEEK_IDLE > 0 && (role == GATHER || Cfg.FIGHT_SHIFT && role == FIGHT) && idle(mineTarget)) {
-                    if (Cfg.IDLE_SHIFT) { mineShift++; mineTarget = pickMine(); }
+                    if (Cfg.IDLE_SHIFT) { mineShift++; D.pickSite = 1; mineTarget = pickMine(); }
                     if (role == GATHER && idleSeek() && seek()) { why = 'x'; D.lab = D.M_IDLE_SEEK; G.debt += 6; return; }
-                    if (mineTarget == null) mineTarget = pickMine();
+                    if (mineTarget == null) { D.pickSite = 2; mineTarget = pickMine(); }
                 }
                 if (atMine(mineTarget, Cfg.MINE_KING_R)) {
                     if (Cfg.TRIP_HALF != 0) tripArrive(mineTarget, G.round);
@@ -2068,9 +2147,14 @@ public final class Baby {
         minesAtPick = Comms.numMines;
         if (Cfg.HOME_ALL_SYM) maskAtPick = Sym.mask;
         if (Cfg.TRIP_HALF != 0) tripSigAtPick = Comms.tripSig;
-        if (rr) return cand[rrSlot % m];
-        if (Cfg.MINE_BALANCE) return Cfg.IDLE_SHIFT ? cand[(slot % m + mineShift) % m] : cand[slot % m];
-        return cand[G.rand(Math.min(m, Cfg.MINE_SPREAD))];
+        if (D.ON) D.minePick(n, ours, m);   // MINE_PICK opens (secondary slot; BABY_MOVE is open)
+        if (D.NET && D.point2 == D.MINE_PICK) {
+            MapLocation p = minePickExec(D.pick2(D.MINE_PICK, null), n);
+            if (p != null) { D.emit2(); return p; }
+        }
+        if (rr) { D.lab2 = rrSlot % m; D.emit2(); return cand[rrSlot % m]; }
+        if (Cfg.MINE_BALANCE) { D.lab2 = Cfg.IDLE_SHIFT ? (slot % m + mineShift) % m : slot % m; D.emit2(); return Cfg.IDLE_SHIFT ? cand[(slot % m + mineShift) % m] : cand[slot % m]; }
+        int kr = G.rand(Math.min(m, Cfg.MINE_SPREAD)); D.lab2 = kr; D.emit2(); return cand[kr];
     }
 
     /** Cfg.LOAD_AT: a gatherer carrying raw cheese heads home once it holds at least the load, or late in the game. */
@@ -2701,4 +2785,495 @@ public final class Baby {
     static int clampX(int x) { return Math.max(0, Math.min(G.W - 1, x)); }
 
     static int clampY(int y) { return Math.max(0, Math.min(G.H - 1, y)); }
+
+    // ---------------------------------------------------------------- net-mode executors (D.NET builds only)
+    // Each runs one option's behaviour standalone, behind the validity guards it needs; true = it acted (the option
+    // owns the decision), false = zdb's own code runs as the fallback. Pass 1 wires them only behind D.NET.
+
+    /** BABY_ROLE: set the role option k (no guard needed). */
+    static void roleExec(int k) {
+        switch (k) {
+            case D.R_GATHER: role = GATHER; scout = false; raider = false; break;
+            case D.R_SCOUT: role = GATHER; scout = true; raider = false; break;
+            case D.R_FIGHT: role = FIGHT; raider = false; break;
+            case D.R_RAIDER: role = FIGHT; raider = true; break;
+            case D.R_ATTACK: if (role != ATTACK) ekSeen = G.round; role = ATTACK; raider = false; break;
+            default: break;
+        }
+    }
+
+    /** BABY_ACT_PRE / BABY_ACT_POST: run action option k (robots null: sense here). A_PASS keeps the action unused. */
+    static boolean actExec(int k, RobotInfo[] robots) throws GameActionException {
+        RobotController rc = G.rc;
+        if (k == D.A_PASS) return true;
+        if (!rc.isActionReady()) return false;
+        if (robots == null) robots = rc.senseNearbyRobots(-1, null);
+        MapLocation me = rc.getLocation(), l = me.add(rc.getDirection());
+        switch (k) {
+            case D.A_DROP_ALLY: {
+                RobotInfo c = rc.getCarrying();
+                if (c == null || c.team != G.us) return false;
+                dropAlly();
+                return rc.getCarrying() == null;
+            }
+            case D.A_THROW: {
+                RobotInfo c = rc.getCarrying();
+                if (c == null || c.team == G.us) return false;
+                Direction f0 = rc.getDirection();
+                return tryThrow(robots) || rc.getDirection() != f0;
+            }
+            case D.A_NAP: return tryCarry(robots);
+            case D.A_BITE_KING: return biteSome(robots, true);
+            case D.A_BITE_RAT: return biteSome(robots, false);
+            case D.A_BITE_CAT: {
+                if (cat == null) return false;
+                Direction f0 = rc.getDirection();
+                boolean b = tryBiteCat(cat);
+                G.facing = rc.getDirection();
+                return b || rc.getDirection() != f0;
+            }
+            case D.A_CAT_TRAP: {
+                if (cat == null) return false;
+                int tp = trapsPlaced;
+                tryCatTrap(cat);
+                return trapsPlaced != tp;
+            }
+            case D.A_LAY_LANE: { int tp = trapsPlaced; layLane(); return trapsPlaced != tp; }
+            case D.A_DELIVER: { int raw = rc.getRawCheese(); tryDeliver(); return rc.getRawCheese() != raw; }
+            case D.A_CASH_KING:
+                if (cashSite == null || !me.equals(cashSite) || !rc.canBecomeRatKing()) return false;
+                rc.becomeRatKing(); formed++; cashed++;
+                return true;
+            case D.A_RAT_TRAP: return tryRatTrap();
+            case D.A_X_BITE_FWD:
+                if (!rc.onTheMap(l) || !rc.canAttack(l)) return false;
+                rc.attack(l);
+                return true;
+            case D.A_X_CARRY_FWD:
+                if (!rc.onTheMap(l) || !rc.canCarryRat(l)) return false;
+                rc.carryRat(l); carryRound = G.round;
+                return true;
+            case D.A_X_THROW_NOW:
+                if (!rc.canThrowRat()) return false;
+                rc.throwRat(); throwsDone++;
+                return true;
+            case D.A_X_DROP_FWD: {
+                Direction d = rc.getDirection();
+                if (d == Direction.CENTER || !rc.canDropRat(d)) return false;
+                rc.dropRat(d); Nav.swapFrom = null;
+                return true;
+            }
+            case D.A_X_RAT_TRAP_FWD:
+                if (!rc.onTheMap(l) || !rc.canPlaceRatTrap(l)) return false;
+                rc.placeRatTrap(l); ratTraps++;
+                return true;
+            case D.A_X_CAT_TRAP_FWD:
+                if (!rc.onTheMap(l) || !rc.canPlaceCatTrap(l)) return false;
+                rc.placeCatTrap(l); trapsPlaced++;
+                return true;
+            case D.A_X_DIRT_PLACE_FWD:
+                if (!rc.onTheMap(l) || !rc.canPlaceDirt(l)) return false;
+                rc.placeDirt(l); Sym.mem[G.idx(l)] |= Sym.DIRT;
+                return true;
+            case D.A_X_DIRT_REMOVE_FWD:
+                if (!rc.onTheMap(l) || !rc.canRemoveDirt(l)) return false;
+                rc.removeDirt(l); Sym.mem[G.idx(l)] &= ~Sym.DIRT;
+                return true;
+            case D.A_X_BECOME_KING:
+                if (!rc.canBecomeRatKing()) return false;
+                rc.becomeRatKing(); formed++;
+                return true;
+            default: return false;
+        }
+    }
+
+    /** actExec's bites: biteEnemies over the enemy kings (kings) or the enemy rats (!kings) in robots; true when it
+     *  bit or turned to bite. */
+    static boolean biteSome(RobotInfo[] robots, boolean kings) throws GameActionException {
+        int m = 0;
+        for (RobotInfo r : robots) if (r.team == G.them && (r.type == UnitType.RAT_KING) == kings) m++;
+        if (m == 0) return false;
+        RobotInfo[] a = new RobotInfo[m];
+        m = 0;
+        for (RobotInfo r : robots) if (r.team == G.them && (r.type == UnitType.RAT_KING) == kings) a[m++] = r;
+        Direction f0 = G.rc.getDirection();
+        return biteEnemies(a) || G.rc.getDirection() != f0;
+    }
+
+    /** BABY_FACE: face option k (guardTurn's threat bookkeeping kept). */
+    static boolean faceExec(int k) throws GameActionException {
+        RobotController rc = G.rc;
+        if (TrapRisk.nHeard > 0) threatRound = G.round;
+        MapLocation me = G.me;
+        switch (k) {
+            case D.F_NONE: return true;
+            case D.F_SEEN: {
+                MapLocation t = null;
+                int bd = Integer.MAX_VALUE;
+                for (RobotInfo r : rc.senseNearbyRobots(Cfg.GUARD_DIST2, G.them)) {
+                    if (r.type != UnitType.BABY_RAT) continue;
+                    int d = me.distanceSquaredTo(r.location);
+                    if (d < bd) { bd = d; t = r.location; }
+                }
+                return t != null && faceTo(t);
+            }
+            case D.F_MEMORY: {
+                MapLocation t = null;
+                int bd = Integer.MAX_VALUE;
+                for (RobotInfo r : seen) {
+                    if (r.team != G.them || r.type != UnitType.BABY_RAT) continue;
+                    int d = me.distanceSquaredTo(r.location);
+                    if (d <= Cfg.GUARD_DIST2 && d < bd) { bd = d; t = r.location; }
+                }
+                return t != null && faceTo(t);
+            }
+            case D.F_HEARD: {
+                MapLocation t = null;
+                int bd = Integer.MAX_VALUE;
+                for (int i = 0; i < TrapRisk.nHeard; i++) {
+                    int d = me.distanceSquaredTo(TrapRisk.heardE[i]);
+                    if (d <= 8 && d < bd) { bd = d; t = TrapRisk.heardE[i]; }
+                }
+                return t != null && faceTo(t);
+            }
+            case D.F_GUARD: return Nav.guard != null && faceTo(Nav.guard);
+            default:
+                if (k < D.F_DIR0 || k >= D.F_DIR0 + 8) return false;
+                Direction to = G.DIRS[k - D.F_DIR0];
+                if (rc.getDirection() != to && rc.canTurn(to)) { rc.turn(to); G.facing = to; }
+                return rc.getDirection() == to;
+        }
+    }
+
+    /** Turn to face t; true when we face it. */
+    static boolean faceTo(MapLocation t) throws GameActionException {
+        RobotController rc = G.rc;
+        Direction to = G.me.directionTo(t);
+        if (to == Direction.CENTER) return false;
+        if (rc.getDirection() != to && rc.canTurn(to)) { rc.turn(to); G.facing = to; }
+        return rc.getDirection() == to;
+    }
+
+    /** BABY_COMMS: squeak option k (true when it squeaked). C_NONE cannot silence zdb's report in pass 1: false. */
+    static boolean commsExec(int k) throws GameActionException {
+        RobotController rc = G.rc;
+        switch (k) {
+            case D.C_MINE_GOSSIP: {
+                if (myMineCount <= 0) return false;
+                int key = myMines[G.round % myMineCount];
+                return rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0));
+            }
+            case D.C_MINE_RELAY: {
+                int key = unreported();
+                return key >= 0 && rc.squeak(Comms.squeak(Comms.SQ_MINE, key / 64, key % 64, 0));
+            }
+            case D.C_SYM_KING:
+            case D.C_SYM_GOSSIP: {
+                int sh = Cfg.BURN ? Comms.read(Comms.SYM) & 7 : Comms.read(Comms.SYM);
+                if (sh == 0 || (Sym.mask & sh) == sh) return false;
+                if (!rc.squeak(Comms.squeak(Comms.SQ_SYM, 0, 0, Sym.mask))) return false;
+                if (k == D.C_SYM_GOSSIP) symSqueaked = G.round;
+                return true;
+            }
+            case D.C_MINE_KING:
+                for (int i = 0; i < myMineCount; i++) {
+                    int x = myMines[i] / 64, y = myMines[i] % 64;
+                    if (!Comms.hasMine(x, y)) return rc.squeak(Comms.squeak(Comms.SQ_MINE, x, y, 0));
+                }
+                return false;
+            case D.C_CAT:
+                if (catSeen == null || G.round - catSeenRound > 2) return false;
+                return rc.squeak(Comms.squeak(Comms.SQ_CAT, catSeen.x, catSeen.y, 0));
+            case D.C_CASH_LEAD:
+            case D.C_CASH_RELAY: {
+                if (k == D.C_CASH_LEAD && cashSite == null) {
+                    MapLocation sp = cashSpot(G.me);
+                    if (sp == null) return false;
+                    cashSite = sp; cashStart = cashHeard = G.round; cashLead = true;
+                }
+                if (cashSite == null || G.cheb(G.me, cashSite) > Cfg.CASH_PULL) return false;
+                return rc.squeak(Comms.squeak(Comms.SQ_CASH, cashSite.x, cashSite.y,
+                    cashTag(cashSite.x, cashSite.y) << 10 | (cashStart & 1023)));
+            }
+            case D.C_EKING:
+                if (eKing == null) return false;
+                return rc.squeak(Comms.squeak(Comms.SQ_EKING, eKing.location.x, eKing.location.y, (G.round & 1023) << 2));
+            case D.C_TRAP:
+                if (!Cfg.TRAP_SHARE || nearestEnemy == null || nearestEnemy.direction == null) return false;
+                return rc.squeak(Comms.squeak(Comms.SQ_TRAP, nearestEnemy.location.x, nearestEnemy.location.y, nearestEnemy.direction.ordinal()));
+            default: return false;   // C_NONE, C_BURN, C_TRIP (masked)
+        }
+    }
+
+    /** MINE_PICK: candidate rank k of pickMine's cand[0..n) (sets the label), else null (zdb's pick). */
+    static MapLocation minePickExec(int k, int n) {
+        if (k < 0 || k >= n) return null;
+        D.lab2 = k;
+        return cand[k];
+    }
+
+    /** BABY_MOVE net option mask (sized D.BABY_MOVE_NET_OPTIONS). */
+    static final boolean[] netOk = new boolean[D.BABY_MOVE_NET_OPTIONS];
+
+    /** Net-mode movement: the net's option, or zdb's cascade when it cannot act (label 0x8000 | k << 6 | zdb's). */
+    static void netMove() throws GameActionException {
+        if (Cfg.GRAB_MICRO && GrabMicro.round == G.round) { moveDecision(); return; }
+        int k = -1;
+        if (D.point == D.BABY_MOVE) { netAllowed(); k = D.pick(D.BABY_MOVE, netOk); }
+        boolean acted = false;
+        if (k >= 0) {
+            why = '-';
+            try { acted = netExec(k); } catch (GameActionException e) { acted = false; }
+        }
+        if (acted) D.lab = k;
+        else {
+            moveDecision();
+            if (k >= 0) D.lab = 0x8000 | (k << 6) | (D.lab & 63);
+        }
+    }
+
+    /** Fill netOk: side-effect-free applicability of each BABY_MOVE option. */
+    static void netAllowed() {
+        RobotController rc = G.rc;
+        boolean[] a = netOk;
+        RobotInfo c = rc.getCarrying();
+        MapLocation k = Comms.nearestKing(G.me);
+        boolean reach = catReach(), kc = knownCat() != null, mineOk = mineTarget != null || Comms.numMines + myMineCount > 0;
+        int raw = rc.getRawCheese();
+        a[D.M_GRAB] = false;
+        a[D.M_CAT_DEFEND] = cat != null && reach;
+        a[D.M_END_CAT] = reach && (cat != null || kc);
+        a[D.M_FLEE_CAT] = cat != null;
+        a[D.M_YIELD_KING] = cat != null;
+        a[D.M_AIM_CARRY] = c != null && c.team == G.them;
+        a[D.M_RESCUE] = rescueT != null && rc.isActionReady();
+        a[D.M_AMMO_AWAY] = nearestEnemy != null && k != null;
+        a[D.M_RETREAT] = k != null && nearEnemy(20);
+        a[D.M_HUNGRY] = false;   // alias of M_DELIVER
+        a[D.M_FORM_KING] = formSite() != null;
+        a[D.M_CASH] = Cfg.CASH_BANK > 0 && cashSite != null;
+        a[D.M_RAID] = true;
+        a[D.M_FLANK] = nearestEnemy != null && rc.isActionReady() && c == null;
+        a[D.M_PRESS] = eKing != null || lastEKing != null && G.round - lastEKingRound <= Cfg.PRESS_AGE;
+        a[D.M_MICRO] = nearestEnemy != null;
+        a[D.M_FACE] = nearEnemy(8);
+        a[D.M_ATK_DELIVER] = false;   // alias of M_DELIVER
+        a[D.M_STALL_CAT] = role == ATTACK;
+        a[D.M_ATTACK] = true;
+        a[D.M_WAR] = nearestEnemy != null || eKing != null || threatenedKing() != null || Comms.fresh(Comms.read(Comms.ALERT + 2), 3);
+        a[D.M_FORT] = Cfg.FORT_R > 0 && k != null;
+        a[D.M_FIGHT_CAT] = cat != null && reach;
+        a[D.M_DELIVER] = raw > 0 && k != null;
+        a[D.M_COURIER] = k != null;
+        a[D.M_CHEESE_PICK] = cheeseTarget != null && G.cheb(G.me, cheeseTarget) == 1;
+        a[D.M_CHEESE] = cheeseTarget != null;
+        a[D.M_KNOWN_CAT] = reach && kc;
+        a[D.M_RAID_FIGHT] = true;
+        a[D.M_SCOUT_HOME] = k != null;
+        a[D.M_SCOUT] = true;
+        a[D.M_SEEK] = true;
+        a[D.M_MINE_EXPLORE] = true;
+        a[D.M_IDLE_SEEK] = G.round >= seekNext;
+        a[D.M_START_SEEK] = mineTarget != null && G.round >= seekNext;
+        a[D.M_MINE_STILL] = true;
+        a[D.M_MINE_WANDER] = mineOk;
+        a[D.M_MINE_GO] = mineOk;
+        a[D.M_EXPLORE] = true;
+        for (int i = 0; i < 8; i++) {
+            Direction d = G.DIRS[i];
+            a[D.P_STEP0 + i] = rc.canMove(d) && (Nav.avoid & (1 << i)) == 0;
+            a[D.P_TURN0 + i] = rc.isTurningReady() && rc.getDirection() != d;
+        }
+        a[D.P_HOLD] = true;
+    }
+
+    /** Run BABY_MOVE option k; true when it took the movement decision (as the cascade's return after it). */
+    static boolean netExec(int k) throws GameActionException {
+        RobotController rc = G.rc;
+        switch (k) {
+            case D.M_GRAB: return false;
+            case D.M_CAT_DEFEND:
+                if (cat == null || !approachCat(cat)) return false;
+                why = 'g'; return true;
+            case D.M_END_CAT: {
+                boolean ok;
+                if (cat != null) ok = approachCat(cat);
+                else { MapLocation ct = knownCat(); if (ct == null) return false; Nav.goTo(ct); catStalled(ct); ok = true; }
+                if (!ok) return false;
+                why = 'e'; return true;
+            }
+            case D.M_FLEE_CAT:
+                if (cat == null) return false;
+                if (!(Cfg.SYM_CENTRE ? Nav.flee2(2 * cat.location.x + 1, 2 * cat.location.y + 1) : Nav.flee(cat.location))) return false;
+                why = 'c'; return true;
+            case D.M_YIELD_KING:
+                if (cat == null || !yieldKing()) return false;
+                why = 'y'; return true;
+            case D.M_AIM_CARRY: {
+                RobotInfo c = rc.getCarrying();
+                if (c == null || c.team != G.them || !aimCarry()) return false;
+                why = 'T'; return true;
+            }
+            case D.M_RESCUE:
+                if (rescueT == null || !rescue()) return false;
+                why = 'R'; return true;
+            case D.M_AMMO_AWAY:
+                if (nearestEnemy == null || !ammoAway()) return false;
+                why = 'A'; return true;
+            case D.M_RETREAT:
+                if (!retreat()) return false;
+                why = 'r'; return true;
+            case D.M_HUNGRY:
+                if (rc.getRawCheese() <= 0 || !deliver()) return false;
+                why = 'H'; return true;
+            case D.M_FORM_KING:
+                if (!formKing()) return false;
+                why = 'K'; return true;
+            case D.M_CASH:
+                if (Cfg.CASH_BANK <= 0 || cashSite == null || !cashMove()) return false;
+                why = 'Q'; return true;
+            case D.M_RAID:
+            case D.M_RAID_FIGHT:
+                if (!raid()) return false;
+                why = 'z'; return true;
+            case D.M_FLANK:
+                if (seen == null || !flank(seen)) return false;
+                why = 'k'; return true;
+            case D.M_PRESS:
+                if (!pressKing()) return false;
+                why = 'p'; return true;
+            case D.M_MICRO:
+                if (seen == null || !Micro.act(seen)) return false;
+                why = 'm'; return true;
+            case D.M_FACE:
+                if (!faceEnemy()) return false;
+                why = 'f'; return true;
+            case D.M_ATK_DELIVER:
+                return rc.getRawCheese() > 0 && deliver();
+            case D.M_STALL_CAT:
+                if (!stallCat()) return false;
+                why = 'g'; return true;
+            case D.M_ATTACK:
+                if (!attack()) return false;
+                why = 'a'; return true;
+            case D.M_WAR:
+                if (!war()) return false;
+                why = 'w'; return true;
+            case D.M_FORT:
+                if (Cfg.FORT_R <= 0 || !fort()) return false;
+                why = 'h'; return true;
+            case D.M_FIGHT_CAT:
+                if (cat == null) return false;
+                why = 'g';
+                return approachCat(cat);
+            case D.M_DELIVER:
+                if (rc.getRawCheese() <= 0) return false;
+                why = 'g';
+                return deliver();
+            case D.M_COURIER: {
+                MapLocation kl = Comms.nearestKing(G.me);
+                if (kl == null) return false;
+                Nav.goTo(kl); why = 'm'; return true;
+            }
+            case D.M_CHEESE_PICK: {
+                if (cheeseTarget == null || G.cheb(G.me, cheeseTarget) != 1) return false;
+                Direction d = G.me.directionTo(cheeseTarget);
+                if (rc.getDirection() != d && rc.canTurn(d)) { rc.turn(d); G.facing = d; }
+                pickUp();
+                if (!rc.canSenseLocation(cheeseTarget) || rc.senseMapInfo(cheeseTarget).getCheeseAmount() == 0) cheeseTarget = null;
+                why = 'P'; return true;
+            }
+            case D.M_CHEESE:
+                if (cheeseTarget == null) return false;
+                why = 'C';
+                Nav.goTo(cheeseTarget);
+                if (Nav.stall > 12) {
+                    if (Cfg.CHEESE_BAN > 0 && (!Cfg.CHEESE_BAN_WALL || Flow.detour(cheeseTarget))) banCheese(cheeseTarget);
+                    if (Cfg.BREAKOUT_TTL > 0 && walledOff(G.me, cheeseTarget)) wallStrike(G.round, Cfg.BREAKOUT_TTL);
+                    cheeseTarget = null;
+                }
+                return true;
+            case D.M_KNOWN_CAT: {
+                MapLocation ct = catReach() ? knownCat() : null;
+                if (ct == null) return false;
+                why = 'g';
+                Nav.goTo(ct); catStalled(ct); return true;
+            }
+            case D.M_SCOUT_HOME: {
+                MapLocation kl = Comms.nearestKing(G.me);
+                if (kl == null) return false;
+                if (Cfg.SWEEP > 0) sweepCell = sweepScan = 0;
+                Nav.goTo(kl); why = 's'; return true;
+            }
+            case D.M_SCOUT:
+                why = 'S';
+                if (Cfg.SCOUT_FRONTIER && exploreFrontier()) return true;
+                if (!exploreHome()) explore();
+                return true;
+            case D.M_SEEK:
+                if (!seek()) return false;
+                why = 'x'; return true;
+            case D.M_MINE_EXPLORE:
+                if (!exploreHome()) return false;
+                mineTarget = null; why = 'x'; return true;
+            case D.M_IDLE_SEEK:
+                if (!idleSeek() || !seek()) return false;
+                why = 'x'; return true;
+            case D.M_START_SEEK:
+                if (mineTarget == null || !startSeek(mineTarget) || !seek()) return false;
+                why = 'x'; return true;
+            case D.M_MINE_STILL: {
+                Direction t = G.facing.rotateRight().rotateRight();
+                if (rc.canTurn(t)) { rc.turn(t); G.facing = t; }
+                if (Cfg.MINE_TRAPS > 0 && mineTarget != null) mineTrap(mineTarget, Cfg.MINE_TRAPS);
+                return true;
+            }
+            case D.M_MINE_WANDER:
+                if (!netMine()) return false;
+                if (Cfg.TRIP_HALF != 0 && atMine(mineTarget, Cfg.MINE_KING_R)) tripArrive(mineTarget, G.round);
+                wanderAround(mineTarget);
+                if (Cfg.MINE_TRAPS > 0) mineTrap(mineTarget, Cfg.MINE_TRAPS);
+                why = 'W'; return true;
+            case D.M_MINE_GO:
+                if (!netMine()) return false;
+                why = 'M';
+                Nav.goTo(mineTarget);
+                if (Nav.stall > 25) mineTarget = null;
+                return true;
+            case D.M_EXPLORE:
+                why = 'E'; explore(); return true;
+            case D.P_HOLD:
+                why = 'v'; return true;
+            default:
+                if (k >= D.P_STEP0 && k < D.P_STEP0 + 8) {
+                    Direction d = G.DIRS[k - D.P_STEP0];
+                    if (!rc.canMove(d)) return false;
+                    if (rc.getDirection() != d && rc.canTurn(d)) rc.turn(d);
+                    if (!rc.canMove(d)) return false;
+                    rc.move(d);
+                    G.me = rc.getLocation(); G.facing = rc.getDirection();
+                    Nav.stall++;
+                    why = 'v'; return true;
+                }
+                if (k >= D.P_TURN0 && k < D.P_TURN0 + 8) {
+                    Direction d = G.DIRS[k - D.P_TURN0];
+                    if (rc.getDirection() == d || !rc.canTurn(d)) return false;
+                    rc.turn(d); G.facing = d;
+                    why = 'v'; return true;
+                }
+                return false;
+        }
+    }
+
+    /** The cascade's mine refresh, copied verbatim (no shared helper with the cascade in pass 1); true with a mine. */
+    static boolean netMine() throws GameActionException {
+        if (Cfg.MINE_BALANCE && mineTarget != null && (Cfg.HOME_ALL_SYM ? Comms.numMines != minesAtPick || Sym.mask != maskAtPick : Comms.numMines != minesAtPick)) mineTarget = null;
+        if (Cfg.MINE_ANY_COOP && !G.coop && mineTarget != null && !homeHalf(mineTarget)) mineTarget = null;
+        if (postMargin > 0 && role == FIGHT && coopAtPick && !G.coop) mineTarget = null;
+        if (Cfg.KMINE_SKIP > 0 && mineTarget != null && G.round % 10 == 0 && kingHeld(mineTarget)
+                && homeMineCount() >= Cfg.KMINE_SKIP) mineTarget = null;
+        if (Cfg.TRIP_HALF != 0 && mineTarget != null && Comms.tripSig != tripSigAtPick) mineTarget = null;
+        if (mineTarget == null) { D.pickSite = 0; mineTarget = pickMine(); }
+        return mineTarget != null;
+    }
 }
