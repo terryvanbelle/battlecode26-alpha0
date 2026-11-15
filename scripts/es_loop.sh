@@ -75,6 +75,7 @@ anchor() {   # v: centre version (after v updates)
   [ -n "$REF" ] || return 0
   $PY scripts/es_schedule.py --config $CFG --run $RUN --centre $v >> $LOG 2>&1 || { log "centre build v$v failed"; return 0; }
   mkdir -p $RD/gates
+  export BC_JAVA_FLAGS="$(get java_flags -Xmx2g)"   # gate games use the run's JVM flags (eval_student default: -Xmx2g)
   local cmd="bash scripts/es_eval.sh $name $REF $(get zmaps '') $(get gates.anchor_seeds 41,42) $RD/gates/anchor-v$v $(get gates.anchor_workers 4) $RD/gates.jsonl"
   if [ "$(get gates.anchor_background False)" = "True" ]; then
     (setsid bash -c "$cmd >> $LOG 2>&1" > /dev/null 2>&1 < /dev/null &)
