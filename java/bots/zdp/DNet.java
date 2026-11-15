@@ -9,7 +9,7 @@ package zdp;
  * [out][in]) and out biases, each a float's bits in two chars (high first).
  */
 public final class DNet {
-    static float[][][] w;   // [point][layer][out * in]
+    static float[][][] w;   // [point][layer][in * out]: transposed at load, input-major (logits walks inputs outside)
     static float[][][] b;   // [point][layer][out]
     static int[][] dims;    // [point][2 * layer] = in, out
 
@@ -42,8 +42,9 @@ public final class DNet {
             float[][] wl = new float[nl][], bl = new float[nl][];
             for (int l = 0; l < nl; l++) {
                 int in = d[2 * l], out = d[2 * l + 1];
-                float[] a = new float[in * out];
-                for (int k = 0; k < a.length; k++, i += 2) a[k] = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1));
+                float[] a = new float[in * out];   // packed row-major [out][in]; stored as [in][out]
+                for (int o = 0; o < out; o++)
+                    for (int k = 0; k < in; k++, i += 2) a[k * out + o] = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1));
                 float[] c = new float[out];
                 for (int k = 0; k < out; k++, i += 2) c[k] = Float.intBitsToFloat(s.charAt(i) << 16 | s.charAt(i + 1));
                 wl[l] = a; bl[l] = c;
@@ -52,7 +53,11 @@ public final class DNet {
         }
     }
 
-    /** Option logits for the open point's features (D.F[4..4+n)); null when this build has no net for the point. */
+    /** Option logits for the open point's features (D.F[4..4+n)); null when this build has no net for the point.
+     *  Inputs outside, outputs inside: each output still sums bias + w * x over the inputs in increasing order, as
+     *  the row-by-row form does, so the floats are the same; a zero input (about half of the features and of the
+     *  ReLU units) is skipped, which leaves every sum unchanged except for the sign of an exact zero, and neither
+     *  the argmax nor the softmax in sample() can see that. */
     static float[] logits(int point, char[] F, int n) {
         if (!has(point)) return null;
         int[] d = dims[point];
@@ -60,15 +65,16 @@ public final class DNet {
         float[] x = new float[in0];
         for (int k = 0; k < in0 && k < n; k++) x[k] = F[4 + k];
         float[][] wl = w[point], bl = b[point];
-        for (int l = 0; l < wl.length; l++) {
+        int last = wl.length - 1;
+        for (int l = 0; l <= last; l++) {
             int in = d[2 * l], out = d[2 * l + 1];
-            float[] a = wl[l], c = bl[l], y = new float[out];
-            for (int o = 0; o < out; o++) {
-                float s = c[o];
-                int base = o * in;
-                for (int k = 0; k < in; k++) s += a[base + k] * x[k];
-                y[o] = l < wl.length - 1 && s < 0 ? 0 : s;
+            float[] a = wl[l], y = bl[l].clone();
+            for (int k = 0, base = 0; k < in; k++, base += out) {
+                float xk = x[k];
+                if (xk == 0) continue;
+                for (int o = 0; o < out; o++) y[o] += a[base + o] * xk;
             }
+            if (l < last) for (int o = 0; o < out; o++) if (y[o] < 0) y[o] = 0;
             x = y;
         }
         return x;
