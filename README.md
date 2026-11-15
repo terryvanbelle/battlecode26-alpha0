@@ -42,7 +42,8 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
     - Trainable points: role, mine pick, king move/spawn/act/formation, king turn. King comms is frozen for now: its KL to the anchor jumped from 0.06 to 0.59 between iterations 1 and 2, and training refused the update.
     - Since iteration 3 it trains with the rich critic and GAE λ 0.9.
     - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpf005 (zdpn2 at floor 0.005), and from v12 on, the same 32 against zdb (for tracking only).
-    - Anchor gates against zdpf005: v0, v3, v6 and v9 each 17/32 (0.53), v12 20/32, v15 15/32. Against zdb: v0 16/32, v9 17/32, v12 15/32, v15 21/32. All within noise of the start so far.
+    - Anchor gates against zdpf005: v0, v3, v6 and v9 each 17/32 (0.53), v12 20/32, v15 15/32, v18 16/32. Against zdb: v0 16/32, v9 17/32, v12 15/32, v15 21/32, v18 16/32. All within noise of the start so far.
+    - Learning rate 1e-3 until iteration 14 (each update moved the policy by KL 0.001–0.03, far under target_kl 0.1). At 3e-3, one step on points 10/11 gave KL 0.21/0.44, so it is 1.5e-3 from iteration 16.
     - Since iteration 14 the VM plays 1/6 of each iteration's games ([vm_helper.sh](scripts/vm_helper.sh), run on the driver); collect time 27-31 → 24 min.
     - Learner score by version (`scripts/plot_rl_vs.py`). Blue: against the start net v0, from each iteration's pool games (iteration 1's learner plays the same policy as v0). Orange: against zdb, on the anchor gate's 32 games; v0 and v9 were measured on the VM, and gates track zdb from v12 on. On the same 32 games, zdpf005 scores 14/32 against zdb.
 
