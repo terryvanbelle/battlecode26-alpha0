@@ -127,7 +127,7 @@ L_p = -mean_i[ min(r_i A_i, clip(r_i, 0.8, 1.2) A_i) ]
   9. append a row to `runs/rl/<run>/progress.jsonl`
 - **New `scripts/rl_gate.sh`.** A thin wrapper over strength_check.sh / eval_student.py with `--player zdpr<k>`, the reference zdpn2, ZMAPS and Wilson CIs.
 - **configs/rl-v1.json.** Maps, mix, pool rules and every hyperparameter in section 3, so a run is fully described by its config.
-- **docs/rl-selfplay.md.** Results log. Update the README Current work block at each milestone, with times in PDT (UTC−7).
+- **docs/rl-selfplay.md.** Results log. Update the PROGRESS.md Current work block at each milestone, with times in PDT (UTC−7).
 - **tests/.** Three checks:
   - trailer round-trip: a Java-format string through the Python parser;
   - the RL build replays the non-RL build on 2 jobs;
