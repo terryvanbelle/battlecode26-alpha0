@@ -39,8 +39,9 @@ n = sum(r['score'].get(opp, {}).get('games', 0) for r in rows)
 gl = ', '.join(f"v{v}{f' ({start})' if v == 0 else ''} {pt:g}/{g}" for v, pt, g in gates)
 last = max((r['iter'] for r in rows), default=-1)
 text = (f"Updated automatically after each iteration ([es_chart_sync.sh](scripts/es_chart_sync.sh)); last "
-        f"{time.strftime('%B %-d, %H:%M PDT')}, after iteration {last}. Gates against {anchor}: {gl}. "
-        f"Pool games against the start net, iterations 0–{last}: pooled {p:g}/{n} = {p / max(n, 1):.2f}.")
+        f"{time.strftime('%B %-d, %H:%M PDT')}, " + (f"after iteration {last}" if last >= 0 else "no iteration finished yet")
+        + f". Gates against {anchor}: {gl}." + (f" Pool games against the start net, iterations 0–{last}: pooled "
+                                                f"{p:g}/{n} = {p / max(n, 1):.2f}." if n else ""))
 f = Path('PROGRESS.md'); s = f.read_text()
 s2, k = re.subn(r'<!-- ES_STATUS_START -->.*?<!-- ES_STATUS_END -->',
                 lambda _: f'<!-- ES_STATUS_START -->{text}<!-- ES_STATUS_END -->', s, flags=re.S)
@@ -49,8 +50,9 @@ if k != 1:
 f.write_text(s2)
 print(text)
 EOF
-  if git diff --quiet -- $SVG PROGRESS.md; then log "no change"; return 0; fi
-  git commit -q -m "PROGRESS: $RUN chart and status after iteration $(ls_done)
+  git add -- $SVG PROGRESS.md || return 1   # a new run's SVG is untracked until its first commit
+  if git diff --cached --quiet -- $SVG PROGRESS.md; then log "no change"; return 0; fi
+  git commit -q -m "PROGRESS: $RUN chart and status $(n=$(ls_done); [ $n -ge 0 ] && echo after iteration $n || echo at the start)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01SzziPTzb6YbDMqwPrZRdy9" -- $SVG PROGRESS.md || return 1
@@ -59,7 +61,7 @@ Claude-Session: https://claude.ai/code/session_01SzziPTzb6YbDMqwPrZRdy9" -- $SVG
   log "pushed $(git log --oneline -1)"
 }
 
-state() { timeout 60 "${BOX[@]}" "cd $BR/runs/es/$RUN && echo \$(ls -d iter-*/.done 2>/dev/null | wc -l) \$(wc -l < gates.jsonl 2>/dev/null) \$(test -f STOP && echo stop)"; }
+state() { timeout 60 "${BOX[@]}" "cd $BR/runs/es/$RUN && echo \$(ls -d iter-*/.done 2>/dev/null | wc -l) \$(cat gates.jsonl 2>/dev/null | wc -l) \$(test -f STOP && echo stop)"; }
 ls_done() { echo $(( ${cur%% *} - 1 )); }
 
 last=""
