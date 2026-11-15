@@ -294,3 +294,23 @@ es-m2 perturbed one point at a time (about 0.2 summed), and its candidates score
 Pre-set reading:
 - If the out-of-fold t is at least 2 at 2 or more of the 7 points (chance about 0.01), stage B runs CPI steps. Each step is a last-layer update from the fitted advantages, judged by θ+αΔ against θ−αΔ.
 - Otherwise, per-decision credit is out of reach at this game budget, and stage B runs the plan's low-rank ES.
+
+## 11. Stage-B protocol, fixed before the probe's fit (November 15, 2026)
+
+Written while cpi-x0 was still collecting, before any of its records were fitted.
+
+**Pooled es-m3 gradient (0 games).** `es_propose.py` pools every direction of es-m3 iterations 1–8 (256 directions, one sigma scale) into one natural-gradient vector. Its |t| > 2 share is 0.042 (chance 0.046). Its split-half cosine (even against odd directions) is −0.14. A real gradient gives a positive cosine. So es-m3's whole bias space carries no direction worth a judge's 128 games, and it gets none.
+
+**CPI branch (the probe finds signal).**
+- Δ covers only the points whose out-of-fold t is at least 2. `cpi_step.py` maps the fit onto the playing net's last layer: option k's logit gains η_p (W[k,0] + Σ_r W[k,1+r] pc_r(h)). η_p is set so that the mean TV distance from π, on the probe's records under the deploy floors (rl-m2's), is 0.1 at α = 1. A check on C0's fit matched the edited nets' logits to the direct formula within 3e-5, with hidden layers and other points unchanged.
+- Judge: packages zdpt<n>p against zdpt<n>m, on 32 maps (the first 32 of the training maps permuted by `numpy.random.default_rng(3800000 + n)`), seed 3800000 + 100n + 1 on the box and + 2 on the VM, both seats: 128 games, scored by `pair_score.py` (the paired t over units).
+  - t > 2: guard, θ+αΔ against θ (zdpg39) on the same maps with seeds + 3 and + 4, 128 games. Accept if that score is at least 0.5. The antithetic judge measures the direction, while the guard catches a step that hurts both ways.
+  - 1 < t ≤ 2: 128 more games at the same α (seeds + 5, + 6), then the pooled t decides as above.
+  - Otherwise, halve α (1, 0.5, 0.25). After α = 0.25 fails, discard Δ.
+- After an accepted step, the next step starts from a new exploration probe of θ+αΔ, with the same floors and 256 games.
+
+**Low-rank ES branch (no signal).** [configs/es-lr0.json](../configs/es-lr0.json):
+- Setup: rl-m2 v39 plus an `es_basis`, the top 3 PCs of each point's last hidden layer on the probe's records. Every option gets its bias plus 3 low-rank coordinates (`<p>:c<o>.<r>`), for 4 times es-m3's 168 coordinates in one joint block.
+- σ: calibrated on the probe records (mean |dP| 0.1), times sigma_scale 0.2. That puts the total logit perturbation at about 1.1 times es-m3's.
+- Everything else is as es-m3: 160 games per iteration, pool, gates and fitness.
+- Futility, pre-set: after 6 updates, stop if the pooled gradient (es_propose over all directions) has a split-half cosine of at most 0.1 and a |t| > 2 share of at most 0.07. If the cosine is above 0.2, the pooled proposal goes to the 1-D judge above.
