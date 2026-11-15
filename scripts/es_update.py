@@ -16,7 +16,8 @@ perturbation changed nothing) is an exact zero: kept, counted.
 Step per coordinate j over the directions whose block holds j: x_d = eps_dj mean_{u in d} s_u (clustered by direction:
 units of a direction share eps), g = mean x, se = sd(x)/sqrt(n),
 t = g/se, dphi_j = step_frac sigma_j sign(t) min(t_cap, max(0, |t| - t_dead)) (plan: 0.25, 2, 1). Then the leash
-phi <- (1 - leash) phi is applied before the step, and the caps |b| <= bias_cap, logT in [-logT_cap, logT_cap].
+phi <- (1 - leash) phi is applied before the step, and the caps |b| <= bias_cap, |c| <= c_cap (default bias_cap),
+logT in [-logT_cap, logT_cap].
 """
 import argparse, json, math, os, sys, tempfile, time
 from pathlib import Path
@@ -125,7 +126,9 @@ def step(phi, dirs, units, sigma, cfg, equiv=None):
     st = coord_stats(units, dirs, coords)
     sf, tc, td = cfg.get('step_frac', 0.25), cfg.get('t_cap', 2.0), cfg.get('t_dead', 1.0)
     leash = cfg.get('leash', 0.0)
-    new = {p: {'b': [v * (1 - leash) for v in d['b']], 'logT': d['logT'] * (1 - leash)} for p, d in phi.items()}
+    new = {p: dict({'b': [v * (1 - leash) for v in d['b']], 'logT': d['logT'] * (1 - leash)},
+                   **({'c': [[v * (1 - leash) for v in row] for row in d['c']]} if 'c' in d else {}))
+           for p, d in phi.items()}
     delta = {}
     for c, (g, se, t, n) in st.items():
         m = min(tc, max(0.0, abs(t) - td))
@@ -133,9 +136,12 @@ def step(phi, dirs, units, sigma, cfg, equiv=None):
             delta[c] = sf * sigma[c] * math.copysign(m, t)
     new = es_net.phi_add(new, delta, equiv)
     bc, lc = cfg.get('bias_cap', 30.0), cfg.get('logT_cap', 1.0)
+    cc = cfg.get('c_cap', bc)
     for d in new.values():
         d['b'] = [max(-bc, min(bc, v)) for v in d['b']]
         d['logT'] = max(-lc, min(lc, d['logT']))
+        if 'c' in d:
+            d['c'] = [[max(-cc, min(cc, v)) for v in row] for row in d['c']]
     stats = {c: dict(g=g, se=se, t=t, n=n, step=delta.get(c, 0.0), phi=es_net.phi_get(new, c)) for c, (g, se, t, n) in st.items()}
     return new, stats
 

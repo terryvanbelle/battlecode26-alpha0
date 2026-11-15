@@ -42,16 +42,17 @@ def write_json(path, obj):
 def cfg_blocks(cfg, base_raw):
     """The config's blocks. With cfg joint, one block 'all' holding every coordinate: each direction perturbs all of
     them, so every coordinate's t is over all n_dir directions (per-point blocks give each coordinate only about
-    n_dir / n_blocks directions per iteration)."""
+    n_dir / n_blocks directions per iteration). cfg lowrank R adds the low-rank coordinates (the base net's es_basis)."""
     bl = es_net.blocks(base_raw, cfg['points'], es_net.parse_exclude(cfg.get('exclude', [])),
-                       es_net.load_equiv(cfg.get('equiv', '')), logT=cfg.get('logT', True))
+                       es_net.load_equiv(cfg.get('equiv', '')), logT=cfg.get('logT', True), lowrank=cfg.get('lowrank', 0))
     return [es_net.Block('all', None, [c for b in bl for c in b.coords])] if cfg.get('joint') else bl
 
 
 def sigma_of(cfg, rd, coords):
     """{coord: sigma}: calibrated values (rd/sigma.json, es_update --calibrate) times cfg sigma_scale (default 1; joint
     directions perturb every point at once, so the per-coordinate calibration is scaled down) over the config's
-    sigma_bias / sigma_logT, with per-coordinate overrides cfg['sigma'] {coord or point: value}."""
+    sigma_bias / sigma_c / sigma_logT, with per-coordinate overrides cfg['sigma'] {coord, point, '<point>:c' or
+    '<point>:logT': value} (a bare point overrides its bias coordinates only)."""
     cal = json.loads((rd / 'sigma.json').read_text()).get('sigma', {}) if (rd / 'sigma.json').exists() else {}
     ov = cfg.get('sigma', {})
     out = {}
@@ -61,6 +62,9 @@ def sigma_of(cfg, rd, coords):
             out[c] = float(ov[c])
         elif c.endswith(':logT'):
             out[c] = float(ov.get(p + ':logT', cfg.get('sigma_logT', 0.3)))
+        elif es_net.is_c(c):
+            out[c] = (float(ov[p + ':c']) if p + ':c' in ov else
+                      float(cal[c]) * cfg.get('sigma_scale', 1.0) if c in cal else float(cfg.get('sigma_c', 5.0)))
         elif p in ov:
             out[c] = float(ov[p])
         else:

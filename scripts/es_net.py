@@ -7,12 +7,19 @@ value-for-value, so their W.java entries stay byte-identical.
     blocks(base_raw, [11]) -> [Block(name='11', point=11, coords=['11:b0', ..., '11:b21', '11:logT'])]
 
 Coordinates are named '<point>:b<option>' and '<point>:logT'; a flat {coord: value} dict maps onto phi with
-phi_get / phi_add. Equivalent options (an equiv file, {point: [[o1, o2, ...], ...]}) share one coordinate: the
+phi_get / phi_add.
+
+Low-rank state-dependent coordinates (stage B, docs/rl-es-plan.md section 5): a base net with "es_basis" {point: {A
+[R][H], a0 [R]}} (es_net.py --basis: pc_r(h) = A_r . h + a0_r, the top R principal components of the point's last
+hidden layer h (after ReLU) on own records, each standardised) gets coordinates '<point>:c<option>.<r>', stored as
+phi[point]["c"][option][r]: option o's logit gains sum_r c[o][r] pc_r(h), i.e. the last layer's w[o] += sum_r c[o][r]
+A_r and b[o] += sum_r c[o][r] a0_r (after the logT scale and the bias offset). Equivalent options (an equiv file, {point: [[o1, o2, ...], ...]}) share one coordinate: the
 coordinate is named after the first option and moves all of them together.
 
 es_net.py --base NET.json --phi PHI.json --out OUT/net.json        write the centre net (norm.npz copied)
 es_net.py --base NET.json --blocks 11 [--exclude 11:3] [--equiv F]  print the blocks
 es_net.py --calibrate DATA_DIR... --base NET.json --phi PHI.json --points 5,7 [--target 0.25] [--cap 15] [--floor 0.005]
+es_net.py --basis DATA_DIR... --base NET.json --points 5,7 --rank 3 --out OUT/net.json    the base plus its es_basis
 es_net.py --diff NET_A NET_B                                    points whose packed W.java entry differs (M1 criterion 3)
 es_net.py --self-test
 """
@@ -31,8 +38,12 @@ Block = namedtuple('Block', 'name point coords')
 
 # ---- phi
 def load_phi(path):
-    return {int(p): {'b': [float(v) for v in d['b']], 'logT': float(d.get('logT', 0.0))}
-            for p, d in json.loads(Path(path).read_text()).get('phi', {}).items()}
+    out = {}
+    for p, d in json.loads(Path(path).read_text()).get('phi', {}).items():
+        out[int(p)] = {'b': [float(v) for v in d['b']], 'logT': float(d.get('logT', 0.0))}
+        if 'c' in d:
+            out[int(p)]['c'] = [[float(v) for v in row] for row in d['c']]
+    return out
 
 
 def save_phi(path, phi, **meta):
@@ -50,8 +61,23 @@ def n_options(base_raw, p):
     return a if 0 < a < n else n
 
 
+def rank_of(base_raw, p):
+    """R of point p's es_basis (0 without one)."""
+    return len(((base_raw.get('es_basis') or {}).get(str(p)) or {}).get('A', []))
+
+
 def zero_phi(base_raw, points):
-    return {int(p): {'b': [0.0] * base_raw['points'][str(p)][-1]['n_out'], 'logT': 0.0} for p in points}
+    out = {}
+    for p in points:
+        n = base_raw['points'][str(p)][-1]['n_out']
+        out[int(p)] = {'b': [0.0] * n, 'logT': 0.0}
+        if rank_of(base_raw, p):
+            out[int(p)]['c'] = [[0.0] * rank_of(base_raw, p) for _ in range(n)]
+    return out
+
+
+def _has_c(d):
+    return any(v != 0.0 for row in d.get('c', []) for v in row)
 
 
 def apply_phi(base_raw, phi):
@@ -70,10 +96,23 @@ def apply_phi(base_raw, phi):
             last['b'] = [v * s for v in last['b']]
         if any(o != 0.0 for o in d['b']):
             last['b'] = [v + o if o != 0.0 else v for v, o in zip(last['b'], d['b'])]
+        if _has_c(d):
+            B = base_raw['es_basis'][str(p)]
+            A, a0, n_in = B['A'], B['a0'], last['n_in']
+            w, b = list(last['w']), list(last['b'])
+            for o, row in enumerate(d['c']):
+                if not any(v != 0.0 for v in row):
+                    continue
+                for r, c in enumerate(row):
+                    if c != 0.0:
+                        for i in range(n_in):
+                            w[o * n_in + i] += c * A[r][i]
+                        b[o] += c * a0[r]
+            last['w'], last['b'] = w, b
         layers[-1] = last
         pts[str(p)] = layers
     doc['points'] = pts
-    doc['es_phi'] = {str(p): d for p, d in sorted(phi.items()) if d.get('logT') or any(d['b'])}
+    doc['es_phi'] = {str(p): d for p, d in sorted(phi.items()) if d.get('logT') or any(d['b']) or _has_c(d)}
     if not doc['es_phi']:
         del doc['es_phi']
     return doc
@@ -89,16 +128,30 @@ def coord_options(c, equiv=None):
     p, k = c.split(':')
     if k == 'logT':
         return []
-    o = int(k[1:])
+    o = int(k[1:].split('.')[0])
     for cls in (equiv or {}).get(int(p), []):
         if o in cls:
             return sorted(cls)
     return [o]
 
 
+def is_c(c):
+    return c.split(':')[1].startswith('c')
+
+
+def coord_rank(c):
+    """r of a low-rank coordinate '<p>:c<o>.<r>'."""
+    return int(c.split('.')[-1])
+
+
 def phi_get(phi, c):
     p, k = coord_point(c), c.split(':')[1]
-    return phi[p]['logT'] if k == 'logT' else phi[p]['b'][int(k[1:])]
+    if k == 'logT':
+        return phi[p]['logT']
+    if is_c(c):
+        o, r = k[1:].split('.')
+        return phi[p]['c'][int(o)][int(r)]
+    return phi[p]['b'][int(k[1:])]
 
 
 def phi_add(phi, delta, equiv=None):
@@ -108,6 +161,9 @@ def phi_add(phi, delta, equiv=None):
         p = coord_point(c)
         if c.endswith(':logT'):
             out[p]['logT'] += v
+        elif is_c(c):
+            for o in coord_options(c, equiv):
+                out[p]['c'][o][coord_rank(c)] += v
         else:
             for o in coord_options(c, equiv):
                 out[p]['b'][o] += v
@@ -130,10 +186,11 @@ def parse_exclude(s):
     return out
 
 
-def blocks(base_raw, points, exclude=None, equiv=None, logT=True, sub=SUB_BLOCK, split_over=SPLIT_OVER):
+def blocks(base_raw, points, exclude=None, equiv=None, logT=True, sub=SUB_BLOCK, split_over=SPLIT_OVER, lowrank=0):
     """[Block] for the points (value points refused). Options beyond the active count, excluded options and all but the
     first of each equivalence class get no coordinate. A point with more than `split_over` option coordinates is split into
-    sub-blocks of at most `sub` contiguous options (the logT coordinate goes with the first)."""
+    sub-blocks of at most `sub` contiguous options (the logT coordinate goes with the first). lowrank R > 0 adds each
+    option's low-rank coordinates c<o>.<r>, r < min(R, the base's es_basis rank), after the option's bias."""
     exclude = exclude or {}
     equiv = equiv or {}
     out = []
@@ -145,8 +202,10 @@ def blocks(base_raw, points, exclude=None, equiv=None, logT=True, sub=SUB_BLOCK,
         follow = {o for cls in equiv.get(p, []) for o in cls[1:]}
         opts = [o for o in range(n) if o not in exclude.get(p, set()) and o not in follow]
         chunks = ([opts[i:i + sub] for i in range(0, len(opts), sub)] if len(opts) > split_over else [opts]) or [[]]
+        R = min(int(lowrank or 0), rank_of(base_raw, p))
         for ci, ch in enumerate(chunks):
-            cs = [f'{p}:b{o}' for o in ch] + ([f'{p}:logT'] if logT and ci == 0 else [])
+            cs = [c for o in ch for c in [f'{p}:b{o}'] + [f'{p}:c{o}.{r}' for r in range(R)]]
+            cs += [f'{p}:logT'] if logT and ci == 0 else []
             out.append(Block(f'{p}' if len(chunks) == 1 else f'{p}.{ci}', p, cs))
     return out
 
@@ -164,21 +223,23 @@ def calibrate_sigma(base_raw, phi, rec_dirs, target=0.25, cap=15.0, lo=3.0, floo
         x, mask = load_records(rec_dirs, p, layers[0]['w'].shape[1], layers[-1]['w'].shape[0], max_rows)
         z = dpnet_io.forward(layers, x, exact=False).astype(np.float64)
         p0 = dpnet_io.probs(z, mask, 1.0, floor).astype(np.float64)
+        pcs = basis_pcs(base_raw, p, layers, x) if rank_of(base_raw, p) else None
         cs = [c for c in (coords_ or []) if coord_point(c) == p] or [f'{p}:b{o}' for o in range(n_options(base_raw, p))] + [f'{p}:logT']
         for c in cs:
             if c.endswith(':logT'):
                 out[c] = logT_sigma
                 continue
-            o = int(c.split(':b')[1])
+            o = coord_options(c)[0]
             rows = mask[:, o]
             if not rows.any():
                 out[c] = cap
                 continue
+            u = pcs[rows][:, coord_rank(c)] if is_c(c) else 1.0   # the coordinate's offset per unit
 
             def f(d):
-                zz = z[rows].copy(); zz[:, o] += d
+                zz = z[rows].copy(); zz[:, o] += d * u
                 pp = dpnet_io.probs(zz, mask[rows], 1.0, floor).astype(np.float64)[:, o]
-                zm = z[rows].copy(); zm[:, o] -= d
+                zm = z[rows].copy(); zm[:, o] -= d * u
                 pm = dpnet_io.probs(zm, mask[rows], 1.0, floor).astype(np.float64)[:, o]
                 return 0.5 * (np.abs(pp - p0[rows, o]).mean() + np.abs(pm - p0[rows, o]).mean())
             if f(cap) < target:
@@ -189,6 +250,38 @@ def calibrate_sigma(base_raw, phi, rec_dirs, target=0.25, cap=15.0, lo=3.0, floo
                 m = 0.5 * (a + b)
                 a, b = (m, b) if f(m) < target else (a, m)
             out[c] = float(min(cap, max(lo, b)))
+    return out
+
+
+def basis_pcs(base_raw, p, layers, x):
+    """[N, R] pc_r(h) of the records x under point p's es_basis (h from `layers`' hidden layers)."""
+    import numpy as np
+    import dpnet_io
+    B = base_raw['es_basis'][str(p)]
+    h = np.maximum(dpnet_io.forward(layers[:-1], x, exact=False), 0).astype(np.float64)
+    return h @ np.asarray(B['A'], dtype=np.float64).T + np.asarray(B['a0'], dtype=np.float64)
+
+
+def make_basis(base_raw, rec_dirs, points, rank, max_rows=100000):
+    """{point: {A [R][H], a0 [R], rank, records, var_share}}: the top `rank` principal components of the standardised
+    last hidden layer (after ReLU) over own records, each scaled to unit variance (as td_check.py --cpi)."""
+    import numpy as np
+    import dpnet_io
+    from sabotage import load_records
+    out = {}
+    for p in points:
+        layers = dpnet_io.layers_from_raw(base_raw['points'][str(p)])
+        x, _ = load_records(rec_dirs, p, layers[0]['w'].shape[1], layers[-1]['w'].shape[0], max_rows)
+        h = np.maximum(dpnet_io.forward(layers[:-1], x, exact=False), 0).astype(np.float64)
+        mu, sd = h.mean(0), h.std(0) + 1e-6
+        hz = (h - mu) / sd
+        _, sv, vt = np.linalg.svd(hz, full_matrices=False)
+        vt = vt[:rank]
+        s = (hz @ vt.T).std(0) + 1e-6
+        A = vt / s[:, None] / sd[None, :]
+        a0 = -(A * mu[None, :]).sum(1)
+        out[str(p)] = dict(A=A.tolist(), a0=a0.tolist(), rank=int(rank), records=int(len(x)),
+                           var_share=[round(float(v), 4) for v in (sv[:rank] ** 2 / (sv ** 2).sum())])
     return out
 
 
@@ -253,6 +346,31 @@ def self_test():
         np.savez(dd / 'p11.npz', x=x.astype(np.uint16), k=np.zeros(300, np.int32), mask=mask)
         sg = calibrate_sigma(raw, zero_phi(raw, [11]), [dd], coords_=['11:b0', '11:b21', '11:logT'])
         assert all(3.0 <= v <= 15.0 for c, v in sg.items() if c != '11:logT') and sg['11:logT'] == 0.3, sg
+        # 6. low-rank coordinates: basis, logit relation, round trip, blocks, calibration
+        rawb = dict(raw, es_basis=make_basis(raw, [dd], [11], 3, max_rows=300))
+        assert rank_of(rawb, 11) == 3 and rank_of(rawb, 5) == 0
+        la = dpnet_io.layers_from_raw(raw['points']['11'])
+        pcs = basis_pcs(rawb, 11, la, x)
+        assert np.abs(pcs.mean(0)).max() < 1e-6 and np.abs(pcs.std(0) - 1).max() < 1e-3, 'basis not standardised'
+        ph = zero_phi(rawb, [11, 5])
+        assert len(ph[11]['c']) == 22 and len(ph[11]['c'][0]) == 3 and 'c' not in ph[5]
+        z0 = apply_phi(rawb, ph)
+        assert json.dumps(z0['points']['11']) == json.dumps(raw['points']['11']) and 'es_phi' not in z0
+        ph = phi_add(ph, {'11:c4.1': 2.5, '11:c2.0': -1.0, '11:b4': 0.5}, eq)
+        assert ph[11]['c'][4][1] == 2.5 and ph[11]['c'][2][0] == ph[11]['c'][5][0] == -1.0
+        assert phi_get(ph, '11:c4.1') == 2.5 and phi_get(ph, '11:b4') == 0.5
+        nb = apply_phi(rawb, ph)
+        zb = dpnet_io.forward(dpnet_io.layers_from_raw(nb['points']['11']), x, exact=False).astype(np.float64)
+        want = za.copy(); want[:, 4] += 0.5 + 2.5 * pcs[:, 1]; want[:, 2] -= pcs[:, 0]; want[:, 5] -= pcs[:, 0]
+        assert np.abs(zb - want).max() < 1e-3 * max(1, np.abs(za).max()), 'low-rank logits wrong'
+        assert nb['points']['11'][:-1] == raw['points']['11'][:-1] and '11' in nb['es_phi']
+        save_phi(td / 'phic.json', ph, iter=1)
+        assert load_phi(td / 'phic.json') == ph
+        blc = blocks(rawb, [11, 5], lowrank=2)
+        assert len(blc[0].coords) == 22 * 3 + 1 and blc[0].coords[:3] == ['11:b0', '11:c0.0', '11:c0.1']
+        assert len(blc[1].coords) == 6 + 1
+        sgc = calibrate_sigma(rawb, zero_phi(rawb, [11]), [dd], coords_=['11:b3', '11:c3.0', '11:c3.2'])
+        assert all(3.0 <= v <= 15.0 for v in sgc.values()), sgc
     print('es_net self-test OK')
 
 
@@ -270,6 +388,8 @@ def main(argv=None):
     ap.add_argument('--cap', type=float, default=15.0)
     ap.add_argument('--floor', type=float, default=0.005)
     ap.add_argument('--diff', nargs=2)
+    ap.add_argument('--basis', nargs='+')
+    ap.add_argument('--rank', type=int, default=3)
     ap.add_argument('--self-test', action='store_true')
     a = ap.parse_args(argv)
     if a.self_test:
@@ -283,6 +403,19 @@ def main(argv=None):
         print(json.dumps(dict(points=len(pts), differ=diff, active_equal=ra.get('active') == rb.get('active'))))
         return
     raw = json.loads(Path(a.base).read_text())
+    if a.basis:
+        pts = [int(p) for p in a.points.split(',') if p]
+        doc = dict(raw, es_basis={**(raw.get('es_basis') or {}), **make_basis(raw, a.basis, pts, a.rank)})
+        out = Path(a.out)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(doc))
+        if (Path(a.base).parent / 'norm.npz').exists():
+            shutil.copyfile(Path(a.base).parent / 'norm.npz', out.parent / 'norm.npz')
+        for p in pts:
+            b = doc['es_basis'][str(p)]
+            print(f"p{p}: rank {b['rank']} over {b['records']} records, variance share {b['var_share']}")
+        print(f'wrote {out}')
+        return
     if a.blocks:
         for b in blocks(raw, [int(p) for p in a.blocks.split(',')], parse_exclude(a.exclude), load_equiv(a.equiv)):
             print(b.name, len(b.coords), ' '.join(b.coords))

@@ -21,6 +21,8 @@ otherwise by CPI.
 principal components of the playing net's last hidden layer]: Y_td ~ sum_k (1[k_i = k] - pi_k(x_i)) w_k . phi(x_i)
 (ridge, cross-fitted over two halves of the games). Out of fold, the regression of Y_td on the predicted advantage
 of the sampled option (game-clustered t) says whether the fitted advantages carry over to unseen games.
+--save-fit FILE (with --cpi): per point, each playing version's PC basis (mu, sd, vt, s: pc_r = ((h - mu) / sd) . vt_r
+/ s_r, h the last hidden layer after ReLU) and W [options, 1 + pcs] fitted on all target games, for cpi_step.py.
 """
 import argparse, json, sys, time
 from pathlib import Path
@@ -80,7 +82,7 @@ def rlearn(Y, R, g):
 
 def cpi_check(R, Phi, Y, g, ridge, seed=0):
     """Out-of-fold check of a linear state-dependent advantage model. R [N, K] treatment residuals (0 where an option
-    is not allowed), Phi [N, P] features, Y [N] target, g [N] game ids. Returns dict(t_oof, slope, in_sample_t)."""
+    is not allowed), Phi [N, P] features, Y [N] target, g [N] game ids. Returns (dict(t_oof, slope, in_sample_t), W [K, P] fitted on all games)."""
     N, K = R.shape
     P = Phi.shape[1]
     games = np.unique(g)
@@ -114,7 +116,7 @@ def cpi_check(R, Phi, Y, g, ridge, seed=0):
     ri = rlearn(Y, a_, g)
     out['in_sample_t'] = None if ri is None else ri['t']
     out['features'] = P; out['options'] = K
-    return out
+    return out, Wall
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -131,6 +133,7 @@ def main():
     ap.add_argument('--cpi', action='store_true')
     ap.add_argument('--pcs', type=int, default=8)
     ap.add_argument('--ridge', type=float, default=0.1)
+    ap.add_argument('--save-fit')
     a = ap.parse_args()
     t0 = time.time()
     cfg = json.loads(Path(a.config).read_text())
@@ -152,6 +155,7 @@ def main():
           f"({out['critic_seconds']} s)", flush=True)
 
     nets = {}
+    fits = {}
 
     def net(ver):
         if ver not in nets:
@@ -190,7 +194,10 @@ def main():
                 hz = (h - mu) / sd
                 _, _, vt = np.linalg.svd(hz[np.random.default_rng(0).permutation(len(hz))[:20000]], full_matrices=False)
                 pcs = hz @ vt[:a.pcs].T
-                pcs /= pcs.std(0) + 1e-6
+                s_pc = pcs.std(0) + 1e-6
+                pcs /= s_pc
+                locals_cpi.setdefault('basis', {})[int(ver)] = dict(mu=mu.tolist(), sd=sd.tolist(),
+                                                                    vt=vt[:a.pcs].tolist(), s=s_pc.tolist())
                 if 'Phi' not in locals_cpi:
                     locals_cpi['Phi'] = np.zeros((N, a.pcs + 1)); locals_cpi['R'] = np.zeros((N, n_out))
                 locals_cpi['Phi'][sel] = np.c_[np.ones(len(sel)), pcs]
@@ -243,7 +250,9 @@ def main():
                              top=sorted(([o, r['tau'], r['t'], r['chosen']] for o, r in per.items()),
                                         key=lambda x: -abs(x[2]))[:5])
         if a.cpi and 'Phi' in locals_cpi:
-            st['cpi'] = cpi_check(locals_cpi['R'][good], locals_cpi['Phi'][good], Y['td'][good], g[good], a.ridge)
+            st['cpi'], Wall = cpi_check(locals_cpi['R'][good], locals_cpi['Phi'][good], Y['td'][good], g[good], a.ridge)
+            fits[p] = dict(basis=locals_cpi['basis'], W=Wall.tolist(), t_oof=st['cpi']['t_oof'],
+                           slope=st['cpi']['slope'], floor=fl, pcs=a.pcs, ridge=a.ridge)
         out['points'][p] = st
         f = lambda r: 'n/a' if r is None else f"{r['tau']:+.4f} t {r['t']:+.2f}"  # noqa: E731
         print(f"p{p:<2} used {st['used']:8d} dev {st['deviations']:6d} ({st['deviation_rate']}) parity "
@@ -257,6 +266,9 @@ def main():
           f"{'CPI' if (out['phase_a_median_abs_t_td'] or 0) >= 1 else 'low-rank ES'} ({out['seconds']} s)")
     if a.out:
         Path(a.out).write_text(json.dumps(out, indent=1))
+    if a.save_fit:
+        Path(a.save_fit).write_text(json.dumps(dict(run=str(rd), iters=a.iters, window=a.window, horizon=a.horizon,
+                                                    critic=a.critic, points=fits)))
 
 
 if __name__ == '__main__':
