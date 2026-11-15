@@ -254,3 +254,43 @@ Stop rule (set in advance): if by iteration 18 (about 2.9k games) the last three
 | flat 5 (es-m2's σ, joint) | .01 .17 .24 .10 .29 .16 .46 | 1.4 |
 
 es-m2 perturbed one point at a time (about 0.2 summed), and its candidates scored 0.46. From iteration 1, es-m3 uses the dP 0.1 calibration times `sigma_scale` 0.35 (a new config key, `es_schedule.sigma_of`; logT keeps 0.3). That gives a median bias σ of 5.0, with smaller σ where the policy is sensitive. Iteration 1, scheduled at the old σ, was discarded unplayed apart from 9 VM games and redrawn. Iteration 0's update stands (8 coordinates moved, the largest 11:b10 by −6.0). If the pool score stays below 0.35, the scale goes down again; the stop rule is unchanged.
+
+## 10. es-m3 stopped; C0 and the stage-B exploration probe (November 15, 2026)
+
+**es-m3 stopped after iteration 8** (16:34 PDT; iteration 9's 39 finished games were not applied). About 1.5k games:
+- Gates against zdpf005: v0 17, v3 15, v6 16, v9 15 of 32. Pool games against the start net, iterations 0–8: 116/288 = 0.40.
+- Every iteration: the |t| > 2 share was at chance (0.048–0.059), and the split-half cosine was 0.015–0.10. Both shadow fitnesses gave the same g (cosine with the driver above 0.99).
+- The stop rule (iteration 18) needs the gates at 12, 15 and 18 to pool to at least 60/96. At the measured 0.47 that has probability about 0.002, and with no gradient signal the centre was not moving. So the remaining ~1.4k games went to stage B's deciding test instead.
+- The box's memory-guard kills at 6 workers came from glibc malloc arenas: about half of a game JVM's 1.2 GB RSS. `student_java.sh` now caps them (MALLOC_ARENA_MAX=2), which gives the same traj_hash with about 40% less peak RSS on long games (commit 9da30e7).
+
+**C0** (`scripts/td_check.py`, 0 games). Run on rl-m2 iterations 37–38: 256 games, the learner's recorded sides, natural deviations at floor 0.005 (0.001 on point 5). The only iterations that kept their records were 37 and 38. The critic was the rich one, cross-fitted, with iterations 32–36's trace rows added for training; held out, it scored Brier 0.212 (0.25 for a constant) and AUC 0.715.
+- A deviation is a sampled option other than π's top choice. Its mean effect comes from the R-learner Σ Y (D − e) / Σ (D − e)², with a game-clustered t, on three targets:
+  - td: V 100 rounds later minus V now (TD-H100);
+  - mc: z minus V;
+  - pre: V now minus V 100 rounds earlier, a placebo that cannot depend on the decision.
+- CPI t_oof is the out-of-fold t of the state-dependent model: option advantage linear in 8 principal components of the playing net's last hidden layer, ridge, cross-fitted over halves of the games (`--cpi`).
+
+| point | records | deviations (rate) | t td | t mc | t pre (placebo) | CPI t_oof (in sample) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 5 BABY_ROLE | 1,378k | 2,960 (0.2%) | −1.13 | −1.23 | −0.54 | 0.65 (4.0) |
+| 7 MINE_PICK | 178k | 8,980 (5.1%) | −1.80 | +0.79 | −2.94 | −2.32 (4.3) |
+| 10 KING_MOVE | 600k | 48,545 (8.1%) | +1.63 | −0.69 | −1.02 | 1.31 (10.5) |
+| 11 KING_SPAWN | 741k | 26,470 (3.6%) | −0.64 | −0.21 | +1.46 | −0.10 (9.6) |
+| 12 KING_ACT | 697k | 10,480 (1.5%) | +0.66 | −0.17 | −0.73 | −0.05 (7.9) |
+| 13 KING_FORM | 498k | 6,224 (1.3%) | +0.80 | +0.43 | +0.88 | 0.17 (9.3) |
+| 16 KING_TURN | 726k | 9,688 (1.3%) | +0.18 | +0.04 | +0.91 | −0.64 (6.6) |
+
+- The Phase-A median |t td| was 0.965, against the rule's threshold of 1. A rerun with a different critic fit gave 1.005, so the rule's verdict flips on the critic's random seed.
+- The placebo's median |t| is 0.95. Under a correct se it would be about 0.67, so the clustered se is probably about 1.4× too small. Either way, the deviation effects cannot be told from the placebo.
+- Per option, |t td| > 2 held for 3 of 127 tests, against 5.8 expected by chance.
+- The state-dependent model fits in sample (t 4–10) and predicts nothing out of fold.
+- Conclusion: in 256 games of natural deviations (0.2–8% of decisions) there is no usable per-decision signal. That holds for CPI and for PPO alike, since PPO's gradient rests on the same deviations.
+
+**Exploration probe `cpi-x0`** ([config](../configs/cpi-x0.json)). The rule's two branches both lack evidence: C0 sits on its threshold, and the out-of-fold check is null. CPI was always meant to run on ε-explored data, which C0 did not test, and exploration is the RL-side lever. So one probe decides:
+- Setup: 256 mirror games of rl-m2 v39, both sides recorded, at the plan's stage-B collection floors: 0.1 on the king points 10, 11, 12, 13 and 16; 0.05 on MINE_PICK; 0.03 on BABY_ROLE. lr is 0 and there are no gates.
+- Per team-game, this gives about 3 times (KING_SPAWN), 7–8 times (KING_ACT, KING_FORM, KING_TURN) and 15 times (BABY_ROLE) the deviations, and 1–2 times on MINE_PICK and KING_MOVE.
+- Then: `td_check.py --cpi` on its records, with rl-m2 iterations 32–38's trace rows as extra critic data.
+
+Pre-set reading:
+- If the out-of-fold t is at least 2 at 2 or more of the 7 points (chance about 0.01), stage B runs CPI steps. Each step is a last-layer update from the fitted advantages, judged by θ+αΔ against θ−αΔ.
+- Otherwise, per-decision credit is out of reach at this game budget, and stage B runs the plan's low-rank ES.
