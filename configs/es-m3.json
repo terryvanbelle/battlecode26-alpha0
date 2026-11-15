@@ -1,6 +1,6 @@
 {
  "name": "es-m3",
- "purpose": "es-m2 (per-point blocks) gave each coordinate about 4 directions per iteration (t on 3 degrees of freedom): its 12 updates were a noise walk (|t|>2 share at or below chance, split-half cosine ~0, v12 gate 13/32). es-m3 restarts from rl-m2 v39 (phi = 0) with joint directions (each perturbs every coordinate, so t runs over all 32 directions), sigma calibrated on the start net's own rl-m2 records (iterations 37-38; mean |dP| 0.1 per coordinate, clipped to [3, 15]: es-m2's fixed 5 moved most options' P by under 0.05), and t_dead 2 so chance |t| does not move the centre. Same budget (160 games/iteration), pool and anchor as es-m2. Self-play only; zdpf005 is the anchor only. Fitness (user, 2026-11-15): win/loss blended half and half with a round margin (a quick win beats a slow one, a long loss beats a short one; es_update._pts 'rounds'); win/loss and a points-margin variant are logged on the same games (metrics shadow). Gates stay pure win/loss.",
+ "purpose": "es-m2 (per-point blocks) gave each coordinate about 4 directions per iteration (t on 3 degrees of freedom): its 12 updates were a noise walk (|t|>2 share at or below chance, split-half cosine ~0, v12 gate 13/32). es-m3 restarts from rl-m2 v39 (phi = 0) with joint directions (each perturbs every coordinate, so t runs over all 32 directions), sigma calibrated on the start net's own rl-m2 records (iterations 37-38; mean |dP| 0.1 per coordinate, clipped to [3, 15], for iteration 0; from iteration 1 that calibration times sigma_scale 0.35 (median bias sigma 5), after the candidates scored 8/32 against the start net in iteration 0 (pre-set early warning: below 0.35) and changed the top choice in 30-70% of decisions at six of the seven points; at 0.35 that is 1-16% per point: es-m2's fixed 5 moved most options' P by under 0.05), and t_dead 2 so chance |t| does not move the centre. Same budget (160 games/iteration), pool and anchor as es-m2. Self-play only; zdpf005 is the anchor only. Fitness (user, 2026-11-15): win/loss blended half and half with a round margin (a quick win beats a slow one, a long loss beats a short one; es_update._pts 'rounds'); win/loss and a points-margin variant are logged on the same games (metrics shadow). Gates stay pure win/loss.",
  "start_net": "runs/rl/rl-m2/nets/39/net.json",
  "package_prefix": "zdpec",
  "anchor_package": "zdpf005",
@@ -21,6 +21,7 @@
  "calib_target": 0.1,
  "calib_lo": 3.0,
  "calib_cap": 15.0,
+ "sigma_scale": 0.35,
  "sigma_logT": 0.3,
  "n_dir": 32,
  "units_per_dir": 2,

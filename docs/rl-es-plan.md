@@ -242,3 +242,15 @@ Stop rule (set in advance): if by iteration 18 (about 2.9k games) the last three
   - zdps3 / zdps5 (44% / 47%): no metric separates them (|t| < 1). The margin variants move t toward 0, and rp at α 1 flips its sign. This is within noise, but a hint that margin and win rate can disagree on small changes.
 - On es-m2's 12 iterations (no signal), all variants give the same |t| > 2 share and split-half cosine. The binary rescoring reproduces the logged metrics exactly.
 - es-m3 drives the step with `rounds`, α 0.5. `shadow_fitness` logs binary and `rp` α 0.5 on the same games each iteration (metrics `shadow`: |t| > 2 share, split-half cosine, cosine of g with the driver). Gates stay pure win/loss, so a policy that buys speed at the cost of wins shows up there.
+
+**es-m3 iteration 0 and the σ scale.** Iteration 0, at σ calibrated for mean |dP| 0.1 (median 14.3), showed no signal: the |t| > 2 share was 0.048 (chance at 31 degrees of freedom is about 0.05), and the split-half cosine was −0.06. Win/loss and both margin fitnesses gave nearly the same g (cosine with the driver 0.998 and 0.999). The candidates scored 8/32 against the start net, below the pre-set early-warning bar of 0.35 (es-m2: 0.46), and the head-to-head games got much shorter (median 500 rounds, against about 1,140 in es-m2). Halving calib_target to 0.05 would shrink σ by only about 15% (median 11.3), because the policy is saturated. So the change was measured directly: on the start net's own records (rl-m2 iteration 38, 5k rows per point), the share of decisions whose top choice a joint candidate flips, by point (5, 7, 10, 11, 12, 13, 16):
+
+| σ | top-choice flips per point | sum |
+| --- | --- | --- |
+| dP 0.1 (iteration 0) | .02 .31 .70 .37 .55 .69 .46 | 3.1 |
+| dP 0.05 | .04 .22 .52 .33 .51 .54 .56 | 2.7 |
+| 0.5 × dP 0.1 | .01 .13 .30 .24 .15 .25 .18 | 1.3 |
+| 0.35 × dP 0.1 | .01 .09 .16 .11 .06 .13 .04 | 0.6 |
+| flat 5 (es-m2's σ, joint) | .01 .17 .24 .10 .29 .16 .46 | 1.4 |
+
+es-m2 perturbed one point at a time (about 0.2 summed), and its candidates scored 0.46. From iteration 1, es-m3 uses the dP 0.1 calibration times `sigma_scale` 0.35 (a new config key, `es_schedule.sigma_of`; logT keeps 0.3). That gives a median bias σ of 5.0, with smaller σ where the policy is sensitive. Iteration 1, scheduled at the old σ, was discarded unplayed apart from 9 VM games and redrawn. Iteration 0's update stands (8 coordinates moved, the largest 11:b10 by −6.0). If the pool score stays below 0.35, the scale goes down again; the stop rule is unchanged.

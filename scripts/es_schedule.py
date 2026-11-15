@@ -49,8 +49,9 @@ def cfg_blocks(cfg, base_raw):
 
 
 def sigma_of(cfg, rd, coords):
-    """{coord: sigma}: calibrated values (rd/sigma.json, es_update --calibrate) over the config's sigma_bias /
-    sigma_logT, with per-coordinate overrides cfg['sigma'] {coord or point: value}."""
+    """{coord: sigma}: calibrated values (rd/sigma.json, es_update --calibrate) times cfg sigma_scale (default 1; joint
+    directions perturb every point at once, so the per-coordinate calibration is scaled down) over the config's
+    sigma_bias / sigma_logT, with per-coordinate overrides cfg['sigma'] {coord or point: value}."""
     cal = json.loads((rd / 'sigma.json').read_text()).get('sigma', {}) if (rd / 'sigma.json').exists() else {}
     ov = cfg.get('sigma', {})
     out = {}
@@ -63,7 +64,7 @@ def sigma_of(cfg, rd, coords):
         elif p in ov:
             out[c] = float(ov[p])
         else:
-            out[c] = float(cal.get(c, cfg.get('sigma_bias', 10.0)))
+            out[c] = float(cal[c]) * cfg.get('sigma_scale', 1.0) if c in cal else float(cfg.get('sigma_bias', 10.0))
     return out
 
 

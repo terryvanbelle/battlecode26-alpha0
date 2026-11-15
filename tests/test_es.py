@@ -85,6 +85,10 @@ def test_schedule():
     with tempfile.TemporaryDirectory() as td:
         sg = es_schedule.sigma_of(cfg, Path(td), bl[0].coords)
     assert sg['11:b21'] == 10.0 and sg['11:logT'] == 0.3
+    with tempfile.TemporaryDirectory() as td:   # calibrated values times sigma_scale; logT and overrides unscaled
+        (Path(td) / 'sigma.json').write_text(json.dumps(dict(sigma={'11:b0': 8.0, '11:b1': 4.0})))
+        sc = es_schedule.sigma_of(dict(cfg, sigma={'11:b1': 6.0}, sigma_scale=0.5), Path(td), bl[0].coords)
+    assert sc['11:b0'] == 4.0 and sc['11:b1'] == 6.0 and sc['11:logT'] == 0.3 and sc['11:b2'] == 10.0, sc
     d1, d2 = es_schedule.draw(3, 32, bl, sg), es_schedule.draw(3, 32, bl, sg)
     assert d1 == d2 and d1[0]['eps'] != es_schedule.draw(4, 32, bl, sg)[0]['eps']
     assert abs(d1[5]['delta']['11:b0'] - 10 * d1[5]['eps']['11:b0']) < 1e-12
