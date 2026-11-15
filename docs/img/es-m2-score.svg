@@ -7,8 +7,8 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <rect width="720" height="380" fill="var(--surface)"/>
 <text class="t" x="64" y="24">es-m2: ES centre vs its start net (rl-m2 v39) and vs zdpf005</text>
 <text class="st" x="64" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>
-<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net (pool games): pooled 205/448 = 0.46</text>
-<circle class="dot1" cx="442.2" cy="62" r="5"/><text class="lg" x="452.2" y="66">vs zdpf005 (32-game gate): pooled 49/96 = 0.51</text>
+<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net (pool games): pooled 221/480 = 0.46</text>
+<circle class="dot1" cx="442.2" cy="62" r="5"/><text class="lg" x="452.2" y="66">vs zdpf005 (32-game gate): pooled 66/128 = 0.52</text>
 <line class="gl" x1="64" x2="696" y1="324.0" y2="324.0"/>
 <text class="ax" x="56" y="328.0" text-anchor="end">0.00</text>
 <line class="gl" x1="64" x2="696" y1="264.0" y2="264.0"/>
@@ -22,27 +22,31 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <line class="ref" x1="64" x2="696" y1="204.0" y2="204.0"/>
 <text class="ax" x="696" y="198.0" text-anchor="end">even</text>
 <text class="ax" x="64.0" y="342" text-anchor="middle">0</text>
-<text class="ax" x="143.0" y="342" text-anchor="middle">1</text>
-<text class="ax" x="222.0" y="342" text-anchor="middle">2</text>
-<text class="ax" x="301.0" y="342" text-anchor="middle">3</text>
-<text class="ax" x="380.0" y="342" text-anchor="middle">4</text>
-<text class="ax" x="459.0" y="342" text-anchor="middle">5</text>
-<text class="ax" x="538.0" y="342" text-anchor="middle">6</text>
-<text class="ax" x="617.0" y="342" text-anchor="middle">7</text>
-<text class="ax" x="696.0" y="342" text-anchor="middle">8</text>
+<text class="ax" x="127.2" y="342" text-anchor="middle">1</text>
+<text class="ax" x="190.4" y="342" text-anchor="middle">2</text>
+<text class="ax" x="253.6" y="342" text-anchor="middle">3</text>
+<text class="ax" x="316.8" y="342" text-anchor="middle">4</text>
+<text class="ax" x="380.0" y="342" text-anchor="middle">5</text>
+<text class="ax" x="443.2" y="342" text-anchor="middle">6</text>
+<text class="ax" x="506.4" y="342" text-anchor="middle">7</text>
+<text class="ax" x="569.6" y="342" text-anchor="middle">8</text>
+<text class="ax" x="632.8" y="342" text-anchor="middle">9</text>
+<text class="ax" x="696.0" y="342" text-anchor="middle">10</text>
 <text class="ax" x="380.0" y="366" text-anchor="middle">ES version (centre after k updates)</text>
 <text class="ax" transform="translate(16 204.0) rotate(-90)" text-anchor="middle">score</text>
-<polyline class="ln0" points="64.0,196.5 143.0,207.8 222.0,211.5 301.0,230.2 380.0,219.0 459.0,222.8 538.0,226.5 617.0,196.5"/>
+<polyline class="ln0" points="64.0,196.5 127.2,207.8 190.4,211.5 253.6,230.2 316.8,219.0 380.0,222.8 443.2,226.5 506.4,196.5 569.6,204.0"/>
 <g><title>v0 vs the start net (pool games): 34/64 = 0.53 (95% 0.41-0.65)</title><line class="wh0" x1="64.0" x2="64.0" y1="225.4" y2="168.4"/><circle class="dot0" cx="64.0" cy="196.5" r="5"/></g>
-<g><title>v1 vs the start net (pool games): 31/64 = 0.48 (95% 0.37-0.60)</title><line class="wh0" x1="143.0" x2="143.0" y1="236.1" y2="179.0"/><circle class="dot0" cx="143.0" cy="207.8" r="5"/></g>
-<g><title>v2 vs the start net (pool games): 30/64 = 0.47 (95% 0.35-0.59)</title><line class="wh0" x1="222.0" x2="222.0" y1="239.6" y2="182.6"/><circle class="dot0" cx="222.0" cy="211.5" r="5"/></g>
-<g><title>v3 vs the start net (pool games): 25/64 = 0.39 (95% 0.28-0.51)</title><line class="wh0" x1="301.0" x2="301.0" y1="256.7" y2="200.9"/><circle class="dot0" cx="301.0" cy="230.2" r="5"/></g>
-<g><title>v4 vs the start net (pool games): 28/64 = 0.44 (95% 0.32-0.56)</title><line class="wh0" x1="380.0" x2="380.0" y1="246.5" y2="189.8"/><circle class="dot0" cx="380.0" cy="219.0" r="5"/></g>
-<g><title>v5 vs the start net (pool games): 27/64 = 0.42 (95% 0.31-0.54)</title><line class="wh0" x1="459.0" x2="459.0" y1="249.9" y2="193.5"/><circle class="dot0" cx="459.0" cy="222.8" r="5"/></g>
-<g><title>v6 vs the start net (pool games): 13/32 = 0.41 (95% 0.26-0.58)</title><line class="wh0" x1="538.0" x2="538.0" y1="262.8" y2="185.4"/><circle class="dot0" cx="538.0" cy="226.5" r="5"/></g>
-<g><title>v7 vs the start net (pool games): 17/32 = 0.53 (95% 0.36-0.69)</title><line class="wh0" x1="617.0" x2="617.0" y1="236.5" y2="158.1"/><circle class="dot0" cx="617.0" cy="196.5" r="5"/></g>
-<polyline class="ln1" points="73.5,196.5 310.5,219.0 547.5,189.0"/>
-<g><title>v0 vs zdpf005 (32-game gate): 17/32 = 0.53 (95% 0.36-0.69)</title><line class="wh1" x1="73.5" x2="73.5" y1="236.5" y2="158.1"/><circle class="dot1" cx="73.5" cy="196.5" r="5"/></g>
-<g><title>v3 vs zdpf005 (32-game gate): 14/32 = 0.44 (95% 0.28-0.61)</title><line class="wh1" x1="310.5" x2="310.5" y1="256.4" y2="178.4"/><circle class="dot1" cx="310.5" cy="219.0" r="5"/></g>
-<g><title>v6 vs zdpf005 (32-game gate): 18/32 = 0.56 (95% 0.39-0.72)</title><line class="wh1" x1="547.5" x2="547.5" y1="229.6" y2="151.6"/><circle class="dot1" cx="547.5" cy="189.0" r="5"/></g>
+<g><title>v1 vs the start net (pool games): 31/64 = 0.48 (95% 0.37-0.60)</title><line class="wh0" x1="127.2" x2="127.2" y1="236.1" y2="179.0"/><circle class="dot0" cx="127.2" cy="207.8" r="5"/></g>
+<g><title>v2 vs the start net (pool games): 30/64 = 0.47 (95% 0.35-0.59)</title><line class="wh0" x1="190.4" x2="190.4" y1="239.6" y2="182.6"/><circle class="dot0" cx="190.4" cy="211.5" r="5"/></g>
+<g><title>v3 vs the start net (pool games): 25/64 = 0.39 (95% 0.28-0.51)</title><line class="wh0" x1="253.6" x2="253.6" y1="256.7" y2="200.9"/><circle class="dot0" cx="253.6" cy="230.2" r="5"/></g>
+<g><title>v4 vs the start net (pool games): 28/64 = 0.44 (95% 0.32-0.56)</title><line class="wh0" x1="316.8" x2="316.8" y1="246.5" y2="189.8"/><circle class="dot0" cx="316.8" cy="219.0" r="5"/></g>
+<g><title>v5 vs the start net (pool games): 27/64 = 0.42 (95% 0.31-0.54)</title><line class="wh0" x1="380.0" x2="380.0" y1="249.9" y2="193.5"/><circle class="dot0" cx="380.0" cy="222.8" r="5"/></g>
+<g><title>v6 vs the start net (pool games): 13/32 = 0.41 (95% 0.26-0.58)</title><line class="wh0" x1="443.2" x2="443.2" y1="262.8" y2="185.4"/><circle class="dot0" cx="443.2" cy="226.5" r="5"/></g>
+<g><title>v7 vs the start net (pool games): 17/32 = 0.53 (95% 0.36-0.69)</title><line class="wh0" x1="506.4" x2="506.4" y1="236.5" y2="158.1"/><circle class="dot0" cx="506.4" cy="196.5" r="5"/></g>
+<g><title>v8 vs the start net (pool games): 16/32 = 0.50 (95% 0.34-0.66)</title><line class="wh0" x1="569.6" x2="569.6" y1="243.3" y2="164.7"/><circle class="dot0" cx="569.6" cy="204.0" r="5"/></g>
+<polyline class="ln1" points="71.6,196.5 261.2,219.0 450.8,189.0 640.4,196.5"/>
+<g><title>v0 vs zdpf005 (32-game gate): 17/32 = 0.53 (95% 0.36-0.69)</title><line class="wh1" x1="71.6" x2="71.6" y1="236.5" y2="158.1"/><circle class="dot1" cx="71.6" cy="196.5" r="5"/></g>
+<g><title>v3 vs zdpf005 (32-game gate): 14/32 = 0.44 (95% 0.28-0.61)</title><line class="wh1" x1="261.2" x2="261.2" y1="256.4" y2="178.4"/><circle class="dot1" cx="261.2" cy="219.0" r="5"/></g>
+<g><title>v6 vs zdpf005 (32-game gate): 18/32 = 0.56 (95% 0.39-0.72)</title><line class="wh1" x1="450.8" x2="450.8" y1="229.6" y2="151.6"/><circle class="dot1" cx="450.8" cy="189.0" r="5"/></g>
+<g><title>v9 vs zdpf005 (32-game gate): 17/32 = 0.53 (95% 0.36-0.69)</title><line class="wh1" x1="640.4" x2="640.4" y1="236.5" y2="158.1"/><circle class="dot1" cx="640.4" cy="196.5" r="5"/></g>
 </svg>
