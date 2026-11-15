@@ -115,6 +115,15 @@ def test_schedule():
     js4 = es_schedule.jobs(cfg4, 0, es_schedule.draw(0, 8, bl, sg))
     opp = {j['unit']: j['opponent'] for j in js4 if j['kind'] == 'pool'}
     assert sorted(opp.values()) == ['zdpg0', 'zdpg0', 'zdpg39', 'zdpg39'], opp
+    # joint: one block of every coordinate, so each direction perturbs both points and t runs over all directions
+    cfg5 = dict(cfg2, joint=True)
+    bl5 = es_schedule.cfg_blocks(cfg5, raw)
+    assert [b.name for b in bl5] == ['all'] and bl5[0].coords == [c for b in bl2 for c in b.coords]
+    d5 = es_schedule.draw(1, 4, bl5, es_schedule.sigma_of(cfg5, Path('/nonexistent'), bl5[0].coords))
+    assert all(set(x['eps']) == set(bl5[0].coords) for x in d5)
+    us = [dict(dir=i, s=0.5 if i % 2 else -0.5) for i in range(4) for _ in range(2)]
+    st = es_update.coord_stats(us, d5, ['11:b0', '13:b0'])
+    assert st['11:b0'][3] == 4 and st['13:b0'][3] == 4
 
 
 def test_calibration_sanity():

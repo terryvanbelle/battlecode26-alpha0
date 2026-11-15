@@ -217,3 +217,19 @@ Caveat: long ZMAPS (pipes, rift) favour holding, so criterion 1 may lag the trai
 - /tmp/judge1: ks30 vs zdpf005 = 2/16; ph.py; sim2.py
 - /tmp/judge2/h2h: +30 vs +50 on training maps = 16/16
 - /tmp/judge3/vauc.py: V AUC at chance before round 500 in the zdpn2 mirror
+
+## 9. es-m2 result and es-m3 (November 15, 2026)
+
+**es-m2** ran stage A from rl-m2 v39 (05:14–11:50 PDT, 12 updates, about 1.9k games). It used per-point blocks with fixed σ = 5 on every bias and t_dead 1. It found nothing:
+- Gates against zdpf005 (32 games each): v0 17, v3 14, v6 18, v9 17, v12 13. Pool games against the start net, iterations 0–11: 263/576 = 0.46.
+- **Too few directions per coordinate.** The 32 directions were split over the 7 point blocks, so each coordinate's t came from 4–5 directions (3–4 degrees of freedom). With t clustered by direction (section 1), chance gives |t| > 1 about 37–39% of the time; 43% of the coordinates moved each iteration. The |t| > 2 share was 0.067, against 0.12–0.14 by chance at those degrees of freedom. The split-half cosine ranged from −0.09 to 0.15 and averaged about 0.04. |φ| grew steadily from 8 to 26 (the median null drift reached 1.3 logits): a noise walk. M1 never had this problem, because it had a single block (point 11), so all 32 directions hit every coordinate.
+- **σ too small.** The calibration this section's plan asks for was never wired into `es_loop.sh`. Run afterwards on the start net's own records (rl-m2 iterations 37–38, 20k rows per point), it shows a nearly deterministic policy: for most options, a 5-logit offset moves P(option) by less than 0.05. The median σ for mean |dP| = 0.05 / 0.1 / 0.25 is 5–15 / 6–15 / 8–15 logits by point, and most coordinates reach the cap of 15 at the plan's 0.25.
+
+**es-m3** ([config](../configs/es-m3.json)) restarts from rl-m2 v39 (φ = 0) with three changes. The budget, pool, maps and gates stay the same.
+- `joint: true` (`es_schedule.cfg_blocks`): one block holds all 168 coordinates, so each direction perturbs all of them and every coordinate's t runs over all 32 directions (31 degrees of freedom). Cross-talk from the other coordinates' effects stays inside the bounded unit score s, so per-coordinate noise does not grow.
+- σ is calibrated once, before iteration 0, on the start net's records (`runs/es/es-m3/sigma.json`). The target is mean |dP| 0.1 rather than 0.25, because all seven points are perturbed at once; values are clipped to [3, 15] (config `calib_target`, `calib_lo`, `calib_cap`). The median bias σ is 14.3; logT keeps 0.3. Recalibration every 4 iterations is still not automated.
+- t_dead 2: at 31 degrees of freedom, chance moves about 5% of the coordinates per iteration, by at most about 0.1σ on average. The leash (2%) and caps are unchanged.
+
+Early warning: if the candidates' pool score against the start net falls below about 0.35 in iterations 0–1, σ is too large (both siblings play badly); halve calib_target.
+
+Stop rule (set in advance): if by iteration 18 (about 2.9k games) the last three gates pooled against zdpf005 do not have a Wilson lower bound above 0.52, bias space is exhausted and the run moves to stage B (section 5).

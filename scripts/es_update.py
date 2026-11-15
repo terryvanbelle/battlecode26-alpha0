@@ -4,7 +4,8 @@ thresholded-t sign step, the new centre, one metrics row.
 es_update.py --config C --run RUN --iter K      reads iter-K/{dirs.json, jobs.json, games/}, phi/<K>.json; writes
     phi/<K+1>.json, iter-K/phi.json (same), iter-K/update.json (per-unit scores, per-coordinate stats),
     centre/<K+1>/net.json and a row in metrics.jsonl
-es_update.py --config C --run RUN --calibrate DATA_DIR...   sigma.json from own records (p<point>.npz, rl_data.py)
+es_update.py --config C --run RUN --calibrate DATA_DIR...   sigma.json from own records (p<point>.npz, rl_data.py);
+    cfg calib_target (mean |dP|, default 0.25), calib_lo / calib_cap (clip, default 3 / 15)
 es_update.py --self-test
 
 Fitness of unit u: h2h unit (two games, theta+ as A then as B): s_u = mean score of theta+ - 0.5 (win 1, draw 0.5);
@@ -316,7 +317,7 @@ def main():
         from es_schedule import cfg_blocks
         coords = [c for b in cfg_blocks(cfg, base_raw) for c in b.coords]
         sg = es_net.calibrate_sigma(base_raw, phi, a.calibrate, cfg.get('calib_target', 0.25), cfg.get('calib_cap', 15.0),
-                                    floor=cfg.get('floor', 0.005), coords_=coords)
+                                    lo=cfg.get('calib_lo', 3.0), floor=cfg.get('floor', 0.005), coords_=coords)
         write_json(rd / 'sigma.json', dict(phi_iter=last, data=a.calibrate, sigma=sg, time=time.time()))
         print(json.dumps(sg))
         return

@@ -6,7 +6,7 @@ es_schedule.py --config C --run RUN --iter K [--no-build]      draw + build + jo
 es_schedule.py --config C --run RUN --prune K                  remove the build/botsrc and build/bots packages of K
 es_schedule.py --config C --run RUN --centre K                 build the centre package <prefix><K>c (gates)
 
-Directions: eps_i ~ N(0, I) over block (i + k) mod n_blocks, rng seed 2_000_000 + 1000 k + i; candidates
+Directions: eps_i ~ N(0, I) over block (i + k) mod n_blocks (one block of every coordinate with cfg joint), rng seed 2_000_000 + 1000 k + i; candidates
 theta+-_i = phi_k +- sigma * eps_i, packages <prefix><k>_<i>p / <prefix><k>_<i>m (build_dpnet.py, no --rl, floor and
 floor_points from the config). Each direction gets units_per_dir units; a unit is (map, seed) played seat-swapped:
 (A = theta+, B = theta-) then (A = theta-, B = theta+). Maps: a per-iteration permutation of training_maps (never
@@ -40,8 +40,12 @@ def write_json(path, obj):
 
 
 def cfg_blocks(cfg, base_raw):
-    return es_net.blocks(base_raw, cfg['points'], es_net.parse_exclude(cfg.get('exclude', [])),
-                         es_net.load_equiv(cfg.get('equiv', '')), logT=cfg.get('logT', True))
+    """The config's blocks. With cfg joint, one block 'all' holding every coordinate: each direction perturbs all of
+    them, so every coordinate's t is over all n_dir directions (per-point blocks give each coordinate only about
+    n_dir / n_blocks directions per iteration)."""
+    bl = es_net.blocks(base_raw, cfg['points'], es_net.parse_exclude(cfg.get('exclude', [])),
+                       es_net.load_equiv(cfg.get('equiv', '')), logT=cfg.get('logT', True))
+    return [es_net.Block('all', None, [c for b in bl for c in b.coords])] if cfg.get('joint') else bl
 
 
 def sigma_of(cfg, rd, coords):
