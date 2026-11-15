@@ -60,7 +60,7 @@
  "collect_deadline_min": 60,
  "game_timeout_seconds": 1200,
  "java_flags": "-Xmx1200m",
- "workers_vm": 5,
+ "workers_vm": 7,
  "workers_box": 7,
  "box_slice": "0:1:6",
  "vm_slice": "1:6:6",
@@ -83,7 +83,7 @@
    41,
    42
   ],
-  "anchor_workers": 5,
+  "anchor_workers": 7,
   "anchor_background": false
  },
  "zmaps": [
