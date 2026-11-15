@@ -12,7 +12,7 @@
 
 Details: [lean imitation pipeline](docs/lean-imitation.md).
 
-**Status (November 14, 2026, 05:00 PDT).**
+**Status (November 15, 2026, 05:20 PDT).**
 - student-v4 (observation v1) nearly matches zdb on long maps but **fails the frozen gate** on the held-out field: 0.15 against a bar of 0.20, where zdb scores 0.33.
 - Two missing pieces of information explain the early king deaths. First, zdb's babies act on the kings' shared array (threat alerts, king positions); observation v2 adds a team board for that. Second, zdb turns to face enemies it remembers but can't currently see, to avoid being grabbed and thrown. Per-round death traces showed this is how the student's babies die. Observation v3 adds a short-term memory of enemies.
 - **Design principle:** the model that starts RL must be able, at least in principle, to do anything a hand-coded bot can. The audit found missing capabilities: cheese-boosted bites, squeaks and shared-array writes, cheese amounts, writable memory, and full sensing. The next student (actions v2 / observation v4) will close these gaps. [Capability audit and plan](docs/capability-principle.md).
@@ -37,18 +37,20 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
   - **Critic + GAE (November 14, 2026; offline):** `rl_train.py --critic rich --gae-lambda 0.8` (config `train.critic`, `train.gae_lambda`; the default is unchanged). It is a cross-fitted, antisymmetric critic on the team trace history, with GAE over 10-round bins.
     - On the M1 data, the pooled t on the sabotaged bias goes from −0.8 to −5.3 (−6.4 with the old logistic V), and point 11's split-half gradient cosine goes from 0.00 to 0.17-0.21.
     - On live rl-m2 data, no estimator shows a consistent gradient. [Results](docs/rl-plan.md#critic-and-gae-november-14-2026-offline-on-rl-m2-iterations-0-2-and-the-m1-data).
-  - **Now: real self-play PPO run `rl-m2`** (started November 14, 2026, on the Windows box):
+  - **Self-play PPO run `rl-m2`** (November 14–15, 2026, on the Windows box; **stopped at the 05:00 PDT November 15 deadline after 39 iterations, flat**):
     - Starts from the capability-complete net (zdpn2 widened, with BABY_ROLE softened). The KL leash pulls toward zdpn2.
     - Trainable points: role, mine pick, king move/spawn/act/formation, king turn. King comms is frozen for now: its KL to the anchor jumped from 0.06 to 0.59 between iterations 1 and 2, and training refused the update.
     - Since iteration 3 it trains with the rich critic and GAE λ 0.9.
     - 128 games per iteration; every 3 iterations it plays 32 anchor games against zdpf005 (zdpn2 at floor 0.005), and from v12 on, the same 32 against zdb (for tracking only).
-    - Anchor gates against zdpf005: v0, v3, v6 and v9 each 17/32 (0.53), v12 20/32, v15 15/32, v18 16/32. Against zdb: v0 16/32, v9 17/32, v12 15/32, v15 21/32, v18 16/32. All within noise of the start so far.
+    - Anchor gates (32 games each) against zdpf005 / against zdb: v0 17/16, v9 17/17, v12 20/15, v15 15/21, v18 16/16, v21 14/14, v24 17/18, v27 12/12, v30 10/13, v33 19/11, v36 17/16, v39 17/16. The start v0 scores 33/64.
+    - Needle check at the deadline: the last three gated versions (v33, v36, v39) pooled **96/192 = 0.50** (95% CI 0.43–0.57), short of the agreed bar (lower bound above 0.52). GAE λ 0.8 from iteration 18; an entropy bonus of 0.01 for iterations 18–28 coincided with the low v21–v30 gates and was reverted to 0.003.
     - Learning rate 1e-3 until iteration 14 (each update moved the policy by KL 0.001–0.03, far under target_kl 0.1). At 3e-3, one step on points 10/11 gave KL 0.21/0.44, so it is 1.5e-3 from iteration 16.
     - Since iteration 14 the VM plays 1/6 of each iteration's games ([vm_helper.sh](scripts/vm_helper.sh), run on the driver); collect time 27-31 → 24 min.
     - Learner score by version (`scripts/plot_rl_vs.py`). Blue: against the start net v0, from each iteration's pool games (iteration 1's learner plays the same policy as v0). Orange: against zdb, on the anchor gate's 32 games; v0 and v9 were measured on the VM, and gates track zdb from v12 on. On the same 32 games, zdpf005 scores 14/32 against zdb.
 
       ![rl-m2: learner score against v0 and against zdb by version](docs/img/rl-m2-score.svg)
     - Status: `scripts/rl_status.py`.
+  - **Now: ES run `es-m2`** (started November 15, 2026, 05:14 PDT; the user allowed ES if rl-m2 had not moved the needle by 05:00). Antithetic head-to-head ES ([plan](docs/rl-es-plan.md)) on per-point output-bias offsets and log-temperature of the same 7 points, starting from rl-m2 v39. 32 directions × 2 units per iteration (160 games, a quarter against the pool zdpg0/zdpg39); gate against zdpf005 every 3 iterations. Config: [configs/es-m2.json](configs/es-m2.json); same box + VM split.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
   - New options on existing points: strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks.

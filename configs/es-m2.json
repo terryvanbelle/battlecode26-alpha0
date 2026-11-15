@@ -1,7 +1,7 @@
 {
  "name": "es-m2",
- "purpose": "M2 fallback (user, 2026-11-14: ES allowed if rl-m2 has not moved the needle by 2026-11-15 05:00 PDT). Stage-A head-to-head antithetic ES (docs/rl-es-plan.md section 5) on per-point output biases + logT of the RL-trainable points, from the latest rl-m2 net. Box sandbox runs the loop; the VM plays box_slice via scripts/vm_helper.sh on the driver. Self-play only; zdpf005 is the anchor only.",
- "start_net": "SET_AT_SWITCH runs/rl/rl-m2/nets/<latest>/net.json",
+ "purpose": "M2 fallback (user, 2026-11-14: ES allowed if rl-m2 has not moved the needle by 2026-11-15 05:00 PDT). Stage-A head-to-head antithetic ES (docs/rl-es-plan.md section 5) on per-point output biases + logT of the RL-trainable points, from rl-m2 v39 (the latest net at the 2026-11-15 05:00 PDT switch). Box sandbox runs the loop; the VM plays box_slice via scripts/vm_helper.sh on the driver. Self-play only; zdpf005 is the anchor only.",
+ "start_net": "runs/rl/rl-m2/nets/39/net.json",
  "package_prefix": "zdpeb",
  "anchor_package": "zdpf005",
  "points": [
@@ -36,7 +36,7 @@
  "logT_cap": 1.0,
  "pool_packages": [
   "zdpg0",
-  "SET_AT_SWITCH zdpg<latest>"
+  "zdpg39"
  ],
  "pool_fraction": 0.25,
  "floor": 0.005,
