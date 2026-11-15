@@ -1,7 +1,7 @@
 """Make a net-mode zdp bot from trained decision nets.
 
 build_dpnet.py --net runs/dp/net-v1/net.json --name zdpn1 [--temperature 1.0] [--floor 0.001] [--points 1,2] [--cfg A=x,B=y]
-build_dpnet.py --name zdpoff --cfg FIX_X=false,...      (no --net: a plain zdp variant, D.NET stays false)
+build_dpnet.py --name zdpx --cfg CASH_READ_LEFT=4000,... (no --net: a plain zdp variant, D.NET stays false)
 build_dpnet.py --net runs/rl/r1/nets/3/net.json --name zdpr3 --floor 0.005 --rl --version 3 [--run r1]
     (RL build: D.RL on, every record carries the sampling trailer with NET_VERSION 3; --run also copies net.json to
     runs/rl/<run>/nets/<version>/net.json, which the parity check reads)

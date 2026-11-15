@@ -50,7 +50,7 @@ public final class Baby {
         int roleAt0 = role;
         int labAt0 = D.ON ? D.roleLab() : -1;
         // a carry we hold 12+ rounds after our last grab came from the engine's role swap: its hold starts now
-        if (Cfg.FIX_SWAP_HOLD && rc.getCarrying() != null && G.round - carryRound > 11) carryRound = G.round;
+        if (rc.getCarrying() != null && G.round - carryRound > 11) carryRound = G.round;
         Comms.readKings();
         Nav.markKings();
         Comms.readMines();
@@ -177,8 +177,8 @@ public final class Baby {
             return;
         }
         G.settle(cd1, cb1, 18);
-        // Cfg.FIX_FORM_PROMOTE: the rat on a formation centre promotes once it can, movement-ready or not
-        if (!netAct && Cfg.FIX_FORM_PROMOTE && rc.canBecomeRatKing()) {
+        // the rat on a formation centre promotes once it can, movement-ready or not
+        if (!netAct && rc.canBecomeRatKing()) {
             MapLocation fs = formSite();
             // labelled as the existing become-king option (not A_PASS), so net mode can repeat it through actExec
             if (fs != null && G.me.equals(fs)) { rc.becomeRatKing(); formed++; D.act(D.A_X_BECOME_KING); D.emit(); return; }
@@ -682,7 +682,7 @@ public final class Baby {
                     boolean far = k > 2 && r.type == UnitType.BABY_RAT;
                     if (r.team == G.them) s2 = far ? dmg * 2 * Cfg.THROW_FAR_PCT / 100 : dmg * (r.type == UnitType.RAT_KING ? 3 : 2);
                     else if (r.team == G.us) s2 = -dmg;
-                    else s2 = Cfg.FIX_THROW_CAT ? 200 : -50; // a cat eats the (enemy) rat: a sure kill, and it sleeps
+                    else s2 = 200; // a cat eats the (enemy) rat: a sure kill, and it sleeps
                     break;
                 }
             }
@@ -743,14 +743,7 @@ public final class Baby {
         for (RobotInfo r : robots) {
             if (r.team != G.them) continue;
             MapLocation t = r.location;
-            if (r.type == UnitType.RAT_KING) {
-                // any king tile adjacent to us
-                if (Cfg.FIX_BITE_KING_TILE) t = kingTile(rc, me, t);
-                else {
-                    int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
-                    t = t.translate(dx, dy);
-                }
-            }
+            if (r.type == UnitType.RAT_KING) t = kingTile(rc, me, t);   // any king tile adjacent to us
             if (me.distanceSquaredTo(t) > 2) continue;
             int s = r.type == UnitType.RAT_KING ? r.health : 1000 + r.health;
             if (rc.canAttack(t)) { if (s < bs) { bs = s; best = r; } }
@@ -761,13 +754,7 @@ public final class Baby {
         if (bestTurn != null && (best == null || bt < bs) && rc.isTurningReady()) r = bestTurn;
         if (r == null) return false;
         MapLocation t = r.location;
-        if (r.type == UnitType.RAT_KING) {
-            if (Cfg.FIX_BITE_KING_TILE) t = kingTile(rc, me, t);
-            else {
-                int dx = Math.max(-1, Math.min(1, me.x - t.x)), dy = Math.max(-1, Math.min(1, me.y - t.y));
-                t = t.translate(dx, dy);
-            }
-        }
+        if (r.type == UnitType.RAT_KING) t = kingTile(rc, me, t);
         if (!rc.canAttack(t)) {
             Direction d = me.directionTo(t);
             if (rc.getDirection() != d && rc.canTurn(d)) { rc.turn(d); D.turnOnly(r.type == UnitType.RAT_KING ? D.A_BITE_KING : D.A_BITE_RAT); }
@@ -783,7 +770,7 @@ public final class Baby {
         return false;
     }
 
-    /** Cfg.FIX_BITE_KING_TILE: a tile of the king centred on c we can bite now, else its tile nearest us (to turn to). */
+    /** A tile of the king centred on c we can bite now, else its tile nearest us (to turn to). */
     static MapLocation kingTile(RobotController rc, MapLocation me, MapLocation c) throws GameActionException {
         for (int ex = -1; ex <= 1; ex++)
             for (int ey = -1; ey <= 1; ey++) {
@@ -1148,7 +1135,7 @@ public final class Baby {
     static void goMine() throws GameActionException {
         Nav.goTo(mineTarget);
         if (Nav.stall > 25) {
-            if (Cfg.FIX_STALL_SHIFT) mineShift++;   // the re-pick moves on to the next mine
+            mineShift++;   // the re-pick moves on to the next mine
             mineTarget = null;
         }
     }
@@ -1202,7 +1189,7 @@ public final class Baby {
     static boolean attack() throws GameActionException {
         if (eKing != null) { lastEKing = eKing.location; lastEKingRound = G.round; Nav.goTo(eKing.location); return true; }
         // reached the sighting and can sense it: no king there, so forget it (a king just outside our cone is kept)
-        if (Cfg.FIX_EKING_FORGET && lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
+        if (lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
                 && G.rc.canSenseLocation(lastEKing)) lastEKing = null;
         if (lastEKing != null && G.round - lastEKingRound < 30 && G.me.distanceSquaredTo(lastEKing) > 8) {
             Nav.goTo(lastEKing);
@@ -1563,8 +1550,8 @@ public final class Baby {
                 if (rc.getDirection() != d && rc.canTurn(d)) { rc.turn(d); G.facing = d; }
                 if (rc.canMove(d)) { rc.move(d); G.me = rc.getLocation(); }
             }
-            // Cfg.FIX_FORM_PROMOTE: promote on the turn we step onto the centre
-            if (Cfg.FIX_FORM_PROMOTE && G.me.equals(site) && rc.canBecomeRatKing()) { rc.becomeRatKing(); formed++; }
+            // promote on the turn we step onto the centre
+            if (G.me.equals(site) && rc.canBecomeRatKing()) { rc.becomeRatKing(); formed++; }
             return true;
         }
         Nav.goTo(site);
@@ -1781,8 +1768,8 @@ public final class Baby {
     }
 
     static void wanderAround(MapLocation m) throws GameActionException {
-        // Cfg.FIX_WANDER_BOX: a 5x5 box, inside atMine's (and raid's) Chebyshev 2
-        int b = Cfg.FIX_WANDER_BOX ? 2 : 3;
+        // a 5x5 box, inside atMine's (and raid's) Chebyshev 2
+        int b = 2;
         if (exploreTarget == null || G.me.equals(exploreTarget) || G.cheb(exploreTarget, m) > b || Nav.stall > 6) {
             exploreTarget = new MapLocation(clampX(m.x + fu * (G.rand(2 * b + 1) - b)), clampY(m.y + fv * (G.rand(2 * b + 1) - b)));
         }
@@ -1843,7 +1830,7 @@ public final class Baby {
     /** Mine seeking (Cfg.SEEK_CROWD) runs until round seekUntil and may start again from seekNext; seekMines is
      *  myMineCount when it started. */
     static int seekUntil, seekNext, seekMines;
-    /** Cfg.FIX_SEEK_NEWS: this seek found a mine the king lacked (and carries it home). */
+    /** This seek found a mine the king lacked (and carries it home). */
     static boolean seekNews;
 
     /** Cfg.SEEK_IDLE: turns spent near the mine since the last pickup (idlePicked: Baby.picked then); mineShift is
@@ -1887,8 +1874,8 @@ public final class Baby {
             // squeaks reach the king from dist2 16 only: carry the news home, then gather (the new mine included)
             MapLocation k = Comms.nearestKing(G.me);
             if (k != null && unreported() >= 0) { seekNews = true; Nav.goTo(k); return true; }
-            if (!Cfg.FIX_SEEK_NEWS || seekNews || k == null) { mineTarget = null; seekUntil = 0; return false; }
-            seekMines = myMineCount;   // Cfg.FIX_SEEK_NEWS: only mines the king lists, no news: seek on
+            if (seekNews || k == null) { mineTarget = null; seekUntil = 0; return false; }
+            seekMines = myMineCount;   // only mines the king lists, no news: seek on
         }
         if (exploreHome()) return true;
         seekUntil = 0;
@@ -2221,13 +2208,13 @@ public final class Baby {
 
     /** Net mode, every movement-ready turn before the pick: the bookkeeping zdb's cascade does inside branches the net
      *  may not take. Cfg.STALL_CAT's tracker (stallCat, attackers in coop) and attack()'s enemy-king memory
-     *  (lastEKing, the FIX_EKING_FORGET forget and rushTarget's noKing marks, via markNoKing). Each is idempotent within a turn, so a
+     *  (lastEKing, its forget-on-sight and rushTarget's noKing marks, via markNoKing). Each is idempotent within a turn, so a
      *  later stallCat()/attack() (the option or zdb's fallback cascade) repeats it harmlessly. */
     static void netBook() throws GameActionException {
         if (role == ATTACK && G.coop) stallTick();
         if (role != ATTACK) return;
         if (eKing != null) { lastEKing = eKing.location; lastEKingRound = G.round; return; }
-        if (Cfg.FIX_EKING_FORGET && lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
+        if (lastEKing != null && G.me.distanceSquaredTo(lastEKing) <= 8
                 && G.rc.canSenseLocation(lastEKing)) lastEKing = null;
         if (lastEKing != null && G.round - lastEKingRound < 30 && G.me.distanceSquaredTo(lastEKing) > 8) return;
         markNoKing();

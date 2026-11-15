@@ -95,7 +95,8 @@ the cascade and the net-mode executors are now shared helpers. Check: zdp agains
 and a net-mode build of the cleaned source with the zdpn1 nets replayed zdpn1 24/24 identically.
 
 **2B, bug fixes (commit 0bdf161).** 21 suspected zdb bugs were found by six area reviewers; 16 survived adversarial
-verification. Each fix sits behind its own `Cfg.FIX_*` flag (false gives zdb's behaviour), so it can be bisected.
+verification. Each fix sat behind its own `Cfg.FIX_*` flag (false gave zdb's behaviour), so it could be bisected.
+The flags were removed on November 15, 2026, keeping only the fixed code (see *Fix flags removed* below).
 - Babies: bite any reachable tile of an enemy king (not just the nearest tile); throw enemies into cats, which kills
   them; THROW_HOLD after a carry swap; forget a stale enemy-king sighting; wander inside the mine box that `atMine`
   counts; change mine when a stalled one is abandoned; end a seek only on real news; FORM_KING centre rats promote
@@ -107,13 +108,22 @@ verification. Each fix sits behind its own `Cfg.FIX_*` flag (false gives zdb's b
 
 | Check (no limits) | Result |
 |---|---|
-| all `FIX_*` false vs zdb | replay identical 24/24 |
+| all `FIX_*` false vs zdb (before the flags were removed) | replay identical 24/24 |
 | fixes on vs zdb (8 maps × 4 seeds × 2 sides) | **40/64 (0.625, 95% CI 0.50–0.73)** |
 | fixes on vs held-out field (6 bots × 8 maps × 2 seeds × 2 sides) | 114/192, the same as zdb (114/192) |
 | zdpn1 (nets) on the same jobs | vs zdb 26/64; field 109/192 |
 
 Test tooling: [strength_check.sh](../scripts/strength_check.sh) (box split, Wilson intervals);
 `build_dpnet.py --name X --cfg FLAG=value,...` builds a variant without nets.
+
+**Fix flags removed (November 15, 2026).** All 16 `Cfg.FIX_*` flags were on, so each was deleted together with zdb's
+old code path, keeping only the fixed code. A flag left in place would be a switched-off branch: dead code for the next
+cleanup. zdp no longer has a zdb-compatible mode, so the "all `FIX_*` false" replay above can no longer be rerun.
+
+| Check (VM, no limits) | Result |
+|---|---|
+| zdp without the flags vs zdp before (hand-coded; jail, pipes, rift, mincemeat × seed 21 × AB; vs zdb and VarunVejalla_final4_run_away10) | replay identical **16/16** |
+| net mode, rl-m2 v39 net (RL build, floor 0.005, point 5 at 0.001), same maps vs zdb | replay identical **8/8** |
 
 **2C, net-mode fixes and facing/comms control (commit e6120e9).** In net mode the executors now match the cascade: mine
 blocking, the idle features, the stall/hunt split, attacker bookkeeping, and BABY_FACE opens on every turn where the

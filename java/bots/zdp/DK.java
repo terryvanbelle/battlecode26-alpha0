@@ -581,7 +581,7 @@ public final class DK {
         MapLocation at = null;
         for (RobotInfo e : enemies) {
             MapLocation t = e.location;
-            if (Cfg.FIX_KING_BITE_KING && e.type == UnitType.RAT_KING) { if ((t = King.kingTile(t)) == null) continue; }
+            if (e.type == UnitType.RAT_KING) { if ((t = King.kingTile(t)) == null) continue; }
             else if (!G.rc.canAttack(t)) continue;
             if (best == null || e.health < best.health) { best = e; at = t; }
         }

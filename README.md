@@ -25,7 +25,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 - **Decision-point imitation works.** A copy of zdb (`java/bots/zdp`) routes its control choices through 11 decision points (baby move, actions, facing, role, comms, mine pick; king move, spawn, action, formation) and replays zdb's games exactly. A small MLP per point, trained on zdb's choices, then makes those choices. Bytecode limits are off for now. [Design and results](docs/decision-points.md).
 - **Pass 2 cleanup done.**
   - 10.4k → 5.9k lines, still replaying zdb exactly.
-  - 16 zdb bug fixes, each behind a flag. With the fixes on: **40/64 against zdb**, and the held-out field score is unchanged.
+  - 16 zdb bug fixes, each first behind a flag for bisecting. With the fixes on: **40/64 against zdb**, and the held-out field score is unchanged. The flags were removed on November 15, 2026, keeping the fixed code; it replays the flagged build identically, both hand-coded (16/16) and in net mode (8/8). [Details](docs/decision-points.md#pass-2-cleanup-checked-against-zdb).
   - Net-mode executor fixes, plus facing/comms control.
 - **zdpn2** (1000 games of the fixed zdp): **33/64 against zdb** (zdpn1: 26/64); held-out field **113/192**, against 114/192 for the zdb copy.
 - **Self-play RL** ([plan](docs/rl-plan.md)): PPO-lite over the decision points, using outcome reward only and a KL leash to zdpn2. Field bots are used only to benchmark.

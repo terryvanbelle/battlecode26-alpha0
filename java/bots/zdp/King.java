@@ -40,9 +40,7 @@ public final class King {
         RobotInfo[] enemies = rc.senseNearbyRobots(-1, G.them);
         RobotInfo[] cats = rc.senseNearbyRobots(-1, Team.NEUTRAL);
 
-        int before = rc.getGlobalCheese();
         pickUp();
-        if (!Cfg.FIX_KING_PICKUP_INCOME) Econ.received(rc.getGlobalCheese() - before);
         Debug.mark(45);
         // KING_TURN (pass 3): the newborn's facing, when a spawn is possible
         boolean dT = D.ON && rc.isTurningReady() && rc.isActionReady() && rc.getGlobalCheese() >= rc.getCurrentRatCost();
@@ -61,8 +59,8 @@ public final class King {
             int threat = 0;
             for (RobotInfo e : enemies)
                 if (e.type != UnitType.RAT_KING && e.location.distanceSquaredTo(G.me) <= Cfg.KING_THREAT_D2) threat++;
-            // FIX_ALERT_MAX: a king that wrote earlier this round with at least our threat keeps the alert
-            if (!(Cfg.FIX_ALERT_MAX && Comms.read(Comms.ALERT + 2) == Comms.stamp()
+            // a king that wrote earlier this round with at least our threat keeps the alert
+            if (!(Comms.read(Comms.ALERT + 2) == Comms.stamp()
                   && (Comms.read(Comms.ALERT) >> 6) >= Math.min(15, threat))) {
                 Comms.write(Comms.ALERT, (G.me.x + 1) | (Math.min(15, threat) << 6));
                 Comms.write(Comms.ALERT + 1, G.me.y + 1);
@@ -123,7 +121,7 @@ public final class King {
             Sym.record(l.x, l.y, mi.isWall(), mi.isDirt(), mine);
             if (mine) Comms.addMine(l.x, l.y);
             if (anchor != null && mi.getCheeseAmount() > 0 && G.cheb(l, anchor) <= Cfg.KING_ROAM
-                && !(Cfg.FIX_KING_NEAR_CHEESE && G.cheb(l, me) <= 1)) {
+                && G.cheb(l, me) > 1) {   // piles under our 3x3: pickUp empties them this turn
                 int d = me.distanceSquaredTo(l);
                 if (d < bd) { bd = d; nearCheese = l; }
             }
@@ -177,16 +175,16 @@ public final class King {
         Comms.write(Comms.SYM, mask);
     }
 
-    /** Picks up every pile under our 3x3 (FIX_KING_PICKUP_INCOME: and counts it as Econ income, every caller). */
+    /** Picks up every pile under our 3x3 and counts it as Econ income (every caller). */
     static void pickUp() throws GameActionException {
-        int b = Cfg.FIX_KING_PICKUP_INCOME ? G.rc.getGlobalCheese() : 0;
+        int b = G.rc.getGlobalCheese();
         MapLocation c = G.rc.getLocation();
         for (int dx = -1; dx <= 1; dx++)
             for (int dy = -1; dy <= 1; dy++) {
                 MapLocation l = c.translate(dx, dy);
                 if (G.rc.canPickUpCheese(l)) G.rc.pickUpCheese(l);
             }
-        if (Cfg.FIX_KING_PICKUP_INCOME) Econ.received(G.rc.getGlobalCheese() - b);
+        Econ.received(G.rc.getGlobalCheese() - b);
     }
 
     static void bite(RobotInfo[] enemies) throws GameActionException {
@@ -202,14 +200,14 @@ public final class King {
     static MapLocation weakAt;   // weakest()'s tile to bite
 
     /** The enemy in attack reach with the least health (the first such in sense order), or null; weakAt is the tile
-     *  to bite (its location; FIX_KING_BITE_KING: any reachable tile of an enemy king's 3x3). Also net mode's
+     *  to bite (its location; for an enemy king, any reachable tile of its 3x3). Also net mode's
      *  A_BITE_KILL / A_BITE target. */
     static RobotInfo weakest(RobotInfo[] enemies) {
         RobotInfo best = null;
         weakAt = null;
         for (RobotInfo e : enemies) {
             MapLocation t = e.location;
-            if (Cfg.FIX_KING_BITE_KING && e.type == UnitType.RAT_KING) { if ((t = kingTile(t)) == null) continue; }
+            if (e.type == UnitType.RAT_KING) { if ((t = kingTile(t)) == null) continue; }
             else if (!G.rc.canAttack(t)) continue;
             if (best == null || e.health < best.health) { best = e; weakAt = t; }
         }
