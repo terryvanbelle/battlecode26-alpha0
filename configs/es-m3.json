@@ -83,7 +83,7 @@
    41,
    42
   ],
-  "anchor_workers": 7,
+  "anchor_workers": 5,
   "anchor_background": false
  },
  "zmaps": [
