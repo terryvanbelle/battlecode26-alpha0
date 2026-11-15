@@ -1,6 +1,6 @@
 {
  "name": "es-m3",
- "purpose": "es-m2 (per-point blocks) gave each coordinate about 4 directions per iteration (t on 3 degrees of freedom): its 12 updates were a noise walk (|t|>2 share at or below chance, split-half cosine ~0, v12 gate 13/32). es-m3 restarts from rl-m2 v39 (phi = 0) with joint directions (each perturbs every coordinate, so t runs over all 32 directions), sigma calibrated on the start net's own rl-m2 records (iterations 37-38; mean |dP| 0.1 per coordinate, clipped to [3, 15]: es-m2's fixed 5 moved most options' P by under 0.05), and t_dead 2 so chance |t| does not move the centre. Same budget (160 games/iteration), pool and anchor as es-m2. Self-play only; zdpf005 is the anchor only.",
+ "purpose": "es-m2 (per-point blocks) gave each coordinate about 4 directions per iteration (t on 3 degrees of freedom): its 12 updates were a noise walk (|t|>2 share at or below chance, split-half cosine ~0, v12 gate 13/32). es-m3 restarts from rl-m2 v39 (phi = 0) with joint directions (each perturbs every coordinate, so t runs over all 32 directions), sigma calibrated on the start net's own rl-m2 records (iterations 37-38; mean |dP| 0.1 per coordinate, clipped to [3, 15]: es-m2's fixed 5 moved most options' P by under 0.05), and t_dead 2 so chance |t| does not move the centre. Same budget (160 games/iteration), pool and anchor as es-m2. Self-play only; zdpf005 is the anchor only. Fitness (user, 2026-11-15): win/loss blended half and half with a round margin (a quick win beats a slow one, a long loss beats a short one; es_update._pts 'rounds'); win/loss and a points-margin variant are logged on the same games (metrics shadow). Gates stay pure win/loss.",
  "start_net": "runs/rl/rl-m2/nets/39/net.json",
  "package_prefix": "zdpec",
  "anchor_package": "zdpf005",
@@ -28,6 +28,19 @@
  "t_dead": 2.0,
  "t_cap": 2.0,
  "leash": 0.02,
+ "fitness": {
+  "kind": "rounds",
+  "alpha": 0.5
+ },
+ "shadow_fitness": [
+  {
+   "kind": "binary"
+  },
+  {
+   "kind": "rp",
+   "alpha": 0.5
+  }
+ ],
  "bias_cap": 30.0,
  "logT_cap": 1.0,
  "pool_packages": [

@@ -233,3 +233,12 @@ Caveat: long ZMAPS (pipes, rift) favour holding, so criterion 1 may lag the trai
 Early warning: if the candidates' pool score against the start net falls below about 0.35 in iterations 0–1, σ is too large (both siblings play badly); halve calib_target.
 
 Stop rule (set in advance): if by iteration 18 (about 2.9k games) the last three gates pooled against zdpf005 do not have a Wilson lower bound above 0.52, bias space is exhausted and the run moves to stage B (section 5).
+
+**Margin fitness (user suggestion, November 15, 2026; es-m3 from iteration 0).** A finer score than win/loss: a quick win beats a slow one, and a long loss beats a short one. `es_update._pts`, config `fitness`: score = 0.5 + 0.5 ((1 − α) o + α o m), with o = +1 for a win, −1 for a loss, 0 for a draw. The margin m is 1 − 0.5 r/2000 for a game that ends at round r before the limit, and 0.5 for one decided on points at the limit. Any win still outscores any loss. The `rp` variant gives a game decided at the limit m = 0.5 min(1, points gap / points total / 0.2) instead.
+- In es-m2/es-m3 games, 51% end early by killing all the rat kings (median round 441) and 44% are decided on points at round 2000, usually narrowly (median gap 5% of the points total). So the round margin carries information for about half the games.
+- Offline check on known-unequal pairs (the M1 sabotage pre-tests against zdpf005, 32 seat-swapped units each), paired t:
+  - zdpk40 (17% wins): binary −6.17; rounds α 0.25 / 0.5 / 1: −6.38 / −6.59 / −6.91; rp: −6.51 / −6.80 / −7.04. That is about 7–14% more t, worth roughly 15–30% more games.
+  - zdpk60 (2% wins): binary −31, already at its ceiling; the margin only adds noise.
+  - zdps3 / zdps5 (44% / 47%): no metric separates them (|t| < 1). The margin variants move t toward 0, and rp at α 1 flips its sign. This is within noise, but a hint that margin and win rate can disagree on small changes.
+- On es-m2's 12 iterations (no signal), all variants give the same |t| > 2 share and split-half cosine. The binary rescoring reproduces the logged metrics exactly.
+- es-m3 drives the step with `rounds`, α 0.5. `shadow_fitness` logs binary and `rp` α 0.5 on the same games each iteration (metrics `shadow`: |t| > 2 share, split-half cosine, cosine of g with the driver). Gates stay pure win/loss, so a policy that buys speed at the cost of wins shows up there.

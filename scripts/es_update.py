@@ -8,7 +8,8 @@ es_update.py --config C --run RUN --calibrate DATA_DIR...   sigma.json from own 
     cfg calib_target (mean |dP|, default 0.25), calib_lo / calib_cap (clip, default 3 / 15)
 es_update.py --self-test
 
-Fitness of unit u: h2h unit (two games, theta+ as A then as B): s_u = mean score of theta+ - 0.5 (win 1, draw 0.5);
+Fitness of unit u: h2h unit (two games, theta+ as A then as B): s_u = mean score of theta+ - 0.5 (win 1, draw 0.5;
+cfg fitness 'rounds' / 'rp' blends in the margin, see _pts; cfg shadow_fitness lists fitnesses logged on the same games);
 pool unit (theta+ and theta- each seat-swapped vs one pool package): s_u = (score theta+ - score theta-) / 2. A unit
 with an invalid or missing game is dropped (counted); a h2h unit whose two games have the same traj_hash (the
 perturbation changed nothing) is an exact zero: kept, counted.
@@ -32,13 +33,41 @@ def _valid(res):
     return res is not None and not (res.get('error') or not res.get('finished') or res['A'].get('failures') or res['B'].get('failures'))
 
 
-def _pts(res, side):
+def _pts(res, side, fit=None):
+    """Score of `side` in [0, 1]. Fitness kind (cfg fitness / shadow_fitness: {kind, alpha, d0, max_rounds}):
+    'binary' (default): win 1, draw 0.5, loss 0. 'rounds': 0.5 + 0.5 ((1 - alpha) o + alpha o m), o = +1 win / -1 loss,
+    margin m = 1 - 0.5 rounds / max_rounds for a game that ends before the round limit (a quick win is worth more, a
+    long loss costs less) and 0.5 for one decided at the limit. 'rp': as 'rounds', but a game decided at the limit gets
+    m = 0.5 min(1, (winner points - loser points) / (sum of points) / d0). Any win still outscores any loss."""
     w = res.get('winner')
-    return 0.5 if w is None else float(w == side)
+    if w is None:
+        return 0.5
+    o = 1.0 if w == side else -1.0
+    kind = (fit or {}).get('kind', 'binary')
+    if kind == 'binary':
+        return 0.5 + 0.5 * o
+    R = fit.get('max_rounds', 2000)
+    if (res.get('rounds') or R) < R:
+        m = 1 - 0.5 * res['rounds'] / R
+    elif kind == 'rounds':
+        m = 0.5
+    elif kind == 'rp':
+        l = 'B' if w == 'A' else 'A'
+        pw, pl = res[w].get('points', 0), res[l].get('points', 0)
+        m = 0.5 * min(1.0, max(0.0, (pw - pl) / max(1, pw + pl)) / fit.get('d0', 0.2))
+    else:
+        raise SystemExit(f'unknown fitness kind {kind}')
+    a = fit.get('alpha', 0.5)
+    return 0.5 + 0.5 * ((1 - a) * o + a * o * m)
 
 
-def unit_scores(I):
-    """[{unit, dir, kind, map, s, exact_zero, rounds}], dropped unit count."""
+def fit_name(fit):
+    kind = (fit or {}).get('kind', 'binary')
+    return kind if kind == 'binary' else f"{kind}-a{fit.get('alpha', 0.5):g}"
+
+
+def unit_scores(I, fit=None):
+    """[{unit, dir, kind, map, s, exact_zero, rounds}], dropped unit count. s uses _pts(fit)."""
     I = Path(I)
     doc = json.loads((I / 'jobs.json').read_text())
     by = {}
@@ -56,12 +85,12 @@ def unit_scores(I):
         j0 = js[0]
         rounds = sum(r.get('rounds') or 0 for r in res) / len(res)
         if j0['kind'] == 'h2h':
-            plus = [_pts(r, 'A' if j['sign_a'] > 0 else 'B') for j, r in zip(js, res)]
+            plus = [_pts(r, 'A' if j['sign_a'] > 0 else 'B', fit) for j, r in zip(js, res)]
             s = sum(plus) / len(plus) - 0.5
             ez = len(res) == 2 and res[0].get('traj_hash') is not None and res[0]['traj_hash'] == res[1]['traj_hash']
         else:
-            sp = [_pts(r, j['theta_side']) for j, r in zip(js, res) if j['theta'] > 0]
-            sm = [_pts(r, j['theta_side']) for j, r in zip(js, res) if j['theta'] < 0]
+            sp = [_pts(r, j['theta_side'], fit) for j, r in zip(js, res) if j['theta'] > 0]
+            sm = [_pts(r, j['theta_side'], fit) for j, r in zip(js, res) if j['theta'] < 0]
             s = 0.5 * (sum(sp) / len(sp) - sum(sm) / len(sm))
             ez = False
         out.append(dict(unit=u, dir=j0['dir'], kind=j0['kind'], map=j0['map'], s=s, exact_zero=bool(ez), rounds=rounds))
@@ -109,6 +138,24 @@ def step(phi, dirs, units, sigma, cfg, equiv=None):
         d['logT'] = max(-lc, min(lc, d['logT']))
     stats = {c: dict(g=g, se=se, t=t, n=n, step=delta.get(c, 0.0), phi=es_net.phi_get(new, c)) for c, (g, se, t, n) in st.items()}
     return new, stats
+
+
+def shadow_metrics(I, cfg, dirs, coords, stats):
+    """The same games scored by each cfg shadow_fitness: |t| > 2 share, split-half cosine, and the cosine of its g with
+    the driving fitness's g (which fitness finds the more consistent gradient, on identical games)."""
+    out = {}
+    g0 = [stats[c]['g'] for c in coords]
+    for fit in cfg.get('shadow_fitness', []):
+        us, _ = unit_scores(I, fit)
+        st = coord_stats(us, dirs, coords)
+        ts = [abs(st[c][2]) for c in coords]
+        g = [st[c][0] for c in coords]
+        na, nb = math.sqrt(sum(x * x for x in g)), math.sqrt(sum(x * x for x in g0))
+        shc = split_half_cos(us, dirs, coords)
+        out[fit_name(fit)] = dict(t_gt2_share=round(sum(t > 2 for t in ts) / len(ts), 4) if ts else None,
+                                  split_half_cos=None if shc is None else round(shc, 4),
+                                  cos_with_driver=round(sum(x * y for x, y in zip(g, g0)) / (na * nb), 4) if na and nb else None)
+    return out
 
 
 def split_half_cos(units, dirs, coords):
@@ -179,7 +226,7 @@ def update(cfg, rd, k):
     dirs, sigma = dd['dirs'], dd['sigma']
     phi = es_net.load_phi(rd / 'phi' / f'{k}.json')
     equiv = es_net.load_equiv(cfg.get('equiv', ''))
-    units, dropped = unit_scores(I)
+    units, dropped = unit_scores(I, cfg.get('fitness'))
     if len(units) < cfg.get('min_units', 2):
         raise SystemExit(f'iter {k}: only {len(units)} valid units ({dropped} dropped)')
     new, stats = step(phi, dirs, units, sigma, cfg, equiv)
@@ -203,6 +250,7 @@ def update(cfg, rd, k):
                mean_abs_s=round(sum(abs(u['s']) for u in units) / len(units), 4),
                t_gt2_share=round(sum(t > 2 for t in ts) / len(ts), 4) if ts else None,
                split_half_cos=split_half_cos(units, dirs, coords), round_median=med,
+               fitness=fit_name(cfg.get('fitness')), shadow=shadow_metrics(I, cfg, dirs, coords, stats),
                coords={c: {kk: (round(v, 5) if isinstance(v, float) else v) for kk, v in s.items()} for c, s in stats.items()},
                by_class=by_cls,
                null_drift=dict(linf=round(max(null), 4) if null else 0.0, median=round(sorted(null)[len(null) // 2], 4) if null else 0.0),
@@ -213,7 +261,8 @@ def update(cfg, rd, k):
         f.write(json.dumps(row) + '\n')
     top = sorted(coords, key=lambda c: -abs(stats[c]['t']))[:5]
     print(f"iter {k}: {len(units)} units ({dropped} dropped, {row['exact_zero']} exact-zero), |t|>2 share {row['t_gt2_share']}, "
-          f"split-half cos {row['split_half_cos'] if row['split_half_cos'] is None else round(row['split_half_cos'], 3)}; top "
+          f"split-half cos {row['split_half_cos'] if row['split_half_cos'] is None else round(row['split_half_cos'], 3)} ({row['fitness']}; "
+          + ', '.join(f"{n}: {v['t_gt2_share']}/{v['split_half_cos']}" for n, v in row['shadow'].items()) + "); top "
           + ', '.join(f"{c} t={stats[c]['t']:+.2f} step={stats[c]['step']:+.2f} phi={stats[c]['phi']:+.2f}" for c in top))
     for n, r in row['records'].items():
         for p, v in r.items():
@@ -294,6 +343,21 @@ def self_test():
         assert s[0]['s'] == 0.5 and not s[0]['exact_zero']
         assert s[1]['s'] == 0.0 and s[1]['exact_zero']
         assert s[2]['s'] == -0.25 and s[4]['s'] == 0.0, s
+        us2, _ = unit_scores(I, dict(kind='rounds', alpha=0.5))   # rounds 100: quick-win margin 0.975
+        s2 = {u['unit']: u for u in us2}
+        assert abs(s2[0]['s'] - 0.49375) < 1e-12 and abs(s2[1]['s']) < 1e-12 and abs(s2[2]['s'] + 0.246875) < 1e-12, s2
+    # 4. margin fitness: quick win > slow win > win at the limit > draw > loss at the limit > slow loss > quick loss
+    g = lambda w, r, pa=10, pb=10: dict(winner=w, rounds=r, A=dict(points=pa), B=dict(points=pb))
+    for kind in ('rounds', 'rp'):
+        f = dict(kind=kind, alpha=0.5)
+        seq = [_pts(g('A', 100), 'A', f), _pts(g('A', 1500), 'A', f), _pts(g('A', 2000, 30, 10), 'A', f),
+               _pts(g('A', 2000, 11, 10), 'A', f), _pts(g(None, 2000), 'A', f), _pts(g('B', 2000, 10, 11), 'A', f),
+               _pts(g('B', 1500), 'A', f), _pts(g('B', 100), 'A', f)]
+        assert all(x >= y for x, y in zip(seq, seq[1:])) and seq[3] > 0.5 > seq[5], (kind, seq)
+        assert min(seq[:4]) > 0.5 and all(abs(seq[i] + seq[j] - 1) < 1e-12 for i, j in ((0, 7), (1, 6), (3, 5)))   # mirror
+        assert _pts(g('A', 100), 'A', dict(kind=kind, alpha=0.0)) == 1.0
+    assert _pts(g('A', 2000, 30, 10), 'A', dict(kind='rounds')) == _pts(g('A', 2000, 11, 10), 'A', dict(kind='rounds'))
+    assert _pts(g('A', 2000, 30, 10), 'A', dict(kind='rp')) > _pts(g('A', 2000, 11, 10), 'A', dict(kind='rp'))
     print('es_update self-test OK')
 
 
