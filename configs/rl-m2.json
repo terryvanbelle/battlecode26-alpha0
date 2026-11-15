@@ -60,13 +60,13 @@
     "beta_anneal_iters": 20,
     "collapse_kl": 0.3,
     "max_anchor_kl": 0.5,
-    "c_ent": 0.003,
+    "c_ent": 0.01,
     "adv_clip": 5.0,
     "value_window": 3,
     "value_val_frac": 0.1,
     "threads": 8,
     "critic": "rich",
-    "gae_lambda": 0.9
+    "gae_lambda": 0.8
   },
   "parity": {
     "median_max": 0.001,
