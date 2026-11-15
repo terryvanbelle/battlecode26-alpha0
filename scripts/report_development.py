@@ -52,7 +52,7 @@ def generate(progress, manifest_path=None):
 All bots share one graph, ordered by prior Elo in the legend. The bold black series shows overall wins divided by all valid games (not an unweighted average of bot percentages). Each point aggregates the eight-map schedule (32 games per bot). {crash_note} Incomplete bot panels remain pending. Only this frozen development suite is included; historical tiny-only results are separate. History begins with the first broader-map baseline; subsequent checkpoint evaluations add time points. [History data](progress/overview/development-history.json).
 <!-- CURRENT_BENCHMARK_END -->''' 
  if not rows:block=block.replace(f' · [Raw evaluation]({data["source"]}/evaluations.jsonl)','').replace('Checkpoint `not-yet-eval`','Baseline evaluation pending')
- readme=ROOT/'README.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)
+ readme=ROOT/'PROGRESS.md';s=readme.read_text();s=re.sub(r'<!-- CURRENT_BENCHMARK_START -->.*?<!-- CURRENT_BENCHMARK_END -->',lambda _:block,s,flags=re.S);readme.write_text(s)
 if __name__=='__main__':
  import argparse
  p=argparse.ArgumentParser();p.add_argument('progress_dir',type=Path);p.add_argument('--manifest',type=Path);a=p.parse_args();generate(a.progress_dir,a.manifest)
