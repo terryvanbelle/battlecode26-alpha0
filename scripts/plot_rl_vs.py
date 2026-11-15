@@ -4,9 +4,10 @@ progress.jsonl, plus optional gate series from gates.jsonl (e.g. the anchor-zdb 
 
   scripts/plot_rl_vs.py runs/rl/RUN/progress.jsonl --out docs/img/RUN.svg [--opp v0]
       [--gates runs/rl/RUN/gates.jsonl --gate-mode anchor-zdb --gate-label "vs zdb (32-game gate)"]
-      [--title T] [--mark K:TEXT ...]
+      [--title T] [--mark K:TEXT ...] [--pool-label L] [--xlabel L]
+  scripts/plot_rl_vs.py OUT/progress.jsonl --opp zdpg0,zdpg39 ...   (an ES run, after scripts/es_progress.py RUN OUT)
 
-Pool series: iteration k's pool games, the learner (version k) against --opp. Gate series: one point per gated version.
+Pool series: iteration k's pool games, the learner (version k) against --opp (a comma list is pooled). Gate series: one point per gated version.
 Score = points / games (win 1, draw 0.5) with a Wilson 95% interval; the dashed line is 0.5 (even). No dependencies
 (plain Python, hand-written SVG that follows the viewer's light/dark theme; hover a point for its numbers).
 """
@@ -29,9 +30,11 @@ def pool_series(path, opp):
     rows = {}
     for line in open(path):
         r = json.loads(line)
-        s = (r.get('score') or {}).get(opp)
-        if s and s.get('games'):
-            rows[r['iter']] = (r['iter'], s['points'], s['games'])
+        sc = r.get('score') or {}
+        p = sum(sc[o]['points'] for o in opp.split(',') if o in sc)
+        g = sum(sc[o]['games'] for o in opp.split(',') if o in sc)
+        if g:
+            rows[r['iter']] = (r['iter'], p, g)
     return sorted(rows.values())
 
 
@@ -50,8 +53,9 @@ def main():
     ap.add_argument('--gates'); ap.add_argument('--gate-mode', default='anchor-zdb')
     ap.add_argument('--gate-label', default=None)
     ap.add_argument('--title', default=None); ap.add_argument('--mark', action='append', default=[])
+    ap.add_argument('--pool-label', default=None); ap.add_argument('--xlabel', default='learner version (iteration)')
     a = ap.parse_args()
-    series = [(f'vs {a.opp} (pool games)', pool_series(a.progress, a.opp), 0.0)]
+    series = [(a.pool_label or f'vs {a.opp} (pool games)', pool_series(a.progress, a.opp), 0.0)]
     if a.gates:
         series.append((a.gate_label or f'{a.gate_mode} gate', gate_series(a.gates, a.gate_mode), 0.12))
     series = [s for s in series if s[1]]
@@ -98,7 +102,7 @@ def main():
     step = max(1, round(kmax / 12))
     for k in range(0, kmax + 1, step):
         o.append(f'<text class="ax" x="{X(k):.1f}" y="{T + ph + 18}" text-anchor="middle">{k}</text>')
-    o.append(f'<text class="ax" x="{L + pw / 2}" y="{H - 14}" text-anchor="middle">learner version (iteration)</text>')
+    o.append(f'<text class="ax" x="{L + pw / 2}" y="{H - 14}" text-anchor="middle">{a.xlabel}</text>')
     o.append(f'<text class="ax" transform="translate(16 {T + ph / 2}) rotate(-90)" text-anchor="middle">score</text>')
     for m in a.mark:
         k, txt = m.split(':', 1)

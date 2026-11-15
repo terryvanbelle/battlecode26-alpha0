@@ -134,13 +134,14 @@ def jobs(cfg, k, dirs):
     pool = cfg.get('pool_packages') or []
     pf = cfg.get('pool_fraction', 0.0) if pool else 0.0
     out = []
-    u = 0
+    u = npool = 0
     for d in dirs:
         P, M = cand_name(cfg, k, d['i'], 1), cand_name(cfg, k, d['i'], -1)
         for r in range(upd):
             m, seed = perm[u % len(perm)], cfg['seed_base'] + 1000 * k + u
             if pf and int((u + 1) * pf) > int(u * pf):   # pool units spread evenly
-                opp = pool[u % len(pool)]
+                opp = pool[npool % len(pool)]   # round-robin over the pool units (u % len(pool) hit one package)
+                npool += 1
                 for th, sgn in ((P, 1), (M, -1)):
                     for side in 'AB':
                         a, b = (th, opp) if side == 'A' else (opp, th)

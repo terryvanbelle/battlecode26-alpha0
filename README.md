@@ -51,6 +51,11 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
       ![rl-m2: learner score against v0 and against zdb by version](docs/img/rl-m2-score.svg)
     - Status: `scripts/rl_status.py`.
   - **Now: ES run `es-m2`** (started November 15, 2026, 05:14 PDT; the user allowed ES if rl-m2 had not moved the needle by 05:00). Antithetic head-to-head ES ([plan](docs/rl-es-plan.md)) on per-point output-bias offsets and log-temperature of the same 7 points, starting from rl-m2 v39. 32 directions × 2 units per iteration (160 games, a quarter against the pool zdpg0/zdpg39); gate against zdpf005 every 3 iterations. Config: [configs/es-m2.json](configs/es-m2.json); same box + VM split.
+    - Score by ES version (`scripts/es_progress.py`, then `scripts/plot_rl_vs.py`). Blue: against the start net (rl-m2 v39), from each iteration's pool games, 64 per iteration; these are played by the candidates θ ± σε, whose average estimates the centre. Orange: the 32-game gate against zdpf005; version 0 is rl-m2 v39's own gate on the same games.
+    - Through iteration 4 the centre drifts slightly down against its start (pooled 148/320 = 0.46) and scored 14/32 against zdpf005 at version 3; nothing is significant yet.
+    - Fixed November 15, 2026 (from iteration 6): the pool games of iterations 0–5 were all against zdpg39, because the pool units fall on odd unit numbers; they now alternate between zdpg0 and zdpg39.
+
+      ![es-m2: ES centre score against its start net and against zdpf005 by version](docs/img/es-m2-score.svg)
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
   - New options on existing points: strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks.

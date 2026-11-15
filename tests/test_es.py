@@ -110,6 +110,11 @@ def test_schedule():
     js3 = es_schedule.jobs(cfg3, 0, es_schedule.draw(0, 8, bl, sg))
     pu = {j['unit'] for j in js3 if j['kind'] == 'pool'}
     assert len(pu) == 4 and len(js3) == 12 * 2 + 4 * 4
+    # two pool packages: the pool units alternate between them (pool units fall on u = 3, 7, ...: not u % 2)
+    cfg4 = dict(cfg, pool_packages=['zdpg0', 'zdpg39'], pool_fraction=0.25)
+    js4 = es_schedule.jobs(cfg4, 0, es_schedule.draw(0, 8, bl, sg))
+    opp = {j['unit']: j['opponent'] for j in js4 if j['kind'] == 'pool'}
+    assert sorted(opp.values()) == ['zdpg0', 'zdpg0', 'zdpg39', 'zdpg39'], opp
 
 
 def test_calibration_sanity():
