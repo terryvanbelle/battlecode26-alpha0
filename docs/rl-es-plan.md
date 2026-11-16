@@ -464,3 +464,21 @@ pooled proposal at a time.
   es-lr2 under the same rules. The antithetic judge is dropped. It measures the direction, but a temperature
   coordinate makes the two sides so lopsided that it mostly scores the minus side's collapse (section 13: t 17.5,
   then a guard at 0.52). The cosine already supplies the direction evidence.
+
+**es-lr1 after 6 updates (07:03 PDT November 16; 192 directions):** |t| > 2 share 0.054, max |t| 3.24, split-half
+cosine **+0.091**. Both stop conditions hold (cosine at most 0.1, share at most 0.07), so es-lr1 is **stopped** as
+pre-set. (es-lr0 had 0.103 at the same count and later reached 0.31, so this stop can lose a weak signal. The rule
+stands because it was fixed before the data.)
+
+## 15. Line search along es-lr0's accepted direction (November 16, 2026)
+
+Set before any games. zdpljp (TV 0.1 along es-lr0's pooled Δ) scored 0.523 against rl-m2 v39 in 128 games, a
+t of 0.5. If the direction is real, a larger step should show more. One test, using no new ES data:
+θ0 + ηΔ with η set for mean TV **0.25** (`es_propose.py --iters 0-17 --tv 0.25 --build zdplt`, built from θ0 = rl-m2 v39),
+zdpltp against zdpg39, **256 games** (row 3 of the judge maps, 28 maps on the box and 4 on the VM, seeds 3800301–3800304,
+both seats).
+- t > 2 (paired, `pair_score.py`): accept zdpltp as the new centre. The direction scales, so the next ES rounds take
+  larger steps.
+- Otherwise: the es-lr0 direction has no measurable value at any step size tried, and ES at this budget is done.
+  The plan returns to RL proper, starting from the critic (held-out AUC 0.70), which section 12 identified as the
+  limit on per-decision credit.
