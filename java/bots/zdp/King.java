@@ -35,6 +35,7 @@ public final class King {
         Debug.mark(43);
         readSqueaks();
         publish();
+        DP.plan();   // the team plan (design C): opens the plan heads when one is due
         Debug.mark(44);
 
         RobotInfo[] enemies = rc.senseNearbyRobots(-1, G.them);
@@ -265,7 +266,7 @@ public final class King {
 
     /** Most babies we keep: the war or peace cap, raised to RICH_BABIES while the bank holds RICH_BANK. */
     static int babyCap(boolean war, int bank) {
-        int cap = war ? Cfg.MAX_BABIES_WAR : Cfg.MAX_BABIES;
+        int cap = Plan.cap(war);
         if (bank >= Cfg.RICH2_BANK) return Math.max(Math.max(cap, Cfg.RICH_BABIES), Cfg.RICH2_BABIES);
         return Cfg.RICH_BABIES > cap && bank >= Cfg.RICH_BANK ? Cfg.RICH_BABIES : cap;
     }
@@ -300,18 +301,18 @@ public final class King {
         G.debt = cdl + G.bc() - cbl + 11;
         if (last) sf = Cfg.LAST_FLOOR;
         int cdc = G.debt, cbc = G.bc();   // ledger (K 9: iload core replaces the base's bipush)
-        int core = G.W * G.H <= Cfg.CORE_SMALL_AREA ? Cfg.CORE_SMALL : Cfg.CORE_BABIES;
+        int core = Plan.core(G.W * G.H <= Cfg.CORE_SMALL_AREA);
         G.debt = cdc + G.bc() - cbc + 9;
-        boolean boot = babies < core && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Cfg.CORE_FLOOR, low, sf));
+        boolean boot = babies < core && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Plan.thrift(Cfg.CORE_FLOOR), low, sf));
         // at war with enemies in sight, bodies now beat cheese later: spawn down to a short upkeep floor
-        boolean war = siege && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Cfg.WAR_FLOOR, low, sf));
+        boolean war = siege && rc.getGlobalCheese() >= cost + Econ.floor(spawnFloor(Plan.thrift(Cfg.WAR_FLOOR), low, sf));
         if (D.ON) DK.kingSpawn(cats, enemies, cost, babies, low, sf, core, boot, war);   // KING_SPAWN decision point
         if (D.NET && DK.netKingSpawn(cats, enemies)) return;
         spawnWhy = 's';
-        if (!boot && !war && Econ.surplus() < cost + Cfg.SPAWN_MARGIN) { D.lab = DK.S_NO_SURPLUS; return; }
+        if (!boot && !war && Econ.surplus() < cost + Plan.thrift(Cfg.SPAWN_MARGIN)) { D.lab = DK.S_NO_SURPLUS; return; }
         // never spend the king's upkeep: SPAWN_FLOOR cheese (or what the rest of the game needs) stays
         spawnWhy = 'f';
-        if (rc.getGlobalCheese() < cost + Econ.floor(Math.min(spawnFloor(Cfg.SPAWN_FLOOR, low, sf), 2 * (2000 - G.round)))) { D.lab = DK.S_FLOOR; return; }
+        if (rc.getGlobalCheese() < cost + Econ.floor(Math.min(spawnFloor(Plan.thrift(Cfg.SPAWN_FLOOR), low, sf), 2 * (2000 - G.round)))) { D.lab = DK.S_FLOOR; return; }
         spawnWhy = 'c';
         if (babies >= babyCap(war, rc.getGlobalCheese())) { D.lab = DK.S_CAP; return; }
         // Spawn toward the most useful direction: away from visible cats, else toward the map centre.
@@ -728,7 +729,7 @@ public final class King {
     static int sym() { return (Sym.mask & Sym.ROT) != 0 ? Sym.ROT : (Sym.mask & Sym.HOR) != 0 ? Sym.HOR : Sym.VER; }
 
     /** Kings we form up to (war or peace alike). */
-    static int formCap() { return Cfg.FORM_MAX; }
+    static int formCap() { return Plan.formMax(); }
 
     /** Net option F_RICH_DROP: close the site. zdb's rich-fix ban (ban the site, retry RICH_FIX_RETRY rounds later)
      *  is off, so zdb never bans and neither does the net. */

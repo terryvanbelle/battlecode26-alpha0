@@ -180,8 +180,8 @@ public final class DK {
             D.f(cost == 10);
             D.f(core);
             D.f(D.cap(King.babyCap(war, g), 255));
-            D.f(sur - cost - Cfg.SPAWN_MARGIN + 32768);
-            D.f(g - cost - Econ.floor(Math.min(King.spawnFloor(Cfg.SPAWN_FLOOR, low, sf), 2 * (2000 - G.round))) + 32768);
+            D.f(sur - cost - Plan.thrift(Cfg.SPAWN_MARGIN) + 32768);
+            D.f(g - cost - Econ.floor(Math.min(King.spawnFloor(Plan.thrift(Cfg.SPAWN_FLOOR), low, sf), 2 * (2000 - G.round))) + 32768);
             D.f(D.cap(enemies.length, 15));
             D.f(D.cap(cats.length, 4));
             D.f(!G.coop && enemies.length > 0 ? c.directionTo(enemies[0].location).ordinal() : 8);

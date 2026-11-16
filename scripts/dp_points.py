@@ -14,7 +14,10 @@ SRC = ROOT / 'java/bots/zdp'
 SECONDARY = (6, 7, 9, 15)   # BABY_COMMS, MINE_PICK, BABY_VAL, KING_VAL
 NAMES = {1: 'BABY_MOVE', 2: 'BABY_ACT_PRE', 3: 'BABY_ACT_POST', 4: 'BABY_FACE', 5: 'BABY_ROLE', 6: 'BABY_COMMS',
          7: 'MINE_PICK', 8: 'BABY_FREE', 9: 'BABY_VAL', 10: 'KING_MOVE', 11: 'KING_SPAWN', 12: 'KING_ACT',
-         13: 'KING_FORM', 14: 'KING_COMMS', 15: 'KING_VAL', 16: 'KING_TURN'}
+         13: 'KING_FORM', 14: 'KING_COMMS', 15: 'KING_VAL', 16: 'KING_TURN',
+         20: 'TP_POSTURE', 21: 'TP_ARMY', 22: 'TP_CORE', 23: 'TP_THRIFT', 24: 'TP_ROLES', 25: 'TP_RUSH', 26: 'TP_LOAD',
+         27: 'TP_KINGS'}   # 20-27: design C's plan heads (DP.java)
+PLAN_POINTS = tuple(range(20, 28))
 
 
 def constants(src=SRC):

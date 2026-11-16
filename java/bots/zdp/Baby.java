@@ -38,6 +38,7 @@ public final class Baby {
         D.point2 = 0;
         mute = false;   // net mode: an exception last turn may have left zdb's squeaks muted
         pickCap = Integer.MAX_VALUE;   // net mode: BABY_FREE's pickup cap holds for one turn
+        Plan.read();   // the team plan (design C); zdb's constants until a king writes one
         if (role < 0) {
             born();
             if (D.ON) {   // BABY_ROLE at birth
@@ -238,7 +239,7 @@ public final class Baby {
 
     /** Whether this rat bites and grabs enemy rats now: after cooperation, or a RUSH_BREAK attacker at any time. */
     static boolean hostile() {
-        return !G.coop || role == ATTACK || G.round >= Cfg.BREAK_ROUND;
+        return !G.coop || role == ATTACK || G.round >= Plan.breakRound();
     }
 
     /** End the turn facing the nearest enemy rat close enough to grab us next round. */
@@ -321,7 +322,7 @@ public final class Baby {
         int cost = rc.getCurrentRatCost();
         int idx = (cost - 10) / 10 * 4; // approximate spawn index from the cost step
         role = GATHER;
-        if (idx >= Cfg.GATHER_FIRST && (G.round % Cfg.FIGHT_EVERY) == 0) role = FIGHT;
+        if (idx >= Cfg.GATHER_FIRST && Plan.fighter(G.round)) role = FIGHT;
         if (rusher(idx, G.round)) role = ATTACK;
         Comms.readKings();
         home = Comms.nearestKing(G.me);
@@ -338,7 +339,7 @@ public final class Baby {
 
     /** Cfg.RUSH: a baby born with idx live babies in round r attacks the enemy king. */
     static boolean rusher(int idx, int r) {
-        return idx >= Cfg.RUSH_FROM && idx < Cfg.RUSH_TO && r < Cfg.RUSH_UNTIL;
+        return idx >= Cfg.RUSH_FROM && idx < Plan.rushTo() && r < Cfg.RUSH_UNTIL;
     }
 
     /** A rat's birth seed: its round and unsigned offset from the king that spawned it, the same for its mirror twin. */
@@ -1041,7 +1042,7 @@ public final class Baby {
             if (approachCat(cat)) { D.lab = D.M_FIGHT_CAT; G.debt += 6; return; }
         }
 
-        if ((raw >= Cfg.DELIVER_AT || (raw > 0 && (late || cheeseTarget == null && raw >= Cfg.DELIVER_IDLE))) && deliver()) { D.lab = D.M_DELIVER; G.debt += 6; return; }
+        if ((raw >= Plan.deliverAt() || (raw > 0 && (late || cheeseTarget == null && raw >= Cfg.DELIVER_IDLE))) && deliver()) { D.lab = D.M_DELIVER; G.debt += 6; return; }
         if (Comms.numMines == 0 && myMineCount > 0) {
             // we found a mine nobody else knows: squeaks only reach the king from dist2 16, so carry the news home
             MapLocation k = Comms.nearestKing(G.me);
@@ -1166,7 +1167,7 @@ public final class Baby {
         RobotController rc = G.rc;
         MapLocation ek = eKing != null ? eKing.location : G.round - lastEKingRound <= Cfg.PRESS_AGE ? lastEKing : null;
         if (ek == null || rc.getHealth() < Cfg.PRESS_HP) return false;
-        if (role == GATHER && rc.getRawCheese() >= Cfg.DELIVER_AT) return false;
+        if (role == GATHER && rc.getRawCheese() >= Plan.deliverAt()) return false;
         int d = G.me.distanceSquaredTo(ek);
         if (d > (role == GATHER ? Cfg.PRESS_GATHER_D2 : Cfg.PRESS_D2)) return false;
         if (eKing == null && d <= 8 && rc.canSenseLocation(ek)) {
@@ -1253,7 +1254,7 @@ public final class Baby {
             if (G.rc.getDirection() != f && G.rc.canTurn(f)) { G.rc.turn(f); G.facing = f; }
             return true;
         }
-        if (eKing != null && (role == FIGHT || raw < Cfg.DELIVER_AT)) {
+        if (eKing != null && (role == FIGHT || raw < Plan.deliverAt())) {
             Nav.goTo(eKing.location);
             return true;
         }
@@ -1265,7 +1266,7 @@ public final class Baby {
                 if (G.rc.getDirection() != f && G.rc.canTurn(f)) G.rc.turn(f);
                 return true;
             }
-            if (d <= 20 && (role == FIGHT || raw < Cfg.DELIVER_AT || d <= 8)) {
+            if (d <= 20 && (role == FIGHT || raw < Plan.deliverAt() || d <= 8)) {
                 // standoff: stepping into the front of an enemy that sees us (and is not weaker) walks onto its
                 // traps and into a grab; hold, face it and let it come (flank and prey moves still engage)
                 // (not against a rat at our threatened king: it is biting the king while we wait)
@@ -1405,7 +1406,7 @@ public final class Baby {
     /** Cfg.END_CAT: walk to the nearest seen or known cat (the bite step bites it); false when this baby has other work
      *  (a load, a carried rat, a threatened king, an enemy in reach, a formation site to join). */
     static boolean endCat(int raw) throws GameActionException {
-        if (raw >= Cfg.DELIVER_AT || G.rc.getCarrying() != null) return false;
+        if (raw >= Plan.deliverAt() || G.rc.getCarrying() != null) return false;
         if (threatenedKing() != null || nearEnemy(8)) return false;
         // a king formation (END_KING, CASH_END) outweighs the cat: its joiners go on to formKing and cashMove
         if (formSite() != null || cashSite != null) return false;

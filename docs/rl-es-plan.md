@@ -779,3 +779,56 @@ before the game:
   of uniform's Fisher trace against 0-13% before).
 - *Within 0.05 of gall:* the distillation kept gall's play. Whichever of the two is higher sets ε for the start.
 - *0.08 or more below gall:* the fit costs strength. KING_MOVE fits worst, so the next try is ε 0.1 there (or a wider net).
+
+## 21. Plan heads: design C's stage 1 (November 16, 2026)
+
+**Why now.** With 21 of 24 stage-0 variants played, three are at |t| ≥ 2, which is section 19's pre-set slope reading:
+rush to 32 at 0.36 (t −2.33), core 24 at 0.41 (t −2.25), and **core 12/8 at 0.61 (t +2.03)**. The core-babies class
+has a peak below zdb's 18/12 (8/4 0.45, 12/8 0.61, 24/24 0.41). Under no effect at all, three or more such hits among
+21 happen about 6% of the time, so this is modest evidence. It is also a known answer RL can be checked against: a
+plan head that can move CORE from zdb's bin to 12/8 has about 0.1 of a game to gain against zdb. Two knobs were
+nearly inert: break at 120 played exactly as zdb on 30 of 32 maps, and 4 kings on 16 of 32.
+
+**What is built** (stage 1 of `design-C`: the net picks zdb's strategy constants at coarse times, zdb's code executes
+them every turn):
+- `Plan.java`: live values for 8 heads, each a few bins around zdb's constant. A head at zdb's bin returns Cfg's own
+  constant, so a plan of zdb bins is zdb.
+
+  | Head (point) | Bins (* zdb) | Use sites |
+  |---|---|---|
+  | POSTURE (20) | first hostile round in cooperation {30*, 60, 120, 250, 500, 1000, 5000} | Baby.hostile |
+  | ARMY (21) | baby cap, peace and war {8, 12, 15, 18*, 24, 30, 40} | King.babyCap |
+  | CORE (22) | core babies, large / small maps {8/4, 10/6, 12/8, 15/10, 18/12*, 21/15, 24/18} | King.spawn |
+  | THRIFT (23) | CORE/WAR/SPAWN floors and SPAWN_MARGIN × {⅓, ½, ¾, 1*, 1½, 2, 3} | King.spawn, KING_SPAWN features |
+  | ROLES (24) | fighter share after the first 6 {0, ¼, ⅓, ½*, ⅔, ¾, 1} | Baby.born |
+  | RUSH (25) | rushers' spawn indices 4..RUSH_TO−1, RUSH_TO {4 (none), 8, 12, 16*, 24, 32} | Baby.rusher |
+  | LOAD (26) | delivery load {10, 15, 20, 30*, 45, 60, 90} | Baby (5 sites) |
+  | KINGS (27) | kings formed up to {1, 2*, 3, 4} | King.formCap |
+- `DP.java`: the planner. A king calls `DP.plan()` after publishing. A plan is due on the team's first king turn, in
+  the first king turn of each 50-round epoch, when cooperation has ended since the last plan, and when the live king
+  count changed. The first king to see it due opens the heads in order, one record each (40 team features: round,
+  cooperation and time since it ended, economy, map, mines, threats, the plan in force and the bins already drawn in
+  this decision), and writes the plan. POSTURE opens only on the first plan, RUSH before round 300, KINGS through 1150.
+- `Comms.java`: the plan (36 bits: 8 × 3-bit bins, epoch, cooperation and king count at plan time) lives in the high
+  4 bits of the first 9 MINE slots; mine coordinates + 1 need only 6 bits. `Comms.read` masks those bits and
+  `Comms.write` keeps them, so every zdb reader, feature and KING_COMMS edit sees exactly what it saw before.
+- `scripts/plan_start.py`: start nets. Each head is a 40-64-64-K MLP whose last layer is zero, so the start policy is
+  its bias: 0.95 of a discretised Gaussian (σ 0.6 bins) around zdb's bin plus 0.05 uniform. p(zdb bin) is 0.64 (0.77
+  for POSTURE, whose zdb bin is at the edge); Fisher share of uniform 0.63-0.70 (POSTURE 0.44), against 0-0.13 at
+  today's points. Inputs are standardised by fixed scales, folded into the first layer and kept in norm.npz.
+
+**Tests, readings set before the games** (box, zdb = zdpc00):
+- *T1, identity without nets* (zdpp0: the new code, recording build), 8 maps × both seats against zdb. Pass: every
+  unit exact-zero (both seats give the same trajectory hash, so the plan code changed nothing).
+- *T1b, identity through the net path* (zdpp3: the start nets at temperature 0, so every head takes its argmax, zdb's
+  bin), the same 16 games. Pass: every unit exact-zero.
+- *T3, cost of exploration*: zdpp1 (the start, temperature 1, floor 0) and zdpp2 (a uniform plan) against zdb, 64
+  games each on row 3 (stage 0's maps). Readings:
+  - *start ≥ 0.46 and uniform ≥ 0.40:* sampled plans are competent. RL run `rl-p1` starts from the start nets
+    (trainable 20-27, floor 0, event GAE per team-game: λ 1 for POSTURE, 0.9 for the rest).
+  - *start < 0.46:* the start is too soft; σ 0.4 (p(zdb) ≈ 0.9, Fisher ≈ 0.2) and retest.
+  - *uniform < 0.30:* some bins are harmful, not just neutral; drop the outer bins of the heads stage 0 found sharp
+    (RUSH 32, LOAD 10-15, CORE 24/18) before RL.
+- *The known answer:* if rl-p1 learns, CORE's mass should move toward 12/8 (bin 2) within ~10 iterations. If CORE has
+  not moved by iteration 15 while its Fisher share stays above 0.3, the credit assignment is too weak, and the next
+  step is plan cadence 100 with 256 games per iteration (design C's T7 fallback).

@@ -35,12 +35,36 @@ public final class Comms {
 
     // ------------------------------------------------------------------ readers
 
+    /** Slot i as zdb sees it: the MINE slots' high 4 bits hold the team plan (Plan) and are masked off. */
     public static int read(int i) {
-        try { return G.rc.readSharedArray(i); } catch (GameActionException e) { return 0; }
+        try {
+            int v = G.rc.readSharedArray(i);
+            return i >= MINE0 && i < MINE0 + 2 * MINE_SLOTS ? v & 63 : v;
+        } catch (GameActionException e) { return 0; }
     }
 
+    /** Write slot i as zdb sees it (a MINE slot keeps its plan bits). */
     public static void write(int i, int v) {
-        try { if (G.rc.readSharedArray(i) != v) G.rc.writeSharedArray(i, v); } catch (GameActionException e) { }
+        try {
+            int old = G.rc.readSharedArray(i);
+            if (i >= MINE0 && i < MINE0 + 2 * MINE_SLOTS) v = (v & 63) | (old & ~63);
+            if (old != v) G.rc.writeSharedArray(i, v);
+        } catch (GameActionException e) { }
+    }
+
+    /** The team plan's 4-bit group j (Plan.PLAN_SLOTS of them) in the high bits of MINE slot PLAN0 + j. Mine
+     *  coordinates + 1 fit in 6 bits (maps are at most 60 wide). */
+    public static final int PLAN0 = MINE0;
+
+    static int planBits(int j) {
+        try { return G.rc.readSharedArray(PLAN0 + j) >> 6 & 15; } catch (GameActionException e) { return 0; }
+    }
+
+    static void setPlanBits(int j, int b) {
+        try {
+            int old = G.rc.readSharedArray(PLAN0 + j), v = (old & 63) | (b & 15) << 6;
+            if (old != v) G.rc.writeSharedArray(PLAN0 + j, v);
+        } catch (GameActionException e) { }
     }
 
     public static boolean fresh(int stamp, int maxAge) {
