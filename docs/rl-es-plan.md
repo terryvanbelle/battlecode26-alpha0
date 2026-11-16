@@ -757,3 +757,25 @@ was rebuilt from rl-m1c's net with its own settings, and the test package is zdp
 - *0.35 or less:* per-point costs compound. Trainable exploration moves into a few committed strategic decisions (plan
   heads), and the per-turn king points stay frozen.
 - *In between:* repeat at ε 0.1 before choosing.
+
+**The smoothed start** (`scripts/smooth_start.py`, built before gall's result so it can follow at once). Each trainable
+point of v39z is distilled toward (1 − 0.2) p + 0.2 w on 400,000 cpi-x0 states (fewer at MINE_PICK), where p is its own
+softmax over the allowed options and w the stage-2 group weights. It is trained with Adam, 12 epochs, batch 1024,
+lr 3e-3. Held-out rows (10%):
+
+| Point | KL to target, before → after | top choice kept | Fisher share of uniform, before → after |
+|---|---|---|---|
+| BABY_ROLE 5 | 11.5 → 0.108 | 99.7% | 0.003 → 0.214 |
+| MINE_PICK 7 | 2.43 → 0.083 | 94.6% | 0.082 → 0.472 |
+| KING_MOVE 10 | 3.63 → 0.189 | 89.0% | 0.126 → 0.488 |
+| KING_SPAWN 11 | 10.3 → 0.048 | 96.7% | 0.038 → 0.403 |
+| KING_ACT 12 | 1.41 → 0.0004 | 99.97% | 0.014 → 0.289 |
+| KING_FORM 13 | 3.39 → 0.006 | 99.6% | 0.030 → 0.348 |
+| KING_TURN 16 | 0.25 → 0.0005 | 99.96% | 0.022 → 0.239 |
+
+*sm20*: zdpy2 (that net, floor 0 everywhere) against zdpg39, 64 games on gall's maps and seed, after gall. Readings, set
+before the game:
+- *0.50 or more:* this is the RL start. Exploration is inside the softmax, so every deviation carries gradient (20-49%
+  of uniform's Fisher trace against 0-13% before).
+- *Within 0.05 of gall:* the distillation kept gall's play. Whichever of the two is higher sets ε for the start.
+- *0.08 or more below gall:* the fit costs strength. KING_MOVE fits worst, so the next try is ε 0.1 there (or a wider net).
