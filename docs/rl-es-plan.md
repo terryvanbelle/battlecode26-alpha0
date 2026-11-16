@@ -670,6 +670,16 @@ Readings:
 - g11h at least 0.10 above g11: KING_SPAWN's cost is the extra builds, so per-turn spawn exploration must be rare or
   committed.
 
+**Results (11:59-12:22 PDT), each vs zdpg39, 64 games, row 4, seed 3801001:**
+- *g2* (BABY_ACT_PRE, grouped floor 0.2): 38/64 = 0.594, t 1.79, against 0.22 with the uniform floor.
+- *g11* (KING_SPAWN, grouped floor 0.2): 31/64 = 0.484, t −0.25, against 0.27 uniform.
+- *g11h* (KING_SPAWN, HOLD 0.8): 32/64 = 0.500.
+
+Reading: both g2 and g11 are at or above 0.40, so which options a floor draws is what cost strength, not how many
+deviations it makes. A typed prior removes the whole floor-0.2 cost at these two points. Stage 2 builds the smoothed,
+grouped start. Caveat from e20 (0.234): softening all 11 points at once through their own softmax still costs heavily,
+so one-point tests do not show that the costs add up gently. A whole-net grouped-floor test comes next.
+
 ## 19. Stage 0: does zdb's strategy family have slope? (November 16, 2026)
 
 **Why this test.** The design panel's parametric design ("C") gives the net zdb's strategy constants as its actions:
