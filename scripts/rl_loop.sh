@@ -109,10 +109,10 @@ print(t['beta_end'] + (t['beta_start'] - t['beta_end']) * max(0.0, 1 - $k / t['b
   [ -n "$lr" ] || { lr=$(cfgv "['train']['lr']"); st set lr $lr; }
   local T="['train']"
   local nokl=$($PY -c "import json; print('--no-kl' if json.load(open('$CFG'))['train'].get('no_kl') else '')")   # M1 only
-  # optional critic / GAE (rl_train --critic, --gae-lambda): absent keys keep rl_train's defaults (trace, lambda 1)
+  # optional critic / GAE (rl_train --critic, --gae-lambda, --event-lambda "P:L[:robot],..."): absent keys keep rl_train's defaults
   local crit=$($PY -c "
 import json; t = json.load(open('$CFG'))['train']
-print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda', 'gae-lambda'), ('critic_folds', 'critic-folds')) if k in t))")
+print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda', 'gae-lambda'), ('critic_folds', 'critic-folds'), ('event_lambda', 'event-lambda')) if k in t))")
   $PY -u scripts/rl_train.py --net $RD/nets/$k/net.json --anchor $(cfgv "['anchor_net']") --data $I/data --value-data $vd \
     --out $RD/nets/$((k + 1)) --points $POINTS --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${GROUPS:+--groups $GROUPS} --temperature $TEMP --version $k \
     --beta $beta --beta-state $RD/beta.json --lr $lr --epochs $(cfgv "$T['epochs']") --batch $(cfgv "$T['batch']") \
