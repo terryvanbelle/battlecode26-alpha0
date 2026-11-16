@@ -877,6 +877,12 @@ early for kings) even when the build had no net for that point. Builds with nets
 so far, rl-s1 included) never reached that case. Fix: `D.net(p)` (a net build that carries a net for p) gates those
 two hooks. T1b again (zdpp6): 8 of 8 units exactly zdb. Pass.
 
+**T3 results** (64 games each against zdb, row 3, seed 3801402): the start zdpp1 **33/64 = 0.52** (t 0.33), a uniform
+plan zdpp2 **33/64 = 0.52** (t 0.23). Both bars pass, so rl-p1 starts (November 16, 2026, 16:00 PDT). A uniform plan
+playing level with zdb says exploration over the plan heads is free: a fully stochastic plan stays competent, which
+the per-turn points could not manage (sections 17-20). It also says the heads' combined effect against zdb is small
+on average, so the known answer below is the test of whether RL finds anything.
+
 - *The known answer:* if rl-p1 learns, CORE's mass should move toward 12/8 (bin 2) within ~10 iterations. If CORE has
   not moved by iteration 15 while its Fisher share stays above 0.3, the credit assignment is too weak, and the next
   step is plan cadence 100 with 256 games per iteration (design C's T7 fallback).
