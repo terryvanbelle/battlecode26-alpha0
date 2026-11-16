@@ -21,6 +21,7 @@ otherwise by CPI.
 principal components of the playing net's last hidden layer]: Y_td ~ sum_k (1[k_i = k] - pi_k(x_i)) w_k . phi(x_i)
 (ridge, cross-fitted over two halves of the games). Out of fold, the regression of Y_td on the predicted advantage
 of the sampled option (game-clustered t) says whether the fitted advantages carry over to unseen games.
+The same check on the mc target (z - V) is reported as cpi_mc (a secondary diagnostic: the plan's rule uses td).
 --save-fit FILE (with --cpi): per point, each playing version's PC basis (mu, sd, vt, s: pc_r = ((h - mu) / sd) . vt_r
 / s_r, h the last hidden layer after ReLU) and W [options, 1 + pcs] fitted on all target games, for cpi_step.py.
 """
@@ -251,6 +252,7 @@ def main():
                                         key=lambda x: -abs(x[2]))[:5])
         if a.cpi and 'Phi' in locals_cpi:
             st['cpi'], Wall = cpi_check(locals_cpi['R'][good], locals_cpi['Phi'][good], Y['td'][good], g[good], a.ridge)
+            st['cpi_mc'] = cpi_check(locals_cpi['R'][good], locals_cpi['Phi'][good], Y['mc'][good], g[good], a.ridge)[0]
             fits[p] = dict(basis=locals_cpi['basis'], W=Wall.tolist(), t_oof=st['cpi']['t_oof'],
                            slope=st['cpi']['slope'], floor=fl, pcs=a.pcs, ridge=a.ridge)
         out['points'][p] = st
@@ -258,7 +260,7 @@ def main():
         print(f"p{p:<2} used {st['used']:8d} dev {st['deviations']:6d} ({st['deviation_rate']}) parity "
               f"{st['parity_median']:.1e} | td {f(st['td'])} | mc {f(st['mc'])} | pre {f(st['pre'])} | "
               f"by round td {', '.join(f(st[f'td_r{lo}']) for lo in (0, 500, 1000))} | options |t|>2 "
-              f"{st['options']['t_gt2']}/{st['options']['tested']} (chance {st['options']['chance_t_gt2']})" + (f" | cpi {st['cpi']}" if 'cpi' in st else ''), flush=True)
+              f"{st['options']['t_gt2']}/{st['options']['tested']} (chance {st['options']['chance_t_gt2']})" + (f" | cpi {st['cpi']} | cpi_mc t_oof {st['cpi_mc']['t_oof']}" if 'cpi' in st else ''), flush=True)
     ta = [abs(out['points'][p]['td']['t']) for p in PHASE_A if p in out['points'] and out['points'][p]['td']]
     out['phase_a_median_abs_t_td'] = float(np.median(ta)) if ta else None
     out['seconds'] = round(time.time() - t0, 1)
