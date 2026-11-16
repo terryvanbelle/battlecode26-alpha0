@@ -385,3 +385,9 @@ VM 12/16).** t > 2, so step 0 goes to its guard (t0a1g: zdpt0p against zdpg39 on
 **Guard t0a1g: zdpt0p 61/128 against zdpg39 (0.477, t −0.62; box 53/112, VM 8/16): step 0 at α = 1 rejected.** The
 α = 0.5 attempt (same Δ, points 10 and 11; mean TV 0.03–0.06, top choice flips in 3–6% of decisions) is judged as
 t0a05: zdpt01p against zdpt01m, seeds 3800011 and 3800012, started 18:19 PDT.
+
+**α = 0.5 (t0a05): zdpt01p 66/128 against zdpt01m (0.516, t 0.35). α = 0.25 (t0a025, seeds 3800021 and 3800022,
+TV 0.016–0.027): zdpt02p 64/128 against zdpt02m (0.500, t 0.00). Step 0 discarded at 19:06 PDT.** Over the three
+judges and the guard (512 games), the fitted direction is consistent with no effect: the α = 1 judge's t 2.10 did
+not hold up against the start net (0.477) or at smaller steps. This agrees with the corrected fit (no point with
+t_fold_mean ≥ 2). Next, as set in sections 11–12: low-rank ES ([configs/es-lr0.json](../configs/es-lr0.json)).
