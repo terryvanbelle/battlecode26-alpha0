@@ -576,10 +576,13 @@ competent, so RL can keep entropy, get a gradient and still play well.
 - Masks are looser than the executors (fallback, above), and rl_train credits the sampled option with whatever zdb did
   instead.
 - One behaviour is often split across several options: 8 identical KING_MOVE stays, 5 identical KING_SPAWN holds.
-- "Shortcut plus masked twin" encodings misbehave. R_KEEP's uncalibrated bias of 60 makes about 170 rats flip GATHER↔FIGHT
-  at every review.
-- Untrained inputs: columns that were constant in the imitation data keep random first-layer weights (the team
-  rat-trap count makes BABY_ACT_PRE throw while carrying nothing), and packed bitmask integers can't be decoded.
+- Untrained inputs. Columns that were constant in the imitation data never learned how to respond to other values. The
+  team rat-trap count makes BABY_ACT_PRE throw while carrying nothing (90% of its fallbacks). BABY_ROLE's input 27
+  (rounds since an enemy king was seen) is written only by the net's own R_ATTACK, so it was always 255 in imitation.
+  After the net makes an attacker, the input reads 0–254 for 255 rounds and drives role logits above 100. That causes
+  86% of the GATHER↔FIGHT flip-flopping seen in rl-m2. A first reading blamed R_KEEP's bias of 60, and the verifier
+  refuted it. `train_dp.py` computes the normalisation in float32, so large constant features escape its
+  constant-column guard. Packed bitmask integers can't be decoded at all.
 - Frozen points inject noise into every RL game. KING_COMMS's floor makes about 7.8 random protocol edits per team-game.
 - Several big strategic choices are hard-coded outside any point: backstab at round 30, the 18-baby cap, the king's
   home mine (never revised), and home-half-only mine candidates.
@@ -595,6 +598,16 @@ competent, so RL can keep entropy, get a gradient and still play well.
    against zdpg39, 64 games (row 6, seed 3801201). At least 0.45: entropy is nearly free at the points RL trains, and the
    trap sits mostly at points RL never trained (baby tactics) and at KING_SPAWN. At most 0.35: carrying entropy costs a
    lot where RL actually trains too, so the redesign must cover the king points as well.
+3. *e20*, added at 11:05 PDT: zdpe20 against zdpg39, 64 games (judge maps row 7, seed 3801301). zdpe20 is zdpz with
+   each of the 11 trainable points softened by its own temperature, chosen so that its Fisher trace with floor 0 is
+   20% of a uniform policy's on cpi-x0 states. This is requirement R1 of the redesign, measured in today's action space.
+   The temperatures (`analysis/fisher_T.py`) are 4.0, 6.8, 9.1, 8.3 and 12.8 at baby points 1–5, 2.1 at mine pick, and
+   1.5, 4.5, 2.8, 2.5 and 1.7 at king points 10–13 and 16. At those temperatures every point deviates from its top choice
+   10–13% of the time, through its own softmax (so toward its next-best options) rather than uniformly. Readings,
+   against zfree's score: at least 0.15 below it means today's action space cannot carry entropy even when the
+   exploration is directed, so the redesign is necessary and e20 is its R1 baseline. Within 0.10 of it means the trap was
+   mostly saturated logits plus uniform floors, and a soft start with floor 0 in today's space becomes a cheap RL
+   candidate alongside the redesign.
 
 **Design.** A panel of four independent redesigns runs next: repair in place, a hierarchy of committed targets chosen
 by a candidate scorer, zdb's strategy parameters as the actions, and a clean slate. Three judges score them for RL

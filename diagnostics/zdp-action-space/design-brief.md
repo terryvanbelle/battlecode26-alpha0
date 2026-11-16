@@ -99,8 +99,8 @@ RL record keeps the sampled option and trains on it (D.fallback is a diagnostic 
 ### 2d. Code maps (read these). maps/map-*.json: seven read-only maps of every point (option kinds, why
 fallback happens, context dependence, features, coupling, a generalization proposal with cost). maps/verify-*.json:
 adversarial verifications of the maps (corrections, missed facts, proposal concerns); not all may exist yet, and a
-correction overrides the map. Plain-text renderings of the maps: maps/summary-1.txt (baby-move, baby-act-face),
-maps/summary-2.txt (baby-role-comms-mine-free, king-move-turn, king-spawn-act-form), maps/summary-3.txt
+correction overrides the map. Plain-text renderings of the maps: summary-1.txt (baby-move, baby-act-face),
+summary-2.txt (baby-role-comms-mine-free, king-move-turn, king-spawn-act-form), summary-3.txt
 (king-comms-and-plumbing, hidden-strategy).
 
 Main structural findings (details and line numbers in the maps):
@@ -111,8 +111,8 @@ Main structural findings (details and line numbers in the maps):
    region of the cascade they were written for (WAR at close range, DELIVER with 1 cheese, ATTACK for a gatherer).
 2. Masks are looser than executors (fallback above); duplicates split one behaviour across labels (8 identical KING_MOVE
    stays, 5 identical KING_SPAWN holds, KING_FORM no-op/close families, BABY_MOVE near-duplicates); "shortcut + masked
-   twin" encodings (R_KEEP with the current role masked: uncalibrated KEEP bias 60 caused GATHER<->FIGHT flip-flopping
-   at every review for ~170 rats; FR_ZDB).
+   twin" encodings (R_KEEP with the current role masked; FR_ZDB). CORRECTED by the verifier: BABY_ROLE's flip-flopping
+   is NOT caused by R_KEEP's bias; see 2e.
 3. Uniform floors over act-heavy option sets explore "act more": 16/22 spawn options build, 17/25 form options open,
    10/11 KING_ACT options act; BABY_ACT's random picks spend cheese, kill own rats, or end cooperation for both teams.
 4. Decisions with multi-turn consequences are re-decided every turn with no commitment (formation sites last a median
@@ -132,6 +132,39 @@ Main structural findings (details and line numbers in the maps):
    same action, ring tiles and bank without seeing each other.
 10. Only points 5, 7, 10, 11, 12, 13 (16 dropped after iteration 0) were ever trained by RL. Baby tactics (1-4), comms
    (6, 9, 14, 15) and BABY_FREE (8) have always been frozen.
+
+### 2e. Verifier corrections (added 10:55 PDT; these override the maps and 2d)
+From maps/verify-baby-move.json, verify-baby-act-face.json, verify-baby-role-comms-mine-free.json (the king and
+hidden-strategy verifications are still running; check maps/ for verify-king-*.json and verify-hidden-strategy.json):
+- BABY_ROLE flip-flopping comes from ONE poisoned input, not from R_KEEP: col 27 = cap(round - Baby.ekSeen, 255)
+  (D.java:544) is written only by the net's R_ATTACK (Baby.java:1915) and never cleared, so it was always 255 in zdb-mode
+  imitation data; after the net makes an attacker it reads 0-254 for 255 rounds and drives role logits to 100+ (86% of
+  all flips). In normal states role logits are ~10 (point 5 was desaturated by tau 5), far below KEEP's 60.
+- General training flaw: train_dp.py:120-121 computes mu/sd in float32 along the slow axis, so large-valued constant
+  features escape the sd < 1e-3 guard and train as unit-scale biases. Every feature constant in zdb-mode data but
+  written by net executors (ekSeen, raider, cash state from C_CASH_LEAD) is a latent out-of-range input. Fix: float64
+  mu/sd or a max == min test; neutralise such columns exactly (zero the folded W1 column, fold its value into b1).
+- zdb itself is hostile in cooperation from round 30 (Cfg.BREAK_ROUND = 30): it bites and grabs enemy rats in coop on
+  purpose (hostile is true in ~96% of coop rows). Masking enemy bites/grabs in coop would mask zdb's own labels.
+- Cat traps: catTrapsAllowed(team) = coop || (roundsSinceBackstab <= 100 && backstabber != team). The backstabber never
+  places cat traps again; the victim only within 100 rounds. Backstab state (who, when) is not an input anywhere.
+- Rat traps are backstab triggers: an enemy rat entering our rat trap calls backstab(our team) (GameWorld.java:639-642),
+  and rat traps are legal in coop, so floor-sampled trap options end cooperation (~8.6 floor rat traps per team-game
+  from the babies' 0.005 floor alone in cpi-x0).
+- BABY_FREE's options (pickup, own-trap removal) are free engine actions (no cooldown); POST still opens after them.
+- Facing is mostly set by BABY_MOVE (P_STEP, P_TURN, M_MINE_STILL and Nav/Micro turn; only P_STRAFE does not); FACE
+  only controls the leftover turn. Cascade trap options use the front fan of the current facing (Baby.java:724, 857).
+- ~60% of BABY_MOVE deviations come from the net's own T=1 softmax, not the floor (FLANK and AIM_CARRY >= 95%).
+  Micro.act is a complete scoring micro and never falls back. Nav.guard is reset every turn.
+- 90% of BABY_ACT_PRE fallbacks are THROW with nothing carried, caused by the untrained team rat-trap count (input 32);
+  zeroing it brings argmax THROW back to the teacher's rate.
+- Most zdb gates are already inputs (allCheese, coop, cat distance, king-to-cat distance, team cat traps, BUDGET); the
+  missing ones are THROW's flight score, the cat's heading with fan-tile placeability, and the backstab state.
+- MINE_PICK reproduces zdb's rule at 99.9% on zdb's distribution (81.7% in self-play, worse at large m); 80% of picks
+  have enemy-half mines excluded. A pointer scorer is motivated by coverage and generalisation, not capacity.
+- Enemy rats never hear squeaks; cats hear both teams but react only in attack mode.
+- C_CASH_LEAD skips zdb's endgame gate (round >= 1880, one king, bank), so it is a king-formation trigger at any round.
+- Dead zdb code: the ATTACK-only king bites at Baby.java:141 and 218-221 can never run.
 
 ## 3. Infrastructure facts (verify in code when it matters)
 - Java: java/bots/zdp/D.java (point ids, features, take/emit/fallback, records), DNet.java (per-point MLP n_in-64-64-n_out,

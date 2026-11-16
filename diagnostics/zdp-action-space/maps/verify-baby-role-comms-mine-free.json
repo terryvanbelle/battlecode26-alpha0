@@ -1,0 +1,109 @@
+{
+ "claims_checked": 80,
+ "confirmed": 67,
+ "corrections": [
+  {
+   "claim": "BABY_ROLE fallback_explanation and cross_cutting #2: the flip-flopping is caused by a mis-encoded stay option. The pass-2 net learned a very large current-role logit at reviews, pass 3 masked that role and added a constant KEEP of 60, so when the runner-up role tops 60 the rat flips and then flips back. 'At BABY_ROLE this is a measured failure' of the shortcut-option-with-masked-twin pattern.",
+   "verdict": "wrong",
+   "correction": "The flips come from one input. Feature col 27 = cap(round - Baby.ekSeen, 255). Its only writer is roleSet's R_ATTACK branch, which runs only in net mode. No other role resets it. So for 255 rounds (about 25 reviews) after the net makes a rat an attacker, col 27 takes values 0-254. Those values were never seen in imitation: teacher-dp2 ran zdb mode with D.NET false, where col 27 was always 255. In normal states (col27 == 255) role logits are small and flips happen at the floor rate: 594 of 783,454 such v0 reviews (0.076%, floor about 0.08%). At reviews with col27 < 255 (4,864 reviews, 0.6%, on 319 rats) the flip rate is 75%: 3,635 flips, which is 86% of all 4,229 flips. iter-0001 shows the same split: 3,099 flips in 4,134 poisoned reviews against 470 in 583,213 others. On 250 sampled argmax flips, resetting col 27 to 255 was the largest logit reduction in 250 of 250 cases, lowering the max role logit by a mean of 259.4; the next-largest column moved it by 0.6. Col 27 at argmax flips has median 70 (q10 20, q90 150), against 255 at keeps. The report's own '+93/+105 above KEEP' logits exist only in these poisoned states. The encoding pattern may still be poor design, but BABY_ROLE does not demonstrate it.",
+   "evidence": "Baby.java:1915 (only writer: `if (role != ATTACK) ekSeen = G.round`); Baby.java:1911-1914 (other roles leave ekSeen alone); Baby.java:45, 88 (roleExec only under D.NET); D.java:544 (feature); `git show e6120e9:java/bots/zdp/D.java` line 22 `static final boolean NET = false` (teacher-dp2 build); scripts/pipeline_dp2.sh:13-18. Measured with a pure-Python forward pass on /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/critic_dl/runs/rl/rl-m2/iter-0000/data/p5.npz (813,336 rows) and .../iter-0001/data/p5.npz, nets/0/net.json."
+  },
+  {
+   "claim": "The imitation net puts 'a very large logit on the current role' at reviews; proposal 1 'makes its large current-role logits the right signal again'.",
+   "verdict": "wrong",
+   "correction": "Point 5 of the RL start net was desaturated before widening: its last layer was divided by tau 5. In normal review states the max role logit is about 10: on v0 KEEP reviews it is 6.3/10.3/14.5/20.1 at q10/50/90/99.9. That is far below KEEP's 60. The pre-pass-3 net did learn to predict the current role (point 5 val acc 0.99999), but its logits are not large on the scale that matters. Values of 100+ appear only when col 27 is out of range. The report never mentions the desaturation.",
+   "evidence": "v0 net.json metadata 'desaturated': points [5], tau 5.0; scripts/desaturate.py:24-38; docs/rl-plan.md:188, 269-273 ('RL start net: net-v2 with point 5 scaled by tau 5'); /home/terryvanbelle/projects/vibe/bc26a0/runs/dp/net-v2/train.log (point 5 val acc 0.99999)."
+  },
+  {
+   "claim": "The rl-m2 start net got the default KEEP of 60 instead of the documented p99.9+8; the 'minimal alternative is to re-widen point 5 with --calib so KEEP sits at p99.9+8, as documented'.",
+   "verdict": "wrong",
+   "correction": "It is true that no calibration records were used. But the calibrated value is the p99.9 of the old max logit on review records plus 8. On v0 review records that comes to about 20.1 + 8 = 28, which is lower than 60. Re-widening with --calib would therefore shrink KEEP's margin in normal states and do nothing in poisoned states, where the role logits are 100+.",
+   "evidence": "scripts/dpnet_io.py:262-267 (b[R_KEEP] = quantile(z[ph==1].max(1), 0.999) + 8); docs/decision-points.md:189-191; v0 forward pass on p5.npz KEEP reviews."
+  },
+  {
+   "claim": "Proposal 1 ('offer all five roles and treat the current role as stay; drop R_KEEP, or set z[KEEP] = max(z[KEEP], z[current])') is small and removes the measured flip-flopping.",
+   "verdict": "partly wrong",
+   "correction": "It removes only the back-flips that masking forces. Of 3,628 v0 argmax flips, 1,692 had the current role above the new one and would be suppressed. The other 1,936 (53%) had the new role at or above max(KEEP, current) and would still happen, as would the 601 floor flips. The rat then stays in whatever role the out-of-range col 27 favours for up to 255 rounds. Dropping R_KEEP outright has a second cost: on 5,992 sampled normal KEEP reviews (col27 == 255), the unmasked argmax differs from the current role in 213 (3.6%, about 47 times today's 0.076%). These are SCOUT->GATHER 81, GATHER->SCOUT 51, RAIDER->FIGHT 35 and FIGHT->GATHER 22, and 205 of the 213 come after round 150. So every review would push net-chosen roles back toward zdb's slot-based assignment. The max(KEEP, z_cur) variant avoids that because KEEP stays at 60.",
+   "evidence": "D.java:555-561 (roleOk masks the current label); Baby.java:86-90; v0 forward pass on /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/critic_dl/runs/rl/rl-m2/iter-0000/data/p5.npz."
+  },
+  {
+   "claim": "missing_information: 'one candidate' for the higher churn under a larger floor 'is that entering ATTACK sets ekSeen, which feeds a heavily weighted input'. cross_cutting #6 attributes cpi-x0's roughly 14% flipping to uniform floors on long-lasting mode switches.",
+   "verdict": "partly wrong",
+   "correction": "ekSeen is the mechanism, not one candidate among several (see the first correction). In v0 and v1 almost all flips that the floor does not explain are in col27-poisoned reviews. cpi-x0's floor of .03 produced far more attackers (19,367 R_ATTACK picks, against 4,850 at v38), and each net-made attacker poisons col 27 for 255 rounds. That fits the cpi-x0 churn better than floor persistence does. The cpi-x0 p5 data is not available locally, so this last step is inferred, not measured.",
+   "evidence": "Baby.java:1915; D.java:544; cpi-x0-summary.json point 5 option_hist (R_ATTACK 19,367); rl-m2-last.txt v38 (R_ATTACK 4,850)."
+  },
+  {
+   "claim": "cross_cutting #5: 'Columns that were constant during imitation keep their default init' (with BABY_MOVE raider col 22 as the example).",
+   "verdict": "partly wrong",
+   "correction": "This holds for constant-zero columns such as raider, where mean 0 is exact. It fails for the constant-255 column that actually breaks BABY_ROLE. v0's col 27 weights are identical to net-v2's: mean |w| 0.240 and max 0.805, while PyTorch's default init bound for n_in 32 is 1/sqrt(32) = 0.177. So the column was trained. train_dp.py computes Xt.mean(0) and Xt.std(0) in float32 along the non-contiguous axis, where numpy accumulates sequentially rather than pairwise. A float32 simulation of that accumulation over the 3,003,253 training rows gives mu 255.978 and sd 0.991. The sd < 1e-3 'constant feature' guard therefore never fired. The normalised column was a constant -0.99, so W1[:,27] trained as a second bias. In RL, col27 = 70 normalises to -188 instead of -0.99. The report's 'unfolded |W1| 3.2' is this folded weight (0.24) times the RL-refit sd (13.37). Any constant non-zero feature can hide the same trap. numpy is absent on this host, so the numpy behaviour was simulated; the weight magnitudes corroborate it.",
+   "evidence": "scripts/train_dp.py:120-121, 82-88 (default nn.Linear init); /home/terryvanbelle/projects/vibe/bc26a0/runs/dp/net-v2/metrics.json (point 5 n_in 32, train 3,003,253); /home/terryvanbelle/projects/vibe/bc26a0/runs/dp/net-v2/net.json point 5 layer 0 cols 0-31 identical to rl-m2 nets/0/net.json; nets/2/norm.npz mu_5[27] 254.89, sd_5[27] 13.37."
+  },
+  {
+   "claim": "R_SCOUT: 'After that [round 150], choosing it behaves like GATHER'; cross_cutting #4: 'R_SCOUT does nothing after round 150'; proposal 3: mask R_SCOUT from SCOUT_UNTIL on.",
+   "verdict": "partly wrong",
+   "correction": "zdb's cascade reads scout only through scouting(), which is false from round 150. But BABY_MOVE's net reads Baby.scout at every round; the report itself measures that column as trained, at 0.129. So in net mode R_SCOUT after round 150 still changes movement. born() also sets the scout flag for every role, so FIGHT and ATTACK rats can carry scout=1, and R_FIGHT leaves it unchanged.",
+   "evidence": "D.java:276 (f(Baby.scout) in BABY_MOVE features); Baby.java:1064, 1807-1809 (scouting()); Baby.java:336 (scout set in born() for all roles); Baby.java:1913."
+  },
+  {
+   "claim": "BABY_COMMS context: 'Squeaks are heard by friends, enemies and cats, and cats turn toward squeaks (docs/rules/specs.txt:569-617)'.",
+   "verdict": "wrong",
+   "correction": "Enemy rats never hear your squeaks. Cats hear both teams but react only in attack mode. The hidden cost of a squeak is cat attention plus ally behaviour, not leaking information to the enemy.",
+   "evidence": "docs/rules/engine-checked-digest.md:248 ('Enemy rats never hear your squeaks'), 252, 399; docs/rules/specs.txt:614-617 ('Cats and any allied rats')."
+  },
+  {
+   "claim": "C_CASH_LEAD 'creates [a site] at cashSpot(G.me) and sets cashLead, then squeaks SQ_CASH. Unlike zdb's cashTick, it applies no crowd, raw-cheese or cat-earshot checks.'",
+   "verdict": "partly wrong",
+   "correction": "The executor also skips cashTick's endgame gate: cashOk requires round >= CASH_END 1880, one king and a bank. It also skips cashBan. And it is in effect a king-formation trigger at any round. cashSpot returns G.me when the 3x3 is clear, and cashPromote runs in the same turn right after commsExec unless the net's BABY_ACT_PRE already acted. So if 7 or more allied babies stand in the 3x3 (with cheese >= 50 and the other engine conditions), the rat becomes a king immediately and the other robots on the 8 surrounding tiles die. Otherwise cashSite steers M_CASH movement for that turn and is cleared by the next turn's cashTick outside the endgame. Allies ignore SQ_CASH outside the endgame, because cashTick returns before hearing. That is also why C_CASH_RELAY falls back .662.",
+   "evidence": "Baby.java:2153-2162 (executor); Baby.java:1580-1590, 1602 (cashOk gate, clear and return); Cfg.java:246 (CASH_END 1880); Baby.java:1661-1662 (cashSpot returns c when clear); Baby.java:158-165, 174, 1687-1694 (same-turn cashPromote, `!netAct`); docs/rules/engine-checked-digest.md:211-227 (formation kills the 8-tile ring)."
+  },
+  {
+   "claim": "BABY_COMMS: the comms-board inputs are zero and the point is frozen, 'so what a rat has heard never affects what it sends'.",
+   "verdict": "partly wrong",
+   "correction": "Only the 16 widened comms-board columns are zero. The 37 base features include counts of heard SQ_CASH, SQ_MINE and SQ_SYM squeaks (hc, hm, hs), which are ordinary imitation-trained inputs.",
+   "evidence": "D.java:620-631; D.java:570 (37 base features, computed before cashTick and report)."
+  },
+  {
+   "claim": "MINE_PICK: 'An MLP cannot represent this modular rotation for larger m'; cross_cutting #3: fixed-size MLP heads 'cannot learn them'.",
+   "verdict": "unsupported",
+   "correction": "The same point-7 net reached 0.9989 validation accuracy on zdb's own games, so it does reproduce zdb's rule on its training distribution. The 81.7% agreement in v0 self-play (19.8% at m >= 12; m >= 9 in 23.3% of picks) shows a failure to generalise or a lack of data at large m, not a demonstrated capacity limit. A pointer-style scorer may still be the better design, but the argument for it is coverage, not representability.",
+   "evidence": "/home/terryvanbelle/projects/vibe/bc26a0/runs/dp/net-v2/train.log (point 7: val acc 0.998934, 45 features, 40 options); docs/decision-points.md:137; p7.npz agreement as reported."
+  },
+  {
+   "claim": "BABY_ROLE opens at a review 'every DP_ROLE_EVERY rounds of life or when the role changed during the turn'.",
+   "verdict": "partly wrong",
+   "correction": "The role-changed condition is dead code. Role is written only in born() and roleSet, and both run before roleAt0 is captured at line 50. Reviews are therefore purely periodic, every 10 rounds of life.",
+   "evidence": "Baby.java:50 (roleAt0), 86 (condition), 323-325 and 1911-1915 (the only `role =` writers); Cfg.java:262."
+  },
+  {
+   "claim": "Line references: the roleExec reset guard at Baby.java:1898 and resets at 1898-1905 (ATTACK entry 1904, raider 1905); pickUp at 433-445; FR_ZDB's pickUp call at 464; C_RAW mask at 2091; C_RELAY at 2092-2093; unreported() at 403-409.",
+   "verdict": "partly wrong",
+   "correction": "These are off by one or more lines; the substance is unaffected. Actual lines: the guard is at 1899, the resets at 1900-1906 (ATTACK entry 1905, raider 1906), pickUp at 418-430 (capped at 420), FR_ZDB's pickUp at 465, the C_RAW mask at 2092, C_RELAY at 2093-2094, and unreported() at 404-410.",
+   "evidence": "Baby.java:1894-1907, 418-430, 465, 2088-2096, 404-410."
+  }
+ ],
+ "missed": [
+  "Exact BABY_ROLE fix the report did not see. Every imitation state had col27 == 255. Zeroing W1[:,27] in the folded first layer and adding 255*W1[:,27] to its bias leaves the logits unchanged in every imitation-like state and removes the poisoning; dropping the feature or making it constant also works. ekSeen is also never cleared when a rat leaves ATTACK (Baby.java:1911-1915), which is why the effect lasts 255 rounds. Evidence: D.java:544; Baby.java:1915; v0 attribution 250/250.",
+  "train_dp.py's normalisation flaw is general. Xt.mean(0) and Xt.std(0) run in float32 along the slow axis (train_dp.py:120). For large-valued constant features the sd < 1e-3 guard (line 121) does not fire, and the column trains as a bias at unit scale. Every feature that was constant in zdb-mode data but varies in net mode is a latent out-of-range input. Candidates are anything written only by net executors: ekSeen (Baby.java:1915), raider (1914), and cash state set by C_CASH_LEAD (2155-2159). Audit these before widening any action space, and compute mu and sd in float64 or test max == min.",
+  "BABY_ROLE's own inputs do not contain the current scout or raider flag. prev (col 1) is roleAt0, the 3-valued role int (D.java:515; Baby.java:50, 87), and the 32 base features have no Baby.scout or Baby.raider (D.java:510-551). The net can infer zdb's scout assignment only from the slot bucket (col 6). Any 'stay' or indicator redesign needs the current 5-way role as an input.",
+  "The point-5 desaturation (tau 5, applied before widening) sets the logit scale that KEEP=60 sits on (docs/rl-plan.md:188, 269-273; v0 net.json 'desaturated').",
+  "Net mode opens MINE_PICK for any role, attackers included: netMineBlock (Baby.java:2470-2477) and the mineOk masks on M_MINE_GO and M_MINE_WANDER (2256, 2295-2296). zdb opens it only for GATHER and FIGHT (1076-1097). The volume is small in v0: 97 of 115,006 picks came from attackers (63,529 GATHER, 51,380 FIGHT).",
+  "MINE_PICK pickSite 2 (the retry path) never occurs in v0: pickSite 0 = 57,574, 1 = 57,432, 2 = 0. The call site exists (Baby.java:1082, 2476), but its feature value is unseen.",
+  "BABY_FREE: a cap or FR_NONE chosen at ph 0 persists into ph 1, so at ph 1 FR_ZDB runs a capped pickUp and pickAdjacent (Baby.java:420, 436-445). FR_ZDB then no longer means 'zdb's choice', and FR_NONE can be offered at ph 1 when the turn is already capped at 0 (freeOk Baby.java:470-489).",
+  "unreported() and unlisted() test for the same thing: some own mine missing from the king list (Baby.java:404-410, 972-978). C_MINE_RELAY and C_MINE_KING are therefore executable in exactly the same states. They differ only in which mine they send and in zdb's near-king condition.",
+  "zdb's C_CAT also requires being near a king (Baby.java:928). The executor drops that condition, as it does for the other king-directed types.",
+  "SQ_EKING-typed words, from C_EKING if it is ever unmasked or from a raw word with that nibble, write the king's slots 20-22. Pass 3 uses those slots as registers R0-R2 (D.java:686-691; King.java:131-151). Raw-word aliasing can therefore corrupt king-side net state, not just the enemy-king position.",
+  "commsOk is computed at pick2 (Baby.java:153), before the muted cashTick and report (158-161). report() mutates myMines through hearMines (Baby.java:908, 916, 935-939). The features (D.babyComms at 148) and any 'mask after the muted pass' would see different states."
+ ],
+ "overall_reliability": "Paths: code refs are to /home/terryvanbelle/projects/vibe/bc26a0/java/bots/zdp/; scripts/, docs/ and runs/ are under /home/terryvanbelle/projects/vibe/bc26a0/. The code reading is mostly accurate. Option lists, executors, masks, label timing, structural-zero fallbacks, the BABY_COMMS fallback rates, MINE_PICK's enemy-half exclusion (80.3% of picks, 3.6 mines on average), the BABY_FREE and BABY_VAL constant nets, and nearly all counts check out; several line refs are off by one. The headline BABY_ROLE result is wrong, though. The flip-flopping is real (4,229 v0 flips, mostly back-and-forth), but the cause is an out-of-range input: ekSeen, col 27, after net-made attackers, whose weight trained as a bias because of a float32 normalisation flaw in train_dp.py. The cause is not the KEEP or masking encoding. The report's minimal fixes therefore either do not help (a calibrated KEEP would be about 28, below the current 60) or only half-help (unmasking leaves 53% of argmax flips). Two other errors would change a redesign: enemies do not hear squeaks, and C_CASH_LEAD is effectively a king-formation trigger at any round. The MINE_PICK 'MLP cannot represent' claim is not supported. Treat the report's design rule about shortcut options as untested, not as demonstrated by BABY_ROLE.",
+ "proposal_concerns": [
+  "BABY_ROLE proposal 1, 'minimal alternative': re-widening with --calib would set KEEP to about p99.9 (20.1) + 8 = 28, lower than today's 60. It cannot stop the poisoned flips, whose role logits are 100+.",
+  "BABY_ROLE proposal 1, unmask or drop R_KEEP: dropping KEEP makes 3.6% of normal reviews revert net-chosen roles toward the imitation net's zdb-like choice (mostly SCOUT<->GATHER and RAIDER->FIGHT after round 150). That defeats RL role choices. max(KEEP, z_cur) is safer but removes only the 1,692 masking-induced back-flips of 4,229.",
+  "The fix that addresses the measured failure: neutralise col 27 exactly (zero W1[:,27] and fold 255*W1[:,27] into b1), or redefine or reset ekSeen. Also fix train_dp.py:120-121 (float64 mean and sd, or a max == min test). Audit every feature that is constant in zdb-mode data but written by net executors before adding options; otherwise any new option that changes such state feeds the nets inputs hundreds of normalised units out of range.",
+  "BABY_ROLE proposal 2 (floor only at birth, minimum tenure, rarer reviews) reduces floor churn but not the col-27 effect, which lasts 255 rounds regardless of review frequency.",
+  "BABY_ROLE proposal 4 (role-diverse imitation) should route reassignments through roleExec so ekSeen varies in the recorded data; that would train col 27 properly. Any stay or indicator design also needs the current 5-way role (scout, raider) as BABY_ROLE inputs, since they are absent today.",
+  "BABY_COMMS proposal 1 (mask = executability after the muted pass) needs pick2 moved after cashTick and report, and their state mutations (hearMines) accounted for. It should also gate C_CASH_LEAD by cashOk, or move king formation out of comms. Otherwise an exact mask makes the hidden any-round king-formation trigger cleanly selectable.",
+  "MINE_PICK proposal 1 (pointer scorer): the motivation should be coverage and generalisation, not capacity. The current net is 99.9% accurate on zdb's distribution. Offering enemy-half mines (proposal 3) changes the domain of zdb's rotation rule (m = ours), so the 'zdb picks this' indicator has to be defined on the new list.",
+  "BABY_FREE proposal 1 (label zdb's choice as the explicit option it equals): at ph 1, zdb's own pickup is already capped by the ph-0 choice, so 'zdb's choice' depends on the earlier net pick and needs a rule for that case.",
+  "BABY_COMMS and BABY_VAL namespace proposals: reserving a net-only type nibble should also keep raw words from parsing as SQ_EKING, which writes king slots 20-22 that pass 3 uses as R0-R2."
+ ]
+}

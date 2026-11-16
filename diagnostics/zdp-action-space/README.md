@@ -15,6 +15,8 @@ why every optimizer stalled on zdp's decision points, and the inputs to the acti
   - `devfb.py` → `devfb-cpi-x0.json`: deviation and fallback rates per point, from the cpi-x0 probe records.
   - `fisher.py` → `fisher-cpi-x0.json`: the per-record policy-gradient signal (Fisher trace in logit space) of the
     floor-mixed policy that rl_train differentiates, at floor 0.005, at cpi-x0's floors and with logits ÷ 3.
+  - `fisher_T.py` → `fisher_T20.json`: per point, the temperature at which the Fisher trace (floor 0) is 20% of a
+    uniform policy's; it set the temperatures of the e20 test package.
   - `zero_const.py`: zeroes the first-layer weights of input columns that were constant in the imitation data, folding
     their contribution into the bias. It built the zdpz test package.
   - `constq`, `throwq`, `decomp`, `teachq`: untrained-input diagnosis at BABY_ACT_PRE. A column that was constant in the
