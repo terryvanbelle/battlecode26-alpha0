@@ -883,6 +883,14 @@ playing level with zdb says exploration over the plan heads is free: a fully sto
 the per-turn points could not manage (sections 17-20). It also says the heads' combined effect against zdb is small
 on average, so the known answer below is the test of whether RL finds anything.
 
+**Change at iteration 2 (16:45 PDT), before any result could prompt it.** rl-p1 inherited the per-turn runs' leash:
+KL to the start above 0.3 doubles a head's KL weight, above 0.5 refuses the update. That leash protects an imitation
+start whose drift costs strength. Here a uniform plan is as strong as zdb (T3), and the known answer itself is far
+from the start: CORE at half its mass on 12/8 is KL ≈ 2 from a start that puts 1% there. So collapse_kl is 3 and
+max_anchor_kl 5; the KL penalty (β 0.03 → 0.01) stays. Iterations 0-1 also moved each head by only 0.002-0.005 KL
+(4 steps of batch 4096 on about 7,000 rows per head, target_kl 0.05), so batch is 1024 and lr 0.002 (about 7× the
+movement per iteration, still bounded by target_kl).
+
 - *The known answer:* if rl-p1 learns, CORE's mass should move toward 12/8 (bin 2) within ~10 iterations. If CORE has
   not moved by iteration 15 while its Fisher share stays above 0.3, the credit assignment is too weak, and the next
   step is plan cadence 100 with 256 games per iteration (design C's T7 fallback).
