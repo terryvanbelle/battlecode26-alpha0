@@ -727,3 +727,33 @@ the far variants first, then the other side, then the near neighbours.
   costs little. Most of them under 0.35 means the bins must be narrower.
 - *A variant at t ≥ 2.5* shows zdb's constant is off-optimum there. The start still centres on zdb's value (RL, not
   hand-tuning, must find the better one), but it shows that RL can gain on that head.
+
+## 20. Grouped floors on the whole net (November 16, 2026)
+
+Section 18's two points lost nothing at grouped floor 0.2, while e20 (every trainable point softened through its own
+softmax) fell to 0.234. One-point tests cannot show whether costs compound, so this test puts the typed prior on every
+RL-trainable point at once.
+
+**Tables** (`configs/groups-s2.json`): stage 1's tables for 2, 3 and 11, plus:
+- BABY_ROLE: KEEP 0.8, PEACE (gather, scout) 0.1, WAR (fight, raider) 0.1. ATTACK is dormant: it makes hostile() true,
+  so one draw ends cooperation.
+- MINE_PICK: the top three ranks and the rest, equal weights.
+- KING_MOVE: zdb's exits and the eight steps, equal weights; the dig steps are dormant.
+- KING_ACT: PASS, BITE (kill, bite, cat, nearest, king), TERRAIN (moat fill, cat trap, dig ring), equal weights. Both rat
+  traps (a backstab trigger) and the cheese bites are dormant.
+- KING_FORM: the 13 exits that open nothing at weight 1, the five site kinds at 0.25; ring-offset sites are dormant
+  (net-opened sites die after one record, 2e).
+- KING_TURN: keep or turn, equal weights.
+
+**Test.** *gall*: zdpy1 is zdpz (floor 0 at the frozen points, constant columns zeroed) with grouped floor 0.2 at
+points 5, 7, 10, 11, 12, 13 and 16, against zdpg39, 64 games on row 5, seed 3801101 (zfree's first seed). It runs after
+stage 0. (A first build was named zdpw1, which overwrote rl-m1c's version-1 package of that name on the box; that package
+was rebuilt from rl-m1c's net with its own settings, and the test package is zdpy1.)
+
+**Readings, set before the game:**
+- *0.50 or more* (within 0.08 of zfree's 0.578): typed exploration on every trainable point at once is cheap. The RL
+  start in today's space becomes the smoothed grouped start: trained with label smoothing ε toward the group weights
+  (`train_dp --smooth`), floor 0, so the exploration sits inside the softmax where it carries gradient.
+- *0.35 or less:* per-point costs compound. Trainable exploration moves into a few committed strategic decisions (plan
+  heads), and the per-turn king points stay frozen.
+- *In between:* repeat at ε 0.1 before choosing.
