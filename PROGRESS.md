@@ -76,7 +76,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 
       ![es-lr0: ES centre score against its start net and against zdpf005 by version](docs/img/es-lr0-score.svg)
   - **Now: fixed-centre ES `es-lr1`** (from November 16, 2026, 04:07 PDT), starting from the accepted net zdpljp. The centre never moves; the iterations only collect directions for one pooled proposal. Pre-set checks come after 6, 12 and 18 updates. A proposal is tested only by a guard: 128 games against zdpljp, accepted if it scores at least 0.5. [Plan](docs/rl-es-plan.md#14-es-lr1-fixed-centre-es-from-the-accepted-step-november-16-2026); config: [configs/es-lr1.json](configs/es-lr1.json). Blue: pool games against zdpljp. Orange: zdpljp's 32-game gate against zdpf005 (v1; v0 is rl-m2 v39).
-    - <!-- ES_STATUS_START -->Updated automatically after each iteration ([es_chart_sync.sh](scripts/es_chart_sync.sh)); no iteration finished yet.<!-- ES_STATUS_END -->
+    - <!-- ES_STATUS_START -->Updated automatically after each iteration ([es_chart_sync.sh](scripts/es_chart_sync.sh)); last November 16, 04:43 PDT, after iteration 0. Gates against zdpf005: v0 (rl-m2 v39) 17/32, v1 15/32. Pool games against the start net, iterations 0–0: pooled 19/32 = 0.59.<!-- ES_STATUS_END -->
 
       ![es-lr1: score against its start net and against zdpf005 by version](docs/img/es-lr1-score.svg)
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
