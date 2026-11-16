@@ -661,3 +661,51 @@ Readings:
 - In between: the prior helps but does not suffice; proceed, expecting the baby points to stay frozen.
 - g11h at least 0.10 above g11: KING_SPAWN's cost is the extra builds, so per-turn spawn exploration must be rare or
   committed.
+
+## 19. Stage 0: does zdb's strategy family have slope? (November 16, 2026)
+
+**Why this test.** The design panel's parametric design ("C") gives the net zdb's strategy constants as its actions:
+army cap, spawn reserve, break timing, rush size, delivery load and king count. A king draws them at coarse times (every
+50 rounds or on events) and zdb's code executes every turn deterministically. Nothing falls back, every sample is a
+coherent zdb variant, and a start that puts zdb's value as the mode of a discretised Gaussian keeps 44-70% of uniform's
+Fisher trace, where today's points keep 0-12.5%.
+
+The cost per deviation (`diagnostics/zdp-action-space/analysis/devcost.py`, from the floor-0.2 sensitivity and cpi-x0's
+counts) shows why fewer, committed decisions should learn faster:
+- the per-turn baby points lose 0.00002-0.00015 of a game per executed deviation, over 500-4,800 deviations per
+  team-game;
+- the strategic king points (spawn, form, act, comms) lose about 0.001 each, over 50-300.
+
+At a fixed exploration cost C = N·Δ, an outcome-level signal scales as Δ·√N = C/√N. The same strength spent on a few
+consequential decisions buys more gradient than the same strength spread over thousands of small ones.
+
+The parametric family is only worth building if the outcome depends on those constants, which no one has measured.
+Stage 0 measures it with plain zdb builds (`build_dpnet.py --cfg`, no net). build_dpnet's override now finds a name
+anywhere in a declaration list (`static final int A = 1, NAME = 2;`). Cfg's BREAK_ROUND comment said "0 = never",
+but hostile() tests `round >= BREAK_ROUND`, so 0 means every round; the comment is corrected and "never" is 5000 here.
+
+**Variants** (`diagnostics/zdp-action-space/stage0/variants.tsv`). Each of zdpc01-24 plays zdpc00 (zdb) for 64 games,
+all on row 3 and seed 3801401, so every comparison is paired by map. Three variants per parameter, run in three passes:
+the far variants first, then the other side, then the near neighbours.
+
+| Parameter | Far | Other side | Near |
+|---|---|---|---|
+| POSTURE | cooperate, no rush (break 5000, rush to 4) | no rush (rush to 4) | break at 120 |
+| ARMY (cap 18/18) | cap 40 | cap 12 | cap 24 |
+| CORE (18; 12 on small maps) | 8 / 4 | 24 / 24 (the cap binds first) | 12 / 8 |
+| THRIFT (floors 300, margin 100) | ×3 | ×0.5 | ×1.5 |
+| ROLES (fighter every 2nd round after 6) | no fighters | all fight | 1 in 4 |
+| RUSH (indices 4-15 until r300) | to 32 | to 8 | to 24 |
+| LOAD (deliver at 30) | 90 | 15 | 45 |
+| KINGS (form up to 2) | 1 | 4 | 3 |
+
+**Readings, set before the games.** A 64-game score has a standard error near 0.06.
+- *Slope:* at least 3 variants at |t| ≥ 2, or one parameter whose small-map and large-map halves differ by 0.25 or more.
+  The family has something to learn, and the parametric plan heads go ahead as the RL start's strategic layer.
+- *Flat:* every variant within |t| < 2 and no parameter class flips. zdb's strategy constants barely matter against
+  zdb, so plan heads would give RL little to learn in self-play. The redesign then needs richer committed executors
+  (the hierarchy design's targets) rather than parameters.
+- *Tolerance:* near neighbours at 0.42 or more for 6 of the 8 parameters means a start spread over neighbouring bins
+  costs little. Most of them under 0.35 means the bins must be narrower.
+- *A variant at t ≥ 2.5* shows zdb's constant is off-optimum there. The start still centres on zdb's value (RL, not
+  hand-tuning, must find the better one), but it shows that RL can gain on that head.

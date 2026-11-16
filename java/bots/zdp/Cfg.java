@@ -143,7 +143,8 @@ public final class Cfg {
      *  replacement born with 4-15 babies alive is an attacker all game (rsu1: s8u lost both DefaultSmall games to s7d
      *  in a long war, 7 rats to 13-15 at r150). */
     public static final int RUSH_UNTIL = 300;
-    /** From this round on (0 = never) every baby bites and grabs enemy rats during cooperation too: the field rushers
+    /** From this round on every baby bites and grabs enemy rats during cooperation too (a round past 2000 = never; 0 is
+     *  every round, not off, since hostile() tests round >= BREAK_ROUND): the field rushers
      *  open the war at r36-40 (abrk, whose attackers must first walk over, at r66). */
     public static final int BREAK_ROUND = 30;
     /** Squared distance (to the cat's 2x2 centre, doubled coords /4) a gatherer keeps from cats. */

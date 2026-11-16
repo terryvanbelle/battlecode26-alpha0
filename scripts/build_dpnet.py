@@ -111,8 +111,8 @@ def main():
     for f in SRC.glob('*.java'):
         s = f.read_text().replace('package zdp;', f'package {a.name};', 1)
         if f.name == 'Cfg.java':
-            for k, v in cfg.items():
-                s, n = re.subn(r'(static final \w+ ' + k + r' = )[^;,]*', lambda m: m.group(1) + v, s)
+            for k, v in cfg.items():   # NAME anywhere in a declaration list ("static final int A = 1, NAME = 2;")
+                s, n = re.subn(r'(static final \w+ [^;]*?\b' + k + r' = )[^;,]*', lambda m: m.group(1) + v, s)
                 if n != 1:
                     raise SystemExit(f'Cfg.{k}: {n} matches')
         if f.name == 'D.java' and net:
