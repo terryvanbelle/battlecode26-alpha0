@@ -33,7 +33,7 @@ POINTS=$(cfgv "['trainable_points']")
 # per-point floors (W.FL): config floor_points {point: floor} -> "P:F,..." for build_dpnet.py and rl_train.py
 FPTS=$($PY -c "import json; print(','.join(f'{p}:{f}' for p, f in sorted((json.load(open('$CFG')).get('floor_points') or {}).items(), key=lambda kv: int(kv[0]))))")
 # floor groups (W.G/W.GW): config "groups" = a groups JSON path, for build_dpnet.py and rl_train.py
-GROUPS=$($PY -c "import json; print(json.load(open('$CFG')).get('groups') or '')")
+FGROUPS=$($PY -c "import json; print(json.load(open('$CFG')).get('groups') or '')")
 log() { echo "$(date +%m-%d\ %H:%M:%S) $*" | tee -a $LOG; }
 st() {   # st get KEY | st set KEY VALUE (json value)
   $PY - "$RD/state.json" "$@" <<'EOF'
@@ -59,7 +59,7 @@ stage() {   # stage DIR NAME CMD...: run unless DIR/.NAME exists; time it into D
 build_pkg() {   # version: zdpr<v> from nets/<v>, RL build, compiled; marker nets/<v>/.built
   local v=$1
   [ -f $RD/nets/$v/.built ] && [ -d build/bots/$PREFIX$v ] && return 0
-  $PY scripts/build_dpnet.py --net $RD/nets/$v/net.json --name $PREFIX$v --temperature $TEMP --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${GROUPS:+--groups $GROUPS} --rl --version $v --run $RUN >> $LOG 2>&1 || return 1
+  $PY scripts/build_dpnet.py --net $RD/nets/$v/net.json --name $PREFIX$v --temperature $TEMP --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${FGROUPS:+--groups $FGROUPS} --rl --version $v --run $RUN >> $LOG 2>&1 || return 1
   $PY -c "import sys; sys.path.insert(0, 'scripts'); from eval_student import compile_local; compile_local('$PREFIX$v')" >> $LOG 2>&1 || return 1
   touch $RD/nets/$v/.built
 }
@@ -114,7 +114,7 @@ print(t['beta_end'] + (t['beta_start'] - t['beta_end']) * max(0.0, 1 - $k / t['b
 import json; t = json.load(open('$CFG'))['train']
 print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda', 'gae-lambda'), ('critic_folds', 'critic-folds'), ('event_lambda', 'event-lambda')) if k in t))")
   $PY -u scripts/rl_train.py --net $RD/nets/$k/net.json --anchor $(cfgv "['anchor_net']") --data $I/data --value-data $vd \
-    --out $RD/nets/$((k + 1)) --points $POINTS --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${GROUPS:+--groups $GROUPS} --temperature $TEMP --version $k \
+    --out $RD/nets/$((k + 1)) --points $POINTS --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${FGROUPS:+--groups $FGROUPS} --temperature $TEMP --version $k \
     --beta $beta --beta-state $RD/beta.json --lr $lr --epochs $(cfgv "$T['epochs']") --batch $(cfgv "$T['batch']") \
     --clip $(cfgv "$T['ppo_clip']") --target-kl $(cfgv "$T['target_kl']") --grad-clip $(cfgv "$T['grad_clip']") \
     --c-ent $(cfgv "$T['c_ent']") --collapse-kl $(cfgv "$T['collapse_kl']") --max-anchor-kl $(cfgv "$T['max_anchor_kl']") \
