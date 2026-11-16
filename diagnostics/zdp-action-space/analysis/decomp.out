@@ -1,0 +1,12 @@
+point 2: rows 650788 fallback 62446 (0.0960); argmax picks fb 56361; non-argmax picks 9507 fb 6085
+   non-argmax with net p<1e-3 (floor): 3032 fb 2762; net p>=1e-3: 6475 fb 3323
+   picked THROW carry=0: 56463 fb 56463
+   picked THROW carry=1: 14 fb 14
+   picked THROW carry=2: 4929 fb 3151
+   argmax THROW, carry=2, age [0,6): n 3238 fb 0.901
+   argmax THROW, carry=2, age [6,64): n 1400 fb 0.001
+   non-THROW fallbacks by option {1: 149, 3: 157, 4: 162, 5: 166, 6: 129, 7: 327, 8: 144, 9: 158, 10: 155, 11: 136, 12: 151, 13: 146, 14: 126, 15: 172, 16: 69, 17: 137, 18: 56, 19: 134, 20: 144}
+point 3: rows 635878 fallback 2887 (0.0045); argmax picks fb 9; non-argmax picks 3220 fb 2878
+   non-argmax with net p<1e-3 (floor): 3110 fb 2850; net p>=1e-3: 110 fb 28
+point 4: rows 349251 fallback 384 (0.0011); argmax picks fb 0; non-argmax picks 1508 fb 384
+   non-argmax with net p<1e-3 (floor): 1507 fb 384; net p>=1e-3: 1 fb 0

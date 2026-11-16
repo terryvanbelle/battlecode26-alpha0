@@ -1,0 +1,89 @@
+P11 rows 762219 x shape (762219, 41)
+zdb state share: nosurplus 21.3% floor 48.8% cap 26.1% spawn 3.7%
+bm==0 (nothing buildable) share of all records 32.2% ; g<cost (g10*10+9<cost) 32.0%
+builds picked 77055 fallback 48.4% agreement fb == (bit i==0): 100.0%
+  of build picks: bm==0 (unaffordable/all blocked) 22.9% ; bm!=0 & tile i blocked 25.5%
+  zdb state nosurplus: build picks 12108, executed (no fallback) 33.4%
+  zdb state floor: build picks 26716, executed (no fallback) 40.5%
+  zdb state cap: build picks 14620, executed (no fallback) 70.1%
+  zdb state zdb-spawn: build picks 23611, executed (no fallback) 61.9%
+  executed builds by zdb state (extra spawns unless zdb-spawn): {'nosurplus': 4047, 'floor': 10820, 'cap': 10248, 'zdb-spawn': 14614}
+  failed build -> zdb label dist: 
+  team-games 512 extra spawns per team-game (executed build picks in non-spawn zdb state): 49.05 ; zdb-spawn-state records per team-game 55.3
+    extra spawn in nosurplus: median cost 60, median global 720, median babies 20
+    extra spawn in floor: median cost 70, median global 190, median babies 24
+    extra spawn in cap: median cost 80, median global 820, median babies 28
+S_DIG picks 3457 fb 84.6% ; dm==0 among them 80.6% ; g<45 17.6%
+  option 0: picks 133772, zdb state dist {'nos': '94.8%', 'flo': '2.8%', 'cap': '1.0%', 'spawn': '1.4%'}
+  option 1: picks 181501, zdb state dist {'nos': '5.3%', 'flo': '92.7%', 'cap': '1.2%', 'spawn': '0.9%'}
+  option 2: picks 359004, zdb state dist {'nos': '3.3%', 'flo': '46.8%', 'cap': '49.7%', 'spawn': '0.2%'}
+  option 20: picks 3938, zdb state dist {'nos': '18.4%', 'flo': '45.3%', 'cap': '27.1%', 'spawn': '9.2%'}
+  option 21: picks 3492, zdb state dist {'nos': '23.1%', 'flo': '48.6%', 'cap': '25.1%', 'spawn': '3.2%'}
+
+P12 rows 712816 x shape (712816, 38)
+records: coop 6.9% ; reach>0 0.3% ; catReach 0.6% ; nt>0 86.5% ; np>0 89.2% ; nr>0 20.1%
+  0 NONE: picks 643062 fb 0.0%
+  1 BITE_KILL: picks 6747 fb 100.0% | reach==0 98.5%; executed in coop 0
+  2 BITE: picks 7488 fb 90.8% | reach==0 90.8%; executed in coop 0
+  3 BITE_CAT: picks 6898 fb 99.1% | !catReach 99.1%
+  4 TRAP_FOE: picks 6661 fb 94.7% | no enemy baby in sight 93.2%
+  5 TRAP_FORT: picks 6381 fb 14.2% | nt==0 among picks 14.2% agree 100.0%
+  6 MOAT_FILL: picks 7067 fb 10.6% | np==0 among picks 10.4%
+  7 BITE_NEAREST: picks 7311 fb 98.7% | reach==0 98.7%; executed in coop 0
+  8 BITE_KING: picks 7152 fb 100.0% | reach==0 98.0%; executed in coop 0
+  9 CAT_TRAP: picks 7007 fb 91.4% | executed coop/war 376/230; fb in war 96.5%, in coop 19.8%
+  10 DIG_RING: picks 6998 fb 83.5% | nr==0 or g<45 83.5% agree 100.0%
+  executed TRAP_FOE per team-game: 0.7
+  executed TRAP_FORT per team-game: 10.7
+  executed MOAT_FILL per team-game: 12.34
+  executed CAT_TRAP per team-game: 1.18
+  executed DIG_RING per team-game: 2.26
+  rat traps (team) at KING_ACT records: share >= 10 (babies stop combat traps): 46.7% ; mean 10.12
+    rounds 0-200: mean rat traps 0.91, share>=10 0.0%
+    rounds 200-500: mean rat traps 3.51, share>=10 2.6%
+    rounds 500-1000: mean rat traps 8.41, share>=10 36.6%
+    rounds 1000-1500: mean rat traps 14.62, share>=10 76.0%
+    rounds 1500-2001: mean rat traps 17.49, share>=10 86.9%
+
+P13 rows 439493 x shape (439493, 38)
+records: site open 5.5% ; numKings dist {0: 515, 1: 221417, 2: 162077, 3: 31558, 4: 19562, 5: 4364}
+zdb state share: {'WAR_OFF': '22.6%', 'CAP_OFF': '46.4%', 'site-open': '3.3%', 'endKing': '0.0%', 'IDLE(gate)': '24.7%', 'gate-pass(rich/income)': '2.9%'}
+  13: picks 1882 fb 98.9% | pickFormSite kind!=1 98.9%
+  14: picks 3055 fb 49.2%
+  15: picks 1944 fb 23.8% | rm==0 23.8% agree 100.0%
+  16: picks 1612 fb 24.1% | rm==0 24.1% agree 100.0%
+  17: picks 1667 fb 25.8%
+  18: picks 1587 fb 63.0% | rm bit clear 63.0% agree 100.0%
+  19: picks 1507 fb 64.4% | rm bit clear 64.4% agree 100.0%
+  20: picks 1849 fb 65.4% | rm bit clear 65.4% agree 100.0%
+  21: picks 1838 fb 65.3% | rm bit clear 65.3% agree 100.0%
+  22: picks 1576 fb 71.3% | rm bit clear 71.3% agree 100.0%
+  23: picks 1834 fb 68.1% | rm bit clear 68.1% agree 100.0%
+  24: picks 1802 fb 65.9% | rm bit clear 65.9% agree 100.0%
+  25: picks 1638 fb 63.7% | rm bit clear 63.7% agree 100.0%
+  26: picks 1755 fb 64.5% | rm bit clear 64.5% agree 100.0%
+  27: picks 1575 fb 66.7% | rm bit clear 66.7% agree 100.0%
+  28: picks 1966 fb 69.1% | rm bit clear 69.1% agree 100.0%
+  29: picks 1665 fb 70.7% | rm bit clear 70.7% agree 100.0%
+executed site opens: 12401 by zdb state {'WAR_OFF': 4292, 'CAP_OFF': 4362, 'site-open': 0, 'endKing': 10, 'IDLE(gate)': 3597, 'gate-pass(rich/income)': 140}
+  per team-game 24.22
+  net-opened site stays open (records): median 1 p90 4 share closed next turn 0.1%
+  numKings rose within 80 turns after a net open: 1285 of 12401
+    opened in zdb state WAR_OFF: n 4292, median open 1, closed next turn 0.1%
+    opened in zdb state CAP_OFF: n 4362, median open 1, closed next turn 0.2%
+    opened in zdb state endKing: n 10, median open 1, closed next turn 0.0%
+    opened in zdb state IDLE(gate): n 3597, median open 2, closed next turn 0.1%
+    opened in zdb state gate-pass(rich/income): n 140, median open 4, closed next turn 0.0%
+  0: picks 83851 fb 0.0% | with site open 4.0%
+  1: picks 189356 fb 0.0% | with site open 2.2%
+  2: picks 2879 fb 0.0% | with site open 31.5%
+  3: picks 947 fb 0.0% | with site open 100.0%
+  4: picks 553 fb 0.0% | with site open 100.0%
+  5: picks 414 fb 0.0% | with site open 100.0%
+  6: picks 1968 fb 0.0% | with site open 100.0%
+  7: picks 11590 fb 0.0% | with site open 100.0%
+  8: picks 1780 fb 0.0% | with site open 0.0%
+  9: picks 1972 fb 0.0% | with site open 0.0%
+  10: picks 98675 fb 0.0% | with site open 0.0%
+  11: picks 2773 fb 0.0% | with site open 0.0%
+  12: picks 11983 fb 0.0% | with site open 0.0%

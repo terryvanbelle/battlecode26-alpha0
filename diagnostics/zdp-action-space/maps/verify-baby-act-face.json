@@ -1,0 +1,97 @@
+{
+ "claims_checked": 150,
+ "confirmed": 131,
+ "corrections": [
+  {
+   "claim": "PRE option 4: 'zdb's non-hostile ATTACK role bites only the enemy king (Baby.java:141)'. POST locations and option 4: 'ATTACK bites kings within d2 8 (218-221)'.",
+   "verdict": "wrong",
+   "correction": "Both branches are dead code. hostile() already returns true when role == ATTACK, and `hostile` is computed at 136 from the same role, so the `else if (role == ATTACK ...)` branches at 141 and 218-221 can never run. An ATTACK rat always takes the full hostile branch (tryCarry plus biteEnemies on every adjacent enemy). These branches are not zdb behaviour and a redesign should not try to keep them.",
+   "evidence": "Baby.java:136 `boolean hostile = hostile();`, 141, 215-221, 240-242 (`!G.coop || role == ATTACK || G.round >= Cfg.BREAK_ROUND`); role changes only at birth or through BABY_ROLE, both before 136 (Baby.java:44-48, 86-91, 1909-1915)."
+  },
+  {
+   "claim": "'zdb grabs only when hostile (138)' / 'bites rats only when hostile (140, 215-217)', used to argue that the net's missing hostile() check is a coop-backstab risk zdb avoids (PRE context, cross-cutting item 4). Proposal (3): 'Mask enemy-rat bites and grabs while G.coop'.",
+   "verdict": "wrong",
+   "correction": "hostile() does not protect cooperation. Cfg.BREAK_ROUND = 30 makes every baby hostile from round 30, even in coop. The Cfg comment says 'every baby bites and grabs enemy rats during cooperation too'. So zdb itself bites and grabs enemy rats in coop and backstabs on purpose. hostile is false in only 1,799 of 650,788 PRE rows (0.28%), and true in about 96% of the 49,604 coop rows. The missing check in actExec matters only for non-ATTACK rats before round 30. Masking enemy bites and grabs in coop would mask out zdb's own labels.",
+   "evidence": "Baby.java:240-242; Cfg.java:146-148; scratchpad aspace/throwq.out:2 (hostile 1:648989, 0:1799; coop 1:49604)."
+  },
+  {
+   "claim": "PRE option 7 / context: 'the engine ban on cat traps for 100 rounds after this team backstabs' and 'bans cat traps for the backstabber for 100 rounds (GameWorld.java:420-423)'.",
+   "verdict": "wrong",
+   "correction": "catTrapsAllowed(team) = isCooperation || (roundsSinceBackstab <= 100 && backstabber != team). The backstabber can never place cat traps again. The victim can place them only during the 100 rounds after the backstab, and after that neither team can. Cooperation is never restored. So CAT_TRAP, LAY_LANE, X_CAT_TRAP_FWD and KING_ACT's CAT_TRAP are engine-dead in every non-coop state except the victim's 100-round window, and 92.4% of cpi-x0 PRE rows are non-coop.",
+   "evidence": "GameWorld.java:412-431 (backstab() sets isCooperation=false once; nothing sets it true again); GameConstants.java:65 CAT_TRAP_ROUNDS_AFTER_BACKSTAB = 100; RobotControllerImpl.java:348; kpts-cpi-x0.out:34 (king CAT_TRAP fb 96.5% in war vs 19.8% in coop)."
+  },
+  {
+   "claim": "CAT_TRAP 'depends on ... economy gates that are not features'; 'Argmax CAT_TRAP fails 33.9% of the time, because its gates and geometry are hidden'; cross-cutting: 'The net decides whether without seeing those inputs'; missing_information lists 'cheese and budget gates' and 'Econ.floor for RAT_TRAP'.",
+   "verdict": "wrong",
+   "correction": "Every scalar gate of tryCatTrap is a babyAct input: allCheese/10 (3), coop (4), catDist4 (26), nearest-own-king-to-cat d2 (30, for TRAP_DEFEND_DIST2), team cat traps (31) and BUDGET (33). Econ.floor is the identity, so RAT_TRAP's cheese gate is simply allCheese >= 200, which input 3 shows. What the net cannot see: the cat's heading (c.direction drives n1-n3), whether a front-fan tile of the current facing is placeable within Chebyshev 1 of the path, and the post-backstab ban window. 144 of the 281 argmax-CAT_TRAP rows are non-coop, where the ban applies outside the victim's window, so the ban probably explains much of the 0.339.",
+   "evidence": "Baby.java:846-853 (gates), 857-866 (fan from facing, cat heading); D.java:386-393 (inputs 30-33); Econ.java:16 `static int floor(int f) { return f; }`; throwq.out:38 (argmax CAT_TRAP coop 0:144, 1:137)."
+  },
+  {
+   "claim": "Fallback (2): 3,151 THROW fallbacks while carrying an enemy, refused by the hold rule; 'The net sees carry age but not the flight score bs', given as the reason.",
+   "verdict": "partly wrong",
+   "correction": "The hold rule is the mechanism, but the net picks THROW in these rows mostly because of the same untrained input 32. Zeroing nRatT cuts argmax THROW in carry=2 rows from 4,939 (61.9%) to 1,999 (25.1%), close to the teacher's 23.3% (4,124 of 17,734). Only 279 of the 56,361 argmax-pick fallbacks survive the zeroing, so at least ~2,640 of the ~2,919 carry=2 argmax hold-rule fallbacks also disappear. The hidden flight score accounts for at most ~280 rows (0.04%).",
+   "evidence": "scratchpad aspace/constq.out:13-14 (carry=2 THROW argmax 4939 -> 1999); decomp.out:1-7 (argmax THROW carry=2 age<6 n 3238 fb 0.901); teachq.out point 2 (label THROW 4124, carry=2 rows 17734)."
+  },
+  {
+   "claim": "POST coupling: 'BABY_FREE (point 8, Baby.java:199) runs first; a pickup or own-trap removal there uses the action and closes POST.'",
+   "verdict": "wrong",
+   "correction": "BABY_FREE's options (cheese pickup with caps, removal of own rat or cat traps) are free in the engine. pickUpCheese, removeRatTrap and removeCatTrap neither check isActionReady nor add action cooldown. POST opens on the same isActionReady check right after BABY_FREE.",
+   "evidence": "RobotControllerImpl.java:325-337 and 366+ (assertCanRemove* without assertIsActionReady), 406-412 and 441-447 (no addActionCooldownTurns), 461-527 (pickUpCheese); compare assertCanPlaceTrap at 339-342; Baby.java:199-200, 449-489 (freePoint/freeOk)."
+  },
+  {
+   "claim": "FACE: 'FACE opens only if the action points did not already turn, so it is a residual turn.' Coupling lists only tryThrow, biteEnemies, tryBiteCat and the actExec turn-only successes as closing it.",
+   "verdict": "partly wrong",
+   "correction": "BABY_MOVE also turns, and it runs before FACE. netExec's P_STEP turns to the step direction, P_TURN and M_MINE_STILL turn, and zdb's Nav/Micro turn toward the move. Only P_STRAFE moves without turning. FACE opens in 349,251 records against 650,788 PRE records. Action turns are rare (about 2% of PRE rows have an argmax bite, NAP or carried THROW), so movement is the main consumer of the turn. Facing is mostly set by BABY_MOVE, and FACE only controls what is left over.",
+   "evidence": "Baby.java:187-195 (move) before 229 (FACE); Baby.java:2426, 2447, 2458; Nav.java:119,193,208; Micro.java:57-68; decomp.out (point 2 rows 650788, point 4 rows 349251)."
+  },
+  {
+   "claim": "F_GUARD 'cannot_act_when ... while carrying'; context: 'F_GUARD cannot [turn in coop or while carrying], because Nav.guard is null then (113-115)'.",
+   "verdict": "partly wrong",
+   "correction": "Nav.guard is set at the start of the turn (113-115), before PRE, if the rat is not carrying at that moment. A rat that grabs at PRE this turn (NAP or X_CARRY_FWD) keeps Nav.guard, so F_GUARD turns it while carrying. guardTurn would not (247). raid() also nulls Nav.guard during this turn's move, so F_GUARD's availability depends on which BABY_MOVE branch ran.",
+   "evidence": "Baby.java:113-115, 120-125, 247, 1742, 2115."
+  },
+  {
+   "claim": "LAY_LANE executor: 'places a cat trap on the oldest adjacent CatLane tile with age >= CAT_LAY_AGE 3'.",
+   "verdict": "wrong",
+   "correction": "layLane takes the smallest laneKey. laneKey grows with age, so it picks the most recently walked qualifying tile (age >= 3), as its doc comment says.",
+   "evidence": "Baby.java:819-820 (doc: 'the most recently walked first'), 830-833, 838-841."
+  },
+  {
+   "claim": "RAT_TRAP context: 'cpi-x0 averages 10.45 own rat traps, so the TRAP_CAP gate alone usually blocks it.'",
+   "verdict": "unsupported",
+   "correction": "Team rat traps are >= 10 in 313,185 of 650,788 PRE rows (48%), so the cap blocks in about half of the rows, mostly late in the game. The gates that bind most often are the need for a nearestEnemy at d2 in (2, 13] and a placeable front-fan tile closer to it than the rat is.",
+   "evidence": "constq.out nRatT hist (buckets 10/15/20/25: 96629+89863+99159+27534); Baby.java:704-725."
+  },
+  {
+   "claim": "Fallback/missing_information/cross-cutting: 'rl-m2's records are not on the box', so the nRatT explanation of rl-m2's 1.4% THROW rate is 'unverified'.",
+   "verdict": "wrong",
+   "correction": "rl-m2 iteration-38 per-record files are on the Windows box at /home/terry/rltest/bc26a0/runs/rl/rl-m2/iter-0038/data/, including p2.npz (and p1-p16). kpts2.out already read P11/P12 from that directory. The rl-m2 THROW mechanism (4,425 picks, fb 0.826) can be measured directly with throwq.py.",
+   "evidence": "ls of that directory over ssh (games.jsonl, p1.npz ... p16.npz, p2.npz); scratchpad aspace/kpts2.out:30 'DATA .../rl-m2/iter-0038/data'."
+  },
+  {
+   "claim": "'The KING_ACT floor of 0.1 drives this [nRatT]: 51 A_TRAP_* picks per game ... plus the babies' X_RAT_TRAP_FWD floor picks.'",
+   "verdict": "partly wrong",
+   "correction": "The babies' own 0.005 floor is a comparable driver. X_RAT_TRAP_FWD succeeds 177\u00d70.61 + 175\u00d70.634 \u2248 219 times in the 5% subsample, about 8.6 traps per team-game, against the king's executed 11.4 (TRAP_FORT 10.7 + TRAP_FOE 0.7). That floor also exists in rl-m2 (option 16: 67 PRE picks fb 0.284, 73 POST picks fb 0.370), so cutting only the KING_ACT floor would not keep input 32 at its imitation value of 0.",
+   "evidence": "cpi-x0-summary.json points 2/3 option 16; kpts-cpi-x0.out:36-37; rl-m2-last.txt points 2/3 option 16."
+  }
+ ],
+ "missed": [
+  "Rat traps are backstab triggers. When an enemy rat enters our rat trap, the engine calls backstab(trap owner's team) (GameWorld.java:639-642), and only enemy rats trigger rat traps (RobotControllerImpl.java:863-879). Rat traps are allowed during cooperation. So net-only rat-trap options (A_RAT_TRAP, A_X_RAT_TRAP_FWD, KING_ACT's A_TRAP_FOE/A_TRAP_FORT) can end coop and make our team the backstabber, which bans our cat traps for the rest of the game. zdb never places rat traps, so this coop-ending route exists only with the net. cpi-x0 already averages 0.91 own rat traps in rounds 0-200 (kpts2.out:6).",
+  "Backstab state is the main hidden context for every cat-trap option (7, 8, 17, and KING_ACT's CAT_TRAP). No input gives rounds since the backstab or which team backstabbed. Only coop (input 4) and the lane count, which already folds in canPlaceCatTrap (D.java:394-398), carry any of it.",
+  "Dead zdb code at Baby.java:141 and 218-221: the ATTACK-only king bites can never run. A plan()/do() split or label remap should not treat them as zdb behaviour.",
+  "Cascade options depend on facing too, not only the X_*_FWD ones. tryCatTrap considers only the three front-fan tiles of the current facing (Baby.java:857-858; G.fan = facing \u00b145\u00b0, G.java:80-83), and tryRatTrap's trapTile does the same (Baby.java:724). Their executability and exact masks therefore depend on the facing left by last turn's move or FACE.",
+  "Cross-point coupling: BABY_MOVE's option decides whether FACE opens. P_STEP (Baby.java:2447), P_TURN (2458) and M_MINE_STILL (2426) use the turn, and zdb's Nav/Micro turns do too, while P_STRAFE does not.",
+  "Fallback-flag undercount for CASH_KING. fb is label != k (D.java:159-162). If the net's CASH_KING fails on last turn's cashSite and zdb's cashPromote then succeeds after cashTick (Baby.java:158, 174-178), the label equals k and no fallback is recorded, even though the net's executor did not act.",
+  "removeDirt adds DIG_COOLDOWN 25 action cooldown and costs DIG_DIRT_CHEESE_COST (RobotControllerImpl.java:450-458; GameConstants.java:269). X_DIRT_REMOVE_FWD therefore keeps PRE/POST closed on following turns, which the coupling lists leave out."
+ ],
+ "overall_reliability": "The numbers are reliable: every count I checked reproduces from the scratchpad outputs (throwq, constq, decomp, teachq, cpi-x0-summary.json, rl-m2-last.txt). The central diagnosis holds: the untrained input 32 drives THROW with nothing carried, which is about 90% of PRE fallbacks, and POST and FACE fallbacks are floor picks of options offered without executability checks. But several code and engine claims are wrong in ways that would steer a redesign: zdb bites and grabs in coop from round 30 (BREAK_ROUND), the cat-trap ban works differently, the ATTACK king-bite branches are dead code, BABY_FREE does not close POST, CAT_TRAP's gates are already inputs, FACE is residual mainly to movement turns, and the hold-rule fallbacks come mostly from input 32 rather than the hidden flight score. The report also misses the rat-trap-trigger backstab route, and wrongly says the rl-m2 per-record data is unavailable.",
+ "proposal_concerns": [
+  "(1) net.json stores folded first layers: W1f = W1/sd and b1f = b1 \u2212 W1\u00b7mu/sd (dpnet_io.py:11-13, 165-180). Zeroing a constant column only in W1f leaves its \u2212W1\u00b7mu term in b1f. That is harmless for column 32 (mu 0), but for constant columns with a non-zero mean it shifts every hidden unit in every state: PRE col 11 = 45 with |W1| 0.182, POST col 0 = 1 (constq.out). The 'audit all 16 points and patch' step must unfold, zero and fold again, or touch only mu = 0 columns.",
+  "(2) Exact PRE masks are evaluated before BABY_COMMS (cashTick, Baby.java:158), but zdb's CASH_KING and formSite promotions are labelled after it (174-185). A plan()-based mask at PRE would mask out zdb's own CASH_KING label whenever cashSite changes this turn, so 'fallback zero by construction' and 'zdb labels keep their meaning' both fail there. The promotion decision needs to move after comms or get its own slot.",
+  "(3) Most of 'turn the gates into inputs' is already done: inputs 3, 4, 26, 30, 31, 32 and 33 cover the gates, and Econ.floor is the identity. The inputs actually missing are THROW's flight score, the cat's heading with fan-tile placeability, and the backstab state (rounds since the backstab, who backstabbed).",
+  "(3) 'Mask enemy-rat bites and grabs while G.coop' contradicts zdb's labels, because zdb is hostile in coop from round 30 (Cfg.java:148). An explicit backstab input or option fits zdb better, and it must also cover rat traps placed in coop, since those backstab when triggered (GameWorld.java:639-642).",
+  "(4) Two or three cheese levels for 'bite with cheese' cannot represent zdb's finishing bites. finishCheese spends k\u00b2 for k = hp\u221210 <= 5, i.e. 1, 4, 9, 16 or 25 (Baby.java:786-790), and even the current BITE_C {1,4,9,16,36,100} lacks 25 (D.java:77). A 'finishing bite' verb whose executor computes k\u00b2 keeps the label mapping exact.",
+  "FACE direction head and interim mask: FACE stays closed whenever BABY_MOVE already turned. RL would control only the leftover turn, so scouting or defensive facing beyond guardTurn also needs BABY_MOVE's strafe-versus-step choice, or a facing slot ahead of movement.",
+  "Before unlocking points 2-4 (cpi-x0 phase_b_unlocks [[2,3,4],...]), note that masks alone do not stop floor picks of net-only trap options from shifting team-level inputs and triggering backstabs. The babies' 0.005 floor alone places about 8.6 rat traps per team-game in cpi-x0."
+ ]
+}

@@ -1,0 +1,361 @@
+{
+ "scope": "zdp (java/bots/zdp, HEAD 279c142) decision points 5-9: BABY_ROLE, BABY_COMMS, MINE_PICK, BABY_FREE, BABY_VAL. Read-only: code reading, no builds, no games. File:line refs are to java/bots/zdp/ unless another path is given. Data: (a) rl-m2 iter-0000/iter-0001 decision records (v0/v1 nets, 128 games each, floor .005, point 5 at .001) in /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/critic_dl/runs/rl/rl-m2/iter-0000/data and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/critic_dl/runs/rl/rl-m2/iter-0001/data. (b) The rl-m2 iter-39 summary (learner v38) in /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/rl-m2-last.txt. (c) The cpi-x0 summary and devfb: 256 games, starting from rl-m2 v39, floors 5:.03 7:.05 10-13,16:.1, otherwise .005. Frozen points 6/8/9 are sampled at 5% there, so their counts should be multiplied by 20. Files: /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/cpi-x0-summary.json and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/devfb-cpi-x0.json. (d) Nets rl-m2 v0-v2 in /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/critic_dl/runs/rl/rl-m2/nets. numpy is absent, so the new measurements use pure-Python scripts: /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/npyz.py, /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/p5stats.py, /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/p5trans.py, /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/p5logits.py (its forward pass reproduces the logged logq to within 1.3e-4), /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/p7stats.py and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/netinspect.py. Short answer: the problem is not mainly too few options. BABY_ROLE's stay option is mis-encoded and makes rats flip back and forth between roles (measured). MINE_PICK and BABY_COMMS rule out large parts of the space in code (enemy-half mines are not offered, and message payloads are fixed by zdb's rules). BABY_FREE and BABY_VAL are not real decisions yet: their nets ignore every feature. None of this is visible in the fallback numbers.",
+ "points": [
+  {
+   "id": 5,
+   "name": "BABY_ROLE",
+   "n_options": 6,
+   "option_kind": "parameters: a persistent mode switch (the role, scout and raider flags) that zdb's cascade and every baby net read, plus R_KEEP, a do-nothing option offered only at reviews",
+   "locations": "Open at birth: Baby.java:43-48 (after born() Baby.java:318-337). Open at review: Baby.java:86-91, every Cfg.DP_ROLE_EVERY=10 rounds of life (Cfg.java:262) or when the role changed during the turn. Features: D.babyRole D.java:510-551. Mask: D.roleOk D.java:555-561. Pick: D.pick D.java:203-209. Label: D.roleLab D.java:565-567; at a review the label is R_KEEP iff roleLab() is unchanged (Baby.java:89). Executor: Baby.roleExec Baby.java:1894-1907 with roleSet Baby.java:1909-1918. Constants: D.java:87-90. KEEP bias: scripts/dpnet_io.py:262-267 (docstring 223-224).",
+   "options": [
+    {
+     "id": "0",
+     "name": "R_GATHER",
+     "executor": "roleSet sets role=GATHER, scout=false, raider=false (Baby.java:1911). On any real change, roleExec resets seekUntil, seekNext, idleTurns, exploreTarget, Nav.target and Nav.stall (Baby.java:1898-1899), and resets attacker state when leaving ATTACK (1900-1903).",
+     "offered_when": "Always at birth. At a review, unless the current label is R_GATHER (D.java:557-558).",
+     "cannot_act_when": "Never: it is a plain field write, so fallback is structurally 0.",
+     "context_dependence": "What a gatherer does depends on MINE_PICK and the mines it knows. zdb assigns this role only at birth (born()).",
+     "observed": "v0: 7,746 of 25,018 births (31.0%). 2,033 review flips into GATHER (1,676 from FIGHT, 326 from ATTACK). cpi-x0: 94,866 rows. v38: 12,824 rows."
+    },
+    {
+     "id": "1",
+     "name": "R_SCOUT",
+     "executor": "roleSet sets role=GATHER, scout=true (Baby.java:1912).",
+     "offered_when": "Always at birth. At a review, unless the current label is SCOUT.",
+     "cannot_act_when": "Never fails. The cascade acts on it only through scouting(), which is false from round Cfg.SCOUT_UNTIL=150 on (Baby.java:1807-1809, Cfg.java:166). After that, choosing it behaves like GATHER but still triggers the full reset, because the scout flag changed.",
+     "context_dependence": "Its meaning depends on the round.",
+     "observed": "v0: 2,702 births (10.8%) and 118 review flips (about the floor level of ~158 per option). cpi-x0: 11,724. v38: 2,591."
+    },
+    {
+     "id": "2",
+     "name": "R_FIGHT",
+     "executor": "roleSet sets role=FIGHT, raider=false and leaves scout untouched (Baby.java:1913).",
+     "offered_when": "Always at birth. At a review, unless the current label is FIGHT.",
+     "cannot_act_when": "Never.",
+     "context_dependence": "zdb gives FIGHT at birth when idx>=6 and the round is even (born()).",
+     "observed": "v0: 9,683 births (38.7%) and 1,795 review flips into FIGHT (1,757 from GATHER). cpi-x0: 94,268. v38: 14,613."
+    },
+    {
+     "id": "3",
+     "name": "R_RAIDER",
+     "executor": "roleSet sets role=FIGHT, raider=true (Baby.java:1914). roleExec clears raidTarget and raidSince (1905).",
+     "offered_when": "Always at birth. At a review, unless the current label is RAIDER.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb never sets raider=true; roleSet is the only writer. So no imitation record has raider=1. BABY_MOVE's raider input (col 22) still has its default-init weights: column mean |W1| 0.0615, against 0.065 expected for U(+-1/sqrt(60)) init, while the trained scout column 23 reads 0.129 (rl-m2 nets 0 and 2). A raider therefore drives BABY_MOVE with untrained weights.",
+     "observed": "v0: 25 births and 140 review flips, both at floor level. cpi-x0: 8,043. v38: 310."
+    },
+    {
+     "id": "4",
+     "name": "R_ATTACK",
+     "executor": "roleSet sets ekSeen=round on entry, role=ATTACK, raider=false (Baby.java:1915). roleExec clears mineTarget and stallAt on entry (1904).",
+     "offered_when": "Always at birth. At a review, unless the current label is ATTACK.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "Its behaviour depends on what the rat knows about the enemy king: king bites at Baby.java:141 and 218-221, pressKing at 1169-1171, war() at 1249-1268. ekSeen feeds an input (col 27) with a large weight (unfolded |W1| 3.2 in v2, against a median of 0.015).",
+     "observed": "v0: 4,862 births (19.4%) and 143 review flips into ATTACK. ATTACK->GATHER: 326. cpi-x0: 19,367. v38: 4,850."
+    },
+    {
+     "id": "5",
+     "name": "R_KEEP",
+     "executor": "roleSet's default branch, so nothing changes (Baby.java:1916). The label is KEEP when roleLab() is unchanged (Baby.java:89).",
+     "offered_when": "Only at reviews, and only when the net has an R_KEEP row (D.java:556-559). At a review the current role is masked out, so KEEP is the only way to stay.",
+     "cannot_act_when": "Never.",
+     "context_dependence": "In v0 its logit does not depend on the input: bias 60.0 and an all-zero weight row (net.json 'widened': r_keep_bias 60.0). After two RL updates the weight row sums to 0.111.",
+     "observed": "v0: 784,089 of 788,318 reviews (99.46%). v38: 629,847 of 665,035 rows. cpi-x0: 1,135,174 of 1,363,442 rows, about 86% of reviews."
+    }
+   ],
+   "fallback_explanation": "Fallback is always 0 by construction, so it says nothing here. D.fallback flags k != label (D.java:159-162), but the BABY_ROLE label is computed after the net's option has run: at birth from roleLab() after roleExec (Baby.java:45-46), and at a review as KEEP if roleLab() is unchanged, otherwise roleLab() (88-89). roleSet cannot fail, so the label always equals k. What actually goes wrong is oscillation. In v0 there were 4,229 review flips, 0.54% of 788,318 reviews, where the floor alone predicts about 631. 81% of them are GATHER<->FIGHT (1,757 + 1,676). Of 3,469 consecutive flip pairs, 3,075 (88.6%) return to the role held before the flip. About 170 rats flip 15 or more times, which means every review for 150-180 rounds. The median round of a rat's first flip is 669. iter-0001 shows the same pattern (2,599 of 2,921 pairs return). To find the cause, I recomputed the v0 logits on 1,500 sampled flips and 1,500 keeps. 1,298 of the flips were the net's argmax, and in 1,164 of those (90%) the rat's current role scored above KEEP: by a median of +93 logits, with the new role at a median of +105. The cause is in the history of the code. Before pass 3 the review label was roleLab() with no mask (git show 0f50132, Baby.java hunk at about lines 86-89), so the imitation net learned to put a very large logit on the current role at reviews. Pass 3 masked that role out and added a constant KEEP. The rl-m2 start net was widened without calibration records (its 'widened' metadata has b_new -20 and r_keep_bias 60), so KEEP got the default 60 instead of the documented p99.9 of the old max logit plus 8 (docs/decision-points.md:191). The result: when the runner-up role's logit tops 60, the rat flips, and at the next review the role it left is now the runner-up, still above 60, so it flips back. Under RL the churn grew. At v38 (floor .001), non-KEEP picks are 35,188 of 665,035 rows including births; assuming births are about 3.1% of rows (the v0/v1 ratio), roughly 2.3% of reviews flip, and the upper bound is 5.3%. In cpi-x0 (floor .03) about 14% of reviews flip. Two separate estimates agree that about 12% of reviews are flips the net itself chose: the option histogram minus births minus the 2.4% floor share, and devfb's 217 deviations to KEEP divided by 0.006, about 36k of 300k records.",
+   "context_dependence": "A role is a mode that lasts many turns, not an action. Its effect depends on the game phase (rush window, SCOUT_UNTIL, round parity), on the rat's slot, on what it knows about the enemy king and the mines, and on the downstream nets. Those nets were trained only on zdb's birth-time assignments: zdb sets the role once in born(), never changes it, and never sets raider. Every RL role change therefore puts all baby nets outside their training data. Each real change also resets navigation and exploration state, and attacker or raid state (Baby.java:1898-1905), so a flip costs something even when the new role is no better.",
+   "generalization_proposal": "1. Fix how 'stay' is encoded. This is small and removes the measured flip-flopping. At reviews, offer all five roles and treat the current role as 'stay', so nothing is masked. This is exactly how the pass-2 net was trained, so its large current-role logits become the right signal again. Drop R_KEEP, or set z[KEEP] = max(z[KEEP], z[current]) before sampling. Note that roleExec's reset guard at Baby.java:1898 checks D.has(BABY_ROLE, R_KEEP) and would need a different condition. The minimal alternative is to re-widen point 5 with --calib so KEEP sits at p99.9+8, as documented. 2. Add commitment. A role change resets state, so apply the exploration floor only at birth or only on the stay option. Also add a minimum tenure after a change and/or review less often (Cfg.DP_ROLE_EVERY). 3. Make every option meaningful whenever it is offered: mask R_SCOUT from round SCOUT_UNTIL on, or drop that limit in net mode. 4. Role-diverse imitation, which closes the main capability gap. In the recording build, randomly reassign roles at birth and at some reviews, raider included. zdb's cascade takes the role as a parameter, so it yields correct labels for every role in every context. Then retrain the downstream baby nets so that role changes and raider=1 are covered by training data, which also trains BABY_MOVE's raider column. 5. Optional, for team composition: kings publish target role shares in a shared-array register, and team role counts become BABY_ROLE features. That lets the policy learn a team mix instead of each rat deciding on its own.",
+   "proposal_cost": "Item 1: 1-2 h of Java plus a re-widen. No new data is needed, because existing review records relabel to the current role. Items 2-3: trivial. Item 4: 1-3 days (recording-build hook, new imitation games, retraining BABY_MOVE/ACT and the other baby nets, a parity re-check). Item 5: several days; it touches king comms.",
+   "coupling": [
+    "All baby nets and zdb's cascade read role, scout and raider: hostile() Baby.java:240-242; cascade gates at 1014, 1033-1035, 1040, 1059-1076, 1081, 1085; war() at 1249/1256/1268; pressKing at 1169/1171; netAllowed at 2276/2291-2293; netExec at 2366/2418/2421; netMineBlock at 2473-2480; features at D.java:247, 334, 462, 577, 834.",
+    "MINE_PICK: entering ATTACK clears mineTarget (Baby.java:1904), which forces a new pick. Role is also a MINE_PICK feature.",
+    "BABY_FREE: at ph 0, zdb's pickup is skipped for attackers (Baby.java:464).",
+    "BABY_MOVE: raider column 22 is untrained, so R_RAIDER pushes BABY_MOVE outside its training data.",
+    "Every real change resets navigation and exploration state (Baby.java:1898-1905), so a role flip-flop also stalls movement."
+   ],
+   "features": "D.babyRole D.java:510-551, 112 inputs: 32 base inputs (ph; prev role, 3 at birth; rat cost; round/10; round % FIGHT_EVERY; rush window; slot scout bucket; ...; ekSeen at col 27), plus 16 comms-board and 64 raw shared-array columns. The last 80 were added with zero weights ('widened' cols_added 80) and are still near zero after 2 RL updates (|W1| 0.008-0.017 in v2). So team composition and heard information are effectively unused.",
+   "missing_information": "The cpi-x0/v39 p5.npz is not available locally. I therefore cannot confirm that the roughly 12% of reviews where the net itself flips the role in cpi-x0 are the same back-and-forth flipping. Nor can I explain why the higher floor amplifies churn; one candidate is that entering ATTACK sets ekSeen, which feeds a heavily weighted input. The win-rate cost or benefit of a flip has not been measured."
+  },
+  {
+   "id": 6,
+   "name": "BABY_COMMS",
+   "n_options": 15,
+   "option_kind": "mixed: message types whose payload zdb's rules fix (primitive actions with hard-coded parameters), silence, a raw 32-bit escape (C_RAW, with the digits chosen by BABY_VAL), and a relay of a heard net-type squeak",
+   "locations": "Open: Baby.java:148, features D.babyComms D.java:571-636 (secondary slot). pick2 at Baby.java:153 with mask commsOk Baby.java:2088-2096. zdb's cashTick and report() then run muted (Baby.java:157-161; report() at 902-931; muting in squeak() at 941-953). The executor is commsExec Baby.java:2134-2180, called at 164. If it fails, zdb's held squeak goes out (165). Record emitted at emit2 (167). Constants: D.java:92-97. Receivers: King.java:131-151 and hearMines Baby.java:934-939.",
+   "options": [
+    {
+     "id": "0",
+     "name": "C_NONE",
+     "executor": "No squeak (Baby.java:2137). zdb's muted squeak counts as sent (Baby.java:941-942), so zdb's state still moves on as if it had been heard.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never.",
+     "observed": "cpi-x0, 5% sample: 513,874 of 670,349 (76.7%), fallback 0. Last-layer bias 3.52."
+    },
+    {
+     "id": "1",
+     "name": "C_MINE_GOSSIP",
+     "executor": "squeakMine(myMines[round % myMineCount]) (2138-2139).",
+     "offered_when": "Always (static mask).",
+     "cannot_act_when": "myMineCount == 0. zdb sends gossip only when no team mine is known and no king is within dist2 16 (Baby.java:905-913).",
+     "observed": "3,886, fallback .144."
+    },
+    {
+     "id": "2",
+     "name": "C_MINE_RELAY",
+     "executor": "squeakMine(unreported()) (2140-2143), the first own mine missing from the king's list.",
+     "offered_when": "Always.",
+     "cannot_act_when": "unreported() < 0 (Baby.java:403-409). zdb relays only when not near a king (916-918).",
+     "observed": "136,503 (20.4%), fallback .015."
+    },
+    {
+     "id": "3",
+     "name": "C_SYM_KING",
+     "executor": "symNews() && squeakSym() (2144-2146).",
+     "offered_when": "Always.",
+     "cannot_act_when": "!symNews(). zdb sends it only near a king (922-923), but the executor does not check this, and only kings use SQ_SYM.",
+     "observed": "394, about the floor's ~335 plus a few, fallback .817."
+    },
+    {
+     "id": "4",
+     "name": "C_MINE_KING",
+     "executor": "squeakMine(unlisted()) (2147-2150).",
+     "offered_when": "Always.",
+     "cannot_act_when": "unlisted() < 0 (972-978). zdb sends it only near a king.",
+     "observed": "11,305, fallback .066."
+    },
+    {
+     "id": "5",
+     "name": "C_CAT",
+     "executor": "catNews() && squeakCat() (2151-2152).",
+     "offered_when": "Always.",
+     "cannot_act_when": "No cat seen in the last 2 rounds (981).",
+     "observed": "2,833, fallback .115."
+    },
+    {
+     "id": "6",
+     "name": "C_CASH_LEAD",
+     "executor": "If no cash site exists, it creates one at cashSpot(G.me) and sets cashLead (2155-2159), then squeaks SQ_CASH. Unlike zdb's cashTick, it applies no crowd, raw-cheese or cat-earshot checks.",
+     "offered_when": "Always.",
+     "cannot_act_when": "cashSpot is null, or the site is farther than Cfg.CASH_PULL (2157, 2160).",
+     "observed": "353, about the floor level, fallback .380."
+    },
+    {
+     "id": "7",
+     "name": "C_CASH_RELAY",
+     "executor": "Squeaks the current cashSite (2160-2162).",
+     "offered_when": "Always.",
+     "cannot_act_when": "cashSite is null or farther than CASH_PULL.",
+     "observed": "536, fallback .662."
+    },
+    {
+     "id": "8",
+     "name": "C_EKING",
+     "executor": "Squeaks the enemy king's position (2164-2166).",
+     "offered_when": "Never: always masked (2090), even though an executor exists.",
+     "cannot_act_when": "eKing == null.",
+     "observed": "0."
+    },
+    {
+     "id": "9",
+     "name": "C_SYM_GOSSIP",
+     "executor": "The same executor as C_SYM_KING (2144-2146).",
+     "offered_when": "Always.",
+     "cannot_act_when": "!symNews(). zdb never produces this label.",
+     "observed": "334, all floor picks, fallback .973."
+    },
+    {
+     "id": "10-12",
+     "name": "C_BURN, C_TRIP, C_TRAP",
+     "executor": "None (default: return false, 2178).",
+     "offered_when": "Never (masked at 2090).",
+     "cannot_act_when": "Always.",
+     "observed": "0."
+    },
+    {
+     "id": "13",
+     "name": "C_RAW",
+     "executor": "Closes the COMMS record with label C_RAW (2169-2170), then draws 7 BABY_VAL digits (D.digits) and squeaks the 32-bit word (2171-2172).",
+     "offered_when": "Whenever a BABY_VAL net is present (2091).",
+     "cannot_act_when": "The digit draw fails (D.dfail) or the squeak fails. This is never flagged, because the record was already emitted.",
+     "context_dependence": "A uniformly random word's type nibble is a zdb type with probability 5/16 (D.zdbType D.java:645), so receivers act on it.",
+     "observed": "329, all floor picks: row bias -20 with zero weights. That is about 6.6k raw squeaks over 256 games, about 26 per game."
+    },
+    {
+     "id": "14",
+     "name": "C_RELAY",
+     "executor": "Re-squeaks the newest net-type squeak heard (2174-2176).",
+     "offered_when": "Only when D.HM != null, i.e. a net-type squeak was heard (2092-2093).",
+     "cannot_act_when": "Nothing heard.",
+     "observed": "2."
+    }
+   ],
+   "fallback_explanation": "This is the only point among 5-9 where fallback is real. If commsExec fails, the label stays zdb's, as set by the muted cashTick/report (Baby.java:160-161), and zdb's held squeak goes out (164-165), which D.fallback flags. The mask is static: only C_RAW and C_RELAY depend on state (2088-2096), while every message executor has a precondition. So options picked through the floor mostly fail. In cpi-x0 the fallback rates are: SYM_GOSSIP .973, SYM_KING .817, CASH_RELAY .662, CASH_LEAD .380, MINE_GOSSIP .144, CAT .115, MINE_KING .066, MINE_RELAY .015. C_RAW's 0 is structural: its record is closed before its digits are drawn.",
+   "context_dependence": "The net chooses only the message type. The payload is fixed by zdb's rules: which mine (myMines[round % count], the first unreported or unlisted mine), Sym.mask, the cat that was seen, cashSpot(G.me). zdb sends king-directed messages only within dist2 16 of a king and gossip or relays only away from one (Baby.java:904-930). The executors drop that proximity condition. Squeaks are heard by friends, enemies and cats, and cats turn toward squeaks (docs/rules/specs.txt:569-617). This hidden cost is not in the features. The net's comms-board inputs are zero (cols 37-40 and 47-48 measured 0.0 in v0 and v2), and the point is frozen, so what a rat has heard never affects what it sends.",
+   "generalization_proposal": "1. Make the mask equal executability. Compute commsOk from the executors' own predicates (myMineCount>0, unreported()>=0, symNews(), unlisted()>=0, catNews(), a cash site or cashSpot within CASH_PULL) after the muted zdb pass, so the mask sees the same state the executor will. This stops wasting floor picks and makes fallback 0 by construction. 2. Remove dead and duplicate options: C_SYM_GOSSIP duplicates C_SYM_KING; C_EKING is always masked although it has an executor; options 10-12 have no executor. Either implement them (enemy-king and trap sightings are useful) or drop them. 3. Score (type, payload) pairs. This addresses the real constraint. Score each candidate (every known own, heard or unreported mine, the symmetry, each seen cat, the enemy king, candidate cash sites) with a shared per-candidate scorer that includes a 'zdb would send this' indicator feature. Imitation stays exact and RL is free to deviate. 4. Reserve a net-only type nibble for C_RAW, and for KING_COMMS raw (DK.java:858), so a raw word can never parse as a zdb message. 5. Train the listeners: give the receiving points decoded heard-message features with nonzero, trainable weights. Otherwise sender choices cannot earn reward beyond what zdb's own decoders do with them.",
+   "proposal_cost": "Items 1-2: small Java changes; the frozen net is unchanged. Item 4: small, but touches both decoders. Item 3: medium to large (variable candidate list, new features, re-imitation through the indicator). Item 5: needs re-imitation, or RL with the listener points trainable.",
+   "coupling": [
+    "BABY_VAL (point 9): C_RAW opens 7 digit records.",
+    "Receivers act on any squeak whose type is a zdb type (King.java:131-151). SQ_MINE -> Comms.addMine, so a bogus or off-map mine. SQ_SYM -> Sym.merge(extra&7) (Sym.java:50-54), which can eliminate the true symmetry and is published by King.java:166-175. SQ_EKING overwrites the enemy-king slots. SQ_CAT -> noteCat. Babies record SQ_MINE through hearMines (Baby.java:934-939).",
+    "zdb's muted cash and report flow runs as if its squeak went out (Baby.java:941-942). So CASH_* executors see zdb's cash state, not the result of what the net actually sent.",
+    "C_RELAY only does something when other rats send C_RAW, which happens only through the floor today."
+   ],
+   "features": "D.babyComms D.java:571-636: 37 base inputs computed before cashTick/report, plus 16 comms-board columns that widen added with zero weights and that are still zero (frozen in rl-m2 and cpi-x0).",
+   "missing_information": "How often each type's precondition holds is not recorded. Whether aliased raw squeaks ever reached a king and corrupted symmetry would need king-side logs. cpi-x0 point 6 is only a 5% sample, and devfb leaves out secondary-slot records."
+  },
+  {
+   "id": 7,
+   "name": "MINE_PICK",
+   "n_options": 40,
+   "option_kind": "candidate targets: option i is the i-th entry of pickMine's sorted candidate list. It is a position in that list, not a fixed mine.",
+   "locations": "pickMine Baby.java:1473-1502. Candidates are team mines plus own mines, capped at 40; home-half mines come first, and the first m are sorted by mineKey (1523-1525). The point opens through D.minePick D.java:824-852 at Baby.java:1494 (secondary slot). Mask mineOk is i<m (Baby.java:1495-1496). pick2 at 1497. Executor minePickExec Baby.java:2183-2187. zdb's rule: 1500-1501. Call sites: refreshMine 1122-1125 (pickSite 0), shiftMine 1128-1132 (1), retry 1082/2476 (2). The sticky mineTarget is cleared by a change in the number of mines, an idle shift, or a goMine stall over 25 (1135-1140); also by roleExec switching to ATTACK (1904), M_MINE_EXPLORE (2416), and seek news (1877).",
+   "options": [
+    {
+     "id": "0-7",
+     "name": "rank 0..7 (candidates with features)",
+     "executor": "minePickExec sets D.lab2 = k and returns cand[k] (Baby.java:2183-2187), which becomes the sticky mineTarget.",
+     "offered_when": "k < m. m is the number of home-half candidates if there are any, otherwise all candidates (Baby.java:1483).",
+     "cannot_act_when": "Never, so fallback is structurally 0.",
+     "context_dependence": "The mine at rank i changes whenever the list changes (a mine is learned, a home-half mine appears).",
+     "observed": "v0: 108,864 of 115,006 picks (94.7%). cpi-x0 (v39) rank histogram: 0:57,632, 1:42,904, 2:29,968, 3:23,067, 4:17,651, 5:10,183, 6:6,061, 7:3,278."
+    },
+    {
+     "id": "8-39",
+     "name": "rank 8..39 (candidates without features)",
+     "executor": "Same executor.",
+     "offered_when": "k < m. In v0, m >= 9 in 23.3% of picks, with a maximum m of 25.",
+     "cannot_act_when": "Never.",
+     "context_dependence": "Features describe only the first 8 candidates (D.java:841-850), so the net picks these ranks blind.",
+     "observed": "v0: 6,142 picks (5.3%); zdb's rule points here in 7,146 cases. cpi-x0: 8:2,622, 9:5,228 (an excess over rank 8 that I cannot explain), 10:254, ..., 21:1. 21,005 rows had a single option."
+    }
+   ],
+   "fallback_explanation": "Fallback is structurally 0: the executor writes label = k and always returns cand[k]. The informative measure is fidelity to zdb's rule, cand[(slot % m + mineShift) % m], whose two inputs are themselves features (D.java:831-832). The v0 imitation net matches it on 81.7% of 115,006 picks: 100% at m=1, at least 98% at m<=3, 91-95% at m=4-5, 70% at m=8, 47% at m=11, and 19.8% at m>=12. The commonest miss is off by one: 6,854 of 21,007 misses. An MLP cannot represent this modular rotation for larger m, so the RL start already does not reproduce zdb's mine allocation wherever many mines are known. In v2 the heaviest inputs are slot%m (0.94) and shift%m (0.83), against a median of 0.16.",
+   "context_dependence": "Option indices are positions whose mine changes across calls and rats. Whenever a home-half mine is known, only home-half mines are offered (m = ours). In 80.3% of v0 picks, a mean of 3.6 known enemy-half mines could not be chosen. Each candidate's features are only its distance from the rat and from home, kingHeld, and allies within 4 among robots currently in sight, and only for the first 8. There is no per-mine yield, crowding beyond sight, enemy presence, or visit history. The pick is sticky, so its consequences last many turns while the decision sees only the current instant.",
+   "generalization_proposal": "1. Score each candidate with a shared network (pointer-style): logit_i = g(features of candidate i, global features), with weights shared across candidates, for every candidate up to 40. The 40-logit output, the mineOk mask, pick2 and the data format stay as they are. In DNet this can be a weight-shared first layer. 2. Per-candidate features: distance from the rat and from home, a home-half flag, kingHeld, allies and enemies near the mine (sensed or reported), the time since the rat last visited it and its stall count there (rat memory), cheese last seen there, its rank, and an indicator 'zdb's rotation picks this one'. With that indicator, imitation is exact (one feature decides the pick), and RL can learn from the other features when to override it. 3. Offer every known mine. Keep home half as a feature, so contesting or raiding enemy-half mines becomes possible. 4. Optional: a 'drop the assignment / explore' option, instead of relying only on the stall>25 timer.",
+   "proposal_cost": "Medium, about 1-2 days. It needs a per-candidate Java feature block (bytecode limits are currently off per project memory), a shared-scorer forward pass in DNet, support for a shared-weight point in train_dp and rl_train (or a candidate-major MLP), and re-imitation, which is easy because the indicator gives the labels.",
+   "coupling": [
+    "BABY_ROLE: switching to ATTACK clears mineTarget, and role is a MINE_PICK feature (D.java:834).",
+    "BABY_MOVE: netMineBlock Baby.java:2470-2489 uses mineTarget, and M_MINE_EXPLORE clears it (2416).",
+    "BABY_COMMS decides which mines teammates learn about, and those mines are the candidate list.",
+    "shiftMine increments mineShift after idling (1128-1140), which re-picks with a rotated rule."
+   ],
+   "features": "45 inputs (D.java:824-852): m, n, ours, slot%m, mineShift%m, pickSite, role, coop, round/10, numMines, myMineCount, numKings, raw cheese, then 8 x (distance from rat, distance from home, kingHeld, allies within 4), padded with 63/63/0/0.",
+   "missing_information": "The cpi-x0/v39 p7 data is not available locally, so the trained net's fidelity is unknown. Per-mine productivity and crowding are not logged, so whether better mine choice matters has not been measured."
+  },
+  {
+   "id": 8,
+   "name": "BABY_FREE",
+   "n_options": 16,
+   "option_kind": "mixed: FR_ZDB, which runs zdb's own pickup; pickup policies (take all, take none, caps of 10/25/50/100/200 for this turn); and trap removals indexed by target (own rat or cat trap on the rat's tile or fan tiles 0..2), chained up to FREE_CHAIN=2",
+   "locations": "freePoint Baby.java:449-467, called at ph 0 (Baby.java:77) and ph 1 (199). Opens via D.babyFree D.java:726-769, only if pickable cheese or a removable own trap is on freeTiles. Mask freeOk Baby.java:470-489. Executor freeExec Baby.java:492-511. pickCap is reset each turn (Baby.java:40) and applied in pickUp (433-445). Constants D.java:101-107. Sampled from the alternate stream (D.java:221).",
+   "options": [
+    {
+     "id": "0",
+     "name": "FR_ZDB",
+     "executor": "Runs zdb's pickUp() (Baby.java:464); at ph 0 this is skipped for attackers.",
+     "offered_when": "Always, when the point opens.",
+     "cannot_act_when": "n/a",
+     "observed": "cpi-x0, 5% sample: 98,602 of 98,869 (99.73%)."
+    },
+    {
+     "id": "1",
+     "name": "FR_ALL",
+     "executor": "freeExec: no cap for this turn.",
+     "offered_when": "Only when zdb would take nothing or a cap is already set (freeOk).",
+     "cannot_act_when": "Masked whenever it would match zdb's own choice.",
+     "observed": "0."
+    },
+    {
+     "id": "2",
+     "name": "FR_NONE",
+     "executor": "Cap 0 for this turn.",
+     "offered_when": "Only when zdb would take something.",
+     "cannot_act_when": "Masked whenever it would match zdb's own choice.",
+     "observed": "20."
+    },
+    {
+     "id": "3-7",
+     "name": "FR_CAP 10/25/50/100/200",
+     "executor": "pickCap = c for the rest of the turn. The cap also limits later pickups, including pickAdjacent.",
+     "offered_when": "Only when the cap would bind: raw < c < raw + reachable cheese.",
+     "cannot_act_when": "Not offered when the cap would not bind. Exceptions are swallowed (Baby.java:463).",
+     "observed": "3:14, 4:1, 5-7:0."
+    },
+    {
+     "id": "8-11",
+     "name": "FR_RM_RAT0..3",
+     "executor": "Removes our rat trap on the rat's tile or on fan tile 0..2; the point then reopens for another step (Baby.java:452-461).",
+     "offered_when": "At step < 2, when canRemoveRatTrap holds there.",
+     "cannot_act_when": "If the removal fails, D.point is set to 0 and the record is dropped (Baby.java:456).",
+     "observed": "56, 66, 40, 38: all floor picks."
+    },
+    {
+     "id": "12-15",
+     "name": "FR_RM_CAT0..3",
+     "executor": "Removes our cat trap at the same targets.",
+     "offered_when": "At step < 2, when canRemoveCatTrap holds there.",
+     "cannot_act_when": "Same as above.",
+     "observed": "13, 6, 7, 6: all floor picks."
+    }
+   ],
+   "fallback_explanation": "Fallback is structurally 0. Options 1-7 only set the turn's pickCap, FR_ZDB runs zdb's code, and a failed removal drops its record instead of flagging it (Baby.java:456). The net is also constant. widen's 'calibrated' init gives zero last-layer weights, bias 0 on FR_ZDB and -10.37 on every other option (identical in rl-m2 v0 and v2; point 8 is not trainable). So the choice ignores all features, and every non-ZDB pick is a floor pick: dev_rate .0027, about .005 x (1 - 1/2.28 mean allowed).",
+   "context_dependence": "FR_ZDB means 'whatever zdb would do' (take all, take none, or skip for an attacker). The explicit option equal to zdb's choice is masked out (FR_ALL is offered only when zdb takes nothing, FR_NONE only when zdb takes something). This is the same pattern as R_KEEP: a shortcut to the default action plus a hidden twin. Caps are offered only when they would bind, so their meaning depends on the cheese carried and reachable. Carried raw cheese slows movement. Trap removal has no cooldown and no refund (docs/rules/engine-checked-digest.md:150).",
+   "generalization_proposal": "1. Replace the FR_ZDB shortcut with explicit actions: label zdb's choice as the explicit option it equals (ALL, NONE, or the attacker skip), stop masking that twin, and add a 'zdb's choice' indicator feature. 2. Treat the cap as an ordered parameter: always offer the fixed ladder, clipped to what is reachable. 3. Trap removal: add features (trap type and position, enemies and cats nearby, own trap count) and use a lower floor, or make it a separate point. 4. Make the point trainable, initialised from the indicator feature rather than a constant bias, so its features matter at all.",
+   "proposal_cost": "Small to medium: Java mask and label changes plus re-imitation. Labels already exist: 100,771 FR_ZDB records per 24 recording games (docs/decision-points.md:205). Trap features: about 1 day.",
+   "coupling": [
+    "pickCap lasts the whole turn and caps later pickups, including pickAdjacent (Baby.java:40, 433-445).",
+    "Cheese carried slows BABY_MOVE and changes when the rat deposits.",
+    "BABY_ROLE: at ph 0 the pickup is skipped for attackers (Baby.java:464)."
+   ],
+   "features": "D.babyFree D.java:726-769, 36 inputs per the 'widened' metadata. Unused, because the net is constant.",
+   "missing_information": "How often zdb's pickup choice or a trap removal costs value has not been measured. The point is frozen, and only 5% of its records are sampled."
+  },
+  {
+   "id": 9,
+   "name": "BABY_VAL",
+   "n_options": 32,
+   "option_kind": "parameters: one base-32 digit of a raw 32-bit squeak payload, with no meaning defined on either the sending or the receiving side",
+   "locations": "Opened and picked inside D.digits D.java:803-820: 7 secondary records per value, a 2-bit first digit followed by six 5-bit digits. Features D.babyVal D.java:773-796. Called from commsExec C_RAW (Baby.java:2167-2172) and from KING_COMMS raw (DK.java:858). Sampled from DNet's alternate stream (D.java:221).",
+   "options": [
+    {
+     "id": "0-3",
+     "name": "digit values 0..3",
+     "executor": "Appended to the value by D.digits. C_RAW squeaks the finished word as-is (Baby.java:2172).",
+     "offered_when": "At every digit position. They are the only values allowed for the first, 2-bit digit.",
+     "cannot_act_when": "n/a",
+     "observed": "cpi-x0, 5% sample: about 124-153 each."
+    },
+    {
+     "id": "4-31",
+     "name": "digit values 4..31",
+     "executor": "Same.",
+     "offered_when": "Digit positions 2-7.",
+     "cannot_act_when": "n/a",
+     "observed": "About 46-86 each; overall roughly uniform. 2,280 sampled rows, about 6.5k squeaks in all."
+    }
+   ],
+   "fallback_explanation": "Fallback is structurally 0. A digit record cannot fail. A failed draw (D.dfail) or squeak only makes the C_RAW squeak fail, and the COMMS record was already closed with label C_RAW (Baby.java:2169-2170).",
+   "context_dependence": "The net is uniform: widen gives value points all-zero last layers and biases (docs/decision-points.md:194; rl-m2 v0 and v2 identical). There are no imitation labels. So raw squeaks are random words. Receivers parse every squeak with zdb's decoder, and a uniform word's type nibble is a zdb type (types 1-4 and SQ_CASH, D.java:645) with probability 5/16. That makes about 8 of the roughly 26 raw squeaks per cpi-x0 game look like zdb messages to any king or rat that hears them.",
+   "generalization_proposal": "1. Reserve a net-only type nibble, plus a length or purpose tag. 2. Replace free digits with typed fields: a small net vocabulary of message types, and payloads chosen by pointing at candidates (a known mine, cat, the enemy king, the rat's own position, a small enum). This is the same per-candidate scorer as proposed for BABY_COMMS. 3. Bootstrap by encoding zdb's own squeaks in the field format as imitation labels, so the raw channel can at least reproduce zdb's protocol and RL has a working protocol to modify. 4. Train senders and receivers together: give the receiving points decoded net-type messages as trainable features. Otherwise no reward signal can reach the sender.",
+   "proposal_cost": "Medium to large: protocol design, two decoders, receiver features, and RL across several points.",
+   "coupling": [
+    "Reachable only through BABY_COMMS C_RAW and KING_COMMS raw.",
+    "C_RELAY re-squeaks the newest net-type word heard (Baby.java:2174-2176).",
+    "Kings and babies act on words that look like zdb messages (King.java:131-151, Baby.java:934-939)."
+   ],
+   "features": "D.babyVal D.java:773-796, 30 inputs per the 'widened' metadata: purpose, digit position, the prefix so far. Unused, because the net is uniform.",
+   "missing_information": "Whether any aliased word reached a king in cpi-x0 is unknown; there is no king-side logging. The receiver-side design has not been decided."
+  }
+ ],
+ "cross_cutting": [
+  "A fallback rate of 0 says nothing about feasibility at points 5, 7, 8 and 9. Their labels are written after the net's option runs (Baby.java:45-46 and 88-89; minePickExec 2185; C_RAW 2169), or a failed step drops its record (Baby.java:456). Only BABY_COMMS reports real failures (Baby.java:164-165). The 'all fallback 0' rows in cpi-x0 for 5/7/8/9 are therefore not evidence that their action spaces fit.",
+  "The same encoding problem recurs: a shortcut option for the default action, with its explicit twin masked out. R_KEEP is offered while the current role is masked (D.roleOk D.java:555-561); FR_ZDB is offered while FR_ALL/FR_NONE are masked when they equal zdb's choice (freeOk Baby.java:470-489). One behaviour gets two logits whose relationship the net never learned. At BABY_ROLE this is a measured failure. The pass-2 net put its large review logit on the current role, because the old label was roleLab() with no mask (git show 0f50132). Pass 3 masked that role out and added a constant KEEP of 60, uncalibrated: the start net's 'widened' metadata has r_keep_bias 60 and b_new -20, against the p99.9+8 documented at docs/decision-points.md:191. In v0, 90% of the argmax flips I resampled had current-role logit > KEEP, and 88.6% of consecutive flips return to the previous role: GATHER<->FIGHT flipping, with about 170 rats flipping at every review. Rule: express 'keep' or 'zdb's choice' as an indicator feature on the explicit option, never as a separate option with its twin masked.",
+  "Options that are list positions or shortcuts mean different things in different contexts (MINE_PICK ranks, FR_ZDB, C_RELAY, BABY_VAL digits), and fixed-size MLP heads cannot learn them. The imitation start reproduces zdb's own MINE_PICK rule on only 81.7% of picks, and on 19.8% at m>=12. A shared per-candidate scorer with a 'zdb's choice' indicator generalises across list sizes, makes imitation exact, and keeps the existing 40-logit and mask plumbing.",
+  "Hard-coded restrictions shrink the reachable space more than the option counts suggest. MINE_PICK never offers enemy-half mines while any home-half mine is known (80.3% of v0 picks, a mean of 3.6 mines excluded). BABY_COMMS payloads are fixed by zdb's rules, 4 of its 15 options are always masked (8, 10-12), and option 9 duplicates option 3. R_SCOUT does nothing after round 150. R_RAIDER and review-time role changes have no imitation data at all.",
+  "Untrained inputs put new actions outside the downstream nets' training data. Columns that widen added are zero in frozen nets: BABY_MOVE's comms block (cols 60-75 measured 0), BABY_COMMS's 16 comms-board columns, and BABY_ROLE's 80 new columns, which are still about 0 after 2 RL updates. Columns that were constant during imitation keep their default init: BABY_MOVE raider col 22 reads 0.0615, against about 0.065 expected for its init, while the trained scout col 23 reads 0.129. So R_RAIDER, role flips and any comms content are either ignored or met with untrained responses. Meeting the capability-complete principle needs role-diverse and comms-diverse imitation data, not just more options.",
+  "Uniform exploration floors on decisions that last many turns have long-lasting effects. A floor pick at BABY_ROLE (and at MINE_PICK) persists for many turns and resets navigation state (Baby.java:1898-1905). With cpi-x0's ROLE floor of .03, about 14% of reviews flipped, about 12% chosen by the net itself (two estimates agree). That compares with at most 5.3% at v38 (floor .001) and 0.54% at v0. Exploration on mode switches belongs on the stay option or at birth only, with a minimum tenure.",
+  "A mask should equal what the executor can actually do. BABY_COMMS's static mask wastes floor exploration (38-97% fallback on options 3, 6, 7 and 9) and makes its fallback signal noisy. The mask should be computed from the executors' own predicates after the muted zdb pass.",
+  "Communication needs both a sender and a listener. Sender options (BABY_COMMS types, C_RAW/BABY_VAL) cannot become meaningful while receivers' message inputs are zero or frozen, and while raw words have a 5/16 chance of parsing as zdb messages (kings then add bogus mines or merge symmetry bits: King.java:131-151, Sym.java:50-54). Train or un-zero the receivers and reserve a net-only namespace before widening the sender action space.",
+  "Diagnostics have blind spots. Secondary-slot points (6, 7, 9) are absent from devfb, which keeps primary records only. Frozen points (6, 8, 9) are sampled at 5% (scripts/rl_data.py:148). The BABY_ROLE back-and-forth flipping does not show up in option histograms. Per-robot transition statistics, as computed by /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace5/p5trans.py, should become a standard check for points whose effect persists."
+ ]
+}

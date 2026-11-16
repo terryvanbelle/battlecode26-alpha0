@@ -1,0 +1,19 @@
+files 60
+point 2: n 1741917; label THROW 4124, THROW with carry=0 0, carry=2 rows 17734, carry=1 rows 0
+   nRatT: q50/90/99/max [0.0, 0.0, 0.0] 0; share>=20 0.0000
+   nCatT: q50/90/99/max [1.0, 7.0, 10.0] 10; share>=20 0.0000
+   dirt: q50/90/99/max [45.0, 149.0, 255.0] 255; share>=20 0.7830
+   budget: q50/90/99/max [886.0, 1023.0, 1023.0] 1023; share>=20 0.8784
+   r10: q50/90/99/max [97.0, 179.0, 197.0] 200; share>=20 0.8746
+   friends: q50/90/99/max [1.0, 5.0, 13.0] 15; share>=20 0.0000
+   front: q50/90/99/max [0.0, 1.0, 2.0] 5; share>=20 0.0000
+   rounds>=1000 share 0.490; nRatT>=20 & r>=1000 share 0.00000
+point 3: n 1716717; label THROW 85, THROW with carry=0 0, carry=2 rows 12542, carry=1 rows 0
+   nRatT: q50/90/99/max [0.0, 0.0, 0.0] 0; share>=20 0.0000
+   nCatT: q50/90/99/max [1.0, 7.0, 10.0] 10; share>=20 0.0000
+   dirt: q50/90/99/max [45.0, 149.0, 255.0] 255; share>=20 0.7857
+   budget: q50/90/99/max [896.0, 1023.0, 1023.0] 1023; share>=20 0.8814
+   r10: q50/90/99/max [98.0, 179.0, 197.0] 200; share>=20 0.8796
+   friends: q50/90/99/max [1.0, 5.0, 13.0] 15; share>=20 0.0000
+   front: q50/90/99/max [0.0, 1.0, 2.0] 5; share>=20 0.0000
+   rounds>=1000 share 0.495; nRatT>=20 & r>=1000 share 0.00000

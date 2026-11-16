@@ -1,0 +1,389 @@
+{
+ "scope": "KING_COMMS (14) and KING_VAL (15), the D.java/DNet.java decision plumbing they use, and how the Python RL pipeline (scripts/rl_data.py, rl_train.py, rl_critic.py, decisions.py, dpnet_io.py) handles fallbacks and masks. This was a read-only pass: no builds, no games, no edits. The measurements come from the cpi-x0 probe records: 256 games (512 team-games) of rl-m2 v39, floor 0.005 at points 14 and 15, and a 5% per-record sample of frozen points (rl_data.py:211-216). They were computed earlier in this session into /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/devfb-cpi-x0.json and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/cpi-x0-summary.json. The per-point sensitivity build for 14 (sens14) was never run, so the cost of KING_COMMS deviations in games is not measured.",
+ "points": [
+  {
+   "id": 14,
+   "name": "KING_COMMS",
+   "locations": "Option table DK.java:51-59 (81 options, KC_CHAIN 12, KC_BUDGET {0,100,1023}, KC_GROUP bitmasks). Open: King.java:85 -> DK.kingComms DK.java:724-758 (94 features), reopened per loop step at DK.java:837. Snapshot: King.java:23 -> DK.saPre DK.java:696-699; changed/pending DK.java:702-709. Mask: DK.commsOk DK.java:789-805 (alertHere :808-812, trapMask :712-721). Pick: DK.netPick DK.java:358-366 inside the edit loop DK.netKingComms DK.java:821-840. Executor: DK.execKingComms DK.java:843-883 (revert :815-817, value digits D.digits D.java:803-820). The terminal record is emitted at King.java:87 (default label KC_ZDB).",
+   "n_options": 81,
+   "option_kind": "Mixed. There is 1 terminal 'accept zdb's writes' and 1 terminal 'undo all of zdb's writes'. Then a chained loop of up to 12 continue edits: 7 group undos, 3 BUDGET levels, 2 alert edits, 3 primitive actions (squeak, remove rat trap, remove cat trap) whose parameters come from KING_VAL digits, and 64 raw writes (the target is the slot index, the 10-bit value comes from 2 KING_VAL digits). The mean allowed count is 73.05 per record (measured), and 64 of those are raw SET options.",
+   "features": "94 features (DK.java:724-758): loop step, kcEdits, kcSqueaked, pending-group bitmask (7 bits), pending popcount, coop, round/10, cheese/10, surplus/10+32768, rate100/10, numKings, King.slot, health, #enemies (cap 15), #cats (cap 4), #own babies in view (cap 63), actionReady, sawEnemy, own rat/cat trap counts in the 5x5, the heard-squeak block (6, D.java:681-684), the 64 raw shared-array values, and the changed mask as 4x16 bits.",
+   "missing_information": "Missing: the king's own y (only decodable through its KING slot, indexed by the slot feature), map W/H, the exact round (round/10 only, so stamp freshness cannot be computed), the pre-turn values pre[] (what zdb's proposal replaced), the king's local state (Sym.mask, King.formSite/formStart, whether a formation is open), positions of sensed enemies/cats/mines (counts only), and whether another king acts later this round and will overwrite BUDGET/ALERT (King.java:58-69, :83).",
+   "options": [
+    {
+     "id": "0",
+     "name": "KC_ZDB: keep zdb's writes of this turn (terminal)",
+     "executor": "DK.java:825-828 sets D.lab=0 and returns; record emitted at King.java:87",
+     "offered_when": "always (DK.java:793), including past KC_CHAIN",
+     "cannot_act_when": "never",
+     "context_dependence": "Accepts zdb's whole-turn proposal: the heartbeat x/y/stamp and SYM (publish King.java:37 and :82, body :166-176), BUDGET (King.java:83, every turn), and any ALERT (King.java:58-69), FORM (formation King.java:74, slot 0 only :670), MINE (King.java:122, :141) or CAT (King.java:148, :153-164) writes. At step >= 1 it means 'stop editing and keep my earlier edits'. The same label covers 4 to dozens of slot changes.",
+     "observed": "39,105 of 39,304 sampled records (99.49%); p_top 0.9996; fallback 0"
+    },
+    {
+     "id": "1",
+     "name": "KC_DROP_ALL: revert every pending slot to the turn-start snapshot (terminal)",
+     "executor": "DK.java:826 revert(pending()) -> DK.java:815-817",
+     "offered_when": "pending() != 0 (DK.java:794), with no step guard. At step 0 it is always offered because the own heartbeat stamp changes every round (King.java:170).",
+     "cannot_act_when": "never fails",
+     "context_dependence": "The king is silent for the turn. Heartbeat: readKings needs stamp age <= 2 (Comms.java:58-66), so 3 consecutive silent turns remove the king from numKings for every reader, and claimSlot (King.java:11-17) lets a new king take a slot stale > 3. The shared SYM is not narrowed, although the king's local Sym.mask is (King.java:174). No new MINE/CAT/ALERT/FORM/BUDGET writes go out. Because netSet only records SET writes (DK.java:879) and pending() = changed & ~netSet (DK.java:709), this also undoes the net's own band, ALERT_CALL and ALERT_CLEAR edits from earlier steps. On a formation-opening turn it desyncs the formation (see option 5).",
+     "observed": "2 sampled (about 40 over 256 games); fallback 0"
+    },
+    {
+     "id": "2",
+     "name": "KC_DROP SLOT (group 0: slots 1-16 = SYM + KING0-4 x/y/stamp)",
+     "executor": "DK.java:846 revert(pending() & KC_GROUP[0]); group mask DK.java:58",
+     "offered_when": "step < 12 and the group is pending (DK.java:795). That is every step-0 turn, because the own heartbeat changed.",
+     "cannot_act_when": "never",
+     "context_dependence": "Suppresses this king's heartbeat and the SYM publication. One use is a one-round delay. 3 or more consecutive uses make the king vanish from readKings (Comms.java:63) for babies (nearestKing for cheese delivery and report range, Nav.markKings Baby.java:54-55, Baby.java:903-911) and for other kings.",
+     "observed": "0 sampled. It is offered on every record; with about 2.7 picks expected, P(0) is about 0.07, so this is chance."
+    },
+    {
+     "id": "3",
+     "name": "KC_DROP ALERT (group 1: slots 17-19)",
+     "executor": "DK.java:846",
+     "offered_when": "step < 12 and ALERT pending: zdb wrote a war alert this turn (King.java:58-69: not coop, enemies in view, no equal-or-higher same-round alert), or the net's own ALERT_CALL/CLEAR earlier in the chain (not in netSet)",
+     "cannot_act_when": "never",
+     "context_dependence": "Hides the alert from babies acting before the next alert write: the rally within ALERT_DIST2 (Baby.java:1283-1288), defense within DEFEND_D2 (threatenedKing Baby.java:1297-1300) and the M_WAR mask (Baby.java:2278). It restores the pre-turn values, which may be another king's alert from earlier this round. The effect is bounded (stamps fresh 2-3 rounds), but repeated use disables defense.",
+     "observed": "0 sampled (war turns only)"
+    },
+    {
+     "id": "4",
+     "name": "KC_DROP REG (group 2: slots 20-22, the free registers R0-R2 / EKING)",
+     "executor": "DK.java:846",
+     "offered_when": "REG pending. A king writes these only on hearing an SQ_EKING squeak (King.java:143-147). zdb never sends one (C_EKING masked at Baby.java:2090), so only a net raw squeak with type nibble 3 triggers it.",
+     "cannot_act_when": "never",
+     "context_dependence": "Practically never offered. Reverts register values that only net features read (D.cb D.java:688-702, D.kmini :705-709).",
+     "observed": "0 sampled"
+    },
+    {
+     "id": "5",
+     "name": "KC_DROP FORM (group 3: slots 0, 23, 63 = FORM_X, FORM_Y, FORM_T)",
+     "executor": "DK.java:846",
+     "offered_when": "FORM pending, which happens only for the slot-0 king (King.java:670): F_HOLD refresh (King.java:685-686), openForm (:712-719) or closeForm (:721-724, FORM_T=0)",
+     "cannot_act_when": "never",
+     "context_dependence": "On a HOLD turn, babies see the formation as stale for that round (formSite needs FORM_T fresh 2, Baby.java:1528-1532). On the opening turn, King.formSite/formStart are set locally (King.java:713-715) but X/Y/T are reverted, and every later turn F_HOLD rewrites only FORM_T. Babies then join the previous formation's X/Y (closeForm keeps them) or nothing (X=0) for up to FORM_TTL 60 rounds (Cfg.java:44), while the king holds its own site: a persistent king/baby desync. On a closing turn, babies may keep joining for 2 more rounds.",
+     "observed": "0 sampled"
+    },
+    {
+     "id": "6",
+     "name": "KC_DROP MINE (group 4: slots 24-55)",
+     "executor": "DK.java:846",
+     "offered_when": "MINE pending: this turn's addMine from sensing (King.java:122) or from a heard SQ_MINE (King.java:141)",
+     "cannot_act_when": "never",
+     "context_dependence": "The king's local Comms.mines/numMines keep the mine (Comms.java:97-102) while the array loses it until the next readMines (King.java:32). The mine returns only when the king senses it again or a baby re-reports it (report/unlisted Baby.java:903, 972-978). This delays the team's mine knowledge by a bounded amount.",
+     "observed": "0 sampled"
+    },
+    {
+     "id": "7",
+     "name": "KC_DROP CAT (group 5: slots 56-61)",
+     "executor": "DK.java:846",
+     "offered_when": "CAT pending: noteCat ran on a baby's SQ_CAT squeak this turn (King.java:148, :153-164)",
+     "cannot_act_when": "never",
+     "context_dependence": "Hides a cat sighting from babies' knownCat (fresh 30, Baby.java:1431-1440) until the next report. Bounded.",
+     "observed": "0 sampled"
+    },
+    {
+     "id": "8",
+     "name": "KC_DROP BUDGET (group 6: slot 62)",
+     "executor": "DK.java:846",
+     "offered_when": "BUDGET pending: King.java:83 changed surplus/4 this turn (most turns), or after a net band edit",
+     "cannot_act_when": "never",
+     "context_dependence": "Restores pre[62], the value the previous writer left (another king this round, or this king last round): a stale spend projection. It also undoes the net's own band edit.",
+     "observed": "2 sampled"
+    },
+    {
+     "id": "9",
+     "name": "KC_BUDGET band 0 (write 0)",
+     "executor": "DK.java:847 (KC_BUDGET DK.java:55)",
+     "offered_when": "step < 12 and the current band is not 0 (bands <50 / <150 / >=150, DK.java:796-797)",
+     "cannot_act_when": "never",
+     "context_dependence": "Babies stop building traps unless defending or in coop (Baby.java:850: BUDGET*4 < TRAP_SURPLUS 200) and stop cheese bites (Baby.java:802: BUDGET*4 >= CHEESE_BITE_SURPLUS 600). It lasts only until the next King.java:83 write: the next king to act this round, or this king next round. Only robots acting in between see it, so with several kings the effect depends on turn order.",
+     "observed": "4 sampled"
+    },
+    {
+     "id": "10",
+     "name": "KC_BUDGET band 1 (write 100): traps on, cheese bites off",
+     "executor": "DK.java:847",
+     "offered_when": "step < 12 and the band is not 1",
+     "cannot_act_when": "never",
+     "context_dependence": "Same one-round, turn-order-dependent throttle as option 9.",
+     "observed": "1 sampled"
+    },
+    {
+     "id": "11",
+     "name": "KC_BUDGET band 2 (write 1023): traps and cheese bites on",
+     "executor": "DK.java:847",
+     "offered_when": "step < 12 and the band is not 2. This is rare: BUDGET is usually in band 2 (median raw value about 886).",
+     "cannot_act_when": "never",
+     "context_dependence": "Same as option 9.",
+     "observed": "0 sampled (mostly masked)"
+    },
+    {
+     "id": "12",
+     "name": "KC_ALERT_CALL: call a rally to this king",
+     "executor": "DK.java:848-855 writes (x+1)|max(1,t)<<6, y+1 and Comms.stamp() into ALERT..ALERT+2",
+     "offered_when": "step < 12 and !alertHere() (DK.java:798, :808-812): every step unless this king already holds this round's alert with threat >= 1",
+     "cannot_act_when": "never",
+     "context_dependence": "For 3 rounds, babies within ALERT_DIST2 225 and beyond d2 8 walk to the king (Baby.java:1283-1288), babies within DEFEND_D2 100 defend it outside coop (Baby.java:1297-1300), and M_WAR is offered (Baby.java:2278). The write is unconditional: it overwrites another king's same-round alert even when that alert has a higher threat (zdb's guard at King.java:63-64 is bypassed), so it can pull defenders away from a king under attack. The write is not added to netSet, so DROP ALERT and DROP_ALL undo it.",
+     "observed": "5 sampled"
+    },
+    {
+     "id": "13",
+     "name": "KC_ALERT_CLEAR: zero the alert stamp",
+     "executor": "DK.java:856",
+     "offered_when": "step < 12 and ALERT+2 != 0 (DK.java:799). The array is never cleared (docs/rules/engine-checked-digest.md:246) and stamps are non-zero (Comms.java:52), so after the game's first alert this is offered on every king turn, fresh or not.",
+     "cannot_act_when": "never",
+     "context_dependence": "On a fresh alert it cancels the rally, defense and M_WAR for every king (there is a single ALERT record). On a stale alert (age > 3) it changes nothing for the babies but still changes slot 19, so the slot shows up as changed/pending in the features.",
+     "observed": "3 sampled"
+    },
+    {
+     "id": "14",
+     "name": "KC_SQUEAK: squeak a 32-bit value built from 7 KING_VAL digits",
+     "executor": "DK.java:857-862; D.digits(32,1,true,64,0) at D.java:803-820 (first digit 2 bits)",
+     "offered_when": "KING_VAL net present, step < 12, no net squeak yet this turn (DK.java:792, :800)",
+     "cannot_act_when": "No KING_VAL net, or a feature exception (dfail): the record is dropped (DK.java:832). rc.squeak returns false only on a second squeak in a turn (engine-checked-digest.md:165). zdb's king never squeaks; DK.java:861 is the only rc.squeak call in King/DK.",
+     "context_dependence": "At init the value is uniform. 5 of the 16 type nibbles are zdb types (D.zdbType D.java:645). SQ_MINE: kings in range addMine with no bounds check (King.java:141, Comms.java:97-102) and babies noteMine (Baby.java:935-939, 412-416), which they later report, giving persistent phantom mines (6-bit x/y, often off-map). SQ_SYM: kings Sym.merge(extra&7) (King.java:142, Sym.java:50-54), which can narrow to a wrong symmetry that then gets published. SQ_EKING: kings write R0-R2 (King.java:143-147). SQ_CAT: a phantom cat via noteCat (King.java:148) that babies trust for 30 rounds. SQ_CASH is rejected unless its 6-bit tag matches (Baby.java:1593, 1615-1617). Squeaks reach allies and cats within d2 16, never the sender, and cats in attack mode react (engine-checked-digest.md:247-252).",
+     "observed": "1 sampled (about 20 over 256 games)"
+    },
+    {
+     "id": "15",
+     "name": "KC_RM_RAT: remove an own rat trap in the 5x5 (tile = 1 KING_VAL digit)",
+     "executor": "DK.java:863-872; D.digits(5,2,true,64,mask)",
+     "offered_when": "KING_VAL net present, step < 12, and a removable own rat trap within the 5x5 (DK.java:801, trapMask :712-721)",
+     "cannot_act_when": "Never in practice: the digit is masked to removable tiles (D.java:809) and checked with canRemoveRatTrap.",
+     "context_dependence": "Permanent loss of a trap with no refund and no ready check (engine-checked-digest.md:150). zdb never removes traps.",
+     "observed": "1 sampled"
+    },
+    {
+     "id": "16",
+     "name": "KC_RM_CAT: remove an own cat trap in the 5x5",
+     "executor": "DK.java:863-872; D.digits(5,3,true,64,mask)",
+     "offered_when": "KING_VAL net present, step < 12, and a removable own cat trap within the 5x5 (DK.java:802)",
+     "cannot_act_when": "Never in practice (masked).",
+     "context_dependence": "Same as option 15, for cat traps.",
+     "observed": "0 sampled"
+    },
+    {
+     "id": "17",
+     "name": "KC_SET slot 0 (FORM_X)",
+     "executor": "DK.java:874-881: D.digits(10,0,true,0,0), Comms.write, netSet bit set",
+     "offered_when": "KING_VAL net present and step < 12 (DK.java:803). This applies to all 64 SET options.",
+     "cannot_act_when": "never",
+     "context_dependence": "During an open formation, a persistent wrong site for the formation's lifetime: F_HOLD rewrites only FORM_T (King.java:685-686). The value is uniform 0..1023, so P(on-map) <= 6%. With no formation open it stays latent, because X/Y are read only together with a fresh FORM_T (Baby.java:1528-1532), and a later openForm overwrites it.",
+     "observed": "5 sampled"
+    },
+    {
+     "id": "18",
+     "name": "KC_SET slot 1 (SYM)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "Babies acting before the next king's publish merge it (Baby.java:57-58, Sym.merge Sym.java:50-54), and the next king's publish ANDs it into its own mask and republishes it (King.java:171-175). The result is a persistent team-wide narrowing to (v&7) AND mask whenever that is non-empty. Sym never widens, so a narrowing that excludes the true symmetry is permanent. It is harmless once the mask is a single symmetry.",
+     "observed": "2 sampled"
+    },
+    {
+     "id": "19,20,22,23,25,26,28,29,31,32",
+     "name": "KC_SET KING0-4 x+1 / y+1 (slots 2,3,5,6,8,9,11,12,14,15)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "Moves a king's published location (94% or more off-map) until that king's next publish (King.java:37), so at most about 1 round. Readers are babies (nearestKing for cheese delivery and report range, Nav.markKings Baby.java:54-55) and other kings' readKings (King.java:30).",
+     "observed": "42 sampled"
+    },
+    {
+     "id": "21,24,27,30,33",
+     "name": "KC_SET KING0-4 heartbeat stamps (slots 4,7,10,13,16)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "A random stamp is fresh (age <= 2) with probability about 3/1024, so the king drops out of readKings (Comms.java:63) and numKings for every reader until its next publish (about 1 round). A stale dead-king slot is revived only with that same tiny probability.",
+     "observed": "11 sampled"
+    },
+    {
+     "id": "34,35",
+     "name": "KC_SET ALERT (x+1)|threat<<6 and y+1 (slots 17,18)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "If the alert is fresh, babies rally to a random, usually off-map location, with a random threat (non-zero 15/16 of the time, which triggers defense), for up to 3 rounds (Baby.java:1283-1300). If the alert is stale, the write stays latent until zdb's next alert write overwrites all three slots.",
+     "observed": "13 sampled"
+    },
+    {
+     "id": "36",
+     "name": "KC_SET ALERT stamp (slot 19)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "Mostly kills a fresh alert (P(still fresh within 3 rounds) about 4/1024). With the same small probability it revives a stale alert at its old location.",
+     "observed": "2 sampled"
+    },
+    {
+     "id": "37-39",
+     "name": "KC_SET R0-R2 (slots 20-22, EKING registers)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "No zdb reader. Only an SQ_EKING heard by a king writes these (King.java:143-147). They are read only by net features (D.cb D.java:688-702 for babies, D.kmini :705-709 for kings). These are the only slots a raw write cannot use to corrupt zdb's protocol.",
+     "observed": "8 sampled"
+    },
+    {
+     "id": "40",
+     "name": "KC_SET slot 23 (FORM_Y)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "As option 17 (FORM_X).",
+     "observed": "2 sampled"
+    },
+    {
+     "id": "41-72",
+     "name": "KC_SET MINE0-15 x+1 (even slots 24..54) / y+1 (odd slots 25..55)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "If the slot is inside the list (index < 2*numMines), a known mine becomes a phantom (94% or more off-map), or a v=0 write on an x slot truncates the list (readMines stops at the first x==0, Comms.java:82-89). Either way numMines changes for every reader and babies' mineTarget resets (refreshMine Baby.java:1122-1125, idleDue :2239-2242). Phantoms are permanent: the array is never cleared and addMine only appends (Comms.java:97-102), and each one holds one of the 16 slots. Off-map phantoms pass homeHalf about half the time (Baby.java:1719-1721), enter the MINE_BALANCE spread (pickMine Baby.java:1473-1501) and draw a share of gatherers to an unreachable target. If the slot is beyond the list, the write is invisible until addMine overwrites it.",
+     "observed": "80 sampled (about 3.1 writes per team-game); slots 24,28,30,32,51,53 not hit in the sample"
+    },
+    {
+     "id": "73,74,76,77",
+     "name": "KC_SET CAT0-1 x+1 / y+1 (slots 56,57,59,60)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "If the entry is fresh (30 rounds), babies' knownCat moves to a phantom location (Baby.java:1431-1440) for up to 30 rounds. noteCat's same-area check (King.java:155-160) may then shift entries.",
+     "observed": "3 sampled"
+    },
+    {
+     "id": "75,78",
+     "name": "KC_SET CAT stamps (slots 58,61)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "P(fresh within 30 rounds) is about 31/1024, so the write usually hides a fresh cat and occasionally revives an old sighting.",
+     "observed": "7 sampled"
+    },
+    {
+     "id": "79",
+     "name": "KC_SET slot 62 (BUDGET)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "A uniform value lands in band 2 about 85% of the time. The effect lasts one round or until the next king's write, as with options 9-11.",
+     "observed": "2 sampled"
+    },
+    {
+     "id": "80",
+     "name": "KC_SET slot 63 (FORM_T)",
+     "executor": "DK.java:874-881",
+     "offered_when": "as option 17",
+     "cannot_act_when": "never",
+     "context_dependence": "With a formation open, babies see it as stale until the next F_HOLD (1 round). With no formation open, P(fresh) is about 3/1024, which revives a phantom formation at the old X/Y for 2 rounds.",
+     "observed": "3 sampled"
+    }
+   ],
+   "fallback_explanation": "KING_COMMS never falls back, by construction. ZDB and DROP_ALL set D.lab=k (DK.java:827), and executed continue options set D.lab=k before D.emit (DK.java:833-834), so D.fallback (D.java:159-162: k>=0 && l!=k) is 0 for every record. An executor that returns false or throws drops the record instead (D.point=0, DK.java:832). That practically never happens: zdb's king never squeaks, RM is masked to removable tiles, and SET/DROP/band/alert always return true. Measured: fallback 0.0 for all 65 options picked in cpi-x0 (39,304 records), which matches the plan's 0% row (docs/rl-es-plan.md:501-510). The problem is the opposite of fallback. Every option acts, most edits hit zdb's protocol state with values the net cannot make valid, and the net is a constant function. widen's calibrated init (dpnet_io.py:296-304) gives a zero last layer, bias 0 on option 0 and -ln(10*81/0.005) = -12 on the other options. The resulting p_top is 0.9996, the measured deviation rate is 0.0051 (floor 0.005*72/73 plus a softmax leak of 0.0004), and the point is frozen in every RL config (trainable_points [5,7,10,11,12,13,16] in configs/rl-m2.json, cpi-x0.json, cpi-x1.json). Its floor therefore injects about 7.8 non-ZDB edits per team-game into every RL game, for both teams, with no credit: about 7.0 random raw slot writes, about 3.1 of them into MINE slots.",
+   "context_dependence": "Strong, by design. The point edits zdb's turn. KC_ZDB means 'whatever zdb wrote this turn', DROP g means 'undo whatever zdb wrote in group g' (anything from a heartbeat to a formation opening), and SET i overwrites a protocol field. A field's role (coordinate, stamp, symmetry mask, budget, register) and the reach of a write (none, one round, permanent) depend on the slot and on state the features show only as raw values, such as whether a formation is open or whether MINE slot i is inside the list. Turn order matters: BUDGET and ALERT edits are undone by any later king's zdb writes in the same round (King.java:58-69, :83). The loop makes an option's meaning depend on the step (step 0 versus continuation). pending() treats the net's own band and alert edits as zdb's (DK.java:709; netSet is set only at :879).",
+   "generalization_proposal": "Replace the raw editor with typed, protocol-valid comms. Keep zdb as the default and make exploration safe. (1) Keep KC_ZDB as option 0, so imitation labels stay valid. (2) Turn the DROPs into explicit per-group 'publish now / defer' choices that also update the king's local state: DROP FORM must roll back King.formSite/formStart (King.java:713-715), or be removed; heartbeat deferral should be a named 'hide' option, since 3 or more consecutive uses remove the king from readKings. (3) Fix pending() so all net edits count as net edits: add the band and ALERT_CALL/CLEAR slots to netSet (DK.java:847-856), so DROP_ALL and DROP g revert only zdb's writes. (4) Make BUDGET a team spend policy: a 3-level head (no traps or bites, traps only, both) plus 'zdb', written to a policy register that the babies' gates at Baby.java:802 and :850 combine with BUDGET. That way the King.java:83 writes of later kings cannot silently undo it. (5) Make ALERT a typed rally head over candidate targets: this king, each live king in Comms.kings, the last enemy-king sighting in R0-R2, or clear. Threat becomes an ordinal parameter, and there are two variants, one respecting zdb's same-round guard (King.java:63-64) and one overriding it. The executor always writes on-map x+1/y+1 and Comms.stamp(). (6) Make SQUEAK typed templates: SQ_MINE over candidate mines (sensed, or missing from the list), SQ_SYM carrying Sym.mask, SQ_CAT for a seen cat, SQ_EKING for a seen enemy king, plus one raw option whose type nibble is masked to net types (D.zdbType D.java:645), so raw exploration can never inject zdb-typed messages. (7) Make RM a candidate head over own trap tiles, with per-tile features (distance to the nearest enemy, ally and king, trap kind). (8) Allow raw 10-bit SET only into free registers: R0-R2 (slots 20-22), plus any slots freed by repacking zdb's schema. Protocol slots are reachable only through typed executors that compute valid values. If raw access to every slot must stay for capability-completeness, keep it as one gated 'raw write' option with floor 0, whose value head sees the target's protocol role, me.x, me.y, W, H and round&1023. (9) Exploration: floor 0 at 14 and 15 until a typed head is trainable, and when exploring, spread the floor over option groups rather than over 81 options of which 64 are SET. The result is that every option has one coherent meaning, random comms corruption disappears from RL games, and the king keeps full comms capability through typed writes plus registers.",
+   "coupling": [
+    "KING_VAL (15): each SQUEAK, RM or SET pick runs 7, 1 or 2 KING_VAL digit picks (D.java:803-820), recorded as secondary records before the KC record (DK.java:833-834).",
+    "KING_ACT (12): the zdb ALERT that DROP ALERT and ALERT_CLEAR edit is written in the KING_ACT block (King.java:55-70), and ALERT_CALL bypasses that block's same-round guard (:63-64).",
+    "KING_FORM (13) / formation(): DROP FORM and SET slots 0, 23 and 63 desync the slot-0 king's formSite (King.java:685-686, 712-724) from the babies' formSite (Baby.java:1528-1532).",
+    "MINE_PICK (7): SET into MINE slots and SQ_MINE squeaks create permanent phantom candidates (Comms.java:82-102; Baby.java:1473-1501, 1719-1721) and reset mineTarget (Baby.java:1122-1125, 2239-2242).",
+    "BABY_ROLE (5), BABY_MOVE (1), BABY_ACT_* (2, 3): BUDGET gates trap building and cheese bites (Baby.java:802, 850); ALERT drives rally and defense and the M_WAR move mask (Baby.java:1283-1300, 2278).",
+    "BABY_COMMS / BABY_VAL (9): the same D.digits chain (C_RAW at Baby.java:2167-2172), registers R0-R2 read through D.cb/D.kmini (D.java:688-709), and net-type squeaks heard through D.hear (D.java:659-678).",
+    "Symmetry consumers: Sym.merge (Sym.java:50-54) through King.publish (King.java:171-175) and Baby.java:57-58, used by homeHalf/firstSym (Baby.java:1719-1730) and King.sym (King.java:727).",
+    "Heartbeat/numKings: readKings (Comms.java:58-66) and claimSlot (King.java:11-17)."
+   ],
+   "proposal_cost": "DK.java: rewrite commsOk/execKingComms/kingComms plus typed executors, about 250 lines. King.java: make the FORM revert roll back formSite/formStart, or drop that option (about 15 lines); add a policy register write. DK.pending/netSet fix: 2 lines. D.java: new KING features (me.y, W, H, round&1023, Sym.mask, alert age, formation-open flag), about 10 lines. Scripts: point option and feature counts, widen dims, build_dpnet. train_dp: labels stay KC_ZDB. No learned weights are lost, because 14 and 15 have never been trained. rl-m2 dropped 14 after iteration 0 (configs/rl-m2.json purpose), and the scale problem it hit is documented in scripts/reinit_new_points.py:4-8. Exact replay: with floor 0 at 14 and 15 and KC_ZDB as the default, zdb replay is unchanged by construction. Points 14 and up sample from the separate stream DNet.uniform2 (D.java:221, DNet.java:94-103), so other points' draws do not shift. Risk: babies' protocol readers have no bounds checks (Comms.java:82-102, Baby.java:412-416), so typed executors must only ever write on-map values."
+  },
+  {
+   "id": 15,
+   "name": "KING_VAL",
+   "locations": "Open: DK.kingVal DK.java:762-786 (D.open2, secondary slot, 22 features), called per digit from D.digits D.java:803-820. Mask: D.java:807-810 (each digit limited to its bit width; the RM digit masked to the trap bits). Pick: D.pick2 D.java:212-218 (DNet.uniform2 stream via D.alt D.java:221). Label: lab2=k (D.java:815). Record: D.emit2 D.java:184-191. The value is consumed by the parent KC executor: squeak DK.java:857-862, trap removal :863-872, slot write :874-881.",
+   "n_options": 32,
+   "option_kind": "Parameters: one base-32 digit (5 bits) of a value, most significant digit first, chained over the prefix. The purpose feature (0 slot value, 1 squeak, 2/3 rat/cat trap tile) decides what the digits mean.",
+   "features": "22 features (DK.java:762-786): purpose, position, total, prefix high/low 16 bits, target slot idx (64 = none), current value of the target slot, whether the target is pending, trap mask low/high, coop, round/10, cheese/10, numKings, King.slot, me.x, and the heard block (6).",
+   "missing_information": "Missing: me.y (KING_VAL has me.x but not me.y), map W/H (BABY_COMMS has them at D.java:630-633), round&1023 (needed for any valid stamp), Sym.mask, and positions of candidate targets (mines, cats, enemy king, own kings). There are no per-tile features for the RM digit (only the bitmask). The features do not state the protocol role of the target slot beyond its index.",
+   "options": [
+    {
+     "id": "0-31 (purpose 0, digit 0)",
+     "name": "SET value bits 9-5",
+     "executor": "D.digits D.java:803-820 (v = v<<5 | k) -> Comms.write DK.java:878",
+     "offered_when": "all 32 values (b=5) whenever a KC SET runs",
+     "cannot_act_when": "never; the whole value is lost only if a later digit fails (dfail), which drops the KC record",
+     "context_dependence": "For coordinate slots (x+1, y+1 <= 64) only 0-1 can give an on-map value. For a stamp, only the digit equal to (round&1023)>>5 can be fresh. For SYM only the low 3 bits matter, which are in digit 1. For BUDGET, 0 gives v < 32 (band 0), 1 gives band 0/1, and 5 or more gives band 2. For R0-R2 any value is meaningful.",
+     "observed": "About 360 of the 425 sampled KING_VAL rows are SET digits (2 per sampled SET); near-uniform counts"
+    },
+    {
+     "id": "0-31 (purpose 0, digit 1)",
+     "name": "SET value bits 4-0",
+     "executor": "D.java:817 -> DK.java:878",
+     "offered_when": "all 32",
+     "cannot_act_when": "never",
+     "context_dependence": "Completes the value. With an unconditioned uniform net, a protocol-valid coordinate needs both digits right, about 60/1024.",
+     "observed": "as above"
+    },
+    {
+     "id": "0-3 (purpose 1, digit 0)",
+     "name": "squeak bits 31-30 (high half of the type nibble)",
+     "executor": "D.java:806-817 -> rc.squeak DK.java:861",
+     "offered_when": "options 0-3 only (b=2); 4-31 masked",
+     "cannot_act_when": "never",
+     "context_dependence": "Together with the top 2 bits of digit 1 this forms the type nibble. Types 1-4 and 9 are zdb types (D.java:645) with real effects on kings and babies (see KC option 14).",
+     "observed": "part of 425 sampled rows (about 7 per sampled squeak)"
+    },
+    {
+     "id": "0-31 (purpose 1, digit 1)",
+     "name": "squeak bits 29-25",
+     "executor": "D.java:817 -> DK.java:861",
+     "offered_when": "all 32",
+     "cannot_act_when": "never",
+     "context_dependence": "Its top 2 bits complete the type nibble; the rest starts the extra field.",
+     "observed": "as above"
+    },
+    {
+     "id": "0-31 (purpose 1, digits 2-6)",
+     "name": "squeak bits 24-0: extra (bits 27-12), x (11-6), y (5-0) for zdb types",
+     "executor": "D.java:817 -> DK.java:861",
+     "offered_when": "all 32",
+     "cannot_act_when": "never",
+     "context_dependence": "For SQ_MINE/SQ_CAT, x and y are 6 bits each (0..63), so they are off-map whenever above W/H. For SQ_SYM, extra&7 is the mask that kings merge. For SQ_CASH the 6-bit tag must match cashTag (Baby.java:1593, 1617). For net types, the 32-bit content reaches D.hear features (H[2]/H[3], D.java:659-678).",
+     "observed": "as above"
+    },
+    {
+     "id": "0-24 (purpose 2/3, digit 0); 25-31 never offered",
+     "name": "RM tile index (dy+2)*5+(dx+2) in the 5x5 around the king",
+     "executor": "D.digits(5,2|3,true,64,mask) D.java:803-820 -> DK.java:869-871 removeRatTrap/removeCatTrap",
+     "offered_when": "only tiles whose bit is set in trapMask (D.java:809; DK.java:712-721)",
+     "cannot_act_when": "never (masked; canRemove is checked again at DK.java:870-871)",
+     "context_dependence": "The tile index's meaning is fixed relative to the king, but the net sees only the trap bitmask, with nothing about enemies, allies or the tile's role.",
+     "observed": "Rare (1 sampled KC RM pick); single_option 2 (one trap in range)"
+    }
+   ],
+   "fallback_explanation": "No fallback by construction: every digit record sets lab2=k (D.java:815), so D.fallback is 0, and a failure (no net, or a feature exception: dfail) aborts the parent KC option, which drops the KC record (DK.java:859, 868, 877 -> :832). Measured in cpi-x0: 425 sampled rows (about 16.6 per team-game in total), fallback 0, saturated 0.0047, per-value counts 6-23, consistent with uniform. The net is exactly uniform: VALUE_POINTS get all-zero biases and a zero last layer (dpnet_io.py:205, 302-304). It has no imitation labels, because KC_DECOMP is not implemented (docs/decision-points.md:213-214), and it is frozen in every RL config. Every value it produces is uniform noise.",
+   "context_dependence": "Total. A digit's meaning depends on purpose, position, prefix and the protocol role of the target slot (x+1 coordinate, y+1 coordinate, 10-bit stamp, symmetry mask, budget/4, free register). Even with perfect training, the features cannot produce a valid location (no me.y, W or H) or a fresh stamp (no round&1023). Each digit is its own record sharing the game-level advantage, so credit for a specific 10-bit or 32-bit value has to be found by digit-by-digit exploration under bin-level advantages, which is hopeless in practice.",
+   "generalization_proposal": "Remove digit chains for protocol fields. Typed KING_COMMS options (see point 14) carry structured parameters. Location fields become candidate selection (own position, a live king, nearest enemy, nearest cat, a known or unlisted mine, the enemy-king guess), and the executor writes x+1/y+1. Stamps are always written by the executor as Comms.stamp(). Symmetry becomes a head over non-empty subsets of Sym.mask. Budget becomes an ordinal level. RM becomes a candidate head over own trap tiles with per-tile features. Keep base-32 digits only for raw payloads: register writes (R0-R2 and any freed slots) and net-type squeaks. Mask the squeak type nibble so it never equals a zdb type. Add me.y, W, H, round&1023 and the register's current value to the features. Keep floor 0 until the point is trainable, and when it is, initialise from structured defaults (for example, 'write my location') rather than uniform.",
+   "coupling": [
+    "KING_COMMS (14): the parent option chooses the purpose and the target, and its record is dropped if any digit fails.",
+    "BABY_VAL (9): the same D.digits implementation (D.java:803-820) and the same uniform, unlabelled start (VALUE_POINTS dpnet_io.py:205).",
+    "Every zdb protocol reader listed under KING_COMMS options 14 and 17-80 consumes these values."
+   ],
+   "proposal_cost": "Small. KING_VAL was never trained (uniform, frozen, unlabelled), so changing its option set or replacing it loses nothing. Cost: typed executors in DK.java (about 100 lines, counted within point 14's estimate), a few features in kingVal (DK.java:762-786), and dims in the point table, widen and build_dpnet."
+  }
+ ],
+ "cross_cutting": [
+  "For 14 and 15 the action space is under-structured, not over-constrained. 81 options, 73 allowed on average, and none ever fall back. But the few meaningful choices (publish or suppress, spend throttle, rally) sit beside 64 raw writes plus squeak and trap-removal digit chains whose values a constant or uniform net cannot make valid. Both points are frozen, so in every RL game they only add noise, about 7.8 non-ZDB king comms edits per team-game. The 0% fallback rows for KING_COMMS and the other pass-3 points in docs/rl-es-plan.md:501-510 come from how the code labels records (lab=k), not from executors acting usefully.",
+  "The fallback flag means different things at different points and is never used in training. D.fallback (D.java:159-162) flags label != pick, and BABY_MOVE uses label bit 0x8000 set in Baby.netMove (Baby.java:2193-2207). KING_COMMS instead drops the record when its executor fails (DK.java:832), and D.digits always sets lab2=k (D.java:815). So a failed KC pick disappears from the data (a selection bias that is about zero today), while at other points a failed pick is kept, flagged and trained on as if it had acted.",
+  "rl_data keeps the trailer's sampled option k, logq, mask and flags, never the executed label (rl_data.py:218-222; decisions.read_rl returns a label, scripts/decisions.py:97-100, but it is not stored). rl_train's ratio uses log p_theta(k) under the recorded mask, temperature and per-point floor (rl_train.py:380-384, 591), which equals the sampling probability: parity is checked at rl_data.py:236-253, and point 14 shows median 1.9e-5, p99.9 4.0e-5 over 39,304 records. For points with fallback, the gradient is therefore the correct REINFORCE gradient of the composite policy 'k, or zdb's cascade when k cannot act'. It is unbiased but costly. (a) The advantage of zdb's action is credited to k. (b) The nets never see whether an option can act, so they cannot learn to pick k only where it acts. (c) The flag only feeds summaries (rl_data.py:257-264, rl_train.py:536-542). Fix: evaluate the 'cannot act' predicates before sampling and mask those options, or record the executed option and train on the aliased action.",
+  "The entropy bonus and the KL leash are computed over masked option labels (rl_train.py:286-294, entropy_rows/kl_rows), not over behaviours. Aliased options add entropy with no behavioural diversity, and the anchor KL penalizes moves between behaviourally identical options. Aliased here means options that fall back, or that are behavioural no-ops such as ALERT_CLEAR on a stale alert or a BUDGET band another king overwrites the same round.",
+  "Rows are dropped silently when the recorded mask disallows k, and single-option rows are dropped too (rl_train.py:529-535); both appear only in metrics. KC has 0 single-option rows; KV has 2 (RM with one trap in range).",
+  "The exploration floor is spread uniformly over allowed options: floor/m each (DNet.sample DNet.java:116-135; per-point W.FL via DNet.floor DNet.java:31; default D.NET_FLOOR 0.02 at D.java:31). The per-option share therefore falls as the number of allowed options grows. On KING_COMMS (73 allowed) the 0.005 floor puts 0.0044 of probability per record on the 64 raw SET options and almost nothing on any one meaningful option. On frozen points the floor still runs in every game but is never trained, so it is uncredited noise in both teams' outcomes. Recommendations: floor 0 at frozen points, and floors spread by option group rather than by option.",
+  "Separate RNG streams: points 8, 9 and 14 and up sample from DNet.uniform2 (D.alt D.java:221; DNet.java:94-103), so switching comms exploration on or off does not shift other points' draws. This keeps exact replay intact; any restructure should keep it.",
+  "logq resolution: q = round(-ln p * 4096) is capped at 65535 (D.java:140-156), so it saturates for p < e^-16 (about 1.1e-7), and parity checks exclude saturated rows (rl_data.py:250). A typed head with very negative logits and floor 0 would record saturated logq for rare picks, which makes the importance ratio wrong. Keep a tiny floor or widen the q range.",
+  "The recorded mask is the post-fit mask (D.take clones DNet.lastMask, D.java:133-137; D.fit cuts options past W.A, D.java:227-240; DNet.reach DNet.java:25-28). Training therefore sees exactly the sampled support, staged unlocks included. A null mask is recorded as all-allowed (D.java:149).",
+  "Credit resolution: advantages are per team-game 10-round bins from a team-trace critic (rl_critic.py:255-268, GAE over bins, no per-decision state). Neither one-round comms effects (BUDGET band, ALERT rally) nor delayed persistent ones (SYM, MINE or FORM corruption) can be traced to the KC record that caused them. A small set of coherent typed options is a prerequisite for this point to learn anything.",
+  "Imitation side: the KING_COMMS label is always KC_ZDB (docs/decision-points.md:205). KING_VAL and BABY_VAL have no labels (KC_DECOMP not implemented, docs/decision-points.md:213-214). widen's calibrated init makes 14 a constant function and 15 uniform (dpnet_io.py:205, 226-229, 296-304). Training 14 failed at rl-m2 iteration 0 (KL 6 after one step; configs/rl-m2.json purpose). The cause was raw-scale hidden activations, which scripts/reinit_new_points.py:4-8 fixes, but 14 and 15 have stayed frozen ever since.",
+  "Cheap tests worth running (not run here, read-only scope). (a) v39 with floor 0 at 14 against v39, 64 games on the plan's section 16 maps and seeds: this measures what the frozen KC floor costs every RL game. (b) The section 16 floor-0.2 sensitivity build for 14, which was never run. (c) From existing decision files: count SET picks that hit an occupied MINE slot, SYM, or FORM slots while a formation is open, using the KC option, the KV digits and the raw-slot features, to confirm how often corruption actually happens.",
+  "Volume: KC produces about 1,535 records per team-game (39,304 at 5% over 512 team-games), the largest record stream on the king side. A trainable typed version should subsample turns where it takes the zdb default."
+ ]
+}

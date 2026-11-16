@@ -1,0 +1,36 @@
+point 2: teacher rows 969767 width 60; cpi-x0 rows 650788 width 74; net n_in 74
+   const col 0 = 0: cpi-x0 share != const 0.0000, cpi-x0 mean 0.00 max 0; |W1| col mean 0.075 (all-col median 0.020)
+   const col 10 = 0: cpi-x0 share != const 0.0000, cpi-x0 mean 0.00 max 0; |W1| col mean 0.064 (all-col median 0.020)
+   const col 11 = 45: cpi-x0 share != const 0.0000, cpi-x0 mean 45.00 max 45; |W1| col mean 0.182 (all-col median 0.020)
+   const col 32 = 0: cpi-x0 share != const 0.9163, cpi-x0 mean 10.45 max 25; |W1| col mean 0.066 (all-col median 0.020)
+   const col 53 = 0: cpi-x0 share != const 0.1590, cpi-x0 mean 18.46 max 255; |W1| col mean 0.000 (all-col median 0.020)
+   const col 54 = 0: cpi-x0 share != const 0.0129, cpi-x0 mean 2.35 max 255; |W1| col mean 0.000 (all-col median 0.020)
+   const col 55 = 0: cpi-x0 share != const 0.0074, cpi-x0 mean 0.01 max 1; |W1| col mean 0.000 (all-col median 0.020)
+   const col 56 = 0: cpi-x0 share != const 1.0000, cpi-x0 mean 218.28 max 255; |W1| col mean 0.000 (all-col median 0.020)
+   const col 57 = 0: cpi-x0 share != const 0.0426, cpi-x0 mean 0.12 max 10; |W1| col mean 0.000 (all-col median 0.020)
+   const col 58 = 0: cpi-x0 share != const 0.2394, cpi-x0 mean 39.59 max 1018; |W1| col mean 0.000 (all-col median 0.020)
+   const col 59 = 0: cpi-x0 share != const 0.2191, cpi-x0 mean 26.62 max 1005; |W1| col mean 0.000 (all-col median 0.020)
+   probe nRatT->0: argmax THROW rows 61248 -> 1999; carry=0 THROW rows 56296, of which still THROW 0; their new argmax (array([0, 5, 6]), array([56074,    69,   153]))
+   carry=2 rows 7980: THROW argmax 4939 -> 1999 with nRatT 0
+   nRatT hist cpi-x0: (array([ 0,  5, 10, 15, 20, 25], dtype=uint16), array([208705, 128898,  96629,  89863,  99159,  27534]))
+     carry=0, nRatT bucket 0: rows 52683, argmax THROW share 0.0000
+     carry=0, nRatT bucket 1: rows 151880, argmax THROW share 0.0000
+     carry=0, nRatT bucket 5: rows 127490, argmax THROW share 0.0005
+     carry=0, nRatT bucket 10: rows 95585, argmax THROW share 0.0133
+     carry=0, nRatT bucket 15: rows 88946, argmax THROW share 0.0910
+     carry=0, nRatT bucket 20: rows 98309, argmax THROW share 0.2679
+     carry=0, nRatT bucket 25: rows 27317, argmax THROW share 0.7513
+point 3: teacher rows 953277 width 60; cpi-x0 rows 635878 width 74; net n_in 74
+   const col 0 = 1: cpi-x0 share != const 0.0000, cpi-x0 mean 1.00 max 1; |W1| col mean 0.061 (all-col median 0.013)
+   const col 32 = 0: cpi-x0 share != const 0.9205, cpi-x0 mean 10.59 max 25; |W1| col mean 0.075 (all-col median 0.013)
+   const col 53 = 0: cpi-x0 share != const 0.1879, cpi-x0 mean 20.58 max 255; |W1| col mean 0.000 (all-col median 0.013)
+   const col 54 = 0: cpi-x0 share != const 0.0093, cpi-x0 mean 1.67 max 255; |W1| col mean 0.000 (all-col median 0.013)
+   const col 55 = 0: cpi-x0 share != const 0.0047, cpi-x0 mean 0.00 max 1; |W1| col mean 0.000 (all-col median 0.013)
+   const col 56 = 0: cpi-x0 share != const 1.0000, cpi-x0 mean 218.20 max 255; |W1| col mean 0.000 (all-col median 0.013)
+   const col 57 = 0: cpi-x0 share != const 0.0433, cpi-x0 mean 0.13 max 10; |W1| col mean 0.000 (all-col median 0.013)
+   const col 58 = 0: cpi-x0 share != const 0.2437, cpi-x0 mean 40.14 max 1018; |W1| col mean 0.000 (all-col median 0.013)
+   const col 59 = 0: cpi-x0 share != const 0.2230, cpi-x0 mean 27.19 max 1005; |W1| col mean 0.000 (all-col median 0.013)
+point 4: teacher rows 525559 width 60; cpi-x0 rows 349251 width 32; net n_in 32
+   const col 12 = 0: cpi-x0 share != const 0.0000, cpi-x0 mean 0.00 max 0; |W1| col mean 0.080 (all-col median 0.327)
+   const col 13 = 0: cpi-x0 share != const 0.0000, cpi-x0 mean 0.00 max 0; |W1| col mean 0.083 (all-col median 0.327)
+   const col 14 = 0: cpi-x0 share != const 0.0000, cpi-x0 mean 0.00 max 0; |W1| col mean 0.090 (all-col median 0.327)

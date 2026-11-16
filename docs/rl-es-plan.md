@@ -517,3 +517,86 @@ investigations run next:
 2. Per-point sensitivity: rl-m2 v39 with exploration floor 0.2 at one point only (packages zdph<p>), each against
    v39 for 64 games on the same maps and seeds (judge maps row 4, seed 3801001). This shows where deviations are
    costly (sharp) and where they are nearly free (flat).
+
+## 17. What the map and the measurements show; two tests set before their games (November 16, 2026)
+
+**Per-point sensitivity.** Each package is rl-m2 v39 with exploration floor 0.2 at one point, playing v39 at its normal
+floors (zdpg39) for 64 games (judge maps row 4, seed 3801001; box `runs/cpi/sens<p>`).
+
+| Point | Score | t | Reading |
+|---|---|---|---|
+| BABY_MOVE (1) | 17/64 = 0.27 | −4.3 | sharp |
+| BABY_ACT_PRE (2) | 14/64 = 0.22 | −4.8 | sharpest |
+| BABY_ACT_POST (3) | 18/64 = 0.28 | −3.7 | sharp |
+| BABY_FACE (4) | 27/64 = 0.42 | −1.3 | mild |
+| BABY_ROLE (5) | 32/64 = 0.50 | 0.0 | flat |
+| BABY_COMMS (6) | 26/64 = 0.41 | −1.6 | mild |
+| KING_MOVE (10) | 34/64 = 0.53 | +0.4 | flat |
+| KING_SPAWN (11) | 17/64 = 0.27 | −3.7 | sharp |
+| KING_ACT (12) | 28/64 = 0.44 | −1.3 | mild |
+| KING_FORM (13) | 24/64 = 0.375 | −2.0 | moderate |
+| KING_TURN (16) | 31/64 = 0.48 | −0.3 | flat |
+
+MINE_PICK (7), BABY_FREE (8) and KING_COMMS (14) are still running. Uniform choices measure the option set as much as
+the precision a point needs: 16 of KING_SPAWN's 22 options mean "spawn now", and BABY_ACT's random picks spend cheese on
+bites, traps and transfers, or place rat traps (which end cooperation when an enemy triggers them).
+
+**Gradient signal.** rl_train's PPO ratio differentiates the floor-mixed probability p = (1−f)·softmax(z) + f/m. The
+score of a sampled option, (1−f)·s_k·(e_k − s)/p(k), is about 0 for an option the floor picked (s_k ≈ 0) and for a
+saturated top choice (s_top ≈ 1). The expected squared score per record (the Fisher trace in logit space; 1 − 1/m for a
+uniform policy) on cpi-x0's states with the v39 net, `diagnostics/zdp-action-space/analysis/fisher.py`:
+
+| Point | Fisher trace at floor 0.005, % of uniform | Rows with s_top > 0.999 | Share carried by floor picks | With logits ÷ 3 |
+|---|---|---|---|---|
+| BABY_MOVE (1) | 1.1% | 0.80 | 0.009 | 11.1% |
+| BABY_ACT_PRE (2) | 1.5% | 0.90 | 0.003 | 4.7% |
+| BABY_ACT_POST (3) | 0.0% | 0.99 | 0.009 | 0.3% |
+| BABY_FACE (4) | 0.0% | 1.00 | 0.61 | 0.0% |
+| BABY_ROLE (5) | 0.2% | 0.98 | 0.03 | 1.6% |
+| MINE_PICK (7) | 9.0% | 0.66 | 0.010 | 30.1% |
+| KING_MOVE (10) | 12.5% | 0.39 | 0.005 | 44.7% |
+| KING_SPAWN (11) | 3.9% | 0.84 | 0.005 | 11.0% |
+| KING_ACT (12) | 1.4% | 0.84 | 0.04 | 23.1% |
+| KING_FORM (13) | 2.9% | 0.79 | 0.02 | 31.3% |
+| KING_TURN (16) | 1.7% | 0.01 | 0.15 | 65.4% |
+
+At cpi-x0's floor of 0.1, KING_SPAWN's deviation rate rose from 0.03 to 0.12 while its Fisher trace fell from 0.037 to
+0.032: floor exploration makes deviations the gradient cannot see.
+
+**The trap.** In this action space the policies that play well are near-deterministic, and they give PPO almost no
+gradient. Policies with gradient carry more entropy and play worse, because undirected choices at the sharp points are
+costly. ES sees the same thing as flat-then-cliff: with logit gaps this large, small weight changes do nothing until a
+decision flips. This explains why PPO (rl-m2), CPI and ES all stalled. Any redesign must let a stochastic policy stay
+competent, so RL can keep entropy, get a gradient and still play well.
+
+**The code map** (seven readers, each checked by an adversarial verifier; `diagnostics/zdp-action-space/`):
+- Most options are branches of zdb's cascade, with zdb's target choice, thresholds and gates inside the executor. The net
+  picks which of zdb's errands runs, not where it goes or what it targets. A deviation runs an errand outside the part of
+  the cascade it was written for: WAR at close range, DELIVER with one cheese, ATTACK for a gatherer.
+- Masks are looser than the executors (fallback, above), and rl_train credits the sampled option with whatever zdb did
+  instead.
+- One behaviour is often split across several options: 8 identical KING_MOVE stays, 5 identical KING_SPAWN holds.
+- "Shortcut plus masked twin" encodings misbehave. R_KEEP's uncalibrated bias of 60 makes about 170 rats flip GATHER↔FIGHT
+  at every review.
+- Untrained inputs: columns that were constant in the imitation data keep random first-layer weights (the team
+  rat-trap count makes BABY_ACT_PRE throw while carrying nothing), and packed bitmask integers can't be decoded.
+- Frozen points inject noise into every RL game. KING_COMMS's floor makes about 7.8 random protocol edits per team-game.
+- Several big strategic choices are hard-coded outside any point: backstab at round 30, the 18-baby cap, the king's
+  home mine (never revised), and home-half-only mine candidates.
+
+**Two tests, readings set before their games:**
+1. *zfree*: zdpz (v39 with floor 0 at the frozen or untrained points 1–4, 6, 8, 9, 14, 15, 16, and the
+   imitation-constant input columns of points 1–4 zeroed with their contribution moved into the bias) against zdpg39,
+   128 games (judge maps row 5, seeds 3801101–02). t > 2: the noise and untrained inputs cost v39 real strength; future
+   builds keep floor 0 at frozen points and zero such columns, and zdpz becomes the reference. |t| ≤ 2: not the main
+   cost; the fixes stay as hygiene in the redesign. t < −2: the frozen points' randomness was doing something useful;
+   investigate before any redesign drops it.
+2. *soft3*: zdps3 (v39 with logits ÷ 3 at the trained points 5, 7, 10–13, which gives 3–30× the gradient signal there)
+   against zdpg39, 64 games (row 6, seed 3801201). At least 0.45: entropy is nearly free at the points RL trains, and the
+   trap sits mostly at points RL never trained (baby tactics) and at KING_SPAWN. At most 0.35: carrying entropy costs a
+   lot where RL actually trains too, so the redesign must cover the king points as well.
+
+**Design.** A panel of four independent redesigns runs next: repair in place, a hierarchy of committed targets chosen
+by a candidate scorer, zdb's strategy parameters as the actions, and a clean slate. Three judges score them for RL
+learnability, feasibility, and strategic ceiling, and a synthesizer writes the staged design. Brief:
+`diagnostics/zdp-action-space/design-brief.md`.

@@ -1,0 +1,345 @@
+{
+ "scope": "KING_SPAWN (11), KING_ACT (12) and KING_FORM (13) of zdp. Code: java/bots/zdp/<File>.java (DK.java, King.java, Baby.java, Moat.java, Cfg.java; framework D.java/DNet.java). Engine claims cite the 2026 engine source (battlecode/common/GameConstants.java, TrapType.java, battlecode/world/RobotControllerImpl.java). Data were read-only numpy passes over the records on the Windows box: (a) cpi-x0 iter-0000 (net rl-m2 v39; floors 0.1 at points 10-13 and 16, 0.005 elsewhere, T 1; 512 team-games; runs/rl/cpi-x0/config.json); (b) rl-m2 iter-0038 (net v38, floor 0.005, T 1; 204 team-games; runs/rl/rl-m2/config.json). Per-point sensitivity runs: floor 0.2 at one point vs v39, 64 games each (runs/cpi/sens<p>). Scripts and outputs: /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/kpts.py, kpts2.py, kpts3.py (and their .out files). No files were edited, nothing was built and no games were run.",
+ "points": [
+  {
+   "id": 11,
+   "name": "KING_SPAWN",
+   "locations": "Open: King.java:308, calling DK.kingSpawn (DK.java:161-216). It is reached only when the king is action-ready (spawn() returns at King.java:289). Mask: none, since DK.netPick(KING_SPAWN, null) is called at DK.java:454. Pick: D.pick (D.java:203-209) calls DNet.sample (DNet.java:116-135), which takes softmax/T times (1-floor) and adds floor/m to each allowed option. Executor: DK.execKingSpawn (DK.java:463-488). When it returns false, zdb's cascade runs (King.java:310-345). Emit: King.java:51. Fallback flag: D.java:159-162.",
+   "n_options": 22,
+   "option_kind": "Mixed. Five labels named after zdb's cascade branches (0, 1, 2, 20, 21) all do the same thing in the game (nothing). Options 3-18 are candidate targets: build on ring tile i. Option 19 is a primitive: dig ring dirt. Every option is offered in every state.",
+   "options": [
+    {
+     "id": "0",
+     "name": "S_NO_SURPLUS",
+     "executor": "DK.java:466 sets spawnWhy='s' and returns true. It does nothing in the game.",
+     "offered_when": "Always (mask null, DK.java:454).",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb's label when !boot && !war && surplus < cost+SPAWN_MARGIN (King.java:311). It has the same effect as 1, 2, 20 and 21. The only difference is King.spawnWhy, which KING_MOVE (DK.java:150) and KING_ACT (DK.java:280) read as an input.",
+     "observed": "cpi-x0: 133,772 picks (17.6% of records), 94.8% of them in zdb no-surplus states. rl-m2 v38: 20.6%."
+    },
+    {
+     "id": "1",
+     "name": "S_FLOOR",
+     "executor": "DK.java:467 sets spawnWhy='f'. No game effect.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb's label when bank < cost + Econ.floor(min(spawnFloor, 2*(2000-round))) (King.java:314).",
+     "observed": "cpi-x0: 181,501 picks (23.8%), 92.7% in floor states, and 58.1% of those also had babies >= cap. rl-m2 v38: 11.1%."
+    },
+    {
+     "id": "2",
+     "name": "S_CAP",
+     "executor": "DK.java:468 sets spawnWhy='c'. No game effect.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb's label when babies >= babyCap(war, bank) (King.java:316, 267-271). zdb checks the floor first, so in floor-and-cap states zdb's label is S_FLOOR.",
+     "observed": "cpi-x0: 359,004 picks (47.1%). 46.8% of them came in floor states, and 99.7% of those had babies >= cap, so the net splits mass between labels that mean the same thing. rl-m2 v38: 62.0%."
+    },
+    {
+     "id": "3-18",
+     "name": "S_BUILD_0..15 (build on ring tile i)",
+     "executor": "DK.java:479-486. The tile is the king's position plus (King.RX[i], King.RY[i]), fixed absolute offsets around the 5x5 ring (King.java:506-507). If isActionReady && canBuildRat, it calls King.build (King.java:349-353: buildRat, spawned++, spawnWhy='b').",
+     "offered_when": "Always. No affordability or tile mask.",
+     "cannot_act_when": "canBuildRat is false: the bank is below the rat cost (bm==0 in 32.2% of all records and 22.9% of build picks) or the tile is occupied or impassable (25.5% of build picks). Fallback matches 'bm bit i clear' in 100.0% of build picks.",
+     "context_dependence": "Tile i points in a different strategic direction depending on where the king stands (no mirroring). A pick executes whenever it is affordable, regardless of zdb's surplus, floor and cap gates. The rat cost rises by 10 per 4 babies (GameConstants.java:144-156).",
+     "observed": "cpi-x0: 77,055 picks (0.44-0.90% of records each), 48.4% fallback. 77.6 builds executed per team-game, and 49.05 of them were in states where zdb would not spawn (floor states: median bank 190 against cost 70; cap states: median 28 babies). Only 3.7% of records (55.3 per team-game) are zdb-spawn states. rl-m2 v38: 70.9 builds per team-game, 5.26 of them outside zdb-spawn states, 29-44% fallback. The net has learned tile preferences: options 6, 10, 12 and 16 get 0.7-0.9% each, options 7 and 15 get 0.04-0.05%."
+    },
+    {
+     "id": "19",
+     "name": "S_DIG",
+     "executor": "DK.java:469-476 calls King.digRing(goal) (King.java:361-377), with goal = enemies[0] at war, else the map centre. It removes the removable ring dirt tile nearest the goal and returns false if nothing was dug.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Not action-ready, bank < 45 (King.java:363), or no removable ring dirt. Among the picks: dm==0 in 80.6%, bank < 45 in 17.6%.",
+     "context_dependence": "zdb digs only when it passed its gates and no ring tile was buildable (King.java:340-344). A dig costs 5 cheese and 25 action cooldown (GameConstants.java:222, 269).",
+     "observed": "cpi-x0: 3,457 picks, 84.6% fallback, 1.04 executed per team-game. rl-m2 v38: 121 picks, 77.7% fallback."
+    },
+    {
+     "id": "20",
+     "name": "S_BLOCKED",
+     "executor": "DK.java:477 sets spawnWhy='d'. No game effect.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb's label when no tile was buildable and the dig failed (King.java:343).",
+     "observed": "cpi-x0: 3,938 picks (0.52%), 7.69 executed per team-game."
+    },
+    {
+     "id": "21",
+     "name": "S_HOLD",
+     "executor": "DK.java:478 sets spawnWhy='h'. No game effect.",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "zdb never produces this label (comment at King.java:280-281), so after imitation it carries only floor mass.",
+     "observed": "cpi-x0: 3,492 picks (0.46%). rl-m2 v38: 194 (0.05%)."
+    }
+   ],
+   "fallback_explanation": "Only options 3-19 can fall back, and only on engine preconditions. KING_SPAWN passes a null mask (DK.java:454), so all 22 options are offered on every action-ready turn. That includes the 32% of records where the bank is below the rat cost (bm==0) and nothing can be built. A build falls back exactly when canBuildRat fails on its tile (DK.java:483), which matches the recorded bm bit in 100% of cases. S_DIG falls back when digRing digs nothing (DK.java:473). After a fallback, spawn() continues into zdb's cascade (King.java:309-345), so a failed pick plays exactly like zdb. The no-op labels never fall back, even in zdb-spawn states, where they skip zdb's spawn (8.72 per team-game in cpi-x0). Fallback rate over all records: 5.28% in cpi-x0, 2.24% in rl-m2 v38. The plan's table says 39% of deviations fall back (docs/rl-es-plan.md:500-506).",
+   "context_dependence": "What an option means depends on the bank and on gates the net does not have to respect. A build executes whenever it is affordable, so in the 3.7% of records that are zdb-spawn states it means 'zdb's spawn', and in the other 96% it means 'extra spawn below the floor or cap'. Tile index i is an absolute offset, so 'toward the enemy' is a different index from each start corner. The five no-op labels differ only in the spawnWhy feature they leave for KING_MOVE and KING_ACT. The point opens after KING_TURN (King.java:46-51). A build uses up the turn's action: buildRat adds BUILD_ROBOT_COOLDOWN 10, which equals COOLDOWN_LIMIT (RobotControllerImpl.java:1016; GameConstants.java:244, 257), so KING_ACT does not open that turn (King.java:53).",
+   "coupling": [
+    "KING_ACT (12): the two points share one action per turn. Spawn goes first (King.java:50-51), and KING_ACT opens only if the king is still action-ready (King.java:53). KING_ACT's trap, dirt and dig cooldowns (rat trap 15, cat trap 10, dirt/dig 25: TrapType.java:12, 17; GameConstants.java:269) close KING_SPAWN on the next turn (King.java:289).",
+    "Ring tiles: KING_ACT's traps (DK.java:606-614) and moat dirt (Moat.java:45-55) go on the same 16 ring tiles that builds use (King.java:506-507), and make them unbuildable.",
+    "Label leak: the no-op label picked here sets King.spawnWhy (DK.java:466-478), which is an input to KING_MOVE (DK.java:150) and KING_ACT (DK.java:280).",
+    "KING_TURN (16) opens only when a spawn is affordable, and it sets the newborn's facing (King.java:46-49).",
+    "Newborn role comes from Baby.born (Baby.java:318-336), which depends on the cost-derived index and the round, so extra spawns change the role mix and raise the rat cost.",
+    "KING_FORM gates read the cost-derived baby count and the bank (King.java:689-699)."
+   ],
+   "features": "41 inputs (DK.java:161-216): coop, round/10, bank/10, surplus, income rate, rat cost, babies, spawned, low/boot/war flags, cost==10, core, babyCap, surplus margin and floor margin (offset 32768; these two plus babies >= babyCap reproduce zdb's cascade), enemy and cat counts, direction to enemies[0], nearest-cat d2 and direction, direction to the centre, bm (canBuildRat bitmask over the 16 ring tiles) and dm (canRemoveDirt bitmask), numKings, slot, numMines, home-mine distance, health, x, y, W, H, and 8 kmini values. Tile information exists only as bits of two raw integer inputs. Normalisation is folded into layer 1 (DNet.java:4-6, 61-66), so the MLP cannot read bit i directly. This fits the 100% match between fallback and a clear bit, and the 29-44% build fallback that remains in rl-m2 v38.",
+   "generalization_proposal": "Replace the 22-way softmax with three parts. (1) A hold / spawn / dig choice masked by preconditions: spawn only if some ring tile passes canBuildRat; dig only if some ring tile passes canRemoveDirt and the bank is >= 45. A single 'hold' replaces S_NO_SURPLUS, S_FLOOR, S_CAP, S_BLOCKED and S_HOLD. zdb's reason stays available as input features 13-15 and, optionally, as an auxiliary imitation target. (2) A shared per-tile scorer: one small MLP applied to each of the 16 ring tiles, with logits masked by canBuildRat. Per-tile inputs: buildable, offset to the goal (enemies[0] or the centre), d2 to the nearest cat, corner, pickBit, allied babies adjacent, trap or dirt on the tile, d2 to the home mine. zdb's rule (-d2(goal) + 4*d2(cat) - 50 for a corner, then *4 + pickBit; King.java:330-334) is linear in these inputs, so imitation can still be exact. (3) Optionally, a parameter head for the economy: a bank reserve R, or a target baby count, with the executor spawning only when bank >= cost + R. 'Spend more' or 'spend less' then becomes a smooth direction, and exploration becomes symmetric. Today 16 of the 22 floor options mean 'spawn now', and floor 0.2 at this point alone scored 0.266 [0.173, 0.385] against v39 (runs/cpi/sens11), the sharpest of the points tested. Also set King.spawnWhy from zdb's cascade predicate (the state) rather than the net's label. Longer term, merge this point with KING_ACT into one king-action decision (see cross_cutting).",
+   "proposal_cost": "Java: about 40 lines in DK.kingSpawn for the per-tile block (16 x ~6 inputs, so the record grows to about 137 chars plus trailer, still under the 256-char indicator limit at GameConstants.java:53, truncation at RobotControllerImpl.java:1579-1581, records sent at D.java:179). About 50 lines to rewrite netKingSpawn/execKingSpawn. About 10 lines in King.spawn to set spawnWhy from the predicate. About 100 lines in DNet for per-candidate scoring and multi-head sampling, shared with 12 and 13. Python: dpnet_io.probs/fit_mask (scripts/dpnet_io.py:110), build_dpnet packing, train_dp label conversion (0, 1, 2, 20, 21 to hold; 3-18 to tile; 19 to dig) and a candidate-softmax loss, plus rl_train log-probs for factored heads: about 250-400 lines shared across the points. Old records hold only the bm/dm bitmasks, so this needs fresh zdb data with the new features and a greedy-parity check against zdb before RL.",
+   "missing_information": "zdb's branch for each record (no-surplus / floor / cap / spawn) was rebuilt from features 9, 10 and 13-15, not logged. I did not measure how extra spawns change the baby role mix, the bank trajectory or the rat-cost escalation. Why a tile is blocked (ally, trap, dirt or wall) is not recorded. I did not test whether rl-m2's tile preferences matter. The cost of floor exploration was measured only at floor 0.2 (sens11), and without masks."
+  },
+  {
+   "id": 12,
+   "name": "KING_ACT",
+   "locations": "Open: King.java:53-54 (dA = isActionReady after spawn), calling DK.kingAct (DK.java:219-289). Mask: DK.actOk (DK.java:592-598). Pick: DK.netKingAct (DK.java:493-500) through D.pick (D.java:203-209) and DNet.sample (DNet.java:116-135). Executor: DK.execKingAct (DK.java:502-576). After it, zdb's bite runs unless coop or hold (King.java:57). Default label A_NONE and emit at King.java:70.",
+   "n_options": 17,
+   "option_kind": "Mixed. Option 0 is hold. Options 1-10 are typed primitive actions, each with a hard-coded target rule: bite the weakest (kill or plain), the nearest or a king's centre; bite a cat; rat trap toward a foe or the centre; cat trap; dirt fill; dig. Options 11-16 are parameters: bite cheese 1/4/9/16/36/100 on the weakest target. zdb itself only ever produces A_BITE_KILL, A_BITE or A_NONE (King.java:196-197, 70).",
+   "options": [
+    {
+     "id": "0",
+     "name": "A_NONE",
+     "executor": "DK.java:506 sets hold=true, which skips zdb's bite (King.java:57).",
+     "offered_when": "Always (DK.java:594).",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "A no-op when nothing is in reach. When a target is in reach (0.3% of records), it means 'do not bite'.",
+     "observed": "cpi-x0: 90.2% of records. rl-m2 v38: 98.4%."
+    },
+    {
+     "id": "1",
+     "name": "A_BITE_KILL",
+     "executor": "DK.java:507-515. Target from King.weakest (King.java:205-215). Cheese from biteCheese (King.java:259-264): the least k^2 that kills, within a budget of min(100, bank-300). Bites only if canAttack(at, c).",
+     "offered_when": "Always.",
+     "cannot_act_when": "No enemy in reach (98.5% of picks), or no affordable killing bite.",
+     "observed": "cpi-x0: 6,747 picks, 100% fallback, never executed. rl-m2 v38: 99.6% fallback."
+    },
+    {
+     "id": "2",
+     "name": "A_BITE",
+     "executor": "DK.java:511: rc.attack(weakAt) with 0 cheese. With no target the attack throws, and the exception is caught at DK.java:499.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No enemy in reach.",
+     "observed": "cpi-x0: 7,488 picks, 90.8% fallback (the same as reach==0), 1.35 executed per team-game."
+    },
+    {
+     "id": "3",
+     "name": "A_BITE_CAT",
+     "executor": "DK.java:517 calls King.biteCat (King.java:228-240). Counts as done only if the action was used.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No cat tile in reach (catReach false in 99.1% of picks).",
+     "observed": "cpi-x0: 6,898 picks, 99.1% fallback."
+    },
+    {
+     "id": "4",
+     "name": "A_TRAP_FOE",
+     "executor": "DK.java:518-527 calls trapToward on the nearest non-king enemy (DK.java:602-616): a rat trap on the ring tile nearest that enemy. Only the engine's canPlaceRatTrap is checked (no cheese floor, no trap cap). King.traps++.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No enemy baby in sight (93.2% of picks), or no placeable ring tile.",
+     "context_dependence": "Costs 20 cheese and 15 action cooldown (TrapType.java:12).",
+     "observed": "cpi-x0: 6,661 picks, 94.7% fallback, 0.70 executed per team-game."
+    },
+    {
+     "id": "5",
+     "name": "A_TRAP_FORT",
+     "executor": "DK.java:528: trapToward(map centre), a rat trap on the ring tile nearest the centre.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No ring tile passes canPlaceRatTrap. Fallback matches nt==0 in 100% of picks.",
+     "context_dependence": "Costs 20 cheese and 15 cooldown. It counts toward the team's rat traps, and babies stop laying combat traps once the team has 10 (Baby.java:706, 734; Cfg.java:22).",
+     "observed": "cpi-x0: 6,381 picks, 14.2% fallback, 10.70 executed per team-game. rl-m2 v38: 1.40 per team-game."
+    },
+    {
+     "id": "6",
+     "name": "A_MOAT_FILL",
+     "executor": "DK.java:529-538 calls Moat.fill(me, 8, nearest enemy baby) (Moat.java:39-59): dirt on the ring tile nearest that baby (or the map centre), skipping the port tiles.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No ring tile passes canPlaceDirt (np==0 in 10.4% of picks).",
+     "context_dependence": "The dirt goes on the same 16 ring tiles the king spawns on. Placing dirt costs 0 cheese but 25 action cooldown (RobotControllerImpl.java:309-311; GameConstants.java:225, 269), which blocks the next turn's spawn.",
+     "observed": "cpi-x0: 7,067 picks, 10.6% fallback, 12.34 executed per team-game. rl-m2 v38: 2.79 per team-game."
+    },
+    {
+     "id": "7",
+     "name": "A_BITE_NEAREST",
+     "executor": "DK.java:539-550: bite the nearest attackable enemy.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No target in reach.",
+     "observed": "cpi-x0: 7,311 picks, 98.7% fallback."
+    },
+    {
+     "id": "8",
+     "name": "A_BITE_KING",
+     "executor": "DK.java:551-554: bites only the enemy king's centre tile (canAttack(e.location)). zdb's weakest() instead uses any reachable tile of the king's 3x3 (King.java:218-225).",
+     "offered_when": "Always.",
+     "cannot_act_when": "In the data, always.",
+     "observed": "cpi-x0: 7,152 picks, 100% fallback. rl-m2 v38: 642 picks, 100% fallback. It never executed."
+    },
+    {
+     "id": "9",
+     "name": "A_CAT_TRAP",
+     "executor": "DK.java:555-563: trapToward(nearest cat, else centre, cat=true).",
+     "offered_when": "Always.",
+     "cannot_act_when": "The engine allows cat traps only in cooperation or within CAT_TRAP_ROUNDS_AFTER_BACKSTAB = 100 rounds of a backstab (GameConstants.java:65). Fallback: 96.5% at war, 19.8% in coop.",
+     "context_dependence": "Costs 10 cheese and 10 cooldown (TrapType.java:17).",
+     "observed": "cpi-x0: 7,007 picks, 91.4% fallback, 1.18 executed per team-game (376 in coop, 230 at war)."
+    },
+    {
+     "id": "10",
+     "name": "A_DIG_RING",
+     "executor": "DK.java:564-566 calls King.digRing(centre) (King.java:361-377). Counts as done if the action was used.",
+     "offered_when": "Always.",
+     "cannot_act_when": "No removable ring dirt, or bank < 45. Fallback matches this in 100% of picks.",
+     "observed": "cpi-x0: 6,998 picks, 83.5% fallback, 2.26 executed per team-game."
+    },
+    {
+     "id": "11-16",
+     "name": "A_BITE_C0..5 (bite cheese ladder)",
+     "executor": "DK.java:567-574: bite weakestLoc (DK.java:579-589) with D.BITE_C cheese of 1/4/9/16/36/100.",
+     "offered_when": "Only when weakestLoc exists and canAttack(at, c) holds (DK.java:595-596).",
+     "cannot_act_when": "Never fails, because the mask already checks the precondition.",
+     "observed": "cpi-x0: 4-13 picks each (a target is in reach in only 0.3% of records)."
+    }
+   ],
+   "fallback_explanation": "actOk masks only the bite ladder (11-16). Options 1-10 are offered on every action-ready turn (DK.java:594), although most need a target that is rarely there: an enemy in bite reach (0.3% of records), a cat tile in reach (0.6%), an enemy baby in sight (TRAP_FOE), the coop/backstab window (CAT_TRAP), or removable ring dirt (20.1% of records) plus bank >= 45 (DIG). A failing pick returns false or throws (caught at DK.java:499). The label stays unset and zdb's bite runs (King.java:57), which is itself a no-op without a target, so the record is flagged as a fallback and plays as A_NONE. Fallback matches the recorded precondition features exactly for option 5 (nt==0) and option 10 (nr==0 or bank < 45), and nearly exactly for the bites (reach==0). Apart from A_NONE, only TRAP_FORT and MOAT_FILL usually execute. Fallback rate over all records: 7.71% in cpi-x0, 1.19% in rl-m2 v38. The plan's table says 79% of deviations fall back (docs/rl-es-plan.md:500-506).",
+   "context_dependence": "Each option fixes its target (weakest, nearest, king centre, map centre, nearest cat), so the same output index acts on different tiles in different positions. Most options are no-ops outside rare situations (combat in reach, cats, coop). The two that usually execute, fort trap and moat fill, have effects outside this point: they use the ring tiles KING_SPAWN builds on, they put the king's action on cooldown for 1-2 turns (which closes KING_SPAWN next turn, King.java:289), and rat traps count toward the babies' TRAP_CAP. The executors do not check G.coop, while zdb's bite does (King.java:57). In cooperation, a bite on an enemy rat would trigger the engine's backstab rule. No such bite was executed in the data.",
+   "coupling": [
+    "KING_SPAWN (11): one action per turn. Spawn goes first, and KING_ACT opens only if the king is still ready (King.java:50-54). Trap and dirt cooldowns close the next turn's KING_SPAWN (King.java:289).",
+    "Ring tiles shared with KING_SPAWN's builds: trapToward and Moat.fill place on the King.RX/RY ring (DK.java:606-614; Moat.java:45-55).",
+    "Babies: once the team has TRAP_CAP 10 rat traps, babies stop laying combat traps (Baby.java:706, 734; Cfg.java:22). Babies' cat traps are capped at 10 (Baby.java:823, 851). Measured: in cpi-x0 (10.7 king fort traps per team-game), team rat traps are >= 10 in 76.0% of KING_ACT records in rounds 1000-1500 and 86.9% in rounds 1500+. In rl-m2 v38 (1.4 per team-game) the shares are 13.6% and 22.3%. The game populations differ, so this is not attributed.",
+    "Feature 23 is spawnWhy, which KING_SPAWN's net label sets (DK.java:280, 466-478).",
+    "A_NONE suppresses zdb's bite (King.java:57). The alert comms (King.java:58-69) and KING_MOVE (King.java:77-80) follow this point."
+   ],
+   "features": "38 inputs (DK.java:219-289): coop, round/10, health, bank, enemy babies and kings in sight, threat count, nearest-baby d2, reach count, weakest target's health and whether it is a king, kill-bite possible, king in reach, cats, cat distance, catReach, team rat traps, TRAP_CAP, counts of ring tiles where a rat trap or dirt can be placed or dirt removed (counts, not per tile), team dirt, moat flag (always false, DK.java:279), spawnWhy, spawned, numKings, x, y, W, H, and 8 kmini values. Missing: surplus and income, cat-trap count, per-tile and per-target detail, and the coop/backstab window.",
+   "generalization_proposal": "Use typed actions, each with its own targets and a precondition mask. The options become: none; bite target j with cheese c, scored per target over the enemies and cats in reach (type, health, whether c kills, distance, is a king), with a small cheese-ladder head masked by canAttack(at, c); and rat trap, cat trap, place dirt or remove dirt at ring tile t, using one shared per-tile scorer with a type embedding and per-tile masks from canPlaceRatTrap, canPlaceCatTrap, canPlaceDirt and canRemoveDirt. Every offered option then executes, so the fallback rate drops to about 0, and records where only 'none' is possible drop out of the RL loss (rl_train.py:534-535). Add features for the side effects: bank surplus and income, rat traps against TRAP_CAP, cat traps against their cap, whether tile t is a spawn tile or the port, the action-cooldown cost, and a coop/backstab-window flag. Mask bites in cooperation, or keep them and expose the backstab risk. Remove A_BITE_KING, which never executes. Fold A_BITE, A_BITE_KILL, A_BITE_NEAREST and A_BITE_C* into the bite type plus target and cheese heads. Best of all, merge this point with KING_SPAWN into one decision per action-ready turn (hold / build at t / bite j / trap at t / dirt at t / dig at t), because the two compete for the same action, tiles and bank. Imitation would reproduce zdb's spawn-first order. Floor 0.2 here scored 0.4375 [0.32, 0.56] against v39 (runs/cpi/sens12).",
+   "proposal_cost": "Java: about 60 lines for per-candidate inputs (16 ring tiles x ~6 plus up to ~8 targets x ~6, so the record grows to about 190 chars and still fits under 256). About 30 lines to turn actOk into per-type masks. About 80 lines to rewrite execKingAct (most helpers already exist: trapToward, Moat.fill, digRing, weakestLoc). About 10 lines in King.turn to drop or keep the bite fallback for zdb parity. Plus the shared DNet candidate/factored sampling (see KING_SPAWN). Python: the same shared head support, and label conversion (zdb's A_BITE_KILL/A_BITE become 'bite weakest' with its cheese, A_NONE becomes none). Merging with KING_SPAWN adds about 150 lines of record-format and imitation-data work (one record per action-ready turn instead of two) and a parity re-check. A merged record (79 base inputs plus about 128 per-tile and 48 per-target) would reach the 256-char limit, so it would need compact per-tile inputs or a second record.",
+   "missing_information": "I did not measure the game value of fort traps or moat dirt; sens12 mixes all options. I did not check whether a trap on a ring tile blocks canBuildRat, or what supplies team dirt (np > 0 in 89.2% of records)."
+  },
+  {
+   "id": 13,
+   "name": "KING_FORM",
+   "locations": "Open: King.java:72-74, every turn, for the slot-0 king only. It calls DK.kingForm (DK.java:292-342). Mask: DK.formAllowed (DK.java:631-640). Pick: DK.netKingForm (DK.java:619-627) through D.pick (D.java:203-209). Executor: DK.execKingForm (DK.java:642-683). Opening goes through DK.formOpen (DK.java:954-958) to King.openForm (King.java:712-719), which writes FORM_X/Y/T. Closing goes through DK.formClose (DK.java:947-950) to King.closeForm (King.java:722-725). When the executor returns false, zdb's formation() runs (King.java:669-709).",
+   "n_options": 30,
+   "option_kind": "Mixed. Options 0-12 are labels named after zdb's formation branches. With no site open, 0-2 and 8-12 all do nothing. With a site open, 0-6 all close it (4 also resets the retry timer) and 7 holds it. Options 13-17 are five site heuristics (mine, back, ring, crowd, mine-site). Options 18-29 are candidate targets: the 12 RING sites at distance 3, oriented by map half.",
+   "options": [
+    {
+     "id": "0-2",
+     "name": "F_WAR_OFF / F_CAP_OFF / F_CAP_GAP",
+     "executor": "DK.java:646 calls formClose (DK.java:947-950), which calls King.closeForm (King.java:722-725: formSite = null, FORM_T = 0).",
+     "offered_when": "Always (DK.java:634).",
+     "cannot_act_when": "Never fails.",
+     "context_dependence": "They close the site if one is open. With no site open they do nothing. zdb's labels: F_WAR_OFF when round < FORM_WAR_FROM 300 at war (King.java:672-674); F_CAP_OFF when numKings >= min(FORM_MAX 2, 5) and not rich (King.java:675-677; Cfg.java:46). F_CAP_GAP is not a zdb branch (comment at DK.java:646).",
+     "observed": "cpi-x0: 19.1% / 43.1% / 0.66% of records. rl-m2 v38: 16.3% / 35.3% / 0.06%."
+    },
+    {
+     "id": "3",
+     "name": "F_RICH_DROP",
+     "executor": "DK.java:647-650 calls King.richDrop (King.java:735-737), which closes the site. zdb's ban is off (comment at King.java:733-734), and King.ban (King.java:830) is never called anywhere in zdp.",
+     "offered_when": "Only while a site is open (DK.java:635).",
+     "cannot_act_when": "Never fails while offered.",
+     "observed": "cpi-x0: 947 picks (0.22%)."
+    },
+    {
+     "id": "4",
+     "name": "F_RICH_GAP",
+     "executor": "DK.java:651-654 calls King.richGap (King.java:740-743): close the site and move formStart back, so the TTL+RETRY gate passes at once.",
+     "offered_when": "Only while a site is open.",
+     "cannot_act_when": "Never fails while offered.",
+     "observed": "cpi-x0: 553 picks (0.13%)."
+    },
+    {
+     "id": "5-6",
+     "name": "F_DROP_FORMED / F_DROP_TIMEOUT",
+     "executor": "DK.java:655: close.",
+     "offered_when": "Only while a site is open.",
+     "cannot_act_when": "Never fails while offered.",
+     "context_dependence": "zdb drops a site after FORM_TTL 60 rounds (King.java:680-683).",
+     "observed": "cpi-x0: 414 / 1,968 picks."
+    },
+    {
+     "id": "7",
+     "name": "F_HOLD",
+     "executor": "DK.java:656-659: Comms.write(FORM_T, stamp), with no TTL check. This keeps the site fresh for babies, who only use a site stamped within the last 2 rounds (Baby.formSite, Baby.java:1528-1532).",
+     "offered_when": "Only while a site is open.",
+     "cannot_act_when": "Never fails while offered.",
+     "observed": "cpi-x0: 11,590 picks (2.64%). rl-m2 v38: 1.38%."
+    },
+    {
+     "id": "8-12",
+     "name": "F_END_WAIT / F_END_NONE / F_IDLE / F_NO_INCOME / F_NO_SITE",
+     "executor": "DK.java:660-661: return fs == null. No game effect.",
+     "offered_when": "Only while no site is open (DK.java:636).",
+     "cannot_act_when": "Never fails while offered.",
+     "context_dependence": "zdb's idle and no-site branches (King.java:690-706). With no site open they have the same effect as 0-2.",
+     "observed": "cpi-x0: option 10 22.5%, option 12 2.7%, the others under 0.7%. rl-m2 v38: option 10 30.9%, 11 4.6%, 12 10.4%."
+    },
+    {
+     "id": "13",
+     "name": "F_START_MINE",
+     "executor": "DK.java:662-665: pickFormSite (King.java:776-793) picks the nearest mine that is clearly ours, has a clear 3x3 and is more than 4 away, else the back spot. If that site is at Chebyshev distance >= 5, formOpen.",
+     "offered_when": "Only while no site is open and numKings < 5 (DK.java:637-638).",
+     "cannot_act_when": "pickFormSite returns the back spot or nothing (feature 18 kind != 1 in 98.9% of picks).",
+     "observed": "cpi-x0: 1,882 picks, 98.9% fallback."
+    },
+    {
+     "id": "14",
+     "name": "F_START_BACK",
+     "executor": "DK.java:666-671: the spot 4 tiles directly away from the mirrored enemy start, if its 3x3 passes clear3 (King.java:906).",
+     "offered_when": "Only while no site is open and a king slot is free.",
+     "cannot_act_when": "The 3x3 is not clear, or the direction is CENTER.",
+     "observed": "cpi-x0: 3,055 picks, 49.2% fallback, 3.03 executed per team-game, the most-opened option. rl-m2 v38: 0.80 per team-game."
+    },
+    {
+     "id": "15",
+     "name": "F_START_RING",
+     "executor": "DK.java:672: King.ringSite (King.java:842-852).",
+     "offered_when": "Only while no site is open and a king slot is free.",
+     "cannot_act_when": "No RING site passes clearNow. Fallback matches rm==0 in 100% of picks.",
+     "observed": "cpi-x0: 1,944 picks, 23.8% fallback."
+    },
+    {
+     "id": "16",
+     "name": "F_START_CROWD",
+     "executor": "DK.java:673: King.crowdSite (King.java:856-880).",
+     "offered_when": "Only while no site is open and a king slot is free.",
+     "cannot_act_when": "No clear ring site (matches rm==0 in 100% of picks).",
+     "observed": "cpi-x0: 1,612 picks, 24.1% fallback. In 1-king states a new king appeared within 15 turns after 8.0% of its opens."
+    },
+    {
+     "id": "17",
+     "name": "F_START_MSITE",
+     "executor": "DK.java:674: King.mineSite (King.java:798-810).",
+     "offered_when": "Only while no site is open and a king slot is free.",
+     "cannot_act_when": "No suitable mine.",
+     "observed": "cpi-x0: 1,667 picks, 25.8% fallback. New king within 15 turns after 11.4% of its opens in 1-king states."
+    },
+    {
+     "id": "18-29",
+     "name": "F_RING_0..11",
+     "executor": "DK.java:675-681: the site is the king's position plus RING[i] (King.java:839), mirrored by map half (sx, sy at DK.java:678). It must pass clearNow (King.java:885-896), then formOpen.",
+     "offered_when": "Only while no site is open and a king slot is free.",
+     "cannot_act_when": "RING[i] fails clearNow. Fallback matches 'rm bit i clear' in 100% of picks.",
+     "observed": "cpi-x0: 1,507-1,966 picks each, 63-71% fallback, about 1 executed per team-game each. New king within 15 turns after 1.4% (RING_0) to 11.2% (RING_7) of opens in 1-king states."
+    }
+   ],
+   "fallback_explanation": "formAllowed masks options by whether a site is open and whether a king slot is free, so labels 0-12 never fall back. The openers fall back when their site helper returns null or the site fails its clearance test: F_RING_i when RING[i] fails clearNow (100% match with the rm bit), RING and CROWD when no ring site is clear (rm==0), MINE when pickFormSite returns the back spot (kind != 1), and BACK when the 3x3 four tiles back fails clear3. After a fallback, zdb's formation() runs (King.java:74), which mostly closes the site or idles. Fallback rate over all records: 4.18% in cpi-x0, 0.42% in rl-m2 v38. The plan's table says 37% of deviations fall back (docs/rl-es-plan.md:500-506).",
+   "context_dependence": "Opening a site is a plan that spans many turns, but this point re-decides it every turn. Babies join only while FORM_T is fresh (2 rounds, Baby.java:1530) and only from within r2 72 (Baby.java:1539). A king forms only when babies fill the 3x3 and the one on the centre can becomeRatKing (Baby.java:1535-1557). The net has to pick F_HOLD again each turn against its imitation prior, and that prior closes the site: in cpi-x0 a net-opened site stays open a median of 1 more record, and there were 24.2 opens per team-game (opened from zdb states WAR_OFF 4,292, CAP_OFF 4,362, IDLE 3,597, gate-pass 140). With no site open, 8 of the 25 allowed options do the same nothing and 17 are opens, so 68% of a uniform floor means 'open now'. RING sites are mirrored by map half (DK.java:678-679), and the heuristic openers depend on mine knowledge and symmetry. The openers skip all of zdb's gates (FORM_FROM 80, TTL 60 + RETRY 150, 16 babies, 300 cheese, war < 300, FORM_MAX 2, rich, income; Cfg.java:44-46, 212). Outcome in 1-king states: a new king appeared within 15 turns after 381 of 7,235 net opens (5.3%), against 1.8% for random 1-king records with no site, and 22 of 150 (14.7%) for opens where zdb's gate feature 15 passed. In rl-m2 v38: 3.7 opens per team-game, and 63 of 591 (10.7%) against a 0.8% baseline.",
+   "coupling": [
+    "Babies: Baby.formSite and Baby.formKing (Baby.java:1528-1557; FORM_PULL_R2 72, FORM_JOIN 8, becomeRatKing), the BABY_MOVE option M_FORM_KING (Baby.java:1021), and BABY_MOVE features (D.java:295, 318-319).",
+    "KING_MOVE: option K_FORM_STILL (DK.java:392) and the feature formSite != null (DK.java:145).",
+    "KING_COMMS: the KC_DROP FORM group and KC_SET can revert or overwrite FORM_X/Y/T (DK.java:56-59).",
+    "Economy: babies drawn to a site leave their tasks, and the gates read the bank and the cost-derived baby count that KING_SPAWN drives (King.java:689-699).",
+    "Opening is masked once numKings >= 5 (DK.java:637-638). King survival counts toward the score (comment at Cfg.java:75)."
+   ],
+   "features": "38 inputs (DK.java:292-342): coop, round, numKings, site open, rounds since formStart, formKings, babies, bank, income rate, surplus, war-off flag, cap reached, rich0, endKing, formIncome, zdb's FORM_FROM/TTL+RETRY/babies/cheese gate, distance to the site, king on the site, pickFormSite kind and distance, rm (clearNow bitmask of the 12 RING sites, a raw integer), distance to the enemy start, numMines, symmetry bits, sawEnemy, own babies in sight, x, y, W, H, and 8 kmini values. Missing: babies near each candidate site, per-site geometry beyond the bits of rm, and the mine-site candidates.",
+   "generalization_proposal": "Restructure the options around candidates: keep; close (offered only while a site is open); and open at candidate c (offered only while no site is open and a slot is free). One shared per-candidate scorer covers all candidate sites: the 12 RING sites, the mines that pickFormSite and mineSite consider, the back spot and the crowd site, deduplicated. Per-candidate inputs: clear now / clear3, own babies within r2 72 and inside the 3x3, distance from the king, distance to the mirrored enemy start, whether it is a mine, known dirt, a king nearby, and enemies seen nearby. Mask candidates by clearance so openers never fall back. Make an open a commitment: the executor holds the site (writes FORM_T each turn) until a king forms or a TTL expires (zdb's FORM_TTL 60), unless 'close' is picked. A single exploratory open then has its real consequence instead of a one-turn blip. zdb's gates become input features (most already are: 10-15). Optionally add a parameter head for the TTL or for the minimum babies before opening. Collapse 0-2 and 8-12 into keep, and 0-6 (with a site open) into close; option 4's retry reset becomes a flag or is dropped. Floor 0.2 here scored 0.375 [0.27, 0.50] against v39 (runs/cpi/sens13).",
+   "proposal_cost": "Java: about 60 lines in kingForm for the candidate block (~20 candidates x ~6 inputs, so the record grows to about 160 chars plus trailer). About 60 lines to rewrite formAllowed/execKingForm. About 20 lines for the executor-held TTL (reusing formation()'s TTL lines, King.java:679-688). About 40 lines to list all candidates; pickFormSite, mineSite, ringSite, crowdSite and clearNow each return one site today. Python: the shared candidate-head support (as for 11 and 12), and label conversion that maps zdb's F_START_* to the candidate equal to the opened site. For that, the record must carry the site's offset, not just its kind. Needs fresh zdb data.",
+   "missing_information": "'New king within 15 turns' is a proxy: nothing is attributed, and only slot-0 records are used. I did not measure what babies pulled to a one-turn site lose (mining, fighting), or how often KING_COMMS edits the FORM slots. Records do not store which site an opener chose."
+  }
+ ],
+ "cross_cutting": [
+  "Fallen-back picks still drive the RL gradient. rl_train keeps every record whose k is allowed by the recorded mask (scripts/rl_train.py:525-535) and uses the fallback flag only for diagnostics (536-542). So picks that never executed (79% of deviations at KING_ACT, 39% at KING_SPAWN, 37% at KING_FORM; docs/rl-es-plan.md:500-506) get credit or blame for an outcome zdb's cascade produced. The fix belongs in the action space: masks that equal each executor's preconditions, so fallback is about 0. actOk (DK.java:592-598) is the only partial example today. Records with only one feasible option then drop out of the loss (rl_train.py:534-535).",
+  "Several labels do the same thing in the game. KING_SPAWN options 0/1/2/20/21 are identical; so are KING_FORM 0-2 and 8-12 with no site open, and 0-6 with a site open. The cpi-x0 net splits mass among them by whichever condition is salient (for example, 168k S_CAP picks in floor states). This gives RL flat directions and tilts uniform-floor exploration toward acting: 16 of 22 options are 'build' at KING_SPAWN, 17 of 25 are 'open' at KING_FORM, and 10 of 11 are 'act' at KING_ACT. Collapse to one label per distinct effect, and keep zdb's reason as a feature or an auxiliary imitation target.",
+  "At these points, floor exploration is permanent and is mostly 'act more'. At floor 0.1 (cpi-x0), per team-game, the net spawned 49 more rats than zdb would, opened 24 sites and placed about 27 traps, dirt tiles and digs. Floor 0.2 at a single point against v39 (64 games each, runs/cpi/sens<p> on the box): KING_SPAWN 0.266 [0.173, 0.385], KING_FORM 0.375, KING_ACT 0.4375, KING_MOVE 0.531. Exploration should be per meaningful choice (spawn vs hold), small, and masked.",
+  "The per-point nets cannot see the resources these points share. The king has one action per turn: spawn first, then KING_ACT only if still ready (King.java:50-54), with cooldowns of 10-25 (RobotControllerImpl.java:1016, 309-311; TrapType.java:12, 17). The 16 ring tiles serve builds, traps, dirt and digs (King.java:506-507; DK.java:606-614; Moat.java:45-55). The bank and the rat-cost escalation are shared, and so is the team trap count against the babies' TRAP_CAP (Baby.java:706). Recommendation: one king-action decision (hold / build at t / bite j / trap at t / dirt at t / dig at t) with per-candidate scoring, plus input features for the shared state.",
+  "Labels leak into other points' inputs. King.spawnWhy is set by the KING_SPAWN net's label (DK.java:466-478) and read by KING_MOVE (DK.java:150) and KING_ACT (DK.java:280). Features like this should come from the state (zdb's cascade predicate), not from the chosen label.",
+  "Bitmask features cannot be used as fed. KING_SPAWN's bm/dm and KING_FORM's rm are raw scalars, with normalisation folded into layer 1 (DNet.java:4-6, 61-66). An MLP cannot read bit i of a 16-bit integer. This fits the 100% match between fallback and a clear bit, and the 29-44% build fallback still present in rl-m2 v38. Use masks plus per-candidate inputs instead.",
+  "Choices that play out over many turns are re-decided every turn. Formation site lifetime and the spending schedule are both chosen by an imitation-trained argmax, which undoes an exploratory deviation on the next turn (a net-opened site lasts a median of 1 more record). Use commitments, such as a TTL held by the executor, or parameter heads (bank reserve, TTL, minimum babies) so that one decision has a lasting effect RL can learn from.",
+  "All three points need the same infrastructure. DNet needs a mode that scores a variable list of candidates with one small MLP (masked per-candidate logits), plus factored heads (type, then target). Records are sent as indicator strings (D.java:179), capped at 256 chars (GameConstants.java:53; truncation at RobotControllerImpl.java:1579-1581). Per-candidate inputs fit for each point alone (about 137-190 chars), but a merged KING_SPAWN+KING_ACT record would reach the limit. dpnet_io.probs (scripts/dpnet_io.py:110), build_dpnet, train_dp and rl_train need the new layouts. Then fresh zdb data with the new features, label conversion, and a greedy-parity check against zdb before RL."
+ ]
+}

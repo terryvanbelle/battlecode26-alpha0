@@ -1,0 +1,4 @@
+point 2: argmax changed in 59354 of 650788 rows (0.0912); THROW->PASS:58978, THROW->BITE_CAT:160, THROW->BITE_RAT:127, PASS->BITE_RAT:40, PASS->CAT_TRAP:19, PASS->THROW:14, CAT_TRAP->PASS:7, 20->PASS:7, BITE_RAT->THROW:1, CAT_TRAP->THROW:1
+   argmax-pick fallbacks 56361; of these on rows whose argmax changes 56082
+point 3: argmax changed in 1293 of 635878 rows (0.0020); PASS->DELIVER:1283, DELIVER->PASS:7, PASS->BITE_CAT:2, DELIVER->BITE_CAT:1
+   argmax-pick fallbacks 9; of these on rows whose argmax changes 6

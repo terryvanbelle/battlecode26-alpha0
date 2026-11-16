@@ -1,0 +1,267 @@
+{
+ "scope": "Read-only inventory of zdp behaviour (Java paths are relative to /home/terryvanbelle/projects/vibe/bc26a0/java/bots/zdp/; other paths are relative to /home/terryvanbelle/projects/vibe/bc26a0/) that none of the 16 decision points (D.java:39-47, DK.java:16-19) controls. It covers the fixed turn skeletons and the gates that decide whether a point opens, zdb fallbacks, navigation, errand targets, combat, trap and cat code, economy and spawning, formation and rescue, comms, free pickups, and the Cfg constants behind each. It also lists how every point is gated, overridden or post-processed. Rates come from the cpi-x0 records: 256 self-play games mirroring rl-m2 v39, with floors 0.1 on king points, 0.05 on MINE_PICK and 0.03 on BABY_ROLE (configs/cpi-x0.json purpose). The files are /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/cpi-x0-summary.json and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/devfb-cpi-x0.json. Nothing was edited, built or run apart from reading files and those JSON summaries. Bytecode limits are off in this work (docs/engine.md:17-21), so every clock gate below is inert.",
+ "strategy_summary": "zdb, as replayed by zdp, puts the economy first, backstabs at a fixed early round and insures the king count at the end of the game.\n1. Kings: each king settles on the nearest known home-half mine within dist2 400 of its start and never re-picks it (King.java:386, 927-943). Every turn it picks up all piles under its 3x3 (King.java:43, 179-188). It stays put whenever an enemy or cat is visible (King.java:384), and at war it bites the weakest adjacent enemy (King.java:57, 190-264).\n2. Spawning: a king always builds a core of 18 babies (12 on maps of 441 tiles or fewer) while cheese covers cost plus a floor. Beyond that it builds only if the projected end-of-game surplus covers cost + 100; the projection uses 75% of measured income minus 200 per king (King.java:285-316; Econ.java:18-41). Babies are capped at 18 (40 with 1000 banked, 80 with 3000; King.java:267-271).\n3. Roles at birth: the first 6 babies gather; later ones alternate gatherer and cat-fighter by round parity. Babies 4-15 born before round 300 are attackers that rush the mirrored enemy start. One in four gatherers scouts its own half until round 150 (Baby.java:318-342, 1189-1243, 1807-1809).\n4. Gathering: gatherers spread over home-half mines, sorted by distance from home and offset by a per-rat slot (Baby.java:1473-1501). They wander the mine's 5x5 and chase visible piles. They deliver everything to the nearest king at 30 raw, at 10 when idle, and at any amount after round 1960 (Baby.java:1006, 1044, 1144-1157, 879-899). When a mine is crowded or idle they seek another (Baby.java:1830-1883).\n5. War: from round 30 every baby is hostile, which ends cooperation (Baby.java:239-242; Cfg.java:146-148). Bites go to the king first, then the lowest-HP rat, with cheese added when that makes a kill. Babies grab weaker rats and throw them using a damage table (Baby.java:519-790). war() keeps gatherers defensive while fighters engage, and everyone answers a king's ALERT within dist2 225 (Baby.java:1245-1301).\n6. Cats: gatherers flee within 20, fighters bite cats and defend kings, and cat traps go ahead of cats and, during cooperation, on cat lanes. From round 1850 at war every baby hunts cats for damage points (Baby.java:821-871, 1008-1016, 1405-1471).\n7. King count: from round 80 (300 at war), the slot-0 king opens a second-king site once there are 16+ babies, 300 cheese and enough income (King.java:669-772). Two endgame paths (END_KING 1850, CASH_END 1880) aim to have 2 kings alive at round 2000, because kings weigh 0.5 of the war points (King.java:764-767; Baby.java:1579-1712; Cfg.java:75, 244).\n8. Comms: kings own the 64-slot array (kings, symmetry, alerts, mines, cats, budget, formation), and babies squeak news to the kings (Comms.java:10-22; Baby.java:903-932; King.java:131-176).\n9. Movement: greedy steps, then a bug walk, then reverse-A* flow fields, with automatic digging; macro steps strafe to face enemies in range (Nav.java:72-210; Flow.java).",
+ "hidden": [
+  {
+   "what": "Silent zdb fallback whenever a sampled option cannot act",
+   "where": "Baby.java:2193-2207 (netMove; when the option fails, moveDecision runs and the label becomes 0x8000|k<<6|zdb, 2203-2206); Baby.java:122-145, 202-226 (ACT_PRE/POST fall back to zdb's pre/post blocks); Baby.java:230-233 (FACE falls back to guardTurn); Baby.java:162-166 (COMMS falls back to zdb's held squeak); DK.java:345-346; King.java:57, 74, 79, 309-316; training keeps these rows: scripts/rl_train.py:20, 525-541; D.java:158-162 ('a diagnostic only')",
+   "fixes": "What actually happens when the net's option fails: zdb's code for that phase runs, while the RL record still carries the sampled k and its probability. cpi-x0 fallback rates: KING_ACT options 1-4 and 7-10 0.83-1.00; KING_MOVE 0.175 overall (K_CLOSER 0.77, K_WALK_HOME 0.77, K_DIGSTEP_* ~0.96); KING_SPAWN builds 0.40-0.56; BABY_ACT_PRE A_THROW 0.97.",
+   "recommendation": "Change, not a new point: mask options by applicability (KING_ACT 0..10, KING_MOVE primitives, KING_SPAWN builds) or make a failed option a no-op. At minimum, drop or down-weight flag-bit-0 rows in rl_train so the gradient stops crediting zdb's behaviour to the sampled option.",
+   "importance": "high: it decides whether exploring at the trainable king points changes anything, and it corrupts their credit assignment"
+  },
+  {
+   "what": "BREAK_ROUND 30: every baby becomes hostile at round 30 and bites and grabs enemy rats during cooperation, which ends cooperation",
+   "where": "Baby.java:239-242 (hostile = !coop || ATTACK || round >= BREAK_ROUND); Cfg.java:146-148; G.java:66 (coop = rc.isCooperation()); consumers Baby.java:136-145, 215-221",
+   "fixes": "The switch from cooperation to war. Net ACT executors ignore hostile() (Baby.java:1940-1942, 1960-1963), and options 0..20 are always allowed (Baby.java:2056-2057). But ACT_PRE/POST are frozen in RL (configs/rl-m2.json:26-35); their imitation net reproduces zdb's 'behaviour that fired' labels (D.java:68), and a failed option runs zdb's block, which bites from round 30. RL has no lever on when cooperation ends.",
+   "recommendation": "Decision point: a team-level 'break cooperation' choice (a king option, or a register the king writes and hostile() reads), or a continuous BREAK_ROUND output. War and cooperation score differently: kings weigh 0.5 of the points at war and 0.3 in cooperation (Cfg.java:75, 244).",
+   "importance": "high: the biggest strategic switch in the game, and it is fixed for RL"
+  },
+  {
+   "what": "King home anchor: one homeMine for the king's whole life",
+   "where": "King.java:927-943 (pickHomeMine: nearest known home-half mine within KING_MINE_R2 400 of start that no other king holds); King.java:386 and DK.java:439-442 (the only assignments: lazy and never re-picked); King.java:386-400 and DK.java:405-416 (zdb move, K_WALK_HOME, K_SIDESTEP and K_DIG all target it); King.java:111-127 (K_PILE searches for piles within KING_ROAM 4 of the anchor)",
+   "fixes": "Where each king lives. KING_MOVE's other moves are 16 one-tile primitives (K_MOVE_N, K_DIGSTEP_N; DK.java:421-433), and the next turn's walk-home or fallback undoes them. In cpi-x0, 57.8% of KING_MOVE picks are stay-type: K_AT_HOME 27.3%, K_STUCK 20.0%, K_DIG_POOR 10.5%.",
+   "recommendation": "Decision point: let the king re-pick its anchor (KING_HOME over known mines on both halves, plus 'stay'), opened when the mine list changes and every N rounds. Keep pickHomeMine as the label.",
+   "importance": "high: king position drives income, safety and spawn direction, and the trainable KING_MOVE point cannot change it"
+  },
+  {
+   "what": "zdb's spawn path: core size, floors, surplus test, baby cap and spawn tile",
+   "where": "King.java:285-320: opens only when action-ready (289); babies estimated from the rat cost (291); LOW_BABIES (295); LAST_FLOOR (301); CORE_BABIES 18, or CORE_SMALL 12 when area <= CORE_SMALL_AREA (303); CORE_FLOOR/WAR_FLOOR boot and war tests (305-307); S_NO_SURPLUS with SPAWN_MARGIN 100 (311); S_FLOOR (314); S_CAP (316); tile away from cats, else toward the centre (317-320). King.java:267-278: babyCap MAX_BABIES 18, RICH_BABIES at RICH_BANK, RICH2_BABIES at RICH2_BANK; spawnFloor LOW_FLOOR. Cfg.java:5-17, 180-190.",
+   "fixes": "Army size and spawn timing whenever the net picks a hold option or its build fails. Net builds bypass every floor and the cap (DK.java:479-486). But 88.5% of KING_SPAWN picks are zdb's hold labels (S_CAP 47.1%, S_FLOOR 23.8%, S_NO_SURPLUS 17.6%), and builds that fail (fallback 0.40-0.56, because the tile is blocked or unaffordable) drop back into this gated path.",
+   "recommendation": "Keep the decision point. Merge the five hold options into one, and when a build's tile is blocked, build on the nearest free ring tile instead of falling back. If KING_SPAWN keeps imitating the cap, make target army size a continuous output.",
+   "importance": "high: the 18-baby cap is the main economic ceiling, and only net builds can lift it"
+  },
+  {
+   "what": "Nav.goTo/bug/Flow is the only multi-turn movement, and zdb code chooses every errand target",
+   "where": "Nav.java:72-105 (greedy steps; Flow.request after FLOW_STALL 4 at 92); Nav.java:129-172 (bug walk, G.hand handedness); Flow.java (reverse A*). Macro options route through it: Baby.java:1144-1157 (deliver), 1735-1750 (raid), 1770-1777 (wanderAround), 1784-1828 (explore, exploreHome), 2383-2405 (courier, scout home). The net's only alternatives are one-tile primitives P_STEP/P_TURN/P_HOLD/P_STRAFE/P_RISK (D.java:61-66; Baby.java:2298-2305, 2434-2461).",
+   "fixes": "The route, detours and destination of every macro BABY_MOVE option. In cpi-x0, M_MINE_GO is 30.5% of picks, M_MINE_WANDER 19.3%, M_DELIVER 13.6%, M_CHEESE 11.0% and M_SEEK 9.0%. The net picks which zdb errand runs, not where it goes; going anywhere else takes a long run of primitive steps.",
+   "recommendation": "Decision point: a target choice that Nav.goTo executes. Candidates: known mines on both halves, our kings, the last enemy-king sighting, home mirrored under each live symmetry, and explore sectors. Keep Nav/Flow as the engine.",
+   "importance": "high once BABY_MOVE is unfrozen (phase-B plan, configs/rl-m2.json:35); today BABY_MOVE is frozen"
+  },
+  {
+   "what": "MINE_PICK candidate set, order and zdb's slot spread",
+   "where": "Baby.java:1473-1501: known mines plus the rat's own finds; only home-half candidates whenever any exist (1481-1483); sorted by mineKey (1484-1492, 1523-1525); net mask i < m (1496); zdb's pick is (slot % m + mineShift) % m (1501). cand[40] at Baby.java:1513.",
+   "fixes": "The net can only choose a rank among home-half mines: no contested or enemy-half mine, and no 'none'. In cpi-x0, 21,005 of 199,683 MINE_PICK rows (10.5%) had a single candidate (single_option).",
+   "recommendation": "Widen the decision point: offer all known mines and their mirrors, with half, distance and crowd features. Keep zdb's pick as the label.",
+   "importance": "high: mine choice is one of only two trainable baby decisions"
+  },
+  {
+   "what": "How often BABY_ROLE is reviewed",
+   "where": "Baby.java:41-49 (at birth); Baby.java:86-91 (after a role change, or every DP_ROLE_EVERY rounds of life); Cfg.java:260-262 (10 for recording; RL configs use 50); configs/rl-m2.json floor_points {'5': 0.001}",
+   "fixes": "How often a baby may change role: at most once per 50 rounds in RL, with deviations sampled at a 0.001 floor (0.03 in cpi-x0). R_KEEP is 83% of picks (cpi-x0 point 5).",
+   "recommendation": "Change the decision point's timing: review every 10 rounds in RL too, and add event triggers (enemy king seen, fresh ALERT, mine list changed) so role RL can move the army within a fight.",
+   "importance": "high: role is one of only two trainable baby points"
+  },
+  {
+   "what": "zdb code fixes what each role does",
+   "where": "Baby.java:239-242 (hostile); Baby.java:105 (gatherers grab prey only within d2 8); Baby.java:1014 (gatherers flee cats within GATHER_CAT_DIST 20); Baby.java:1008-1100 (cascade branches by role: 1033 face, 1034-1035 attackers, 1040-1041 fighters vs cats, 1059-1062 fighters, 1064 scouts, 1075-1076 gatherer/fighter mine block); Baby.java:1171 (PRESS_GATHER_D2 20 vs PRESS_D2 100); Baby.java:1256, 1268 (war engagement by role); Baby.java:1807-1809 (scouting: GATHER and round < SCOUT_UNTIL 150); Baby.java:465 (no phase-0 pickup for ATTACK)",
+   "fixes": "What GATHER, FIGHT, ATTACK, scout and raider do in the fallback cascade and inside macro options. The net picks a label; zdb decides how that label behaves.",
+   "recommendation": "Stay fixed: a role is a bundle of macro behaviour, which is what makes BABY_ROLE learnable. If role-level RL plateaus, expose the engagement and cat-flee radii as continuous outputs.",
+   "importance": "medium"
+  },
+  {
+   "what": "Birth defaults: initial role, scout bit, home, side frame and slot hash",
+   "where": "Baby.java:318-342: FIGHT if idx >= GATHER_FIRST 6 and round % FIGHT_EVERY 2 == 0 (324); scout = (slot >>> 4) % SCOUT_EVERY 4 == 0 (336); rusher if idx is in RUSH_FROM..RUSH_TO and round < RUSH_UNTIL 300 (341). born() never sets raider; only R_RAIDER does (Baby.java:1914).",
+   "fixes": "The birth role is only BABY_ROLE's default and label; it is re-picked at birth (Baby.java:41-49). Home, fu/fv and slot cannot be overridden, and they seed the mine pick, explore samples and wander boxes.",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Automatic digging inside navigation",
+   "where": "Nav.java:182-200 (digToward: digs dirt straight ahead when no free side step gets closer and global+raw >= DIG_MIN_CHEESE 60); Nav.java:203-210 (tryDig at stall >= 6 with >= 60 cheese); Flow.java:142 (DIG_COST 4 in the path cost); Flow.java:276-285 (follow digs dirt on the path; FLOW_HOLD 3)",
+   "fixes": "Any macro move can spend team cheese and the action cooldown on a dig. A dig keeps ACT_POST closed for the turn, because ACT_POST opens only when the rat is action-ready (Baby.java:200).",
+   "recommendation": "Continuous output (a dig threshold or cost scalar), or stay fixed. Low priority while BABY_MOVE is frozen.",
+   "importance": "medium"
+  },
+  {
+   "what": "Guard facing: near an enemy within GUARD_DIST2 13, macro steps face the enemy (strafe) instead of the step direction",
+   "where": "Baby.java:113-115; Nav.java:107-127; Cfg.java:100",
+   "fixes": "Facing during every macro step near enemies. The turn this spends keeps BABY_FACE closed, because it opens only when turning-ready (Baby.java:229). The net already has P_STRAFE (Baby.java:2302, 2437-2443).",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Avoid masks on macro steps: cat lanes always, enemy-trap risk outside cooperation",
+   "where": "Baby.java:78, 360-369 (laneMask); Baby.java:116-118 and TrapRisk.java:12, 24, 55-71 (TTL 150; off while hunting, engaged, or at Nav.stall >= 8); Nav.java:66-69",
+   "fixes": "Tiles that no macro option will step onto. Only the P_RISK0..7 primitives can (Baby.java:2303, 2444-2453).",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Flow (reverse A*) constants",
+   "where": "Flow.java:49, 73 (FLOW_TTL 200); 54 (FLOW_REV_TURNS 60); 67 (FLOW_RETRY 30); 261 (FLOW_REJOIN 40); 284 (FLOW_HOLD 3); 142 (DIG_COST 4); Cfg.java:155-161. Our kings' bodies block flow paths (Nav.java:24-26, 37-58). Flow.work(FLOW_RESERVE) runs after every baby turn (RobotPlayer.java:28).",
+   "fixes": "How long a path search lives and when it is retried. With limits off, a search finishes within the turn.",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Symmetry and home frame: firstSym prefers ROT, then HOR, then VER",
+   "where": "Baby.java:1719-1731 (homeHalf, nearer, firstSym); King.java:928 (G.mirror(from, sym())); Baby.java:1189-1243 (rushTarget); Baby.java:2225-2235 (markNoKing); Baby.java:1753-1768 (pickRaid); Sym.java (inference)",
+   "fixes": "Which half counts as ours (the MINE_PICK filter, exploreHome, raid eligibility, king home), and where attackers and raiders expect the enemy king.",
+   "recommendation": "Stay fixed: this is inference. Add the symmetry candidates as features; an 'attack symmetry' choice is optional, for ambiguous maps.",
+   "importance": "medium"
+  },
+  {
+   "what": "How long a mine errand lasts, plus idling and seeking",
+   "where": "Baby.java:1122-1125 (refreshMine re-picks when Comms.numMines changes); Baby.java:1135-1141 (goMine drops the target at stall > 25); Baby.java:1079-1083 and 1840-1847 (idle: SEEK_IDLE 20 turns within SEEK_IDLE_R 4 with no pickup triggers shiftMine and a MINE_PICK retry); Baby.java:1780-1782 (atMine: cheb <= 2); Baby.java:1770-1777 (wanderAround: random 5x5); Baby.java:1830-1883 (SEEK_CROWD 6, SEEK_TTL 150, SEEK_RETRY 200; Cfg.java:171-176); Baby.java:1114-1118 (chaseCheese)",
+   "fixes": "How long a picked mine is kept, when MINE_PICK is asked again, and where in the mine square the rat stands.",
+   "recommendation": "Stay fixed. Optionally let MINE_PICK also open on a periodic 'keep or re-pick' trigger.",
+   "importance": "medium"
+  },
+  {
+   "what": "Explore, scout and courier targets",
+   "where": "Baby.java:1784-1802 (explore: EXPLORE_TRIES 12 random samples in the side frame, nearest never-seen tile, biased to the centre while no mine is known); Baby.java:1813-1828 (exploreHome: home half only, filter at 1819); Baby.java:1064-1073 (scouts carry unreported news home); Baby.java:1045-1048 (courier when only this rat knows a mine); Cfg.java:163",
+   "fixes": "Where explorers go. M_EXPLORE, M_SCOUT and M_MINE_EXPLORE give the net no choice of direction.",
+   "recommendation": "Stay fixed, or fold into item 5's target choice as explore sectors.",
+   "importance": "low"
+  },
+  {
+   "what": "Delivery target, amount and thresholds",
+   "where": "Baby.java:1144-1157 (deliver: nearest king; waits facing it inside transfer reach); Baby.java:879-899 (tryDeliver hands over all raw cheese); Baby.java:1006, 1044 (DELIVER_AT 30, DELIVER_IDLE 10, any amount after round 1960); DELIVER_AT also gates press, war and endCat (Baby.java:1169, 1256, 1268, 1408); Cfg.java:117-121",
+   "fixes": "Which king receives the cheese, and that zdb hands over all of it. In net mode M_DELIVER is allowed whenever raw > 0 (Baby.java:2281), so the timing is the net's, and A_X_XFER_10/50/HALF give partial transfers (D.java:73-76).",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "zdb's king move cascade (the fallback, and what KING_MOVE's macro options mean)",
+   "where": "King.java:378-400: cat flee at 382-383 via fleeDir with d2 20 (King.java:405-413); K_THREAT_HOLD, no move while any enemy or cat is visible (384); unplug (385; King.java:589-606); walk to a pile (388); K_DIG_POOR below KING_DIG_MIN 100 (396); digTile/K_STUCK/K_SIDESTEP (397-398). King.java:582-618 and 653-663: closer() and step() refuse steps that split the ring. King.java:427-457: dodge with KING_DODGE_R2 25.",
+   "fixes": "King movement whenever the net's option fails (17.5% of KING_MOVE rows), and what K_CLOSER, K_WALK_HOME, K_SIDESTEP and K_DIG do. K_CLOSER and K_WALK_HOME fall back 0.77 of the time because closer() and step() refuse.",
+   "recommendation": "Stay fixed (the net has primitives), and make the anchor choosable (item 3).",
+   "importance": "medium"
+  },
+  {
+   "what": "Grab and throw policy",
+   "where": "Baby.java:519-537 (tryCarry takes the healthiest grabbable enemy); Baby.java:1342-1351 (prey: strictly lower HP within d2 20) and 105 (gatherers only within d2 8); Baby.java:583-635 (aimCarry, AIM_LEFT, THROW_BC); Baby.java:547-548, 657-701 (tryThrow: FLIGHT_DMG table, THROW_FAR_PCT 40, hold rule THROW_MIN 84 / THROW_HOLD 6 at 694); Cfg.java:104-106",
+   "fixes": "Whom to grab, and when and where to throw. The net's A_THROW calls tryThrow and fails under the hold rule: it is 9.4% of BABY_ACT_PRE picks with fallback 0.97 (cpi-x0 point 2). A_X_THROW_NOW throws at once (Baby.java:1968-1971).",
+   "recommendation": "Stay fixed, but make A_THROW return true when it holds, so the record says 'held' instead of counting a fallback.",
+   "importance": "medium (the point is frozen today)"
+  },
+  {
+   "what": "Bite targets and the cheese added to bites",
+   "where": "Baby.java:737-790 (biteEnemies: king first, then lowest HP; finishCheese adds k*k cheese with FINISH_K 5, only above FINISH_FLOOR 200); Baby.java:802 (cat bites add 1 cheese if BUDGET*4 >= CHEESE_BITE_SURPLUS 600); King.java:190-264 (the king bites the weakest; cheese = min(KING_BITE_MAX 100, global - KING_BITE_FLOOR 300) at 260); Cfg.java:101-103, 196",
+   "fixes": "Target and cheese for every zdb bite, and for A_BITE_RAT/A_BITE_KING (biteSome calls biteEnemies, Baby.java:1941-1942). Forward bites with cheese {1,4,9,16,36,100} are net primitives (D.java:73-77).",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "When babies spend cheese on traps and cat lanes",
+   "where": "Baby.java:843-871 (tryCatTrap: TRAP_FLOOR 600 own cheese; TRAP_SURPLUS 200 via BUDGET unless defending; TRAP_DEFEND_DIST2 100); Baby.java:821-841 and 223 (layLane, cooperation only: CAT_LAY_FLOOR 400, CAT_LAY_AGE 3; CatLane.java:7-26 with CAT_LAY_GAP 20); Baby.java:704-734 (tryRatTrap: RAT_TRAP_MIN_CHEESE 200, BABY_TRAP_DIST2 13, TRAP_CAP 10), reached only through A_RAT_TRAP (Baby.java:1959) and never from zdb's own turn; Cfg.java:127-130, 196-198",
+   "fixes": "When babies spend cheese on traps. zdb never lays rat traps on its own.",
+   "recommendation": "Continuous output for the spend floors, or rely on the A_X_RAT_TRAP_FWD and A_X_CAT_TRAP_FWD primitives once ACT is unfrozen.",
+   "importance": "medium"
+  },
+  {
+   "what": "Fight internals: war, press, retreat, ammo, face, flank and micro",
+   "where": "Baby.java:1245-1301 (war: gatherers fight only adjacent enemies; standoff at d <= 20, 1268-1278; answer an ALERT within ALERT_DIST2 225, 1283-1289; defend a king within DEFEND_D2 100, 1297-1301; KING_THREAT_D2 18 at 1272); Baby.java:1165-1186 (pressKing: PRESS_HP 40, PRESS_AGE 8, PRESS_D2 100, PRESS_GATHER_D2 20); Baby.java:1384 (ammo: AMMO_HP, AMMO_D2, AMMO_R); Baby.java:1388 (retreat at RETREAT_HP 40); faceEnemy at d2 <= 8; flank; Micro.java:16-100 (reached only through M_MICRO; MICRO_CHEESE at 51); Cfg.java:88-115",
+   "fixes": "Positioning inside the fight macros. The net chooses M_WAR, M_PRESS and the rest, but not engagement radii, standoff distance or retreat HP.",
+   "recommendation": "Stay fixed (BABY_MOVE is frozen); once it is unfrozen, the P_* primitives give full control.",
+   "importance": "medium"
+  },
+  {
+   "what": "Cat responses",
+   "where": "Baby.java:1008 and 1447-1452 (a cat near a king, CAT_DEFEND_R2 36, is the first branch of the cascade); Baby.java:1014-1016 (gatherers flee within GATHER_CAT_DIST 20); Baby.java:1010-1012 and 1405-1429 (END_CAT 1850 at war: endgame cat hunt, endCatBar); Baby.java:284-300 (STALL_CAT 100 for attackers in cooperation, ticked every turn by netBook, Baby.java:2213-2214); Baby.java:1431-1444 (how fresh knownCat must be); Baby.java:1454-1471 (approachCat); King.java:405-457 (king flee and dodge)",
+   "fixes": "How rats avoid cats, defend against them, and hunt them for endgame damage points.",
+   "recommendation": "Stay fixed",
+   "importance": "low-medium"
+  },
+  {
+   "what": "The economy model and the BUDGET register",
+   "where": "Econ.java:10 (INCOME_WINDOW 100 ring); Econ.java:18-41 (surplus = global + (rate100*INCOME_TRUST 75/100 - 200*kings)*(2000 - round)/100, at 39); King.java:83 (BUDGET = surplus/4, written every king turn); readers Baby.java:802, 850; zdb's spawn test King.java:311; KING_COMMS can set BUDGET only to 0, 100 or 1023 (DK.java:55)",
+   "fixes": "The team's spending signal to babies (traps, cheese added to cat bites) and zdb's spawn margin.",
+   "recommendation": "Continuous output: let the king write the budget, for example as KING_VAL digits on slot 62. Otherwise stay fixed. KING_COMMS is frozen today.",
+   "importance": "medium"
+  },
+  {
+   "what": "Formation of a second king: the king's gates and the babies' side",
+   "where": "King.java:669-709: slot-0 king only (670); no formation at war before FORM_WAR_FROM 300 (672); cap formCap FORM_MAX 2 unless rich (675-678); FORM_TTL 60 (680); endKing (690-697); FORM_FROM 80, round <= 1150, FORM_RETRY 150, FORM_BABIES 16, FORM_CHEESE 300 (698-699). King.java:731, 751-772: rich with FORM_RICH_MAX/FORM_RICH_BANK; END_KING 1850 / END_KING_CHEESE 400; income test FORM_NET100. Baby side: Baby.java:1528-1559 (formSite freshness 2; formKing with FORM_PULL_R2 72 and FORM_JOIN 8); Baby.java:180-185 (automatic promotion on the site centre unless netAct).",
+   "fixes": "When and where a second king forms whenever the net picks a no-op or a close option, and which babies join and promote.",
+   "recommendation": "Stay fixed on the king side: KING_FORM's start options already open a site whenever none is open and slots remain (DK.java:636-639). Joining is BABY_MOVE's M_FORM_KING, which is frozen.",
+   "importance": "medium"
+  },
+  {
+   "what": "Endgame cash rescue: a lone king's babies form a second king",
+   "where": "Baby.java:1579-1590 (cashOk/cashEnd: round >= CASH_END 1880, one king, bank above a floor); Baby.java:1600-1652 (cashTick every turn, muted in net mode; CASH_RAW 60, CASH_N 3, CASH_R 4, CASH_MIN 250, CASH_FAR 5, CASH_PULL 8, CASH_TTL 50); Baby.java:172-178 and 1686-1695 (cashPromote is automatic unless netAct); Baby.java:1697-1712 (cashMove); Cfg.java:240-246",
+   "fixes": "Endgame insurance on the king count: 2 kings to 1 changes the round-2000 split (Cfg.java:244).",
+   "recommendation": "Stay fixed",
+   "importance": "low-medium"
+  },
+  {
+   "what": "Comms protocol, readers and zdb's writes",
+   "where": "Comms.java:10-22 (FORM 0/23/63, SYM 1, KING0 2-16, ALERT 17-19, EKING and free registers 20-22, MINE0 24-55, CAT0 56-61, BUDGET 62; squeak types); Comms.java:58-67 (readKings, freshness 2) and 82-89 (readMines); Baby.java:903-932 (report squeak priorities); King.java:131-164 (readSqueaks) and 166-176 (publish, which rewrites SYM); King.java:58-69 (ALERT counts enemy rats within KING_THREAT_D2 18)",
+   "fixes": "All of zdb's information flow. Values the net writes (KING_COMMS KC_SET0..., BABY_COMMS C_RAW) reach other robots only as net features (docs/capability-principle.md:116-119), never zdb code. KING_COMMS and BABY_COMMS are frozen in RL (configs/rl-m2.json:26-35).",
+   "recommendation": "Stay fixed for now",
+   "importance": "medium-low"
+  },
+  {
+   "what": "Pickups with no trainable choice",
+   "where": "King.java:43, 179-188 (the king picks up every pile under its 3x3 at turn start and after every step); DK.java:408, 427 (also after net steps; there is no king pickup control, docs/capability-principle.md:119); Baby.java:418-430, 449-466 (babies pick up their tile and facing fan at both pickup sites, except none at phase 0 for ATTACK); Baby.java:40, 420, 433-444 (a BABY_FREE cap persists for the whole turn)",
+   "fixes": "Pickups are always maximal. BABY_FREE could cap or skip them, but it is frozen and FR_ZDB is 99.7% of its picks (cpi-x0 point 8).",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Raid and rush targets",
+   "where": "Baby.java:1735-1750 (raid: drops the target at Nav.stall > 20 or after RAID_STAY 60; wanders a 5x5 at the target); Baby.java:1753-1768 (pickRaid: enemy-half mines and mirrors of known mines plus G.rand(RAID_SPREAD), else the midpoint between homes); Baby.java:1027-1028, 1062 (cascade gate: raider, war, raw 0, HP >= RAID_HP, on our half, no enemy within RAID_ENGAGE); net M_RAID/M_RAID_FIGHT are always allowed and call raid() whatever the raider bit (Baby.java:2270, 2286, 2346-2349); Baby.java:1189-1243 (attack and rushTarget: home mirrored under the live symmetries, with noKing marks)",
+   "fixes": "Where offensive babies go.",
+   "recommendation": "Fold into item 5's target choice",
+   "importance": "medium"
+  },
+  {
+   "what": "Randomness and tie-breaks inside macro options",
+   "where": "G.java:137-147 (xorshift G.rand, used by wanderAround Baby.java:1774, explore 1794, exploreHome 1817 and pickRaid 1763); G.java:106-114 (G.hand handedness in Nav.choose and flee)",
+   "fixes": "Randomness that the net neither controls nor sees.",
+   "recommendation": "Stay fixed",
+   "importance": "low"
+  },
+  {
+   "what": "Gates on the bytecode clock",
+   "where": "Flow.java:45 (left() = Clock.getBytecodesLeft() + G.debt); Baby.java:112 (BC_BAIL 3500 ends the baby turn before ACT_PRE, MOVE, ACT_POST and FACE); Baby.java:80 and TrapRisk.java:24 (BC_OPTIONAL); Baby.java:212, 585 (THROW_BC 7000); Baby.java:26 (AIM_LEFT 3000); Baby.java:399 (SENSE2_LEFT 6000); Baby.java:1613 (CASH_READ_LEFT 6000); King.java:583, 590 (PLUG_LEFT); King.java:116 (KING_SENSE_RESERVE); RobotPlayer.java:40 (IND_LEFT)",
+   "fixes": "Whether a baby gets any decision point on a low-budget turn, and whether it throws, aims, senses a second time or reads squeaks.",
+   "recommendation": "Stay fixed. Without --limits each turn has 1e9 bytecodes (docs/engine.md:17-21; tournamentLimits is added only with --limits, scripts/eval_student.py:81; scripts/es_eval.sh:7 never passes it), so all of these are inert in RL/ES self-play, and Flow searches finish within the turn. Revisit if limits come back.",
+   "importance": "low now; high if limits return, because BC_BAIL then skips every baby point for that turn"
+  },
+  {
+   "what": "Fixed turn skeletons, with cooldowns coupling the points",
+   "where": "Baby.java:35-237: ACT_PRE only if action-ready (120); MOVE only if movement-ready (187); ACT_POST only if still action-ready (200); FACE only if turning-ready (229); promotions at 174-185. King.java:19-89: pickUp (43); KING_TURN (46-49); spawn (51); KING_ACT then zdb's bite (53-57); ALERT (58-69); KING_FORM (72-74); KING_MOVE (77-80); BUDGET (83); KING_COMMS (85-87).",
+   "fixes": "Order and the one-shot structure: no action after facing, no second move, and the king spawns before it moves. zdb rewrites BUDGET and ALERT every turn before KING_COMMS can edit them. Macro moves that turn or dig spend the cooldowns, which silently keeps FACE and ACT_POST closed.",
+   "recommendation": "Stay fixed: it follows the engine's cooldowns. Analyses should treat a point that never opened as a consequence of the earlier option.",
+   "importance": "medium"
+  }
+ ],
+ "most_constraining": [
+  "1. Frozen baby points. This is a config choice, but it acts like hard-coding. rl-m2 and cpi-x0 train only points 5, 7, 10, 11, 12, 13 and 16 (configs/rl-m2.json:26-34; cpi-x0-summary.json 'trainable'). BABY_MOVE, ACT_PRE/POST, FACE, COMMS, FREE, BABY_VAL and the king's COMMS/VAL points stay at the imitation net; phase-B unlocks are planned as [[2,3,4],[6],[1]] (configs/rl-m2.json:35). So for RL every baby tactic in this inventory is fixed: errands, fights, throws, traps, delivery, cat responses and the round-30 backstab. BABY_MOVE's imitation pick reproduces zdb with p_top_mean 0.993 (devfb-cpi-x0.json point 1).",
+  "2. Silent fallback with loose masks, and fallback rows trained as if the option had run (Baby.java:2203-2206; DK.java:345-346; King.java:57, 74, 79, 309-316; scripts/rl_train.py:525-541). KING_ACT options 0..10 are always allowed (DK.java:594), KING_SPAWN has a null mask (DK.java:454), and KING_MOVE's mask is static (DK.java:350-355). Many floor-sampled deviations therefore change nothing yet are still credited: KING_ACT options 1-4/7-10 fall back 0.83-1.00, KING_MOVE 0.175 overall, KING_SPAWN builds 0.40-0.56.",
+  "3. A fixed king anchor. homeMine is chosen once and never re-picked (King.java:386, 927-943; DK.java:439-442), and every KING_MOVE macro option walks or digs back to it. 57.8% of KING_MOVE picks are stay-type.",
+  "4. The baby cap and spawn gates in zdb's spawn path (King.java:267-316): an 18-baby cap and the floors behind the hold labels, which are 88.5% of KING_SPAWN picks. Net builds bypass them only when the chosen ring tile is free and affordable.",
+  "5. The round-30 backstab in hostile() (Baby.java:239-242; Cfg.java:146-148). The frozen ACT imitation net and the ACT fallback both carry it, so RL cannot choose when cooperation ends.",
+  "6. No destination choice. Nav.goTo/Flow is the only multi-turn movement, and zdb picks the errand targets: home frame, firstSym, nearest king, mirrored enemy start (Nav.java:72-105; Baby.java:1144-1157, 1189-1243, 1719-1828). This becomes the dominant limit once BABY_MOVE is unfrozen.",
+  "7. MINE_PICK is limited to home-half mines whenever any exist, and is re-asked only at zdb's triggers (Baby.java:1481-1501, 1122-1141). 10.5% of its rows have a single candidate.",
+  "8. BABY_ROLE's cadence and fixed meaning. In RL it is reviewed every 50 rounds at a 0.001 floor (Cfg.java:260-262; configs/rl-m2.json floor_points), and zdb's cascade decides what each role does (Baby.java:1008-1100).",
+  "9. The economy signal. The king writes Econ.surplus to BUDGET every turn (Econ.java:18-41; King.java:83), and KING_COMMS can only set it to 0, 100 or 1023 and is frozen anyway (DK.java:55).",
+  "10. Formation: only the slot-0 king decides, zdb gates the king side, and baby joining and promotion are fixed (King.java:669-772; Baby.java:180-185, 1528-1559)."
+ ],
+ "overrides": [
+  "All points: when an option's executor returns false, zdb's code for that phase runs: BABY_MOVE falls to moveDecision (Baby.java:2203-2206), ACT_PRE/POST to zdb's blocks (Baby.java:130-145, 209-226), FACE to guardTurn (Baby.java:232-233), COMMS to zdb's held squeak (Baby.java:162-166), and the king points likewise (DK.java:345-346; King.java:74, 79, 309-316). The RL row still records the sampled k (D.java:158-162; scripts/rl_train.py:525-541).",
+  "KING_ACT: unless the net picked A_NONE (DK.java:490-506 hold flag), zdb's bite runs after the net's option, at war only (King.java:57). The ALERT write follows regardless (King.java:58-69). Options 0..10 are always allowed and only the 6 cheese-boosted bites are masked by applicability (DK.java:592-597). In cpi-x0, A_NONE is 90.2% of picks, options 1-4 and 7-10 fall back 83-100% of the time, and only A_TRAP_FORT (0.14) and A_MOAT_FILL (0.11) usually act.",
+  "KING_MOVE: eight options are the same 'stay': K_THREAT_HOLD, K_NO_HOME, K_AT_HOME, K_DIG_WAIT, K_DIG_POOR, K_STUCK, K_DIG_REFUSED and K_STAY (DK.java:418-420). K_LANE, K_NO_MINE, K_OFF_SITE and K_PATH are statically masked (DK.java:350-355). K_WALK_HOME, K_SIDESTEP and K_DIG target the fixed home() (DK.java:405-416, 439-442). closer() and step() refuse steps that split the ring (King.java:582-618, 653-663), which is why K_CLOSER falls back 0.77. Executor steps also call King.pickUp (DK.java:408, 427). The point opens only when movement-ready (King.java:77).",
+  "KING_SPAWN: null mask (DK.java:454). S_NO_SURPLUS, S_FLOOR, S_CAP, S_BLOCKED and S_HOLD are the same 'don't build'; only spawnWhy differs (DK.java:466-468, 477-478). S_DIG digs the ring toward the first enemy or the map centre and fails if nothing was dug (DK.java:469-476; fallback 0.85). S_BUILD_0..15 bypass the floors and the cap (DK.java:479-486), but a blocked or unaffordable tile falls back to zdb's gated spawn (King.java:309-316). The point opens only when action-ready (King.java:289).",
+  "KING_FORM: only the slot-0 king decides (King.java:72, 670). F_WAR_OFF, F_CAP_OFF and F_CAP_GAP all close the site (DK.java:646). F_DROP_FORMED and F_DROP_TIMEOUT close it if one is open (DK.java:655). F_END_WAIT, F_END_NONE, F_IDLE, F_NO_INCOME and F_NO_SITE are no-ops that succeed only when no site is open (DK.java:660-661). Start options are masked while a site is open or the king slots are full (DK.java:636-639).",
+  "KING_TURN: opens only when the king is turning-ready, action-ready and holds at least the rat cost (King.java:46). KT_ZDB keeps the current facing.",
+  "KING_COMMS: KC_ZDB keeps zdb's writes for the whole turn. The edits are limited to dropping write groups, three BUDGET bands {0, 100, 1023}, ALERT call/clear, a squeak, trap removal and KC_SET writes (DK.java:49-59). zdb rewrites BUDGET (King.java:83) and ALERT (King.java:58-69) every turn before this point. Frozen in RL; KC_ZDB is 99.5% of picks.",
+  "BABY_ACT_PRE: A_PASS counts as acted (Baby.java:1923), so it also suppresses the hard-coded cash and formation promotions for that turn (Baby.java:174-185). A_THROW runs tryThrow and fails under THROW_HOLD (Baby.java:1934-1938, 694), giving fallback 0.97. Options 0..20 are always allowed (Baby.java:2056-2057). If an option promotes the rat to king, the turn ends (Baby.java:127).",
+  "BABY_ACT_POST: opens only if the rat is still action-ready after the move (Baby.java:200), and macro digs use up that readiness. If its option fails, zdb's post block runs: drop or throw, carry, bites, cat bite, layLane in cooperation, tryDeliver (Baby.java:209-226).",
+  "BABY_MOVE: macro options keep zdb's internals (targets, Nav digs, guard facing, dropping the target on stall). M_GRAB, M_RESCUE, M_HUNGRY, M_ATK_DELIVER and M_FORT are always masked (Baby.java:2258, 2264, 2267, 2275, 2279). Some options duplicate each other: M_RAID and M_RAID_FIGHT (Baby.java:2346-2349); M_COURIER and M_SCOUT_HOME (Baby.java:2383-2405); M_CAT_DEFEND and M_FIGHT_CAT, both approachCat (Baby.java:2313-2315, 2375-2378); P_STEP and P_RISK share an executor and have complementary masks (Baby.java:2300, 2303, 2444-2453). netBook runs zdb's attacker bookkeeping every turn before the pick (Baby.java:2213-2221). Primitive steps leave Nav.stall unchanged (Baby.java:2451-2452).",
+  "BABY_FACE: opens only when turning-ready (Baby.java:229), which a turning step has usually used up. A failed option runs guardTurn (Baby.java:232-233).",
+  "BABY_COMMS: zdb's cashTick and report() still run, muted, and update zdb's state. If the net's option cannot squeak, zdb's held squeak goes out instead (Baby.java:150-166).",
+  "MINE_PICK: opens only inside zdb's pickMine calls (fresh or reset, IDLE_SHIFT, retry; D.java:120-121). The pick is dropped when the mine list changes or the walk stalls (Baby.java:1122-1141). Candidates are home-half mines whenever any exist (Baby.java:1481-1483, 1496).",
+  "BABY_ROLE: reviewed only at birth, after a change, or every DP_ROLE_EVERY rounds (Baby.java:41-49, 86-91). roleExec resets errand state on a real change (Baby.java:1894-1907). The scout and raider bits change only the fallback's behaviour (Baby.java:1027-1028, 1062, 1807-1809), because net M_RAID/M_SCOUT ignore them (Baby.java:2270, 2288).",
+  "BABY_FREE: FR_ZDB runs zdb's pickUp. A cap or none choice holds for the whole turn, including a later pickAdjacent (Baby.java:40, 420, 1104-1112). Trap removals chain up to FREE_CHAIN 2 (Baby.java:453-462; D.java:106). Phase 0 gives attackers no pickup (Baby.java:465)."
+ ],
+ "cross_cutting": [
+  "Duplicate options dilute the uniform floor and split probability and credit among identical actions. KING_SPAWN has 5 identical holds among 22 options (DK.java:466-468, 477-478). KING_MOVE has 8 identical stays among 33 allowed options (DK.java:418-420). KING_FORM has 3 identical close options plus 5 no-ops (DK.java:646, 660-661). BABY_MOVE has M_RAID/M_RAID_FIGHT, M_COURIER/M_SCOUT_HOME, M_CAT_DEFEND/M_FIGHT_CAT and P_STEP/P_RISK. The floor is spread uniformly over allowed options (D.java:30-31; DNet.java:30-31), so in cpi-x0 'stay' gets 8/33 of KING_MOVE's 0.1 floor.",
+  "Most trainable options are zdb's exit reasons (S_CAP, K_AT_HOME, F_CAP_OFF), not distinct actions, so each point has fewer real choices than options. KING_SPAWN: hold, dig the ring, or build at ring tile i. KING_MOVE: stay, flee or dodge, walk or dig toward home, walk to a pile, or step or dig in direction d. KING_FORM: close, hold, rich drop or gap, or open a site of some kind or ring offset. KING_ACT: no bite, a zdb-bite variant, traps, moat fill, dig the ring, or a cheese-boosted bite (DK.java:25-47).",
+  "The imitation start is saturated. Share of rows where the top pick is saturated, per cpi-x0-summary.json: BABY_MOVE 0.79, ACT_PRE 0.90, ACT_POST 0.99, ROLE 0.95, KING_SPAWN 0.75, KING_ACT 0.76, KING_FORM 0.71, MINE_PICK 0.64, KING_MOVE 0.35. Deviations therefore come almost entirely from the floors.",
+  "Most trainable king decisions are 'do nothing', and the hard-coded gates above decide when that is right. In cpi-x0: KING_MOVE 57.8% stay-type; KING_SPAWN 88.5% hold; KING_ACT 90.2% A_NONE; KING_FORM 84.7% close or idle (F_CAP_OFF 43.1%, F_IDLE 22.5%, F_WAR_OFF 19.1%).",
+  "Bytecode limits are off (docs/engine.md:17-21; scripts/es_eval.sh:7). Every clock gate is inert and Flow searches finish within the turn. Self-play results may not carry over to tournament limits, where BC_BAIL (Baby.java:112) would skip whole baby turns.",
+  "zdb's bookkeeping also runs on net turns: netBook (Baby.java:2213-2221), the muted cashTick and report() (Baby.java:150-166), the Econ ring and the Comms reads. That keeps zdb's state consistent so the fallback can take over at any moment. As a result, even unfrozen points act like a net layered over a live zdb policy, not a free controller."
+ ]
+}

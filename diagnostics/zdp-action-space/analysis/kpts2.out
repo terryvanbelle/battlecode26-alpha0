@@ -1,0 +1,60 @@
+DATA /home/terry/rltest/bc26a0/runs/rl/cpi-x0/iter-0000/data
+P11 team-games 512 | floor-state records picking S_CAP: 167933 of which babies>=cap 99.7%
+   floor-state records picking S_FLOOR: 168332 of which babies>=cap 58.1%
+   zdb-spawn states per team-game 55.3 ; executed builds per team-game 77.6 ; executed builds in non-spawn states per team-game 49.05 ; no-spawn picks in zdb-spawn states per team-game 8.72
+P12 team-games 512 | executed per team-game: {'TRAP_FOE': 0.7, 'TRAP_FORT': 10.7, 'MOAT': 12.34, 'CAT_TRAP': 1.18, 'DIG': 2.26}
+   rounds 0-200: mean team rat traps 0.91, share>=10 0.0%, mean ring dirt-placeable 8.98, ring dirt-removable 0.32
+   rounds 200-500: mean team rat traps 3.51, share>=10 2.6%, mean ring dirt-placeable 9.72, ring dirt-removable 0.23
+   rounds 500-1000: mean team rat traps 8.41, share>=10 36.6%, mean ring dirt-placeable 10.34, ring dirt-removable 0.26
+   rounds 1000-1500: mean team rat traps 14.62, share>=10 76.0%, mean ring dirt-placeable 9.88, ring dirt-removable 0.28
+   rounds 1500-2001: mean team rat traps 17.49, share>=10 86.9%, mean ring dirt-placeable 9.94, ring dirt-removable 0.25
+P13 team-games 512 | executed opens per team-game 24.22
+   1-king states: net opens 7235, a new king within 15 turns after an open: 381; baseline (random 1-king record, no site, no open pick) rate 0.0177
+     option 13: opens 8, new king within 15: 1, median own babies in sight 5, median round 292
+     option 14: opens 1444, new king within 15: 39, median own babies in sight 5, median round 245
+     option 15: opens 779, new king within 15: 39, median own babies in sight 4, median round 191
+     option 16: opens 660, new king within 15: 53, median own babies in sight 3, median round 208
+     option 17: opens 475, new king within 15: 54, median own babies in sight 3, median round 336
+     option 18: opens 365, new king within 15: 5, median own babies in sight 3, median round 286
+     option 19: opens 275, new king within 15: 12, median own babies in sight 3, median round 338
+     option 20: opens 397, new king within 15: 13, median own babies in sight 3, median round 329
+     option 21: opens 396, new king within 15: 9, median own babies in sight 3, median round 349
+     option 22: opens 234, new king within 15: 7, median own babies in sight 3, median round 207
+     option 23: opens 406, new king within 15: 16, median own babies in sight 4, median round 229
+     option 24: opens 252, new king within 15: 13, median own babies in sight 4, median round 269
+     option 25: opens 357, new king within 15: 40, median own babies in sight 5, median round 140
+     option 26: opens 329, new king within 15: 15, median own babies in sight 4, median round 231
+     option 27: opens 249, new king within 15: 16, median own babies in sight 4, median round 326
+     option 28: opens 328, new king within 15: 25, median own babies in sight 4, median round 207
+     option 29: opens 281, new king within 15: 24, median own babies in sight 5, median round 186
+   opens in gate-pass 1-king states (zdb would open): 150, new king within 15: 22
+DATA /home/terry/rltest/bc26a0/runs/rl/rl-m2/iter-0038/data
+P11 team-games 204 | floor-state records picking S_CAP: 1062 of which babies>=cap 76.1%
+   floor-state records picking S_FLOOR: 34216 of which babies>=cap 10.5%
+   zdb-spawn states per team-game 130.7 ; executed builds per team-game 70.9 ; executed builds in non-spawn states per team-game 5.26 ; no-spawn picks in zdb-spawn states per team-game 27.05
+P12 team-games 204 | executed per team-game: {'TRAP_FOE': 0.61, 'TRAP_FORT': 1.4, 'MOAT': 2.79, 'CAT_TRAP': 0.12, 'DIG': 0.6}
+   rounds 0-200: mean team rat traps 0.44, share>=10 0.0%, mean ring dirt-placeable 9.65, ring dirt-removable 0.39
+   rounds 200-500: mean team rat traps 1.71, share>=10 0.0%, mean ring dirt-placeable 10.27, ring dirt-removable 0.44
+   rounds 500-1000: mean team rat traps 3.49, share>=10 1.9%, mean ring dirt-placeable 9.79, ring dirt-removable 0.37
+   rounds 1000-1500: mean team rat traps 5.72, share>=10 13.6%, mean ring dirt-placeable 9.33, ring dirt-removable 0.19
+   rounds 1500-2001: mean team rat traps 6.97, share>=10 22.3%, mean ring dirt-placeable 9.46, ring dirt-removable 0.18
+P13 team-games 204 | executed opens per team-game 3.7
+   1-king states: net opens 591, a new king within 15 turns after an open: 63; baseline (random 1-king record, no site, no open pick) rate 0.0083
+     option 13: opens 1, new king within 15: 0, median own babies in sight 9, median round 136
+     option 14: opens 155, new king within 15: 6, median own babies in sight 5, median round 523
+     option 15: opens 62, new king within 15: 9, median own babies in sight 4, median round 667
+     option 16: opens 42, new king within 15: 10, median own babies in sight 3, median round 635
+     option 17: opens 38, new king within 15: 5, median own babies in sight 3, median round 882
+     option 18: opens 15, new king within 15: 0, median own babies in sight 2, median round 346
+     option 19: opens 30, new king within 15: 4, median own babies in sight 2, median round 989
+     option 20: opens 40, new king within 15: 2, median own babies in sight 4, median round 636
+     option 21: opens 72, new king within 15: 6, median own babies in sight 5, median round 639
+     option 22: opens 15, new king within 15: 0, median own babies in sight 4, median round 230
+     option 23: opens 28, new king within 15: 2, median own babies in sight 5, median round 46
+     option 24: opens 4, new king within 15: 1, median own babies in sight 6, median round 45
+     option 25: opens 34, new king within 15: 8, median own babies in sight 5, median round 461
+     option 26: opens 12, new king within 15: 3, median own babies in sight 4, median round 721
+     option 27: opens 17, new king within 15: 3, median own babies in sight 7, median round 140
+     option 28: opens 17, new king within 15: 4, median own babies in sight 4, median round 331
+     option 29: opens 9, new king within 15: 0, median own babies in sight 3, median round 1219
+   opens in gate-pass 1-king states (zdb would open): 128, new king within 15: 7

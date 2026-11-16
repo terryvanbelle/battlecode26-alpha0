@@ -1,0 +1,98 @@
+{
+ "claims_checked": 75,
+ "confirmed": 63,
+ "corrections": [
+  {
+   "claim": "'Most deviations come from the 0.005 floor', and consequence 3: 'For FLANK and AIM_CARRY, most of the exploration the floor spends on that option ends up running zdb's move instead.'",
+   "verdict": "wrong",
+   "correction": "Most deviations come from the net's own temperature-1 softmax, not the floor. Overall about 60% are softmax and 40% floor. The floor's roughly 3,012 deviations go mostly (1,794) to the bias -20 primitives, so for options 0-38 about 79% of deviations are softmax. FLANK and AIM_CARRY deviations are at least 95% softmax: the imitation net hedges because their success conditions (enemy facing, flight tiles) are invisible to it. Their deviation fallbacks come from the start policy itself and would remain at floor 0.",
+   "evidence": "devfb.py:30 computes p_top with dpnet_io.probs(lg, mask, 1.0, 0.0), which is pure softmax. DNet.java:126-130 samples (1-floor)*softmax + floor/m, so dev = 0.995*(1-0.9928) + 0.005*(1-1/30.87) = 0.0072 + 0.0048 = 0.0120, against a measured 0.0119 (devfb-cpi-x0.json). Expected floor deviations: 622,495*0.00484 = about 3,012. The primitives 39-71 got 1,794 picks (cpi-x0-summary option_hist). floor/m is about 1/6,200 per allowed record, which caps any option near 100 floor picks (always-allowed options: RAID 98, RAID_FIGHT 91, MINE_STILL 105, P_HOLD 123). FLANK's mask (Baby.java:2271) is a subset of MICRO's (2273), and MICRO had only 6 picks in total, so at most about 6 of FLANK's ~631 deviations are floor picks. To draw 210 floor picks, AIM_CARRY (mask 2263) would need several hundred thousand carrying records, while it had only ~2,000 picks in total. cpi-x0 ran at temperature 1.0 (aspace/rl-m2-last.txt)."
+  },
+  {
+   "claim": "Consequence 2: 'flank and yieldKing can turn before a failed step (Nav.java:119-126)'.",
+   "verdict": "wrong",
+   "correction": "Neither can. Both check movement readiness and rc.canMove on the exact direction before calling Nav.step. Turning uses a separate cooldown and canMove does not depend on facing, so the move after Nav.step's turn always succeeds. Both return false before taking any action. In fact no netExec executor acts and then fails: aimCarry checks canTurn before it turns, and the other executors fail before their first action.",
+   "evidence": "Baby.java:1314 (flank readiness), 1325 (canMove pre-check), 1333 (Nav.step). yieldKing: 1360, 1363, 1369. Nav.java:119-121. docs/rules/engine-checked-digest.md:64 (turning cooldown is separate) and :109 (canMove legality has no facing term). aimCarry: Baby.java:630-631."
+  },
+  {
+   "claim": "SEEK: 'Because a failed call changes state first, the fallback is not exactly what zdb would have done' (also given as a consequence 2 example).",
+   "verdict": "partly wrong",
+   "correction": "About 333 of SEEK's ~343 fallbacks happen at the argmax inside zdb's own seek window, and there the fallback replays zdb exactly. zdb calls seek() once at 1075; when that fails it sets seekUntil=0 (or mineTarget=null), makes the same exploreHome draws, and goes on to the mine block. The net's failed seek() makes the same changes. moveDecision then skips 1075 because G.round < seekUntil is now false, and runs the same mine block. These fallbacks are zdb's normal end of a seek, not a mask/executor mismatch. Only SEEK or MINE_EXPLORE picks outside zdb's region (about 10 fallbacks) diverge.",
+   "evidence": "Baby.java:1075, 1872-1883 (state changes at 1877 and 1881), 1813-1828; netExec 2411-2413. Deviation fallbacks = 71 subsample deviations * 2.075 * 0.07 = about 10."
+  },
+  {
+   "claim": "Cause: 'the mask is looser than the executor's own preconditions, and no feature exposes those preconditions', listing RETREAT ('mask lacks hp <= 40 and Chebyshev > 2') and FORM_KING ('distance and crowd checks').",
+   "verdict": "partly wrong",
+   "correction": "RETREAT's whole success condition is in the features: hp, nearest-enemy dist2, king present, and Chebyshev distance to the king. Its ~86 argmax fallbacks are imitation boundary errors (hp near 40, cheb near 2), not hidden state. FORM_KING's distance check is itself a feature; only the nearerAllies crowd count is hidden. The genuinely hidden preconditions are: FLANK (enemy facing), AIM_CARRY (targets and flight tiles), WAR's alert branch, ATTACK (noKing), YIELD_KING (catGap) and AMMO_AWAY (enemy hp).",
+   "evidence": "retreat: Baby.java:1387-1393. Features: D.java:252 (hp, f5), 258 (enemy dist2, f9), 271-272 (king present and cheb, f18-19). formKing pull check 1539 equals D.java:319 (f55, formSite within FORM_PULL_R2). Crowd check 1540 uses nearerAllies(site); feature 57 is the mine crowd (D.java:321)."
+  },
+  {
+   "claim": "WAR: the hidden cause is that 'war() is gated by role, raw cheese, hunting and distance', and 'in zdb the close-range standoff code (1262-1278) rarely runs for non-gatherers'.",
+   "verdict": "partly wrong",
+   "correction": "Role, raw, hunting, enemy dist2, eKing and threatened king are all features. The only WAR gate hidden from point 1 is the alert branch: an alert that is fresh enough for the mask but at d2 <= 8 or > 225 makes war() fail. Alert age, threat and distance are comms-block features 64-66, which have zero weights after widening (point 1 is frozen). This is the structural candidate for WAR's ~786 argmax fallbacks; the rest are boundary errors. On coverage: FACE (1033) takes every enemy within d2 8 for non-gatherers and within d2 2 for gatherers, and faceEnemy always returns true there. So zdb never runs war's d2<=2 face (1262-1266) or its gatherer face branch (1251-1254), and reaches d2<=8 only for hunting gatherers (goTo prey). The standoff at 8<d2<=20 is ordinary zdb WAR, not rare.",
+   "evidence": "Baby.java:1033-1037; faceEnemy 1226-1241 (returns true at 1235 and 1241 once d2<=8); war 1249-1290, alert branch 1283-1285; mask 2278. D.java:247-259, 277, 294 (features); cb 693-697 (features 64-66). Zero widened input columns: scripts/dpnet_io.py:246-248."
+  },
+  {
+   "claim": "M_CASH: 'cashSite is set on the king side'. Coupling: 'King-side inputs: ... cashSite gates CASH'.",
+   "verdict": "wrong",
+   "correction": "cashSite belongs to the baby. It is set by the baby's own cashTick, from another baby's SQ_CASH squeak or by leading a site itself, and only when cashOk holds (round >= 1880 with exactly one king). In net mode the BABY_COMMS option C_CASH_LEAD (point 6) also sets it, at any round. That option is allowed every turn and was picked 353 times in cpi-x0, acting 62% of the time. Once cashSite is set, cashPromote can call becomeRatKing before movement, and endCat is blocked. So M_CASH, and an unplanned king promotion, are coupled to point 6, not to the king.",
+   "evidence": "Baby.java:1579-1590 (cashOk/cashEnd), 1600-1652 (cashTick; assignments at 1624 and 1644), 2153-2162 (C_CASH_LEAD sets cashSite at 2155-2158), commsOk 2088-2090, cashPromote 174 and 1687-1689, endCat 1411. Cfg.java:246 (CASH_END 1880). cpi-x0-summary point 6, option 6: 353 picks, fallback 0.38."
+  },
+  {
+   "claim": "'raid clears it [Nav.guard] for good (1742)'.",
+   "verdict": "wrong",
+   "correction": "Nav.guard is reset to null and recomputed from nearestEnemy at the start of every turn, so raid's clear lasts only for the rest of that turn. It does remove this turn's guard-facing: Nav.step's strafe toward the guard, BABY_FACE's F_GUARD option, and guardTurn's fallback target.",
+   "evidence": "Baby.java:113-115 (reset), 1742 (raid's clear); Nav.java:115-118; Baby.java:255, 2115."
+  },
+  {
+   "claim": "M_MICRO: 'cannot_act_when: Presumably when no enemy baby is within dist2 20 or movement is not ready; not confirmed beyond line 30'.",
+   "verdict": "unsupported",
+   "correction": "Resolved: under its mask MICRO can never fall back. Micro.act fails only when movement is not ready or no enemy baby is within d2 20. BABY_MOVE opens only on movement-ready turns, and nearestEnemy is always a sensed enemy baby within vision r^2 20. Micro.act is a complete scoring micro: it scores staying and each of the 8 steps (honouring Nav.avoid) on threats, targets, ally health and contact distance, then turns to face or strafes back. zdb never labels it (6 floor picks). It is ready-made material for the proposed micro head.",
+   "evidence": "Micro.java:18, 28, 37, 44-75, 79-100; Baby.java:187, 92-100, 2273, 2356-2358; digest :55 (baby vision r^2 20)."
+  },
+  {
+   "claim": "Missing feature: 'the mask itself, so the net cannot tell which options can act'.",
+   "verdict": "partly wrong",
+   "correction": "The sampler already applies the mask, and almost every mask bit has a matching feature. What the net lacks is each executor's success condition beyond the mask (see the RETREAT/WAR correction). Mask bits as inputs add little until masks equal executor success.",
+   "evidence": "DNet.java:119-130. Mask 2258-2305 against features in D.java: cat f6 (254), carry f13 (263), king f18 (271), eKing f24 (277), lastEKing f25-26 (279-280), actionReady f27 (281), cashSite f29 (283), formSite f36 (295), mv/avoid f43-44 (305-306), turningReady f45 (307), knownCat f46 (308), cheese adjacent f47 (309), seekNext f48 (310), idleDue f49 (312), catHunt f51 (314), atMine f56 (320), crowd f57 (321)."
+  },
+  {
+   "claim": "'MINE_PICK already chooses among ranked candidates through fixed slots with per-slot features in a flat input (D.java:99-100, 822-852)', offered as the template for the target head.",
+   "verdict": "partly wrong",
+   "correction": "MINE_PICK has 40 options, but only the first 8 slots have per-slot features (cheb to the rat, cheb to home, kingHeld, allies within 4). Ranks 8-39 have no features, so they can only be chosen by index prior. A K~24 slot head built on this template needs features for every slot.",
+   "evidence": "D.java:100 (MINE_PICK_OPTIONS = 40); D.java:822-852 (13 header features plus 8x4 slot features at 841-850)."
+  },
+  {
+   "claim": "'Advantages are the team outcome minus a team-state baseline over 10-round bins (rl_train.py:25, 35-39).'",
+   "verdict": "partly wrong",
+   "correction": "That is only rl_train's default (critic 'trace', lambda 1). rl-m2 and cpi-x0 use the 'rich' critic (antisymmetric, on the team's trace history, cross-fitted) with GAE(gamma 1, lambda 0.8) over 10-round bins. The conclusion still holds: credit is per team-bin and shared by every BABY_MOVE decision in that bin. The estimator to improve is this one.",
+   "evidence": "rl_train.py:35-39; configs/rl-m2.json:68-69; configs/cpi-x0.json:68-69."
+  },
+  {
+   "claim": "CHEESE_PICK 'picks it up, which is an action inside the move option', listed with AIM_CARRY's throw and FORM_KING's promotion.",
+   "verdict": "partly wrong",
+   "correction": "pickUpCheese has no ActionReady check and no cooldown, so it spends no action. The move-option effects that do spend the action are: AIM_CARRY's throw, becomeRatKing (FORM_KING, and cashPromote through cashSite), and Nav.goTo's dirt digging, which any walking option can trigger (action cooldown +25 and 5 cheese). Once the action is spent, BABY_ACT_POST does not open and the post-move bite or carry cannot fire.",
+   "evidence": "digest :130 (pickup) and :136 (removeDirt); Baby.java:418-430, 633, 1543, 1554, 174; Nav.java:85-88, 182-200, 203-210, 213-217; Baby.java:200 (BABY_ACT_POST opens only if action-ready)."
+  }
+ ],
+ "missed": [
+  "Failed ATTACK picks mostly fall back into ATTACK again. For ATTACK-role rats, netBook's markNoKing marks empty spots first. When the net's attack() finds every spot marked, rushTarget resets noKing to 0 and returns null (1218). The fallback cascade then runs attack() again at 1035 with noKing=0 and usually rushes a spot that is not re-sensed empty this turn. That is exactly the non-idempotent double call the markNoKing comment warns about (2223-2224). So many of ATTACK's ~95 argmax 'fallbacks' carry label 0x8000|19<<6|19 even though they are not zdb's choice: zdb would have gone on to WAR or a later branch that turn (Baby.java:1189-1219, 2213-2235, 2200-2205).",
+  "nearestEnemy depends on role. When not carrying, the prey override replaces the nearest enemy with the nearest lower-hp enemy baby within d2 20: fighters and attackers do this anywhere in vision, gatherers only within d2 8. It also sets hunting, which turns off the trap-risk avoid and war's standoff (Baby.java:101-109, 118, 1273, 1342-1351). This changes features 8-10 and what FACE, WAR, RETREAT, AMMO_AWAY, MICRO and FLANK target. Neither the context section nor Stage 1(c) lists it.",
+  "Most fallbacks happen at the net's argmax, not on deviations: about 0.0028*0.988*622,495 = 1,722 (64%) against about 964 from deviations. 'Fallback concentrates on deviations' is true only of the rates.",
+  "Near-duplicates the merge list misses: 8, 23, 24 and 29 all call Nav.goTo(nearest king) (1391, 1155, 2383-2387, 2402-2406). 18 (huntCat) is 2 (goCat) plus a map-centre fallback (304-310 vs 1417-1423). 30, 31 and 32 all run exploreHome (2407-2416). 36 and 37 both walk to the mine when far from it (2481-2487, 1770-1777). 16 and 20 both turn and hold at d2<=2 (1233-1241, 1262-1266). P_STEP strafes without turning when turning is not ready (2447), which duplicates P_STRAFE.",
+  "0% fallback does not mean an option did anything. Executors ignore Nav.goTo's return value: it returns false when blocked, at the target or when choose() is null (Nav.java:72-105), yet COURIER, KNOWN_CAT, SCOUT_HOME, deliver and attack still report acted (Baby.java:2386, 2400, 2405, 1155, 1200-1201). KNOWN_CAT, for example, walks toward the cat's own tile.",
+  "Nav.avoid (cat lanes and trap risk) is ignored by more than Nav.flee: aimCarry's step (623), the centre steps in formKing and cashMove (1549-1551, 1705-1707), and yieldKing, which checks only the cat lane (1361-1363). AIM_CARRY's mask (2263) also lacks the cascade's !coop (1018). ATTACK rats are hostile in coop (240-242) and can carry, so the net can aim in coop where zdb never does.",
+  "Point 1's sensitivity result now exists (scratchpad aspace/sens1.log). zdph1, with point-1 floor 0.2, scored 17/64 = 0.266 [0.173, 0.385] against zdpg39. For comparison: sens2 0.219, sens3 0.281, sens11 0.266, sens13 0.375, sens12 0.438, sens16 0.484, sens10 0.531. Uniform deviations at point 1 are costly, not free."
+ ],
+ "overall_reliability": "Mostly reliable on mechanics. The code path (open, mask, pick, execute, fallback), the per-option masks and executors, the Cfg thresholds, the widening and frozen-point facts, and every count and fallback figure reproduce from the code and from cpi-x0-summary/devfb. The core diagnosis also stands: cascade-branch options whose meaning depends on role and cascade order, hidden executor preconditions for FLANK, AIM_CARRY and WAR's alert branch, many duplicates, and primitives that cannot depend on state. The substantive errors: the deviations are attributed to the floor when ~60% overall (and ~98% for FLANK and AIM_CARRY) come from the net's own temperature-1 softmax; a turn-before-failed-step side effect is claimed that cannot happen; cashSite is said to come from the king when it comes from the baby and point 6's C_CASH_LEAD; Nav.guard is said to persist when it is reset every turn; RETREAT's preconditions are called hidden when they are all features; SEEK's argmax fallbacks are faithful zdb seek terminations; and the ATTACK noKing-reset artifact is missed, where a 'fallback' reruns ATTACK. The redesign direction is sound, but its motivation through floor exploration is misattributed.",
+ "proposal_concerns": [
+  "Stage 1(a) changes the start policy before any RL. Today about 70% of FLANK's ~631 deviations and 56% of AIM_CARRY's ~210 fall back to zdb's move, and these are the net's own softmax mass. With exact masks the sampler renormalises that mass onto the net's other options (DNet.java:127-128), so the new start differs from v39 and needs its own check against zdb. Deleting the 0x8000 path also needs a defined outcome (hold) for residual failures: netExec catches GameActionException (Baby.java:2200) and P_STEP re-checks canMove (2448).",
+  "The can-act checks must copy each executor's state logic. exploreHome resamples only when exploreTarget is null, reached, stalled or known (1814). Drawing its sample from a separate RNG changes zdb's G.rand stream for explore, wanderAround and pickRaid (1763, 1774, 1794, 1817). ATTACK should use markNoKing (2225-2235) without rushTarget's reset (1218).",
+  "Stage 1(b): merging 35 into P_HOLD is wrong. M_MINE_STILL turns 90 degrees right (G.facing.rotateRight().rotateRight(), 2423-2428), so it is a P_TURN, not a hold. 8, 23, 24 and 29 are one target (the nearest king) with different modes.",
+  "Stage 1(d): moving refreshMine and the idle tick into netBook makes MINE_PICK (point 7, trainable in rl-m2) open on more turns and for ATTACK rats (refreshMine and pickMine at 1122-1125 and 1494-1498). It also changes idle-count semantics (1842-1847), which shifts point 7's training distribution.",
+  "Role-free options (Stage 1(c) and Stage 2) must also remove the role-dependent prey override of nearestEnemy (101-109). The nearest enemy and the prey should be separate candidates.",
+  "Stage 2 fixed slots need features for every slot; MINE_PICK has them for only 8 of 40 (D.java:841-850). Bytecodes: point 1's 76-64-64-72 net is already 13,568 multiply-adds per call, several bytecodes each in DNet.logits (72-76), far over the 17,500 baby limit, and a K~24-slot head is larger still. This is acceptable only while limits are off (patches/local-research.patch:19).",
+  "Micro head: reuse Micro.act and Micro.score (Micro.java:16-100) as the source of per-direction features and labels. They already score staying and the 8 steps by threats, targets and contact and honour Nav.avoid, and as M_MICRO they never fall back.",
+  "Point 1 is frozen in every config (rl-v1, rl-m2, cpi-x0, es-*). Exact masks and the floor therefore change nothing for training until point 1 is unlocked and the per-turn credit problem is addressed. The real lever is commitment or CONTINUE with event-driven re-opening, against the actual estimator (rich critic, GAE lambda 0.8 per 10-round bin)."
+ ]
+}

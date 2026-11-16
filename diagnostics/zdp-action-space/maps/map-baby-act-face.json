@@ -1,0 +1,568 @@
+{
+ "scope": "Points 2 BABY_ACT_PRE, 3 BABY_ACT_POST and 4 BABY_FACE of zdp (java/bots/zdp/Baby.java, D.java), all frozen in rl-m2 and cpi-x0. Evidence came from four sources: (a) reading the code; (b) the cpi-x0 iteration-0 records on the box (/home/terry/rltest/bc26a0/runs/rl/cpi-x0/iter-0000/data/p2.npz, p3.npz, p4.npz: 256 self-play games, floor 0.005, frozen points subsampled to 5%), with the argmax recomputed from cpi-x0 nets/0/net.json (the rl-m2 v39 start net); (c) the rl-m2 iteration-38 summary; (d) teacher-dp2 zdb-mode decision files (40-60 files), used as the imitation reference. Everything was read-only: short numpy queries, no games. The query scripts and their outputs are in /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/ (throwq, constq, decomp, probe3 and teachq, each as .py and .out). Counts quoted as 'picks' are records in the 5% subsample. 'fb' is the fallback share among those picks: trailer bit0, set when the label differs from k (D.java:159-162).",
+ "points": [
+  {
+   "id": 2,
+   "name": "BABY_ACT_PRE",
+   "locations": "Open: Baby.java:120 calls D.babyAct (D.java:328-447; the default label lab = A_PASS is set at D.java:331), only when isActionReady. Mask: actOk, Baby.java:2053-2067. Pick: Baby.java:123, D.pick (D.java:203-209: DNet.sample with the mask, floor and T). Executor: Baby.java:124, actExec (Baby.java:1921-2027); on success D.lab = k (125). Fallback when netAct is false: the zdb cascade at Baby.java:130-145 (dropAlly/tryThrow, tryCarry, biteEnemies, tryBiteCat, tryCatTrap), then the promotions at 174-185 (cashPromote and the formSite becomeRatKing). Both are skipped whenever the net acted, PASS included. Close: Baby.java:186, D.emit (D.java:174-181).",
+   "n_options": 39,
+   "option_kind": "Mixed. Options 0-11 are zdb cascade branches: each executor picks its own target and applies zdb's gates (hold rule, cheese and budget floors, trap caps). Options 12-20 are engine primitives on the front tile. Options 21-38 are parameterised primitives (bite cheese amount, drop direction, transfer amount, disintegrate). Only 21-38 are masked by exact can* checks.",
+   "options": [
+    {
+     "id": "0",
+     "name": "A_PASS",
+     "executor": "actExec returns true without acting (Baby.java:1923). netAct = true then also skips the zdb cascade (130-145) and both promotions (174-185).",
+     "offered_when": "always (Baby.java:2056-2057)",
+     "cannot_act_when": "never",
+     "observed": "cpi-x0: 578,197 picks (88.8% of 650,788), argmax in 581,252 rows, fb 0. Imitation (net-v2 train): 947,441 of 1,240,331 labels.",
+     "context_dependence": "Not a pure no-op. It also suppresses the cash and formation promotions that zdb would run (174-185)."
+    },
+    {
+     "id": "1",
+     "name": "A_DROP_ALLY",
+     "executor": "dropAlly (Baby.java:642-655): drops toward the canDropRat direction that maximises 2*d2(tile, Nav.target) plus a hand bit. Success iff no longer carrying (1928-1933).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying an ally (1930); no droppable direction; action not ready (1924)",
+     "observed": "149 picks, fb 1.000 (floor picks only). 0 imitation labels at PRE.",
+     "context_dependence": "Only reachable after a net-only ally grab (X_CARRY_FWD). zdb never carries allies: teacher-dp2 has 0 records with carry=1."
+    },
+    {
+     "id": "2",
+     "name": "A_THROW",
+     "executor": "Requires a carried enemy (Baby.java:1935-1936), then runs tryThrow (657-701). It scores the flight in each direction from sensed robots and the Sym.mem wall/dirt bits (667-692). It holds when bs/2 < THROW_MIN 84 and round - carryRound < THROW_HOLD 6 (694; Cfg.java:106). Otherwise it turns to bestD (695), checks canThrowRat (696) and throws. A turn without a throw also counts as success (1938).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying, or carrying an ally (1936); all 8 first tiles blocked (693); hold rule (694); front tile not throwable after the turn (696)",
+     "observed": "cpi-x0: 61,406 picks, fb 0.971; argmax in 61,248 rows (9.4%). By carry state: nothing carried, 56,463 picks (all fail); ally, 14 (all fail); enemy, 4,929 (3,151 fail). With an enemy carried, argmax picks at carry age < 6 have fb 0.901 (n 3,238) and at age >= 6 fb 0.001 (n 1,400). Zeroing input 32 (nRatT) cuts argmax THROW from 61,248 to 1,999. rl-m2 it38: 4,425 picks (1.4%), fb 0.826. Teacher-dp2 sample: 4,124 THROW labels in 1.74M PRE records, none without a carried rat.",
+     "context_dependence": "One id covers three outcomes: throw, turn toward the throw direction, or refuse (hold). zdb's POST throw additionally needs moved and THROW_BC (Baby.java:210-212)."
+    },
+    {
+     "id": "3",
+     "name": "A_NAP",
+     "executor": "tryCarry (Baby.java:519-537): grabs the highest-hp adjacent enemy baby for which canCarryRat holds, and sets carryRound (534).",
+     "offered_when": "always",
+     "cannot_act_when": "already carrying (521); no adjacent grabbable enemy baby. The engine allows a grab only if the target cannot sense the grabber, or is weaker by HEALTH_GRAB_THRESHOLD (RobotControllerImpl.java:1521-1536).",
+     "observed": "1,210 picks, fb 0.130. Argmax in 1,058 rows, argmax picks fb 0.000 (eCarry >= 1 in all of them); the fallbacks are floor picks. rl-m2: 567 picks, fb 0.111. Imitation: 48,451 labels.",
+     "context_dependence": "actExec has no hostile() check (1940); zdb grabs only when hostile (138). Grabbing an enemy backstabs (engine InternalRobot.java:643-651)."
+    },
+    {
+     "id": "4",
+     "name": "A_BITE_KING",
+     "executor": "biteSome(robots, true) (Baby.java:2071-2080) calls biteEnemies on enemy kings (737-771): it picks the lowest-hp king with a king tile adjacent (746), turns if needed (759-762) and bites without cheese (764). A turn alone counts as success (2079).",
+     "offered_when": "always",
+     "cannot_act_when": "no enemy king sensed, or no king tile adjacent; or cannot attack and cannot turn",
+     "observed": "235 picks, fb 0.689. Argmax in 77 rows; most of the 162 fallbacks are the roughly 150 floor picks. rl-m2: 106 picks, fb 0.679. Imitation: 3,704 labels.",
+     "context_dependence": "No hostile() check. A bite on a non-cat backstabs in coop (InternalRobot.java:623-625). zdb's non-hostile ATTACK role bites only the enemy king (Baby.java:141)."
+    },
+    {
+     "id": "5",
+     "name": "A_BITE_RAT",
+     "executor": "biteSome(robots, false) calls biteEnemies on enemy babies: lowest hp first, turning if needed, with finishCheese (Baby.java:764).",
+     "offered_when": "always",
+     "cannot_act_when": "no adjacent enemy baby that can be attacked or turned to",
+     "observed": "1,476 picks, fb 0.113. Argmax in 1,366 rows, argmax picks fb 0.000. rl-m2: 761 picks, fb 0.087. Imitation: 53,772 labels.",
+     "context_dependence": "Backstab risk in coop because there is no hostile() check; zdb bites rats only when hostile (140)."
+    },
+    {
+     "id": "6",
+     "name": "A_BITE_CAT",
+     "executor": "tryBiteCat (Baby.java:793-816): attacks an adjacent cat tile, with 1 cheese if BUDGET*4 >= CHEESE_BITE_SURPLUS 600; otherwise turns toward the cat and attacks if it now can. Succeeds on a bite or a turn (1943-1949).",
+     "offered_when": "always",
+     "cannot_act_when": "cat == null (1944), or no cat tile within d2 2",
+     "observed": "5,595 picks, fb 0.023. Argmax in 5,496 rows, argmax picks fb 0.000. rl-m2: 2,513 picks, fb 0.032. Imitation: 227,955 labels.",
+     "context_dependence": "Safe in coop: biting a cat does not backstab (InternalRobot.java:617-625)."
+    },
+    {
+     "id": "7",
+     "name": "A_CAT_TRAP",
+     "executor": "tryCatTrap (Baby.java:843-871). Gates: allCheese >= TRAP_FLOOR 600; BUDGET*4 >= TRAP_SURPLUS 200 unless defending a king within d2 100 or in coop; fewer than 10 cat traps; catDist4 <= 144. Then it needs a fan tile within Chebyshev 1 of the cat's next 3 tiles. Success iff trapsPlaced changed (1950-1955).",
+     "offered_when": "always",
+     "cannot_act_when": "cat null; any gate fails; no fan tile; the engine ban on cat traps for 100 rounds after this team backstabs (GameWorld.java:420-423; RobotControllerImpl.java:348)",
+     "observed": "519 picks, fb 0.630. Argmax in 281 rows; argmax picks n 192, fb 0.339. rl-m2: 223 picks, fb 0.650. Imitation: 18,176 labels.",
+     "context_dependence": "Depends on geometry (cat heading, fan tiles) and economy gates that are not features."
+    },
+    {
+     "id": "8",
+     "name": "A_LAY_LANE",
+     "executor": "layLane (Baby.java:821-835): places a cat trap on the oldest adjacent CatLane tile with age >= CAT_LAY_AGE 3, if there are fewer than 10 cat traps and allCheese >= CAT_LAY_FLOOR 400 (Cfg.java:130). Success iff trapsPlaced changed (1956).",
+     "offered_when": "always",
+     "cannot_act_when": "no lane tile (lanes are recorded only in coop, Baby.java:69); not enough cheese; trap cap",
+     "observed": "144 picks, fb 1.000. zdb lays lanes only at POST (223), so there are 0 PRE labels.",
+     "context_dependence": "The lane feature (D.java:394-399) counts lane tiles but does not include the cheese floor."
+    },
+    {
+     "id": "9",
+     "name": "A_DELIVER",
+     "executor": "tryDeliver (Baby.java:879-899): transfers all raw cheese to the first allied-king tile within d2 9 that accepts it. Success iff raw cheese changed (1957).",
+     "offered_when": "always",
+     "cannot_act_when": "raw cheese is 0, or no king tile accepts it",
+     "observed": "158 picks at PRE, fb 1.000 (floor only). zdb delivers only at POST (225).",
+     "context_dependence": "The give feature (D.java:400-407) computes exactly this condition."
+    },
+    {
+     "id": "10",
+     "name": "A_CASH_KING",
+     "executor": "cashPromote (Baby.java:1687-1694): becomeRatKing while standing on cashSite.",
+     "offered_when": "always at PRE (2056-2057)",
+     "cannot_act_when": "cashSite null or elsewhere; canBecomeRatKing false (engine RobotControllerImpl.java:1217: 7 allied babies in the 3x3, cheese, king cap)",
+     "observed": "157 picks, fb 0.987. Argmax in 3 rows. Imitation: 117 labels (zdb's promotion at 174-176).",
+     "context_dependence": "The net picks before this turn's cashTick (158); zdb promotes after it (174), so the net sees last turn's cashSite."
+    },
+    {
+     "id": "11",
+     "name": "A_RAT_TRAP",
+     "executor": "tryRatTrap (Baby.java:704-716): places a rat trap on trapTile toward nearestEnemy.",
+     "offered_when": "always",
+     "cannot_act_when": "nearestEnemy null; own rat traps >= TRAP_CAP 10 (734; Cfg.java:22); allCheese < Econ.floor(200); enemy d2 not in (2, 13]",
+     "observed": "137 picks, fb 0.993. Never argmax. zdb never calls tryRatTrap (its only caller is 1959), so there are 0 labels.",
+     "context_dependence": "cpi-x0 averages 10.45 own rat traps, so the TRAP_CAP gate alone usually blocks it."
+    },
+    {
+     "id": "12",
+     "name": "A_X_BITE_FWD",
+     "executor": "Attacks the front tile without cheese (Baby.java:1960-1963).",
+     "offered_when": "always",
+     "cannot_act_when": "front tile off the map, or canAttack false (no enemy or cat there, or not sensable)",
+     "observed": "153 picks, fb 0.987. 0 labels.",
+     "context_dependence": "Acts on the current facing; can backstab in coop."
+    },
+    {
+     "id": "13",
+     "name": "A_X_CARRY_FWD",
+     "executor": "carryRat on the front tile and sets carryRound (Baby.java:1964-1967).",
+     "offered_when": "always",
+     "cannot_act_when": "canCarryRat(front) false (RobotControllerImpl.java:1521-1540)",
+     "observed": "163 picks, fb 0.896. It can grab allies: cpi-x0 has 598 PRE rows carrying an ally, the teacher data 0.",
+     "context_dependence": "Grabbing an enemy backstabs. Grabbing an ally is net-only behaviour."
+    },
+    {
+     "id": "14",
+     "name": "A_X_THROW_NOW",
+     "executor": "throwRat toward the facing direction if canThrowRat (Baby.java:1968-1971). No flight scoring and no hold rule.",
+     "offered_when": "always",
+     "cannot_act_when": "canThrowRat false: not carrying, or front tile blocked (RobotControllerImpl.java:1428)",
+     "observed": "128 picks, fb 0.984",
+     "context_dependence": "Throws wherever the robot happens to face."
+    },
+    {
+     "id": "15",
+     "name": "A_X_DROP_FWD",
+     "executor": "dropRat toward the facing direction (Baby.java:1972-1977).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying, or canDropRat(facing) false",
+     "observed": "173 picks, fb 0.994",
+     "context_dependence": "Acts on the current facing."
+    },
+    {
+     "id": "16",
+     "name": "A_X_RAT_TRAP_FWD",
+     "executor": "placeRatTrap on the front tile; ratTraps++ (Baby.java:1978-1981).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceRatTrap(front) false: tile occupied or wall, the team already has 25 rat traps (TrapType.java:12), or not enough cheese",
+     "observed": "177 picks, fb 0.390 (succeeds about 61% of the time). rl-m2: 67 picks, fb 0.284.",
+     "context_dependence": "Each success raises input 32 for every own baby. That is the out-of-distribution input behind most THROW fallbacks."
+    },
+    {
+     "id": "17",
+     "name": "A_X_CAT_TRAP_FWD",
+     "executor": "placeCatTrap on the front tile (Baby.java:1982-1985).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceCatTrap(front) false: cap of 10 (TrapType.java:17), or the backstab ban",
+     "observed": "144 picks, fb 0.951",
+     "context_dependence": "Acts on the current facing."
+    },
+    {
+     "id": "18",
+     "name": "A_X_DIRT_PLACE_FWD",
+     "executor": "placeDirt on the front tile and sets the Sym.mem DIRT bit (Baby.java:1986-1989).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceDirt false: the team has no dirt, or the tile is not empty (RobotControllerImpl.java:295)",
+     "observed": "158 picks, fb 0.354. rl-m2 fb 0.362.",
+     "context_dependence": "Blocks a tile that tryThrow (667-690) and Nav both read from Sym.mem."
+    },
+    {
+     "id": "19",
+     "name": "A_X_DIRT_REMOVE_FWD",
+     "executor": "removeDirt on the front tile (Baby.java:1990-1993).",
+     "offered_when": "always",
+     "cannot_act_when": "no dirt ahead, or cannot dig",
+     "observed": "137 picks, fb 0.978",
+     "context_dependence": "Acts on the current facing."
+    },
+    {
+     "id": "20",
+     "name": "A_X_BECOME_KING",
+     "executor": "becomeRatKing if canBecomeRatKing (Baby.java:1994-1997).",
+     "offered_when": "always",
+     "cannot_act_when": "canBecomeRatKing false",
+     "observed": "157 picks, fb 0.917. Argmax in 7 rows. Imitation: 374 labels (zdb's formation promotion is labelled 20 at Baby.java:184).",
+     "context_dependence": "zdb promotes only on formSite (181-184); the net promotes anywhere it can."
+    },
+    {
+     "id": "21-26",
+     "name": "A_X_BITE_C0..C5",
+     "executor": "Attacks the front tile with BITE_C {1,4,9,16,36,100} cheese (D.java:77; Baby.java:2003-2008).",
+     "offered_when": "canAttack(front, c) (Baby.java:2061)",
+     "cannot_act_when": "never once offered (exact mask)",
+     "observed": "Options 22 and 25: 1-3 picks each, fb 0. Floor only: the widened net gives new outputs bias -20 (dpnet_io.py:215-262).",
+     "context_dependence": "Front tile only."
+    },
+    {
+     "id": "27-34",
+     "name": "A_X_DROP_DIR0..7",
+     "executor": "dropRat(G.DIRS[i]) (Baby.java:2009-2014).",
+     "offered_when": "carrying, direction != facing, and canDropRat (2062-2064)",
+     "cannot_act_when": "never once offered",
+     "observed": "Options 28, 29, 32, 33 and 34: 1-3 picks each, fb 0.",
+     "context_dependence": "Absolute directions."
+    },
+    {
+     "id": "35-37",
+     "name": "A_X_XFER_10 / A_X_XFER_50 / A_X_XFER_HALF",
+     "executor": "transferCheese of 10, 50 or half the raw cheese to the nearest allied-king tile within d2 18 that accepts it (xferTile, Baby.java:2035-2049; 2015-2023).",
+     "offered_when": "xferTile(amount) != null (2065)",
+     "cannot_act_when": "never once offered",
+     "observed": "no PRE picks in the cpi-x0 subsample",
+     "context_dependence": "Does nothing unless an allied king is in range."
+    },
+    {
+     "id": "38",
+     "name": "A_X_DISINTEGRATE",
+     "executor": "rc.disintegrate (Baby.java:1998-2001).",
+     "offered_when": "never: DP_ALLOW_DISINTEGRATE is false (Cfg.java:264; Baby.java:2066)",
+     "cannot_act_when": "always",
+     "observed": "0 picks",
+     "context_dependence": "Permanently masked."
+    }
+   ],
+   "fallback_explanation": "cpi-x0 has 62,446 PRE fallbacks out of 650,788 records (9.60%). 56,361 of them are argmax picks.\n(1) 56,463 fallbacks (90.4%) are A_THROW picked while carrying nothing. actExec returns false when getCarrying() is null (Baby.java:1935-1936), but actOk offers options 0-20 unconditionally (2056-2057).\nWhy the net picks THROW: input 32 is the team's rat-trap count (D.java:392). zdb never places rat traps. placeRatTrap appears only at Baby.java:712 (tryRatTrap, called only from actExec at 1959), Baby.java:1980 (X_RAT_TRAP_FWD) and DK.java:614 (the king's net-only A_TRAP_FOE/A_TRAP_FORT, DK.java:518-528; King.java:355). So the column is 0 in all 969,767 teacher-dp2 PRE records checked, and train_dp.py:120-121 gave it sd = 1 with first-layer weights that never received a gradient (|W1| column mean 0.066, against a median of 0.020 over all columns).\nIn cpi-x0, 91.6% of PRE rows have nRatT > 0 (mean 10.45, max 25). The KING_ACT floor of 0.1 drives this: 51 A_TRAP_* picks per game, against 6.6 in rl-m2, plus the babies' X_RAT_TRAP_FWD floor picks.\nAmong carry-free rows, the share with argmax THROW rises with nRatT: 0% at 0-4, 0.05% at 5-9, 1.3% at 10-14, 9.1% at 15-19, 26.8% at 20-24 and 75% at 25. These rows sit late in the game (median round 1452).\nZeroing input 32 changes the argmax in 59,354 rows (58,978 go from THROW to PASS) and removes 56,082 of the 56,361 argmax-pick fallbacks. PRE fallback would drop to about 1%.\n(2) 3,151 fallbacks (5.0%) are THROW while carrying an enemy, refused by the hold rule (Baby.java:694). The net sees carry age (D.java:347) but not the flight score bs. Argmax picks fail 90.1% of the time at age < 6 and 0.1% at age >= 6.\n(3) About 2,830 fallbacks (4.5%) come from floor or low-probability picks of options 1 and 3-20. Each gets about floor/21 (about 150 picks) because none is masked by executability; CAT_TRAP has 327. Argmax CAT_TRAP fails 33.9% of the time, because its gates and geometry are hidden.\nrl-m2 it38 shows THROW at 1.4% of PRE picks with fb 0.83. That is consistent with the same mechanism at lower nRatT, but it is unverified because rl-m2's records are not on the box.",
+   "context_dependence": "A_PASS skips zdb's whole cascade and both promotions (Baby.java:174-185), so promotion needs an explicit CASH_KING or X_BECOME_KING. Those classes are rare: 117 and 374 imitation labels.\nTHROW mixes throwing, turning toward the throw and refusing. Its outcome depends on carry age and on the flight score, which is not an input.\nNAP, BITE_KING, BITE_RAT, X_BITE_FWD and X_CARRY_FWD do not check hostile() (Baby.java:1940-1942, 1960-1967); zdb's cascade does (138-141). A floor-picked enemy bite or grab during coop backstabs. That ends cooperation for the rest of the game (InternalRobot.java:623-625, 643-651; GameWorld.java:425-431) and bans cat traps for the backstabber for 100 rounds (GameWorld.java:420-423).\nX_BECOME_KING promotes anywhere (1994-1997), while zdb promotes only on formSite (181-184). CASH_KING acts on last turn's cashSite, because cashTick runs later, at 158.\nLAY_LANE uses lane data gathered only in coop (Baby.java:69). The X_*_FWD options act on whatever tile last turn's BABY_FACE, or this turn's turns, left in front. Targets are chosen inside the executors (biteEnemies: king first, then lowest hp, 737-771; tryCarry: highest hp, 519-537), so the same id hits different robots and the net cannot choose the target.",
+   "coupling": [
+    "Action cooldown: any PRE action leaves isActionReady false. POST then does not open (Baby.java:200), and BABY_MOVE digging and aimCarry (583-635) cannot use the action.",
+    "Turning: tryThrow (695), biteEnemies (760) and tryBiteCat (809) turn as a side effect. With TURNING_COOLDOWN 10 (GameConstants.java:252), BABY_FACE then stays closed for this turn (Baby.java:229).",
+    "carryRound (Baby.java:516, 534, 1966; reset at 53) drives the THROW hold rule (694) and input 13 (D.java:347). BABY_MOVE's aimCarry throws too.",
+    "cashSite and cashTick (BABY_COMMS, Baby.java:158, 1600-1652) drive CASH_KING. formSite and the KING_FORM formation (Baby.java:1528-1532) drive the zdb promotion that PASS skips (181-185).",
+    "Team trap counts: the babies' X_RAT_TRAP_FWD (1978-1981) and the king's A_TRAP_* (DK.java:518-528, 602-616) feed input 32 of every baby's PRE and POST net. A floor on KING_ACT therefore moves PRE inputs out of distribution.",
+    "X_DIRT_PLACE and X_DIRT_REMOVE write Sym.mem (1988, 1992), which tryThrow's blocked-tile test (667-690) and Nav both read.",
+    "Backstab is global: a single enemy bite or grab flips G.coop, and with it hostile() (240-242) and the coop input, for every point of both teams.",
+    "Deliveries and transfers change raw and stored cheese (economy inputs of all points) and 'delivered' (893, 2021)."
+   ],
+   "features": "There are 53 base inputs (D.java:333-424). In order: phase, role, raw cheese, allCheese/10, coop, round/10, hp, hostile, move readiness, turn readiness, moved, why, carry code (346), carry age (347), canThrowRat (348), foes, friends, adjacent enemy counts (adjacent, attackable, grabbable, holding our rat), min hp, king adjacency, attackability and hp, cat presence, distance, adjacency and attackability, own-king distance, king-cat d2, team cat traps, team rat traps (392), BUDGET, lane count, give (400-407), cashSite flags, canBecomeRatKing, nearest enemy and its d2, hunting, facing, front robot code, front can-place and can-remove flags (420-424), team dirt, x, y, W, H.\nThe pass-3 inputs 53-57 (D.java:426-445: front hp, drop mask, canAttack front, own-king tile d2, trapCode) and the comms block (446) exist only as zero-weight columns in the widened net (dpnet_io.py:246-247), so the frozen net ignores them.\nInputs 0, 10 and 11 are constant at PRE by construction. Input 32 is constant 0 in imitation but live in RL.",
+   "missing_information": "Inputs the net would need to predict executability: THROW's best flight score, its direction and the count of free directions (tryThrow 667-692); the CAT_TRAP fan-tile geometry and its cheese and budget gates (843-871); per-target 'attackable without turning'; whether the robot is on formSite; whether cashSite is fresh; Econ.floor for RAT_TRAP.\nData not available:\n- the labels of fallback records, i.e. what zdb did instead (cpi-x0 raw decision files were deleted after extraction, and the rl_data npz has no label column);\n- rl-m2 per-record data to confirm the nRatT mechanism behind its 1.4% THROW share;\n- the backstab round and who backstabbed in cpi-x0 (only 7.6% of PRE rows are coop; floor-picked bites or grabs may end coop early, which the trace might show).",
+   "generalization_proposal": "(1) Now: zero the first-layer weights of every input column that was constant in the imitation data. Do it at export (train_dp.py:120-121) and in widen (dpnet_io.py:215), and patch the current nets (column 32 of points 2 and 3). Audit all 16 points the same way. Measured on cpi-x0: argmax THROW drops from 61,248 to 1,999 rows, and PRE fallback from 9.6% to about 1%.\n(2) Exact masks for options 0-20. Split each zdb helper into a side-effect-free plan() and a do(): tryThrow, tryCarry, biteEnemies, tryBiteCat, tryCatTrap, layLane, tryDeliver, cashPromote, tryRatTrap, dropAlly. zdb's cascade calls plan() then do(), so zdb still replays bug-for-bug. actOk offers an option iff plan() finds an action. X_* options use the can* checks D.babyAct already computes (D.java:420-424, 435). Fallback is then zero by construction, and the floor explores only executable options.\n(3) Executors do the 'how'; the net decides the 'whether'. Remove the hold rule from the THROW executor, so holding becomes PASS, and add inputs for the best flight score, its direction and the free directions. Turn the CAT_TRAP, LAY_LANE and RAT_TRAP economy gates (TRAP_FLOOR, TRAP_SURPLUS, CAT_LAY_FLOOR, TRAP_CAP) into inputs. Mask enemy-rat bites and grabs while G.coop, or make backstab an explicit option. Make promotions explicit, with an on-formSite input, so that PASS means only 'no action'. zdb labels keep their meaning.\n(4) Capability generalization. Replace the front-only X_* options (12-19) and the parameterised 21-34 with verb x 8-direction options acting on me+d: bite, bite with cheese (2-3 levels), grab, throw toward d, drop to d, rat trap, cat trap, place dirt, remove dirt. The executor turns first if needed, and a turn alone counts as executed, like zdb's turnOnly. Add PASS, BECOME_KING and TRANSFER (all, half), about 76 options in total. Use exact masks and per-direction tile inputs (8 directions x about 8 values: occupant type, team, hp and whether it faces us; wall, dirt, trap; cheese; flight score). Map zdb labels to (verb, direction) by recording the helper's chosen target in D.act. PRE and POST keep sharing the layout, with input 0 as the phase. DNet stays a fixed-size MLP.",
+   "proposal_cost": "(1) About 20 lines of Python plus a one-off net patch. Under half a day, including a rebuild and the 16/16 replay check; frozen-point behaviour changes only in states with own rat traps.\n(2) About 200-300 lines in Baby.java (plan/do split, actOk), plus an exact zdb replay (the existing 24/24 harness) and an RL smoke test. 1-2 days.\n(3) About 60-100 Java lines and about 6 new D inputs, plus re-imitation of points 2 and 3 (a teacher run of a few hours on the box). 1-2 days.\n(4) About 400-600 Java lines (enumeration, inputs, executor, label mapping). D's input width grows by about 64; the Python training scripts change only in widths. Then re-imitation, replay parity, and about 2-5k extra bytecodes per turn (limits are off). 3-5 days."
+  },
+  {
+   "id": 3,
+   "name": "BABY_ACT_POST",
+   "locations": "Open: Baby.java:200, after BABY_MOVE (187-195) and BABY_FREE (199), only when isActionReady; D.babyAct gets the moved and why values (D.java:343-344). Mask: actOk(BABY_ACT_POST) (Baby.java:2053-2067; CASH_KING only on cashSite, 2056-2057). Pick: Baby.java:203. Executor: actExec(k, null) (Baby.java:204; it senses all robots, 1925). Fallback: the zdb POST cascade (Baby.java:209-226): throw only if carrying, moved and bytecodes > THROW_BC 7000 (210-212; Cfg.java:24); tryCarry and biteEnemies if hostile (215-217); ATTACK bites kings within d2 8 (218-221); tryBiteCat (222); layLane if coop (223); tryDeliver (225). Close: Baby.java:227.",
+   "n_options": 39,
+   "option_kind": "Same 39 options as point 2: cascade branches (0-11), front-tile primitives (12-20) and exactly-masked parameterised primitives (21-38). The front tile is the one ahead after the move.",
+   "options": [
+    {
+     "id": "0",
+     "name": "A_PASS",
+     "executor": "Returns true (Baby.java:1923) and skips the POST cascade (209-226).",
+     "offered_when": "always",
+     "cannot_act_when": "never",
+     "observed": "621,914 picks, argmax in 624,980 rows, fb 0. Imitation: 932,250 labels.",
+     "context_dependence": "Also skips tryDeliver (225), layLane (223) and the bites that zdb runs here."
+    },
+    {
+     "id": "1",
+     "name": "A_DROP_ALLY",
+     "executor": "dropAlly, as at PRE (Baby.java:1928-1933, 642-655).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying an ally",
+     "observed": "154 picks, fb 0.994",
+     "context_dependence": "Only reachable after a net-only ally grab."
+    },
+    {
+     "id": "2",
+     "name": "A_THROW",
+     "executor": "tryThrow, as at PRE (1934-1939, 657-701).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying an enemy; hold rule; blocked",
+     "observed": "225 picks, fb 0.982. Argmax in 3 rows. rl-m2: 79 picks, fb 0.949. Imitation: 1,600 labels.",
+     "context_dependence": "zdb throws at POST only if it moved and has bytecodes > THROW_BC (210-212). The net's THROW has neither gate."
+    },
+    {
+     "id": "3",
+     "name": "A_NAP",
+     "executor": "tryCarry (519-537).",
+     "offered_when": "always",
+     "cannot_act_when": "already carrying, or no grabbable adjacent enemy baby",
+     "observed": "1,547 picks, fb 0.102. Argmax in 1,401 rows, argmax picks fb 0. Imitation: 67,159 labels.",
+     "context_dependence": "zdb uses senseNearbyRobots(2) and requires hostile (215). The net has no hostile() check."
+    },
+    {
+     "id": "4",
+     "name": "A_BITE_KING",
+     "executor": "biteSome(kings) (2071-2080).",
+     "offered_when": "always",
+     "cannot_act_when": "no adjacent enemy king tile",
+     "observed": "203 picks, fb 0.833. Argmax in 34 rows. Imitation: 1,189 labels.",
+     "context_dependence": "zdb bites here only if hostile (217), or with the ATTACK role on kings within d2 8 (218-221)."
+    },
+    {
+     "id": "5",
+     "name": "A_BITE_RAT",
+     "executor": "biteSome(rats) (2071-2080, 737-771).",
+     "offered_when": "always",
+     "cannot_act_when": "no adjacent enemy baby",
+     "observed": "797 picks, fb 0.203. Argmax in 637 rows, argmax picks fb 0. Imitation: 25,100 labels.",
+     "context_dependence": "Backstab risk in coop."
+    },
+    {
+     "id": "6",
+     "name": "A_BITE_CAT",
+     "executor": "tryBiteCat (793-816).",
+     "offered_when": "always",
+     "cannot_act_when": "no cat tile adjacent",
+     "observed": "1,958 picks, fb 0.096. Argmax in 1,781 rows, argmax picks fb 0. Imitation: 73,267 labels.",
+     "context_dependence": "Same as at PRE."
+    },
+    {
+     "id": "7",
+     "name": "A_CAT_TRAP",
+     "executor": "tryCatTrap (843-871).",
+     "offered_when": "always",
+     "cannot_act_when": "cat null, gates, geometry",
+     "observed": "160 picks, fb 1.000. zdb's POST cascade has no cat-trap branch, so there are 0 labels.",
+     "context_dependence": "Net-only at POST."
+    },
+    {
+     "id": "8",
+     "name": "A_LAY_LANE",
+     "executor": "layLane (821-835).",
+     "offered_when": "always",
+     "cannot_act_when": "no lane tile, not enough cheese, trap cap",
+     "observed": "168 picks, fb 1.000. Argmax in 2 rows. Imitation: 382 labels.",
+     "context_dependence": "zdb lays lanes only in coop (223); the net has no coop gate."
+    },
+    {
+     "id": "9",
+     "name": "A_DELIVER",
+     "executor": "tryDeliver (879-899); success iff raw cheese changed (1957).",
+     "offered_when": "always",
+     "cannot_act_when": "no raw cheese, or no accepting king tile",
+     "observed": "7,159 picks, fb 0.024. Argmax in 7,040 rows, argmax picks fb 0.001. rl-m2: 3,132 picks, fb 0.027. Imitation: 281,069 labels. Zeroing input 32 turns 1,283 more rows from PASS to DELIVER argmax.",
+     "context_dependence": "The give input (D.java:400-407) is exact."
+    },
+    {
+     "id": "10",
+     "name": "A_CASH_KING",
+     "executor": "cashPromote (1687-1694).",
+     "offered_when": "only when standing on cashSite (2056-2057)",
+     "cannot_act_when": "canBecomeRatKing false",
+     "observed": "0 picks",
+     "context_dependence": "Masked at POST except on the cash site."
+    },
+    {
+     "id": "11",
+     "name": "A_RAT_TRAP",
+     "executor": "tryRatTrap (704-716).",
+     "offered_when": "always",
+     "cannot_act_when": "same gates as at PRE",
+     "observed": "167 picks, fb 0.994",
+     "context_dependence": "Never used by zdb."
+    },
+    {
+     "id": "12",
+     "name": "A_X_BITE_FWD",
+     "executor": "Front-tile attack (1960-1963).",
+     "offered_when": "always",
+     "cannot_act_when": "canAttack(front) false",
+     "observed": "158 picks, fb 1.000",
+     "context_dependence": "Front tile after the move."
+    },
+    {
+     "id": "13",
+     "name": "A_X_CARRY_FWD",
+     "executor": "Front-tile carryRat (1964-1967).",
+     "offered_when": "always",
+     "cannot_act_when": "canCarryRat(front) false",
+     "observed": "158 picks, fb 0.835",
+     "context_dependence": "Can grab allies; grabbing an enemy backstabs."
+    },
+    {
+     "id": "14",
+     "name": "A_X_THROW_NOW",
+     "executor": "canThrowRat, then throwRat (1968-1971).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying, or front tile blocked",
+     "observed": "150 picks, fb 0.993",
+     "context_dependence": "Throws toward the post-move facing."
+    },
+    {
+     "id": "15",
+     "name": "A_X_DROP_FWD",
+     "executor": "dropRat toward the facing direction (1972-1977).",
+     "offered_when": "always",
+     "cannot_act_when": "not carrying, or the drop is blocked",
+     "observed": "172 picks, fb 1.000",
+     "context_dependence": "Front tile after the move."
+    },
+    {
+     "id": "16",
+     "name": "A_X_RAT_TRAP_FWD",
+     "executor": "placeRatTrap on the front tile (1978-1981).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceRatTrap(front) false",
+     "observed": "175 picks, fb 0.366. rl-m2: 73 picks, fb 0.370.",
+     "context_dependence": "Raises input 32 for every own baby."
+    },
+    {
+     "id": "17",
+     "name": "A_X_CAT_TRAP_FWD",
+     "executor": "placeCatTrap on the front tile (1982-1985).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceCatTrap(front) false",
+     "observed": "145 picks, fb 0.966",
+     "context_dependence": "Front tile after the move."
+    },
+    {
+     "id": "18",
+     "name": "A_X_DIRT_PLACE_FWD",
+     "executor": "placeDirt on the front tile (1986-1989).",
+     "offered_when": "always",
+     "cannot_act_when": "canPlaceDirt false",
+     "observed": "152 picks, fb 0.408",
+     "context_dependence": "Changes Sym.mem."
+    },
+    {
+     "id": "19",
+     "name": "A_X_DIRT_REMOVE_FWD",
+     "executor": "removeDirt on the front tile (1990-1993).",
+     "offered_when": "always",
+     "cannot_act_when": "no dirt ahead",
+     "observed": "144 picks, fb 0.958",
+     "context_dependence": "Front tile after the move."
+    },
+    {
+     "id": "20",
+     "name": "A_X_BECOME_KING",
+     "executor": "becomeRatKing (1994-1997).",
+     "offered_when": "always",
+     "cannot_act_when": "canBecomeRatKing false",
+     "observed": "157 picks, fb 1.000",
+     "context_dependence": "zdb promotes only at PRE, on formSite."
+    },
+    {
+     "id": "21-37",
+     "name": "A_X_BITE_C0..C5, A_X_DROP_DIR0..7, A_X_XFER_10/50/HALF",
+     "executor": "Same as at PRE (Baby.java:2003-2023).",
+     "offered_when": "exact can* masks (2061-2065)",
+     "cannot_act_when": "never once offered",
+     "observed": "1-3 picks each, fb 0",
+     "context_dependence": "Front tile, absolute direction or king range."
+    },
+    {
+     "id": "38",
+     "name": "A_X_DISINTEGRATE",
+     "executor": "rc.disintegrate (1998-2001).",
+     "offered_when": "never (Cfg.java:264)",
+     "cannot_act_when": "always",
+     "observed": "0 picks",
+     "context_dependence": "Permanently masked."
+    }
+   ],
+   "fallback_explanation": "cpi-x0 has 2,887 POST fallbacks out of 635,878 records (0.45%). Only 9 are argmax picks: argmax DELIVER (7,040 rows) fails 0.1% of the time, and argmax NAP, BITE_RAT and BITE_CAT never fail.\n2,850 of the fallbacks are floor picks (net probability < 1e-3) of options 0-20. actOk offers these without checking executability (2056-2057). Each gets about floor/21 (about 150 picks) and fails 83-100% of the time, except the front-tile options 16 and 18, which fail 37-41%.\nSo POST fallback is pure exploration waste: the record's k never ran, zdb's POST cascade ran instead, and the label differs.\nThe untrained input 32 also sits in this net (|W1| 0.075, nonzero in 92% of POST rows). It causes no fallbacks, but zeroing it turns 1,283 rows (0.2%) from PASS to DELIVER argmax. Because PASS also skips tryDeliver (225), cpi-x0 has about 100 POST turns per game where the imitation net would deliver but holds its cheese.\nrl-m2 it38 shows the same pattern (DELIVER 3,132 picks, fb 0.027; THROW 79 picks, fb 0.949).",
+   "context_dependence": "The option ids are the same as at PRE, but POST runs after the move: the front tile, 'moved' and 'why' (D.java:343-344) refer to the post-move state, and hostile is still the PRE-time value (Baby.java:136).\nzdb's POST behaviour differs from its PRE behaviour: no cat-trap branch, layLane only in coop, a throw only if moved and within budget, and tryDeliver always last (209-226). The net's executors drop all of those gates.\nCASH_KING is masked except on the cash site (2056-2057).",
+   "coupling": [
+    "Runs after BABY_MOVE (187-195). If digging or aimCarry (583-635) already used the action, POST does not open (200).",
+    "BABY_FREE (point 8, Baby.java:199) runs first; a pickup or own-trap removal there uses the action and closes POST.",
+    "Turns made by POST bites or throws close BABY_FACE for this turn (229).",
+    "DELIVER feeds allCheese, BUDGET and give for every point, and the 'delivered' count (893) that BABY_ROLE uses.",
+    "LAY_LANE and CAT_TRAP draw on the same 10 cat traps (TrapType.java:17) as PRE's CAT_TRAP and the king's A_CAT_TRAP (DK.java:562).",
+    "The same backstab and trap-count couplings as at PRE."
+   ],
+   "features": "Same 53-input layout as PRE (D.java:327: 'shared layout; feature 0 is the phase'). Here the moved and why inputs (343-344) actually vary. Input 32 is untrained, as at PRE. Pass-3 inputs 53-73 have zero weights.",
+   "missing_information": "Same gaps as at PRE. In addition: whether a POST throw without moving, which only the net can do (zdb never does, 210), is ever useful. The fallback labels are not retained.",
+   "generalization_proposal": "Use the same head and steps as PRE. POST and PRE already share one layout, with input 0 as the phase.\nAt POST the argmax is already faithful, so step (2), exact masks, removes about 99% of fallbacks, and step (1) restores the 1,283 suppressed DELIVER argmaxes.\nUnder step (3), turn zdb's POST-only gates into inputs: moved already exists; add bytecodes left if limits are ever turned on; the coop flag already exists for lanes.\nOptionally merge PRE and POST into one 'action slot' point that opens whenever the action is ready, before and after the move. The two nets would then share data: POST has most of the DELIVER labels (281k), PRE most of the THROW labels.",
+   "proposal_cost": "Mostly shared with PRE. The POST-specific part is under 50 Java lines, plus re-imitating point 3 together with point 2. Merging PRE and POST into one point is a D point-id and train_dp configuration change of about half a day. It breaks the 16/16 replay identity for points 2 and 3 until they are re-imitated."
+  },
+  {
+   "id": 4,
+   "name": "BABY_FACE",
+   "locations": "Open: Baby.java:229 calls D.babyFace(moved) (D.java:457-505; lab = F_NONE at 460), only when isTurningReady. Mask: faceOk (Baby.java:2083-2084), which allows every option except F_HEARD. Pick: Baby.java:231. Executor: faceExec (Baby.java:2102-2122), with faceTo at 2125-2131. Fallback: guardTurn (Baby.java:245-258), run when the pick fails (232) or there is no net (233). Close: Baby.java:234.",
+   "n_options": 13,
+   "option_kind": "Mixed. Options 0-4 are guardTurn's target selectors (none, seen enemy baby, remembered enemy baby, heard enemy (dead), Nav.guard), each resolved to a direction at run time. Options 5-12 are absolute-direction turn primitives.",
+   "options": [
+    {
+     "id": "0",
+     "name": "F_NONE",
+     "executor": "faceExec returns true and does not turn (Baby.java:2105).",
+     "offered_when": "always",
+     "cannot_act_when": "never",
+     "observed": "331,668 picks, argmax in 333,106 rows, fb 0",
+     "context_dependence": "zdb's label in coop, while carrying, or when there is no target (Baby.java:247; default at D.java:460)."
+    },
+    {
+     "id": "1",
+     "name": "F_SEEN",
+     "executor": "faceTo(seenThreat()) (Baby.java:2106-2109). seenThreat (261-270) is the nearest enemy baby in view within GUARD_DIST2 13 (Cfg.java:100).",
+     "offered_when": "always (2084)",
+     "cannot_act_when": "no enemy baby in view within d2 13",
+     "observed": "15,140 picks, fb 0.0096. Argmax in 15,055 rows; argmax picks (14,994) fb 0. About 146 floor picks, nearly all failing. rl-m2: 7,369 picks, fb 0.011.",
+     "context_dependence": "Relative selector. Unlike guardTurn (247), it has no coop or carry check."
+    },
+    {
+     "id": "2",
+     "name": "F_MEMORY",
+     "executor": "faceTo(memoryThreat()) (2110-2113). memoryThreat (273-282) is the nearest enemy baby from the start-of-turn 'seen' list that is within d2 13 of the current position.",
+     "offered_when": "always",
+     "cannot_act_when": "no such remembered enemy",
+     "observed": "347 picks, fb 0.343. Argmax in 224 rows, argmax picks fb 0. rl-m2: 228 picks, fb 0.311.",
+     "context_dependence": "Covers threats that left the vision cone after the move."
+    },
+    {
+     "id": "3",
+     "name": "F_HEARD",
+     "executor": "Returns false (2114).",
+     "offered_when": "never: faceOk masks it (2084)",
+     "cannot_act_when": "always",
+     "observed": "0 picks",
+     "context_dependence": "Dead option: TRAP_SHARE is off, and the 'heard' inputs are always 0 (D.java:488-491)."
+    },
+    {
+     "id": "4",
+     "name": "F_GUARD",
+     "executor": "faceTo(Nav.guard) (2115).",
+     "offered_when": "always",
+     "cannot_act_when": "Nav.guard is null: in coop, while carrying, or with no enemy within d2 13 at the start of the turn (Baby.java:113-115)",
+     "observed": "991 picks, fb 0.121. Argmax in 866 rows, argmax picks fb 0. rl-m2: 544 picks, fb 0.142.",
+     "context_dependence": "The target is fixed at the start of the turn, before the move."
+    },
+    {
+     "id": "5-12",
+     "name": "F_DIR0..F_DIR7",
+     "executor": "Turns to G.DIRS[i] if canTurn; true iff the robot now faces that way (2116-2120).",
+     "offered_when": "always",
+     "cannot_act_when": "never in practice: the point opens only when turning is ready (229)",
+     "observed": "123-156 picks each, fb 0. Floor picks only, never argmax. zdb labels selectors, not directions, so these have 0 imitation labels.",
+     "context_dependence": "Absolute directions."
+    }
+   ],
+   "fallback_explanation": "cpi-x0 has 384 FACE fallbacks out of 349,251 records (0.11%). All of them are floor picks with net probability < 1e-3; no argmax pick ever fell back.\nfaceOk masks only F_HEARD (Baby.java:2084), so F_SEEN, F_MEMORY and F_GUARD are offered even when their target is null. Their floor picks (about 146, 124 and 126) fail 99%, 96% and 95% of the time (145 + 119 + 120 fallbacks).\nWhen the argmax is a selector, its target always exists, because the inputs carry each target's direction (D.java:477-492).\nF_DIR picks never fail: the point opens only when turning is ready (229), and faceExec returns true once the robot faces the direction (2117-2120).\nrl-m2 it38 shows the same floor effect.",
+   "context_dependence": "F_SEEN, F_MEMORY and F_GUARD are relative: one id turns different ways in different states, and does nothing without a target. F_DIR is absolute.\nzdb's guardTurn does nothing in coop, while carrying, or when not turning-ready (Baby.java:247), and the label then stays F_NONE. The net's executors have no coop or carry check (2104-2121), so F_SEEN or F_MEMORY can turn the robot in coop or while carrying. F_GUARD cannot, because Nav.guard is null then (113-115).\nThe facing chosen here takes effect next turn, in four ways:\n- It sets the 90-degree vision cone (BABY_RAT, r2 20: engine UnitType.java:5) that all points sense through.\n- It decides grab exposure: an enemy can grab a rat that cannot sense it, or one weaker by HEALTH_GRAB_THRESHOLD (RobotControllerImpl.java:1521-1536).\n- It fixes the 'front' tile for the X_*_FWD options, canThrowRat and the front inputs (D.java:415-424).\n- It sets the strafe cost of the next move (MOVE_STRAFE_COOLDOWN 18, GameConstants.java:100).\nFACE opens only if the action points did not already turn, so it is a residual turn.",
+   "coupling": [
+    "It opens only if the turn is still unused. Turns made by tryThrow (695), biteEnemies (760), tryBiteCat (809), or the actExec turn-only successes (1938, 1948, 2079) keep it closed (229).",
+    "Nav.guard (Baby.java:113-115) is shared with Nav movement. memoryThreat reads the start-of-turn 'seen' list.",
+    "G.facing (2119, 2129) caches the facing for the next turn's movement and action code.",
+    "The facing chosen here sets next turn's PRE front tile, both for the inputs (D.java:415-424) and for the X_* executors (Baby.java:1960-1993), and next turn's grab exposure."
+   ],
+   "features": "32 inputs (D.java:462-505; the '(34)' in the comment at D.java:456 is stale). In order: role, round/10, hp, raw cheese, move and action readiness, moved, facing; direction+1 and d2 of the nearest seen enemy baby (477-478); direction+1 and d2 of the remembered threat (486-487); three always-zero 'heard' inputs (489-491), constant in imitation and in RL, hence inert; Nav.guard direction+1 (492); enemy counts in 8 directions (494-495); cat direction+1 (496); x, y, W, H; coop, carry code, guard != null (502-505).",
+   "missing_information": "Inputs a policy beyond guardTurn would need:\n- whether each nearby enemy faces us (grab threat in both directions);\n- the direction of the next move target (Nav.target) and the planned move, for the strafe cost;\n- per-direction unexplored tiles, cheese and mines (what the cone would reveal);\n- the own king's direction and the cat's heading;\n- whether next turn's PRE wants a particular front tile (a throw lane or a trap tile).\nNot measured: how closely the FACE net agrees with zdb in RL states (e.g. how often its argmax is F_NONE where guardTurn would turn).",
+   "generalization_proposal": "Interim: make faceOk per-turn and mask F_SEEN, F_MEMORY and F_GUARD when their target is null. That is about 5 lines and removes all 384 fallbacks without retraining.\nFull: make FACE a pure direction choice. The options become 'keep' plus 8 directions (or 7 relative rotations), all executable whenever the point opens, so fallback is 0 by construction. The selectors' information stays as inputs, where it already is (seen, memory and guard directions).\nThe imitation label becomes the direction guardTurn turned to (me.directionTo(t)), or 'keep' when it did not turn; D.face (D.java:200) would record the direction.\nAdd inputs for each of the 8 cones: enemy babies (count, nearest d2, whether it faces us), cat, unexplored tiles from Sym.mem, cheese, the own king, and the next move direction. RL can then learn scouting and defensive facing beyond guardTurn.",
+   "proposal_cost": "Interim mask: about 5-10 Java lines and no retraining; it only stops floor picks of target-less selectors. Direction head: about 60-120 Java lines (label remap, per-direction inputs), 40-60 more inputs, re-imitation of point 4 and a replay parity check, about 1 day. About 1-3k bytecodes per turn for the per-direction scans."
+  }
+ ],
+ "cross_cutting": [
+  "Untrained input columns are a general hazard. train_dp.py:120-121 gives a constant input sd = 1, and because the input is always 0 its first-layer weights never receive a gradient. When RL, floors or other points later make that input vary, the frozen net gets an uncalibrated push. Here the input is 32 (team rat traps) at PRE and POST. zdb never places rat traps (placeRatTrap appears only at Baby.java:712, Baby.java:1980 and DK.java:614, all net-only paths). In cpi-x0 this input causes 90% of PRE fallbacks (THROW with nothing carried) and about 100 suppressed POST deliveries per game. Every point should be audited against its imitation data; constq.py does this for points 2-4. Fix by zeroing such columns at export and in widen (dpnet_io.py:215), or by clamping inputs to the imitation range.",
+  "Mask and executor disagree. For options 0-20 of points 2 and 3, actOk (Baby.java:2056-2057) offers every option whether or not its executor can act, and faceOk (2083-2084) does the same for FACE. Exactly-masked options (pass-3 21-38, F_DIR) never fall back. The floor of 0.005 is spread evenly over the offered options, about 150 picks per option per 650k records. rl_train.py uses the fallback flag only for diagnostics (rl_train.py:536-541), so the policy gradient credits a k that never ran. That is harmless while points 2-4 are frozen, but configs/cpi-x0.json lists phase_b_unlocks [[2,3,4],[6],[1]]. Before unlocking them, add exact masks, or relabel or drop fallback records.",
+  "Executors embed zdb's 'whether' logic: the THROW hold rule, cheese and budget floors, trap caps, coop-only lanes. The net decides 'whether' without seeing those inputs. The result is systematic fallback (THROW at carry age < 6 falls back 90% of the time), and RL cannot learn to override zdb's gates. Principle for the refactor: executors do the deterministic 'how' (target and geometry), gates become inputs, and the label stays zdb's decision.",
+  "Points are coupled through their inputs. Exploration on one point shifts the state distribution that every other point sees. In cpi-x0 the KING_ACT floor of 0.1 gave 51 A_TRAP_FOE/A_TRAP_FORT picks per game, against 6.6 in rl-m2; with the babies' X_RAT_TRAP_FWD floor picks, 91.6% of PRE rows had own rat traps, against 0% in imitation. Floors and unlock schedules should be judged by what they do to the frozen points' inputs. Backstab is the same kind of risk: actExec bites and grabs have no hostile() check, so a floor pick during coop flips coop for both teams for the rest of the game (InternalRobot.java:623-625, 643-651).",
+  "A_PASS bundles 'no action' with 'skip the rest of zdb's logic'. That logic includes the promotions at PRE (Baby.java:174-185) and tryDeliver, layLane and the bites at POST (209-226). Once masks are exact and promotions are explicit options, PASS should mean only 'no action'.",
+  "Data retention. cpi-x0's raw decision files were deleted after rl_data extraction (games/j*/ keeps only result.json and trace.tsv), and the npz has no label column, so what zdb did on fallback rows cannot be recovered. decisions.read_rl already returns 'label' (decisions.py:97-150); adding it to rl_data's output would make fallback analysis direct. rl-m2's per-record data is also not on the box, so the nRatT explanation of its 1.4% THROW rate is inferred, not measured."
+ ]
+}

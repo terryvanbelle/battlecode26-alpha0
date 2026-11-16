@@ -1,0 +1,195 @@
+{
+ "scope": "KING_MOVE (10) and KING_TURN (16) in java/bots/zdp. This was a read-only pass: I edited no files, built nothing and ran no games. Code read: King.java, DK.java, D.java, DNet.java, Cfg.java, Econ.java, G.java, Baby.java (first turn), docs/rules/engine-checked-digest.md. Measurements come from the cpi-x0 probe records (rl-m2 v39 net, 256 mirror games, floor 0.1 at points 10 and 16): runs/rl/cpi-x0/iter-0000/data/p10.npz (602,744 records) and p16.npz (518,017 records) on the box. The probe summary and the deviation/fallback table (a 300k-record sample) are copied to /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/cpi-x0-summary.json and /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/devfb-cpi-x0.json. I also ran argmax probes of the v39, anchor and start nets (runs/rl/cpi-x0/nets/0, runs/m2/anchor, runs/m2/start) and read the sens10 judge log (/tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/sens10.log). The one temporary file I made on the box (/tmp/k10_top.npy) has been deleted.",
+ "points": [
+  {
+   "id": 10,
+   "name": "KING_MOVE",
+   "locations": "Where it opens: King.java:77-78 (dM = rc.isMovementReady(); features in DK.kingMove, DK.java:89-158, computed before the cascade). Mask: DK.MOVE_ALLOWED, static, DK.java:350-355. Pick: DK.netPick DK.java:358-365, then DNet.sample DNet.java:116-135 (softmax times (1-floor), plus floor/m on each allowed option). Executor: DK.netKingMove / execKingMove DK.java:368-436 (helpers DK.home 439-442, DK.dig 444-449). Fallback: King.move's cascade, King.java:79 and 378-401. Emit: King.java:80. Fallback flag: D.fallback D.java:158-162.",
+   "n_options": 37,
+   "option_kind": "Mixed. 20 options are labels for the exits of zdb's King.move cascade (DK.java:25-29): 4 are masked dead labels, 7 are stays that behave identically, 1 (K_CAT_FLEE) is zdb's own first branch, and 8 are conditional movement or dig executors (dodge, form-still, unplug, pile, walk-home, closer, sidestep, dig). The other 17 are net-only: an explicit K_STAY, 8 plain steps (K_MOVE_N) and 8 dirt-step digs (K_DIGSTEP_N). zdb never labels any of these 17.",
+   "options": [
+    {
+     "id": "0",
+     "name": "K_DODGE",
+     "executor": "King.dodge (King.java:427-457). If a cat is within KING_DODGE_R2 = 25 (Cfg.java:37), it steps to the movable direction with the lowest 2*catRisk plus a hand tie-break, if that beats staying. Otherwise, when the action is ready and cheese is at least KING_DIG_MIN, it digs the safest dirtStep tile (King.java:445-456). Called at DK.java:382-384.",
+     "offered_when": "Always (static mask, DK.java:350-355). zdb never labels it: King.move has no dodge branch (King.java:378-401).",
+     "cannot_act_when": "No cat within d2 25, or no step safer than staying and no affordable dig.",
+     "observed": "1,799 picks, which is floor level (0.1/33 x 602,744 is about 1,826). 99.2% fall back. A cat was within d2 25 in only 1.9% of its picks. Never the argmax.",
+     "context_dependence": "A net-only alternative to zdb's flee. It only means something when a cat is close."
+    },
+    {
+     "id": "1",
+     "name": "K_CAT_FLEE",
+     "executor": "King.fleeDir (King.java:405-413), then rc.move. G.me is left stale, as zdb does (DK.java:385-391). The step is the first movable direction of the fan pointing away from the first cat within d2 20 (King.java:409).",
+     "offered_when": "Always (static mask).",
+     "cannot_act_when": "No cat within d2 20 (feature 10 off), or no movable direction in the fan.",
+     "observed": "3,615 picks. 74.7% fall back (87.8% of deviations). Fallback is 100% without a cat within d2 20 and 49% with one. Argmax in 1,149 rows.",
+     "context_dependence": "Its executor is identical to zdb's first cascade branch (King.java:382-383), so picking it is never a real deviation: it either makes zdb's own move or fails, and then zdb runs and does not flee either. In effect it is a 'defer to zdb' option."
+    },
+    {
+     "id": "2,3,5,8",
+     "name": "K_LANE, K_NO_MINE, K_OFF_SITE, K_PATH",
+     "executor": "None. The default branch returns false (DK.java:434).",
+     "offered_when": "Never (MOVE_ALLOWED is false, DK.java:354).",
+     "cannot_act_when": "Always.",
+     "observed": "0 picks.",
+     "context_dependence": "Labels of zdb branches that its Cfg switched off. They are dead width in the 37-wide head."
+    },
+    {
+     "id": "4",
+     "name": "K_FORM_STILL",
+     "executor": "Stay. Returns King.formSite != null (DK.java:392).",
+     "offered_when": "Always (static mask).",
+     "cannot_act_when": "No formation site is open. Only the slot-0 king ever runs formation (King.java:72-74), so for every other king this option always fails.",
+     "observed": "2,020 picks (floor level). 98.4% fall back, and 0% when a site is open (1.6% of its picks). A site is open in 2.9% of rows.",
+     "context_dependence": "A stay that keeps the king off a site it is forming. zdb never labels it: there is no such branch in King.java:378-401."
+    },
+    {
+     "id": "6,10,11,14,15,17,18,20",
+     "name": "Stays: K_THREAT_HOLD, K_NO_HOME, K_AT_HOME, K_DIG_WAIT, K_DIG_POOR, K_STUCK, K_DIG_REFUSED, K_STAY",
+     "executor": "Return true and take no action (DK.java:418-420). They differ only in King.mineWhy, which only Debug prints (Debug.java:27).",
+     "offered_when": "Always.",
+     "cannot_act_when": "Never (0% fallback).",
+     "observed": "448,606 picks (74.4%), and the argmax in 496,389 rows (82.35%). Picks / argmax rows per option: K_AT_HOME 164,815 / 181,741; K_STUCK 120,281 / 138,960; K_DIG_POOR 63,233 / 72,899; K_NO_HOME 39,686 / 41,911; K_THREAT_HOLD 31,828 / 34,362; K_DIG_WAIT 24,736 / 26,516. K_DIG_REFUSED (2,169 picks) and K_STAY (1,858) are at floor level. Real (non-fallback) deviations are 7.28% of records, and 2.23 points of that are swaps between stays, which change nothing.",
+     "context_dependence": "zdb's label records why it stayed, that is, which earlier branches failed (King.java:384, 389, 390, 395, 396, 398, 399). As behaviour it is one action. Side effect of the order: zdb digs or sidesteps only when the action is ready and cheese is at least 100 (King.java:395-396), so a blocked zdb king waits on any turn where KING_SPAWN or KING_ACT already used the action."
+    },
+    {
+     "id": "7",
+     "name": "K_UNPLUG",
+     "executor": "King.unplug (King.java:589-605). If Flow.left() >= PLUG_LEFT 3000 (Cfg.java:34) and the ring around the king is split (arcsHere > 1), it steps to the movable neighbour with the fewest arcs (2*arcs plus hand), provided that is fewer than here.",
+     "offered_when": "Always.",
+     "cannot_act_when": "ringArcs < 2 (95.7% of rows), or no movable neighbour with fewer arcs.",
+     "observed": "4,639 picks. 87.4% fall back (89.2% of deviations): 100% when ringArcs < 2, and 79.5% even when it is 2 or more. Argmax in 3,082 rows. Argmax picks: 1,988, with 84.2% falling back (79% of them at home, 41% with no movable direction).",
+     "context_dependence": "zdb runs it only when there is no flee and nothing hostile in view (King.java:383-385). The net's version also runs with enemies or cats in view."
+    },
+    {
+     "id": "9",
+     "name": "K_PILE",
+     "executor": "If nearCheese is set and more than 1 tile away (Chebyshev), King.step toward it (fan5, never farther in Chebyshev, unplugged; King.java:653-663), then pickUp (DK.java:396-400).",
+     "offered_when": "Always.",
+     "cannot_act_when": "No pile within KING_ROAM 4 of the anchor (homeMine, else start) and outside the king's 3x3 (King.java:109-129, Cfg.java:41), or no fan5 step.",
+     "observed": "38,711 picks. 48.2% fall back (80.7% of deviations). Argmax in 42,584 rows, 62% of them at home. Argmax picks: 33,520, with 42.9% falling back. In 24.3% of those there was no free fan5 direction (100% fail); in 75.5% there was one, and 24.5% still failed (not broken down).",
+     "context_dependence": "zdb takes it only with nothing hostile in view and no unplug step (King.java:384-388). It is the one option RL clearly moved: in at-home rows its argmax count went from 18,976 (anchor) to 25,910 (v39)."
+    },
+    {
+     "id": "12",
+     "name": "K_WALK_HOME",
+     "executor": "Same as K_SIDESTEP: home(), more than 1 tile away, King.step toward home, pickUp (DK.java:406-411).",
+     "offered_when": "Always.",
+     "cannot_act_when": "At home, no home mine, or no fan5 step.",
+     "observed": "1,823 picks (floor level). 77.0% fall back.",
+     "context_dependence": "The label of a zdb branch that is switched off, and an exact duplicate of K_SIDESTEP's executor."
+    },
+    {
+     "id": "13",
+     "name": "K_CLOSER",
+     "executor": "h = DK.home(), which assigns King.homeMine if it is null (DK.java:439-442). Then, if h is more than 1 tile away: King.closer (fan3 toward h, strictly smaller dist2, unplugged; King.java:608-618) and pickUp (DK.java:401-405).",
+     "offered_when": "Always.",
+     "cannot_act_when": "At home (Chebyshev distance 1 or less), no home mine, or no movable fan3 step that shortens dist2 and is unplugged.",
+     "observed": "50,595 picks. 77.1% fall back (79.0% of deviations), which is 36.9% of all point-10 fallbacks. Argmax in 47,917 rows. Argmax picks: 34,238, with 76.2% falling back: 37.2% were at home (100% fail), 30.7% had no free fan3 direction (100% fail), and 32.2% had one (26% fail). The imitation anchor already makes K_CLOSER the argmax in 16,337 at-home rows (v39: 16,136).",
+     "context_dependence": "zdb takes it only after: no flee, nothing hostile, no unplug, no pile step, home known, not at home (King.java:382-393). The net's version skips all of those checks. RL cannot see when it fails, because the fallback then does what zdb would have done."
+    },
+    {
+     "id": "16",
+     "name": "K_SIDESTEP",
+     "executor": "home(), more than 1 tile away, King.step toward home (fan5, never farther, unplugged), pickUp (DK.java:406-411).",
+     "offered_when": "Always.",
+     "cannot_act_when": "At home, no home mine, or no fan5 step.",
+     "observed": "16,465 picks. 53.5% fall back (64.3% of deviations). Argmax in 9,851 rows. Argmax picks: 6,416, with 36.6% falling back.",
+     "context_dependence": "zdb sidesteps only when closer failed, the action is ready, cheese is at least 100 and there is no dig tile (King.java:393-398). The net's version needs none of these."
+    },
+    {
+     "id": "19",
+     "name": "K_DIG",
+     "executor": "home(), more than 1 tile away, King.digTile toward home (the fan3 step with the fewest dirt tiles, and its first dirt tile; King.java:623-650). Then DK.dig: canRemoveDirt, then King.digAt, without zdb's KING_DIG_MIN guard (DK.java:412-417, 444-449).",
+     "offered_when": "Always.",
+     "cannot_act_when": "At home or no home mine, no dirt-only step toward home, action not ready (10% of rows), or cheese below 5.",
+     "observed": "4,537 picks. 72.7% fall back (87.3% of deviations). Argmax in 1,766 rows.",
+     "context_dependence": "zdb digs only after closer failed, with the action ready and cheese at least 100 (King.java:395-400). The dig uses the action, so KING_SPAWN or KING_ACT earlier in the turn can rule it out."
+    },
+    {
+     "id": "21-28",
+     "name": "K_MOVE_N (N, NE, E, SE, S, SW, W, NW; G.DIRS, G.java:46-48)",
+     "executor": "If rc.canMove(d): move, update G.me, pickUp (DK.java:422-429).",
+     "offered_when": "Always (static mask). zdb never labels these.",
+     "cannot_act_when": "rc.canMove(d) is false. Fallback is exactly 100% when the feature-17 bit for d is 0 and 0% when it is 1. Diagonal bits are set in 24-31% of rows, orthogonal bits in 41-49%. No direction is movable in 14.2% of rows; the mean is 3.0 movable directions.",
+     "observed": "1,621-2,146 picks each (floor level). 51.5-75.8% fall back. Together they are 9.0% of all point-10 fallbacks.",
+     "context_dependence": "Plain steps with no context. The net cannot tell which ones are legal, because the canMove mask arrives as a single packed integer (DK.java:126-131)."
+    },
+    {
+     "id": "29-36",
+     "name": "K_DIGSTEP_N",
+     "executor": "King.dirtStep(c, d): the first dirt tile the step would add to the 3x3, or null if any added tile is wall, unseen or off-map, or none is dirt (King.java:461-473). Then DK.dig (DK.java:430-433, 444-449).",
+     "offered_when": "Always (static mask). zdb never labels these.",
+     "cannot_act_when": "dirtStep is null (the feature-18 bit is set in only 3-7% of rows), the action is not ready, or canRemoveDirt is false.",
+     "observed": "1,717-2,139 picks each (floor level). 95.0-98.0% fall back (3-17% when the bit is set and the action is ready). Together they are 13.7% of all point-10 fallbacks. Argmax in 6 rows (option 36).",
+     "context_dependence": "Plain primitives. digTile(c, h) returns the same tile as dirtStep(c, d*) for the direction d* it chooses (same loop, same first-tile rule; King.java:623-650 vs 461-473), so zdb's K_DIG can be expressed as one of these."
+    }
+   ],
+   "fallback_explanation": "Whenever the king is movement-ready, the static mask offers the same 33 options (DK.java:350-355; the data shows 33.0 allowed options in every row). 25 of those options have executor preconditions that the mask never checks. When the net picks one that cannot act, netKingMove returns false and zdb's whole cascade runs instead (King.java:79, 378-401).\n\nIn the probe, 105,560 of 602,744 records (17.5%) fell back. The 8 stays never fail (448,606 picks, 74.4%), so 68.5% of the 154,138 non-stay picks fell back.\n\nShare of all fallbacks by option:\n- K_CLOSER 36.9%: cannot act at home, because the executor needs the home mine more than 1 tile away (DK.java:403); otherwise fails when no fan3 step is free, shortens dist2 and is unplugged (King.java:608-618).\n- K_PILE 17.7%: no pile within the leash, or no fan5 step.\n- K_DIGSTEP_N 13.7%: dirtStep is null, or the action is not ready.\n- K_MOVE_N 9.0%: canMove is false.\n- K_SIDESTEP 8.3%.\n- K_UNPLUG 3.8%: needs ringArcs of 2 or more, which holds in only 4.3% of rows.\n- K_DIG 3.1%.\n- K_CAT_FLEE 2.6%.\n- K_FORM_STILL 1.9%: always fails for kings other than slot 0.\n- K_DODGE 1.7%.\n- K_WALK_HOME 1.3%.\n\nThe net cannot see most of these preconditions:\n- canMove and dirtStep arrive as two packed 8-bit integers (DK.java:126-132).\n- 'At home' is only a capped Chebyshev distance (DK.java:140).\n- No feature says whether a fan3 or fan5 step toward home or a pile is free and unplugged.\n\nEven the imitation anchor (runs/m2/anchor) puts K_CLOSER as argmax in 16,337 at-home rows, where it can never act. Its errors at this point are invisible because the fallback runs zdb. Deviations fall back 57.8% of the time, and top choices 9.05%.\n\nWhy this matters for learning: D.fallback only sets a flag (D.java:158-162), and rl_train trains on every record whose k is not 'none' (scripts/rl_train.py:525; the flag is only a diagnostic, 536-541). So 17.5% of records give credit for whatever zdb did to an option that never acted.",
+   "context_dependence": "Each of zdb's labels implies that every earlier branch failed (King.java:382-400). For example, K_AT_HOME means: no flee, no enemy or cat in view, no unplug step, no pile step, home known, and within 1 tile of it. K_SIDESTEP further means: no closer step, action ready, cheese at least 100, no dig tile (King.java:393-398).\n\nThe net-mode executors drop those conditions (DK.java:382-433):\n- K_PILE steps toward a pile even with enemies in view.\n- K_CLOSER ignores a nearer pile.\n- K_SIDESTEP needs no action and no cheese.\n- K_DIG skips the KING_DIG_MIN guard (DK.java:444-449).\nSo an option is 'what zdb did' in the states it was imitated on, and a different deviation everywhere else.\n\nK_CAT_FLEE is never a deviation at all, since it is zdb's own first branch. The 8 stays split one action by a debug tag (Debug.java:27).\n\nHidden state: King.homeMine is assigned lazily inside the cascade (King.java:386) and by DK.home() in K_CLOSER, K_SIDESTEP, K_WALK_HOME and K_DIG (DK.java:439-442). Net-mode stays, steps and K_PILE skip that assignment. That changes the next turn's pile anchor (King.java:111, 123) and the KING_SPAWN and KING_TURN features (DK.java:208, 913).\n\nThe executors also carry over zdb quirks: K_CAT_FLEE leaves G.me stale (DK.java:386).\n\nTiming: the point reopens every turn the king stays, while a move costs a cooldown of 40 (engine digest line 58), so stays dominate the records.",
+   "generalization_proposal": "Turn KING_MOVE into a primitive head whose mask is exactly each option's legality. Keep zdb as the teacher by relabelling its decisions, and give the net inputs per direction.\n\n1) Options (25): STAY; STEP_d for the 8 directions, masked by rc.canMove(d); DIG_i for the 16 ring tiles of the 5x5 (King.RX/RY order, the same order as KING_SPAWN's builds, DK.java:68-73), masked by rc.isActionReady() && rc.canRemoveDirt(tile).\n- Every offered option can act, so fallback is zero by construction and the record's k is the action actually taken.\n- It covers everything the movement phase can do: any legal king step and any legal dig within range 8.\n- It drops the 4 dead labels, the 8 duplicate stays, K_WALK_HOME's duplicate executor, the K_CAT_FLEE 'defer to zdb' option, and K_FORM_STILL (which becomes STAY plus a per-step 'enters an open site' feature).\n\n2) Teacher labels by observation: leave King.move (King.java:378-401) untouched in recording builds and record what it executed.\n- STEP_d if rc.getLocation() changed by d. fleeDir, unplug, step, closer and dodge each make exactly one rc.move.\n- DIG_i if digAt ran (have King.digAt, King.java:416-421, keep the dug tile).\n- Otherwise STAY.\nExact replay is not affected. zdb's K_DIG maps exactly, because digTile's tile is dirtStep(c, d*)'s tile for the direction d* it chooses.\n\n3) Inputs: remove the packed canMove and dirtStep integers (DK.java:126-132). For each direction d, add:\n- canMove.\n- Change in Chebyshev distance and in dist2 to: the home mine (assigned or would-be), nearCheese, start, map centre, nearest enemy, nearest enemy king (seen or heard, D.java:705-709), and the open form site.\n- catRisk(c+d) - catRisk(c) (King.java:478).\n- ringArcsFast(c+d) and unplugged(c, d) (King.java:531, 582-586).\n- Cheese newly under the 3x3.\n- Allied babies that would end up adjacent.\n- The rank of d in zdb's fan3 and fan5 toward home and toward the pile (G.java:80-90).\nFor each ring tile: whether it is dirt, and which steps digging it would unblock.\nEither flatten all of this into the current MLP (about 110-120 inputs), or, better, use a shared per-candidate scorer (global features plus candidate features give one logit per candidate). Then a preference like 'step away from enemies' is one weight instead of eight.\n\n4) Optional zdb hint: a side-effect-free dry run of the cascade that returns the primitive zdb would take, given as a per-candidate flag. This means splitting unplug, step, closer and dodge into pure choosers; fleeDir and digTile are already pure. With the hint, imitation is close to exact at init and RL learns departures that depend on the state, with credit on the real action. Add it only if imitation without it turns out weak.\n\n5) Net builds: assign homeMine at a fixed place every turn (call DK.home() before the pick), so that no option choice changes hidden state that other points read.\n\n6) Later, strategic: turn the hard-coded targets into decisions: the home mine among known mines (pickHomeMine, King.java:927-942, is chosen once and never revised), the KING_ROAM pile leash, and the threat freeze (King.java:384). The per-candidate features would then use the chosen target.\n\nRejected alternative: one X_ZDB option (run zdb's cascade) plus primitives, the pass-3 pattern used by KT_ZDB and KC_ZDB. It also has zero fallback, but imitation puts all the mass on X_ZDB, the primitives stay at the floor exactly as K_MOVE_N do now, and RL credit goes to zdb's whole cascade rather than to an action.",
+   "features": "48 features (DK.java:89-158):\n- 0 coop, 1 round/10, 2 cheese/10, 3 surplus, 4 income rate, 5 health, 6 actionReady.\n- 7 cats in view, 8 nearest cat d2, 9 its direction ordinal, 10 flee flag (a cat within d2 20), 11 catRisk.\n- 12 enemies in view, 13 enemy kings in view, 14 nearest enemy d2, 15 its direction ordinal.\n- 16 ringArcs.\n- 17 canMove bitmask as one integer (0-255), 18 dirtStep bitmask as one integer.\n- 19-21 nearCheese: present, Chebyshev distance, direction.\n- 22 homeMine assigned.\n- 23-27 home mine, using pickHomeMine when it is not yet assigned (DK.java:138): present, Chebyshev distance, direction, held by another king, digTile exists.\n- 28 cheese at least KING_DIG_MIN, 29 formSite open, 30 slot, 31 numKings, 32 numMines, 33 Chebyshev distance to start, 34 spawnWhy code, 35 rat-cost step.\n- 36-39 x, y, W, H.\n- 40-47 king mini block (the heard block plus the EKING registers, D.java:681, 705-709).\n\nGaps for a movement policy:\n- The two bitmasks are packed, and an MLP cannot read bit d out of an integer.\n- Directions are ordinals.\n- Nothing is given per direction: no distance change to home, pile, enemy or centre after the step; no cat risk after the step; no unplugged(c, d); no cheese under the new 3x3; no babies blocking.\n- No bearing to the map centre or the enemy start.\n- No allied-baby count or positions, although babies block king moves.\n- No memory of earlier moves or targets.",
+   "coupling": [
+    "KING_SPAWN (11) and KING_ACT (12) run first in the same turn (King.java:51-70) and can spend the action that KING_MOVE's digs need (DK.java:444-449). The action was ready in 90% of KING_MOVE rows.",
+    "KING_FORM (13) runs just before (King.java:72-74). It opens sites relative to the king's current tile: ring sites at Chebyshev 3, the back spot at 4, mine sites at 5 or more (DK.java:75-83, King.java:842-852). clearNow keeps kings out of a site's 3x3 (King.java:885-896), which is the reason K_FORM_STILL exists (DK.java:392).",
+    "Babies: the king publishes its tile at the start and end of its turn (King.java:37, 82, 166-170). Babies use it as their delivery target (Comms.nearestKing at Baby.java:327, 848, 904, 1047, 1066) and as path blocking (Nav.markKings Nav.java:39; Flow.java:21, 76). In turn, babies around the king block its moves, since kings cannot move onto any robot (engine digest line 111). No direction was movable in 14.2% of rows.",
+    "Economy: every executed step calls pickUp (DK.java:398, 403, 409, 427; King.java:179-188). That feeds Econ.received (Econ.java:23), then the income rate and surplus (Econ.java:33-41), which drive KING_SPAWN's surplus test (King.java:311) and the BUDGET word babies read (King.java:83).",
+    "homeMine (King.java:386, 916, 927-942) anchors nearCheese (King.java:111-129) and is a feature of KING_SPAWN and KING_TURN (DK.java:208, 913). pickHomeMine and held depend on the positions other kings publish (King.java:920-942), so one king's moves change another king's home pick and pile target.",
+    "When a pick fails, the fallback runs King.move whole (King.java:79). The action actually taken then depends on zdb's branch order, not on the net's pick."
+   ],
+   "missing_information": "- The outcome effect of real deviations, per option. Only the pooled sens10 result is known, and the per-option CPI t values are at noise level.\n- The bytecode cost of per-direction features and of a dry-run cascade (limits are off; not measured).\n- How zdb's teacher labels would split into primitives (share of turns moving vs staying vs digging). I only have net-mode probe data, where stays are the argmax in 82.35% of rows.\n- Whether an imitation net can reproduce zdb's direction choices without the hint. That needs a trial.\n- How often net-mode picks leave homeMine unset when zdb would have set it.\n- What makes the remaining 24.5% of K_PILE picks (and 26% of K_CLOSER picks) fail when a fan direction is free: the Chebyshev or dist2 test, unplugged, or no pile. Not broken down.\n- The effect on play of the fixed order that puts the move after spawn and act.",
+   "proposal_cost": "(a) Zero-fallback primitive head plus relabelling by observation.\n- Java: about 80-120 lines. That covers option constants, the per-turn mask and the executors in DK.java:25-30 and 350-449; the relabel around King.java:79, with King.digAt keeping the dug tile; and the per-direction features replacing DK.java:126-132.\n- Python: feature and option counts (train_dp's feature_counts, decisions.py checks), about 20 lines. The trainer already uses per-record masks (D.java:18).\n- Data: re-record teacher data (teacher-dp2 was 1000 games) and retrain point 10's imitation net. The rl-m2 net for point 10 does not carry over.\n- Low risk: in recording builds zdb's cascade is not touched.\n\n(b) Shared per-candidate scorer: parity changes in DNet.logits/sample, dpnet_io.forward, train_dp and build_dpnet, about 150-250 lines.\n\n(c) zdb dry-run hint: about 40-60 lines in King.java to split choosers from actions, verified by exact replay as in docs/decision-points.md:58-60.\n\n(d) Net-mode homeMine fix: about 5 lines.\n\nBytecode cost: not measured."
+  },
+  {
+   "id": 16,
+   "name": "KING_TURN",
+   "locations": "Where it opens: King.java:46-47 (dT = D.ON && rc.isTurningReady() && rc.isActionReady() && rc.getGlobalCheese() >= rc.getCurrentRatCost(); features in DK.kingTurn, DK.java:894-930). Mask, pick and executor: DK.netKingTurn, DK.java:933-944 (mask 936-937, netPick 938, rc.turn 941). Net call: King.java:48. Default label KT_ZDB and emit: King.java:49. Sampling: DNet.sample, DNet.java:116-135.",
+   "n_options": 9,
+   "option_kind": "Plain actions, the pass-3 pattern: keep the facing (option 0, zdb's choice) or turn to one of 8 absolute directions (options 1-8).",
+   "options": [
+    {
+     "id": "0",
+     "name": "KT_ZDB (keep facing)",
+     "executor": "Nothing. Only k >= KT_DIR0 turns (DK.java:941).",
+     "offered_when": "Always (DK.java:936).",
+     "cannot_act_when": "Never.",
+     "observed": "465,206 picks (89.8%). Argmax in 517,758 of 518,017 rows (99.95%).",
+     "context_dependence": "Equals zdb only while the king still has its initial facing, because zdb's king never turns (King.java has no rc.turn call). In the probe that held in only 13.5% of records: floor-random turns had already moved the facing in 86.5% of them."
+    },
+    {
+     "id": "1-8",
+     "name": "KT_DIR0+i (turn to G.DIRS[i])",
+     "executor": "rc.turn(G.DIRS[i]) (DK.java:941).",
+     "offered_when": "When G.DIRS[i] differs from the current facing and rc.canTurn(G.DIRS[i]) holds (DK.java:937). That is always 7 of the 8 directions (8.0 allowed options per row, counting KT_ZDB).",
+     "cannot_act_when": "Never. The mask is the legality test, and there is 0% fallback.",
+     "observed": "6,124-6,932 picks each, 52,811 in total (10.2%). The floor accounts for 8.75 points of that (0.1 x 7/8) and the net's own tail for about 1.4. A direction was the argmax in 259 rows (option 1: 18, 2: 86, 3: 13, 4: 12, 5: 30, 7: 31, 8: 69).",
+     "context_dependence": "Matters only through the next rat built, since a newborn faces the king's facing (engine digest line 117). The turn persists, so it also sets the facing for every later build until the next turn."
+    }
+   ],
+   "fallback_explanation": "No fallback. The mask is rebuilt each turn from the executor's own legality test (G.DIRS[i] != facing && rc.canTurn, DK.java:935-937), and KT_ZDB does nothing, so every pick acts: 0 fallbacks in 518,017 records.\n\nThe cost here is of a different kind. The point was dropped from rl-m2 training after iteration 0 (configs/rl-m2.json:3: one PPO step gave a KL of 6 to the anchor), so its net is still the calibrated widen init (scripts/dpnet_io.py:215-230). Its last layer has bias +0.05 on KT_ZDB, -9.6 to -9.7 on the 8 directions, and weights no larger than 0.63 in absolute value. KT_ZDB's logit leads the best direction by 6.8 at the median and 2.9 at the 1st percentile. Every direction pick is therefore floor noise.",
+   "context_dependence": "Kings see 360 degrees, so the king's facing affects only newborns: a newborn starts with the king's facing (engine digest line 117).\n\nThe decision is made before spawn decides whether and where to build (King.java:46-51; tile scoring King.java:317-339). Most KING_TURN records are not followed by a build: in the same probe, 88.5% of KING_SPAWN picks were no-build exits (S_NO_SURPLUS, S_FLOOR, S_CAP), and 10.1% were builds, about half of which fell back.\n\nThe same absolute direction therefore points the newborn outward, sideways or back into the king, depending on a tile chosen afterwards. KING_SPAWN's features do not include the facing: getDirection is read only at DK.java:899 and 937.\n\nThe facing persists, so KT_ZDB's effect depends on history. Between consecutive records of the same king the facing changed 10.2% of the time, and over the 1,031 kings the facing histogram is close to uniform (60.9k-69.5k records per direction). It matched the bearing to the centre in only 12.8% of records, about chance (1/8).",
+   "generalization_proposal": "Decide the facing at the moment it takes effect, from the newborn's point of view.\n\n1) Open KING_TURN inside King.build (King.java:348-353), which both zdb's spawn (King.java:339) and the net's build executor (DK.java:484) call, just before rc.buildRat(l) and only when rc.isTurningReady(). Then:\n- Only builds produce records, and each record steers exactly one newborn.\n- The persistent-facing problem disappears, because every build decides again.\n- KT_ZDB again equals zdb's behaviour, since zdb never turns.\nRemove the hook at King.java:45-49.\n\n2) Options: keep KT_ZDB plus the 8 directions, masked by canTurn and excluding the current facing, as now. Optionally express them relative to the outward direction of l (from the king's centre to l), so that one weight generalizes across spawn tiles.\n\n3) Inputs relative to the spawn tile l:\n- l's ring index or outward direction, and the current facing relative to outward.\n- Bearings from l to: spawn's goal (map centre, or enemies[0] at war, King.java:319-322), nearest cat, nearest enemy, enemy king (heard), home mine, nearest pile.\n- Which neighbours of l are passable and free (the newborn's first forward step), and babies near l.\n- One-hot or cos/sin encodings instead of dir1 ordinals.\n\n4) Alternative that spans points: let the newborn turn before its first sense. Baby.turn currently senses at Baby.java:61 with the inherited facing, and there is no turn before that. Then the king's facing would only set that first look, and KING_TURN could be dropped. This needs a check that a newborn is turn-ready on its first turn.\n\nAnother option is to fold it into KING_SPAWN as a second head conditioned on the tile (choose the tile, then the facing).",
+   "features": "24 features (DK.java:894-930; KING_TURN_FEATS DK.java:22-23):\n- Facing ordinal, round/10, coop, cheese/10, rat-cost step, surplus.\n- dir1 and d2 to the nearest enemy, and to the nearest cat.\n- dir1 to the home mine, to the mirrored enemy start, and to the map centre.\n- Allied babies in view, numKings, numMines, slot, sawEnemy, health, spawned.\n- x, y, W, H.\n\nThe bearings are integer codes 0-8 (dir1, DK.java:886-890) fed in as scalars, so 'facing equals the bearing to X' requires the MLP to compare two integer codes. Nothing describes the spawn tile (not yet chosen), whether a build will follow, or the newborn's surroundings.",
+   "coupling": [
+    "KING_SPAWN (11) runs right after (King.java:51) and decides whether and where to build without seeing the facing.",
+    "Newborn babies start with the king's facing (engine digest line 117). On the first turn they sense through their 90-degree cone (digest lines 55, 71) before any turn (Baby.java:35-61). So the king's facing sets what a newborn first sees (cats, enemies, cheese) and which first step counts as forward: a forward baby move costs 10, any other direction 18 (digest lines 58, 64).",
+    "BABY_ROLE at birth (Baby.java:41-47) and BABY_FACE (4) decide the newborn's later facings, so the king's choice only lasts until the newborn's first turn of its own.",
+    "It uses only the turning cooldown, which nothing else in the king uses (zdb's king never turns), so it does not compete with the other king points."
+   ],
+   "missing_information": "- Whether newborn facing matters to outcomes at all: there is no sensitivity run for point 16 (only sens10-13 exist).\n- A newborn's cooldowns at birth, i.e. whether it can turn before its first sense. The engine digest does not say.\n- Where a king's initial facing comes from (map file or engine).\n- How many KING_TURN records are followed by a build in the same turn. The RL records keep the net's KING_SPAWN pick, so builds zdb made under fallback cannot be separated out.",
+   "proposal_cost": "About 30-50 lines of Java:\n- Move the hook into King.build.\n- Rewrite DK.kingTurn's features as tile-relative (DK.java:894-930).\n- Update KING_TURN_FEATS (DK.java:22-23) and train_dp's feature_counts.\n\nRe-initialising loses nothing: the current net has learned nothing (it is still the calibrated init and was dropped from training).\n\nTeacher labels stay KT_ZDB, because zdb never turns. So imitation is trivial, and only RL (or a hand prior such as 'face outward') gives the point any content.\n\nRecords drop from every spawn-ready turn (518k in the probe) to builds only."
+  }
+ ],
+ "cross_cutting": [
+  "Fallback records train the wrong option. D.fallback only flags them (D.java:158-162), and rl_train keeps every k that is not 'none' (scripts/rl_train.py:525); the flag feeds only diagnostics (536-541). At KING_MOVE, 17.5% of records credit an option that never acted with whatever zdb's cascade did. Any point whose mask is not exactly its executors' legality test has this problem. KING_TURN's per-turn canTurn mask (DK.java:935-937) shows the fix: build the mask from the same tests the executor uses, or relabel k to what was actually executed.",
+  "Options are named after zdb's reason rather than the action taken. Eight KING_MOVE options are one action (stay), distinguished only by a debug tag (Debug.java:27), and K_CAT_FLEE is zdb's own branch. Imitation spends capacity on these splits: KING_MOVE had the lowest imitation accuracy of all points, 0.90 and 0.935 (docs/decision-points.md:71, 137), so that label accuracy understates behavioural fidelity. RL's probability mass and gradient are also spread over duplicates. A general recipe for every pass-1 cascade point: relabel each record by the primitive that was executed, observed after zdb's code runs, so replay stays exact.",
+  "Packed and ordinal inputs. Bitmasks (DK.java:126-132, and KING_SPAWN's bm/dm at DK.java:200-203) and direction ordinals or dir1 codes (DK.java:111, 124, 136, 141, 886-890) are integers that an MLP cannot decode reliably. Unpack the bits and add per-direction or relative features (cos/sin, distance changes). Without them a net cannot learn to use primitive steps even when they are offered: K_MOVE_N fail exactly when their bit is 0 and still sit at the floor.",
+  "Hidden state assigned inside cascades. King.homeMine is set lazily at King.java:386 and by DK.home() (DK.java:439-442). In net mode, whether it gets set depends on which option was picked, and that changes King.sense's pile anchor (King.java:111) and other points' features (DK.java:208, 913). Net builds should update such state at a fixed place each turn, independent of any decision.",
+  "Fixed king turn order (King.java:45-80): KING_TURN, then spawn, KING_ACT, KING_FORM, KING_MOVE. The engine keeps the move, action and turn cooldowns separate (engine digest lines 57-59, 63), yet the net can never step and then build, bite or dig from the new tile, and can never turn after the spawn tile is chosen. That is a gap for a start that should be able to do anything a hand-coded bot can. Options: reopen the action points after a move while the action is still ready (as the KING_COMMS chain does, DK.java:49-54), or let KING_MOVE come first.",
+  "Strategy hard-coded outside any point, for king movement:\n- The home mine: the nearest known mine to start, on our half, within KING_MINE_R2 400 and not held by another king (King.java:927-942, Cfg.java:35). It is chosen once and never revised (the only assignment is King.java:386).\n- The pile leash KING_ROAM 4 (Cfg.java:41, King.java:123).\n- Freeze whenever any enemy or cat is in view (King.java:384).\n- Cat flee radius d2 20 (King.java:409).\n- Dig only with cheese at least KING_DIG_MIN 100 (Cfg.java:39).\n- The plug test, which runs only with at least PLUG_LEFT 3000 bytecodes left (Cfg.java:34).\n- Spawn tile scoring toward the map centre or enemies[0] (King.java:317-339).\nPrimitive steps let RL depart from all of these, but only target-relative features, or an explicit target decision, tell it where to go.",
+  "Exploration floors on decisions with persistent effects. KING_TURN at floor 0.1 turned kings at random, and the facing persists, so 86.5% of later KING_TURN records had a facing different from the king's first. An untrained point (dropped from rl-m2 training, configs/rl-m2.json:3) adds pure noise during collection. A floor on such a point changes the state distribution for every later decision, not just the decision itself.",
+  "Sensitivity versus signal at KING_MOVE. Raising its floor to 0.2 (sens10: zdph10 vs zdpg39, 34/64 = 0.53, t 0.44, 95% interval 0.41-0.65) cost nothing measurable. That fits with 58% of deviations falling back to zdb and 2.23 of the 7.28 points of real deviation being swaps between stays. Yet KING_MOVE had the highest CPI fold t of the 7 points (1.97, docs/rl-es-plan.md:363). Comparing the anchor with v39, RL moved KING_MOVE's argmax in 10.4% of rows (mostly at home, from K_AT_HOME to K_PILE: 18,976 to 25,910 rows), but left K_CLOSER as the argmax in about 16k at-home rows where it cannot act, because the fallback hides that choice. The current action space blurs what signal there is.",
+  "The king's action is spent at three points with overlapping dig options: KING_SPAWN's S_DIG (DK.java:33), KING_ACT's A_DIG_RING (DK.java:38), and KING_MOVE's K_DIG and K_DIGSTEP_N (DK.java:412-417, 430-433). A single 'king action' head over the ring tiles (build, dig, bite or trap per tile) would remove the duplication. Recording builds would still have to keep zdb's order for replay."
+ ]
+}

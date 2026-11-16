@@ -1,0 +1,258 @@
+==================== map-baby-move | Decision point 1 (BABY_MOVE) in zdp (java/bots/zdp). Covered: the code path from open through mask, 
+
+## 1 BABY_MOVE (72 options) kind: Mixed. Options 0-38 are branches of zdb's moveDecision cascade, numbered in its priority order (D.java:52-59). Each branch chooses its own target, applies zdb's thresholds, and drives Nav, which keeps state across turns. Options 39-71 are primitive actions: step, turn, hold, strafe and risky step (D.java:61-66). They were added so the net can make any move, and zdb never labels them.
+-- fallback_explanation: How a fallback happens: netMove runs the chosen option's executor. If the executor returns false or throws, zdb's moveDecision runs in the same turn, and the label becomes 0x8000|(k<<6)|zdb_label (Baby.java:2193-2207). D.fallback turns that bit into the record's fallback flag (D.java:158-162).
+
+Size: 0.43% of all 622,495 picks (~2,676). The rate is low because the net is a saturated copy of the cascade: its mean top-choice probability is 0.9928. Its top choice is usually the branch zdb would take in that state, and that branch's conditions hold.
+
+Fallback concentrates on deviations: 13.0% of deviations fall back, against 0.28% of top choices. The deviation rate is 1.19% and the real (non-fallback) deviation rate 1.04%. Most deviations come from the 0.005 floor.
+
+Cause: for several options the mask is looser than the executor's own preconditions, and no feature exposes those preconditions.
+- FLANK: the mask lacks 'enemy baby within dist2 8' and 'an adjacent tile it cannot see'; enemy facing is not a feature.
+- WAR: the mask is any enemy, enemy king, threatened king or alert, while war() is gated by role, raw cheese, hunting and distance.
+- AIM_CARRY: the mask lacks 'target within Chebyshev 3' and 'free flight tile'.
+- RETREAT: the mask lacks hp <= 40 and Chebyshev > 2.
+- YIELD_KING and AMMO_AWAY: the mask lacks almost every condition, so they fall back 100% of the time.
+- FORM_KING: distance and crowd checks.
+- ATTACK: noKing exhausted.
+- SEEK and MINE_EXPLORE: success depends on random samples of unseen home tiles.
+- FLEE_CAT: all away directions blocked.
+
+By source: WAR ~1,108 (~786 at the argmax), FLANK ~496 (70% of its deviations and ~60% of its argmax picks), AIM_CARRY ~403, SEEK ~343, RETREAT ~128, ATTACK ~99, FORM_KING ~50, FLEE_CAT ~34. Primitives never fall back, because their masks (2298-2305) match their executor guards (2437-2460).
+
+Consequences:
+1. rl_train keeps fallback records and gives the credit to the chosen k; the flag is only a diagnostic (rl_train.py:525-542, flag read at 538). This is valid for the MDP, since choosing k in that state does produce zdb's move. But k's effect then switches between its own behaviour and zdb's on a condition the net cannot see, so the value learned for k mixes two behaviours.
+2. Some executors change state before failing, so the fallback is not exactly what zdb would have done. seek() clears mineTarget and seekUntil (1877, 1881). exploreHome() draws from G.rand (1816-1817). flank and yieldKing can turn before a failed step (Nav.java:119-126).
+3. For FLANK and AIM_CARRY, most of the exploration the floor spends on that option ends up running zdb's move instead.
+
+Point 1 is not trainable in any RL or ES config (configs/es-*.json and rl-*.json train [5,7,10,11,12,13,16], [5,7,10,11,12,13] or [11]). Today, therefore, this only affects the data the other points learn from.
+-- context_dependence: What an option does depends on much more than its index.
+
+1. Role. war() branches on GATHER, FIGHT, hunting and raw cheese (1249-1268). pressKing gates on GATHER and raw (1169-1171). The mine block ticks only for GATHER/FIGHT (2473-2480). STALL_CAT's mask requires ATTACK in coop (2276). The cascade limits FIGHT_CAT, KNOWN_CAT and RAID_FIGHT to FIGHT (1040, 1059-1062), ATTACK to the ATTACK role (1035), SEEK to GATHER (1075) and SCOUT to scouts (1064). Most of these options are offered to every role, so a pick can run code in a role zdb never ran it in: ATTACK for a gatherer, the mine block for an attacker, SCOUT for a fighter.
+
+2. Coop. nearestEnemy is null in coop (92-100), so the enemy options mostly drop out of the mask. WAR stays offered through the enemy king or an alert (2278). The cascade also requires !coop for AIM_CARRY, RETREAT, RAID, FLANK, FACE and WAR (1018-1037).
+
+3. Cascade order. Each zdb label was produced only after every earlier branch failed, so the net learned option k only inside that region. Picked outside it, k's executor runs in states zdb never ran it in:
+   - WAR with an enemy within dist2 8, where zdb takes FACE for non-gatherers (1033 comes before 1037);
+   - DELIVER with 1 raw cheese, where the cascade needs 30, or 10 with no cheese target, or late game (1044);
+   - CAT_DEFEND or END_CAT away from any king or before round 1850 (1008, 1010-1012).
+
+4. Errand state the features see only in part: Nav.target, bugging, stall and bestDist; exploreTarget; mineTarget, mineShift and the idle counter; the seek window; raidTarget and raidSince; lastEKing and noKing; cheeseTarget; catHunt. The same index either continues an errand or starts a new one depending on this state. Choosing another target for one turn wipes Nav's progress toward the old one (Nav.java:74-79).
+
+5. States only the net creates. The raider feature (D.java:275) was always 0 in zdb data, because only roleSet sets it (1911-1915). train_dp gives a constant column unit scale (train_dp.py:120-121), so its first-layer weights receive no gradient and stay at their random values. A net-made raider (R_RAIDER was picked 8,043 times at point 5 in cpi-x0) therefore shifts the BABY_MOVE logits by untrained weights. RAID and RAID_FIGHT are picked only through the floor, so the cascade's raider branches (1027, 1062) run for such a rat only on fallback turns.
+-- features: The input has 76 values: 60 situation features (D.java:247-323) and a 16-value comms block (D.java:324, 688-702).
+
+Included: role, raw cheese, bank, coop flag, round, hp; cat present and its catDist4; nearest enemy present and its dist2; carry state; Chebyshev distance to cheeseTarget, mineTarget, nearest king, home and lastEKing (plus its age); counts of kings, mines, own mines, visible foes, friends and foe kings; flags for raider, scout, eKing, action ready, turning ready, cash site, seek window, threatened king, form site, idleDue, catAtKing, atMine, crowd and unreported news; Nav.stall; absolute x, y, W, H; facing; and canMove and avoid each packed into one 8-bit integer (303-306).
+
+The point-1 net used in RL is the pass-2 imitation net: net-v2's point 1 is 60-64-64-39 (runs/dp/net-v2/net.json, checked locally). Widening adds input columns with zero weights and new output rows with zero weights and bias -20 (docs/decision-points.md:189-190; scripts/widen_dpnet.py:8-14; configs/rl-m2.json:3). Point 1 is never trained, so the comms block is invisible to BABY_MOVE and the primitives cannot depend on the state. I did not read v39's weights; this follows from how widening is documented.
+
+Missing for a policy that does anything other than copy zdb:
+- the direction or offset to any target (only Chebyshev distances), so the net cannot tell where a target lies relative to its facing or to the enemy;
+- enemy facing, hp and positions beyond the nearest enemy's dist2 (FLANK and the war standoff depend on these);
+- ally positions, and terrain (walls or dirt) around the rat;
+- cat facing and lane;
+- the current Nav, explore or raid target and its age, and the previous option;
+- the mask itself, so the net cannot tell which options can act;
+- flight tiles for throws, and bytecodes left.
+
+The absolute coordinates are not mirror-invariant. The packed canMove and avoid integers force the MLP to decode bits from a single scalar.
+-- missing_information: - I did not compute per-option allowed rates or a breakdown of fallbacks by role or coop. The masks in cpi-x0's p1.npz would give both with a short script on the VM.
+- Point 1's sensitivity run (plan section 16, item 2: zdph1 with floor 0.2 against v39, 64 games) has no results yet, so I cannot say whether point-1 deviations are costly or nearly free.
+- I did not read the point-1 weights of v39 or the m2 start net; they are not local. The zero comms columns and the bias -20 primitive rows are inferred from widen's documentation and the rl-m2 config. Only net-v2's point 1 (60-64-64-39) was checked.
+- The size of the logit shift from the untrained raider column was not measured.
+- The turns lost to Nav resets after a one-turn target switch were not measured.
+- I did not check whether fallbacks cluster by map or game phase.
+- I re-read only lines 16-30 of Micro.act in this pass.
+- The 2.075 scale between the devfb subsample and the full data assumes the 300k-row subsample is uniform.
+-- generalization_proposal: Diagnosis: options 0-38 are zdb's errands, each with zdb's target choice and thresholds built into its executor. From the zdb copy, the net can reach only a few kinds of alternative: another errand outside the context it was designed for (WAR at close range, DELIVER with 1 cheese, ATTACK for a gatherer), a duplicate (1/22/2/27, 24/29, 12/28), a fallback to zdb, or a one-step primitive move whose logit does not depend on the state. The alternatives a better player would want cannot be expressed at all: another mine, another king, intercepting an enemy carrier, holding a spot. This fits the 'every direction is downhill' landscape. I propose two stages.
+
+Stage 1: cleanup that any redesign needs. It also makes today's list trainable.
+(a) Make the mask equal the executor. Write side-effect-free can-act checks for:
+   - FLANK: an enemy baby within dist2 8 with an unseen, free, non-avoided adjacent tile;
+   - WAR: per branch;
+   - AIM_CARRY: a dry run of the step x target search;
+   - RETREAT: hp <= 40 and Chebyshev > 2;
+   - YIELD_KING, AMMO_AWAY, FORM_KING;
+   - ATTACK: rushTarget non-null, without its reset;
+   - SEEK and MINE_EXPLORE: draw the exploreHome sample before the mask from a separate RNG and cache it.
+   After that a fallback cannot happen, and the 0x8000 path and the fallback flag can be deleted.
+(b) Delete 0, 6, 9, 17 and 21. Merge 22 into 1, 29 into 24, 28 into 12, 2 and 27 into one GO_CAT, and 35 into P_HOLD.
+(c) Remove role from the executors. Split war() into WAR_KING (goTo the enemy king), ENGAGE (goTo the nearest enemy), STANDOFF (face the nearest enemy) and ALERT (goTo the alert location). Drop the role and raw gates in DELIVER and PRESS. Role stays a feature.
+(d) Move hidden bookkeeping out of the options and into netBook: the idle tick, refreshMine, stallTick and lastEKing. seek() and exploreHome() must not change state when they fail.
+(e) Features: unpack canMove and avoid into 16 bits; add side-frame (dx, dy) to cheese, mine, king, nearest enemy, enemy king, cat, alert, form site, cash site and the current Nav target; add the mask bits as inputs; and zero the first-layer columns of features that were constant in zdb data (raider).
+(f) Take the primitives out of BABY_MOVE (see the micro head below) or give them per-direction features. As they are now (zero weights, bias -20, no direction inputs), they only add floor noise.
+
+Stage 2: the generalization. Replace the errands with a target pointer plus a micro head.
+
+Target head. It opens on every movement-ready turn, as now. Candidates are typed concrete locations, taken from generators that already exist:
+- our kings (Comms.kings);
+- cheeseTarget plus up to 3 visible cheese tiles;
+- pickMine's ranked list (1473-1502), top 4;
+- pickRaid's enemy-half mines (1753-1768);
+- the enemy king, lastEKing, and up to 3 rush spots (1204-1220);
+- up to 3 visible enemy babies;
+- the alert location, formSite and cashSite;
+- the visible or known cat;
+- 1-2 explore samples from a separate RNG;
+- CONTINUE (the current Nav target) and HOLD.
+
+Each candidate gets features: a type one-hot, side-frame dx/dy, Chebyshev distance, is-current-target, crowding (allies within 4), enemy threat near it, and type-specific attributes (cheese amount, kingHeld, enemy hp, whether the enemy sees us, age of the information). Each type has a mode: approach (Nav.goTo), reach (stand in transfer or adjacent range, as deliver and approachCat do), wander, flee or face. The mask is simply 'the candidate exists', so every pick executes and there is no fallback.
+
+A cheap way to build it with today's pipeline: MINE_PICK already chooses among ranked candidates through fixed slots with per-slot features in a flat input (D.java:99-100, 822-852). The target head can use K slots in a fixed type order (K of about 24) without changing DNet or the record format. A shared per-candidate scorer would generalize across slots better, but it needs DNet and Python changes, so it can come later.
+
+Micro head. A new point that opens only in contact states: an enemy baby within dist2 8, carrying an enemy, or a cat lane within reach. Its options are 8 steps, 8 turns, hold and strafes. Each direction gets features: free, avoided, trap risk, seen by each nearby enemy, number of adjacent enemies, change in distance to the chosen target, and the throw-line value when carrying. zdb's FLANK, FACE, the war standoff, the move and turn part of AIM_CARRY (the throw stays an act), YIELD_KING, AMMO_AWAY, FLEE_CAT and the retreat step become labels here. The primitives that make the net capability-complete then live where their logits can depend on the state.
+
+Imitation. Instrument moveDecision so each branch reports the (type, location, mode) it acted on (the goTo, flee, face or wander argument) and the step it took. zdb's own exploreTarget, mineTarget, raidTarget and cheeseTarget are always inserted as candidates, so the label always exists. Exact zdb replay is given up. The check becomes the win rate of the new imitation start against zdb and against the field, with about 40% against the field as the competence bar.
+
+RL. Advantages are the team outcome minus a team-state baseline over 10-round bins (rl_train.py:25, 35-39). A single per-turn movement choice out of roughly 1,200 per team per game is almost invisible in that signal. Either re-open the target head only when the target is reached or invalid, on interrupt events, or every N turns, or rely on CONTINUE with is-current features so that a change of target is an explicit decision.
+
+Why this generalizes: targets zdb never picks become first-class choices; an option's meaning no longer depends on role or cascade order; every offered action executes; and every alternative is described by features, so learning about one candidate transfers to similar ones.
+-- proposal_cost: Stage 1: about 200-300 Java lines (can-act checks, the war split and the bookkeeping move in Baby.java; feature changes in D.java). Option-table changes in scripts/dp_points.py and decisions.py. New zdb imitation data and a train_dp run for point 1, then a 128-256-game check against zdb. About 1-2 days.
+
+Stage 2 with fixed slots: about 400-600 Java lines, split roughly as candidate generators and slot features ~200, executor modes ~80, the micro point (open, mask, executor, features) ~150, label instrumentation in moveDecision ~60 and commitment ~40. About 100 Python lines (new point registration and label decoding), plus the data collection, imitation and check runs. About 3-5 days. A shared per-candidate scorer would add about 300-400 Python lines (variable-length candidate records through rl_data, dpnet_io, train_dp, rl_train and build_dpnet) and about 60 Java lines in DNet.
+
+Risks:
+- Imitation fidelity of the target head: zdb's priority logic has to be recoverable from the candidate features. Measure per-type label accuracy before RL.
+- Input size: slots enlarge the input. Bytecodes are not limited now; tournament limits would need a separate budget pass.
+- Nav state: switching targets resets the bug and flow state (Nav.java:74-79), so CONTINUE or commitment is needed to avoid thrashing.
+- G.rand use changes, so there is no bit-exact zdb replay. The user has allowed this.
+-- coupling:
+   * Nav state is shared by every walking option. Nav.goTo resets bugging, bestDist and stall whenever the target changes (Nav.java:74-79), and Flow paths are requested per target (Nav.java:85, 92-97). A one-turn switch to another target throws away the bug walk and the progress counters of the errand it returns to.
+   * Give-up thresholds read Nav.stall. chaseCheese drops its target at stall > 12 (1117). goMine drops its mine at > 25 (1137-1140). raid re-picks at > 20 (1736). explore and exploreHome re-sample at > 20 (1785, 1814). wanderAround re-samples at > 6 (1773). The trap-risk avoid mask applies only while stall < 8 (118). P_STEP deliberately leaves stall unchanged (2451-2452).
+   * explore, exploreHome and wanderAround share exploreTarget (1773-1776, 1785-1799, 1814-1824). idleSeek, startSeek (1856, 1867) and roleExec (1900) reset it.
+   * Mine and seek state: mineTarget, minesAtPick and mineShift (1122-1141, 1493); the idle counter, which advances only when the mine block runs (1842-1847, 2473); and the seek window (1832-1834, 1850-1869). Options 31 and 32 change this state (1877, 1881, 2416).
+   * MINE_PICK (point 7) opens as BABY_MOVE's secondary point only inside pickMine (1494-1498). It is reached through refreshMine, shiftMine or a goMine re-pick, from options 33, 34, 36 and 37 or from the cascade.
+   * BABY_ROLE (point 5) feeds this point in four ways. role, scout and raider are features (D.java:247, 275-276). They enter the masks (2276, 2291-2292). They switch executor code (war 1249-1268, pressKing 1169-1171, netMineBlock 2473-2480, scouting 1807-1809). And roleExec resets errand state when the role changes (1899-1906).
+   * Effects on later points in the same turn. The why character becomes a BABY_ACT_POST feature (Baby.java:200; D.java:344). A turn spent at BABY_MOVE stops BABY_FACE from opening (228-229). Whether the rat moved gates the hard-coded drop and throw after the move (209-213). FLANK pays off only through the post-move carry (215 or the BABY_ACT_POST net). AIM_CARRY throws (633), CHEESE_PICK picks up (1108) and FORM_KING can promote to king (1543, 1554), all inside a move option.
+   * King-side inputs: formSite, from the king's comms, gates FORM_KING (1528-1532), and cashSite gates CASH. COURIER and SCOUT_HOME trips exist to carry mine news to a king (1046, 1065).
+   * Enemy-king memory: attack() and netBook write lastEKing, lastEKingRound and noKing for any role that takes ATTACK (1190-1218, 2213-2221). pressKing clears lastEKing (1174). These feed features 25-26 and PRESS's mask (2272).
+   * Nav.guard: flank sets it and restores it (1331-1334), and raid clears it for good (1742). Nav.step turns toward the guard while stepping (Nav.java:115-118), which changes strafing and later facing.
+   * The G.rand stream is consumed by explore (1794), exploreHome (1817), wanderAround (1774) and pickRaid (1763), so choosing these options shifts zdb's random draws elsewhere. Net sampling uses DNet's separate streams (DNet.java:84-103).
+   * Nav.avoid holds the cat lanes, plus the trap-risk mask outside coop and engagement (118; TrapRisk.java:55-71). It masks steps in Nav.free (Nav.java:66-69) and the primitive masks, but Nav.flee ignores it (Nav.java:237).
+
+-- cross_cutting:
+   * rl_train trains on fallback records and credits the chosen option, at every cascade-branch point (rl_train.py:525-542; the flag is set at D.java:158-162 and is only a diagnostic). Either make each mask equal to its executor's success condition, or drop or relabel fallback records in the policy loss.
+   * Widened options start with zero weights and bias -20, and widened input columns start at zero (docs/decision-points.md:189-190; configs/rl-m2.json:3). On a frozen point (1, and others not in the trainable lists) these options are pure floor noise with logits that ignore the state, and the comms features are invisible. On a trainable point they learn only from floor samples, about floor/m per decision.
+   * Features that were constant in zdb data, such as raider (D.java:275), keep their random first-layer weights (train_dp.py:120-121; unmasked cross-entropy at train_dp.py:132). States only the net creates, like an R_RAIDER role from point 5, then shift every point that reads them by untrained weights. Zero those columns at export.
+   * Advantages are the team's game outcome minus a team-state baseline over 10-round bins (rl_train.py:25, 35-39). Per-turn movement decisions (about 1,200 per team per game at point 1) are nearly unidentifiable from that signal. Movement needs coarser decisions in time (commit to a target, decide on events), or per-rat signals.
+   * Strategy hard-coded inside the BABY_MOVE executors that no decision point controls:
+- Nav digging spends cheese once bank plus raw is at least 60 (Nav.java:182-200; Cfg.java:178);
+- tryDig fires at stall >= 6 (Nav.java:203-210);
+- a Flow request is made after 4 stalled turns (Nav.java:92; Cfg.java:155);
+- bug-walk handedness (Nav.java:129-172);
+- the trap-risk avoid mask (Baby.java:118);
+- war's standoff rule (1268-1278);
+- flank's and aimCarry's scoring (1326, 625-627);
+- the give-up thresholds at stall 6, 12, 20 and 25;
+- deliver's hold within transfer reach (1147-1153).
+   * Hard-coded actions after the move when BABY_ACT_POST's net does not act (Baby.java:209-226): drop ally, throw, carry, bite enemies, bite the cat, layLane in coop, and tryDeliver.
+   * Research games run with bytecode limits off: getBytecodeLimit returns 1e9 (patches/local-research.patch:19), so Flow.left() is huge (Flow.java:45) and guards on it, such as aimCarry's 7000 check (585), never bind. By arithmetic estimate (not measured), point 1's 76-64-64-72 MLP alone is about 13.5k multiply-adds per call, which would not fit the 17,500-bytecode baby limit (RobotPlayer.java:33). Behaviour under tournament limits would therefore differ.
+   * Cascade-branch options assume they run where zdb ran them: after every earlier branch failed, and inside zdb's role and coop gates. Any point whose options are cascade branches has the same problem: when the net picks an option outside that region, the executor runs in states zdb never visited. The fix that carries over to every point is role-free options with exact masks and features that describe each alternative.
+   * MINE_PICK already shows a pattern the other movement-like points can reuse: choosing among ranked candidates through fixed slots with per-slot features (D.java:99-100, 822-852; Baby.java:1494-1498).
+==================== map-baby-act-face | Points 2 BABY_ACT_PRE, 3 BABY_ACT_POST and 4 BABY_FACE of zdp (java/bots/zdp/Baby.java, D.java), all
+
+## 2 BABY_ACT_PRE (39 options) kind: Mixed. Options 0-11 are zdb cascade branches: each executor picks its own target and applies zdb's gates (hold rule, cheese and budget floors, trap caps). Options 12-20 are engine primitives on the front tile. Options 21-38 are parameterised primitives (bite cheese amount, drop direction, transfer amount, disintegrate). Only 21-38 are masked by exact can* checks.
+-- fallback_explanation: cpi-x0 has 62,446 PRE fallbacks out of 650,788 records (9.60%). 56,361 of them are argmax picks.
+(1) 56,463 fallbacks (90.4%) are A_THROW picked while carrying nothing. actExec returns false when getCarrying() is null (Baby.java:1935-1936), but actOk offers options 0-20 unconditionally (2056-2057).
+Why the net picks THROW: input 32 is the team's rat-trap count (D.java:392). zdb never places rat traps. placeRatTrap appears only at Baby.java:712 (tryRatTrap, called only from actExec at 1959), Baby.java:1980 (X_RAT_TRAP_FWD) and DK.java:614 (the king's net-only A_TRAP_FOE/A_TRAP_FORT, DK.java:518-528; King.java:355). So the column is 0 in all 969,767 teacher-dp2 PRE records checked, and train_dp.py:120-121 gave it sd = 1 with first-layer weights that never received a gradient (|W1| column mean 0.066, against a median of 0.020 over all columns).
+In cpi-x0, 91.6% of PRE rows have nRatT > 0 (mean 10.45, max 25). The KING_ACT floor of 0.1 drives this: 51 A_TRAP_* picks per game, against 6.6 in rl-m2, plus the babies' X_RAT_TRAP_FWD floor picks.
+Among carry-free rows, the share with argmax THROW rises with nRatT: 0% at 0-4, 0.05% at 5-9, 1.3% at 10-14, 9.1% at 15-19, 26.8% at 20-24 and 75% at 25. These rows sit late in the game (median round 1452).
+Zeroing input 32 changes the argmax in 59,354 rows (58,978 go from THROW to PASS) and removes 56,082 of the 56,361 argmax-pick fallbacks. PRE fallback would drop to about 1%.
+(2) 3,151 fallbacks (5.0%) are THROW while carrying an enemy, refused by the hold rule (Baby.java:694). The net sees carry age (D.java:347) but not the flight score bs. Argmax picks fail 90.1% of the time at age < 6 and 0.1% at age >= 6.
+(3) About 2,830 fallbacks (4.5%) come from floor or low-probability picks of options 1 and 3-20. Each gets about floor/21 (about 150 picks) because none is masked by executability; CAT_TRAP has 327. Argmax CAT_TRAP fails 33.9% of the time, because its gates and geometry are hidden.
+rl-m2 it38 shows THROW at 1.4% of PRE picks with fb 0.83. That is consistent with the same mechanism at lower nRatT, but it is unverified because rl-m2's records are not on the box.
+-- context_dependence: A_PASS skips zdb's whole cascade and both promotions (Baby.java:174-185), so promotion needs an explicit CASH_KING or X_BECOME_KING. Those classes are rare: 117 and 374 imitation labels.
+THROW mixes throwing, turning toward the throw and refusing. Its outcome depends on carry age and on the flight score, which is not an input.
+NAP, BITE_KING, BITE_RAT, X_BITE_FWD and X_CARRY_FWD do not check hostile() (Baby.java:1940-1942, 1960-1967); zdb's cascade does (138-141). A floor-picked enemy bite or grab during coop backstabs. That ends cooperation for the rest of the game (InternalRobot.java:623-625, 643-651; GameWorld.java:425-431) and bans cat traps for the backstabber for 100 rounds (GameWorld.java:420-423).
+X_BECOME_KING promotes anywhere (1994-1997), while zdb promotes only on formSite (181-184). CASH_KING acts on last turn's cashSite, because cashTick runs later, at 158.
+LAY_LANE uses lane data gathered only in coop (Baby.java:69). The X_*_FWD options act on whatever tile last turn's BABY_FACE, or this turn's turns, left in front. Targets are chosen inside the executors (biteEnemies: king first, then lowest hp, 737-771; tryCarry: highest hp, 519-537), so the same id hits different robots and the net cannot choose the target.
+-- features: There are 53 base inputs (D.java:333-424). In order: phase, role, raw cheese, allCheese/10, coop, round/10, hp, hostile, move readiness, turn readiness, moved, why, carry code (346), carry age (347), canThrowRat (348), foes, friends, adjacent enemy counts (adjacent, attackable, grabbable, holding our rat), min hp, king adjacency, attackability and hp, cat presence, distance, adjacency and attackability, own-king distance, king-cat d2, team cat traps, team rat traps (392), BUDGET, lane count, give (400-407), cashSite flags, canBecomeRatKing, nearest enemy and its d2, hunting, facing, front robot code, front can-place and can-remove flags (420-424), team dirt, x, y, W, H.
+The pass-3 inputs 53-57 (D.java:426-445: front hp, drop mask, canAttack front, own-king tile d2, trapCode) and the comms block (446) exist only as zero-weight columns in the widened net (dpnet_io.py:246-247), so the frozen net ignores them.
+Inputs 0, 10 and 11 are constant at PRE by construction. Input 32 is constant 0 in imitation but live in RL.
+-- missing_information: Inputs the net would need to predict executability: THROW's best flight score, its direction and the count of free directions (tryThrow 667-692); the CAT_TRAP fan-tile geometry and its cheese and budget gates (843-871); per-target 'attackable without turning'; whether the robot is on formSite; whether cashSite is fresh; Econ.floor for RAT_TRAP.
+Data not available:
+- the labels of fallback records, i.e. what zdb did instead (cpi-x0 raw decision files were deleted after extraction, and the rl_data npz has no label column);
+- rl-m2 per-record data to confirm the nRatT mechanism behind its 1.4% THROW share;
+- the backstab round and who backstabbed in cpi-x0 (only 7.6% of PRE rows are coop; floor-picked bites or grabs may end coop early, which the trace might show).
+-- generalization_proposal: (1) Now: zero the first-layer weights of every input column that was constant in the imitation data. Do it at export (train_dp.py:120-121) and in widen (dpnet_io.py:215), and patch the current nets (column 32 of points 2 and 3). Audit all 16 points the same way. Measured on cpi-x0: argmax THROW drops from 61,248 to 1,999 rows, and PRE fallback from 9.6% to about 1%.
+(2) Exact masks for options 0-20. Split each zdb helper into a side-effect-free plan() and a do(): tryThrow, tryCarry, biteEnemies, tryBiteCat, tryCatTrap, layLane, tryDeliver, cashPromote, tryRatTrap, dropAlly. zdb's cascade calls plan() then do(), so zdb still replays bug-for-bug. actOk offers an option iff plan() finds an action. X_* options use the can* checks D.babyAct already computes (D.java:420-424, 435). Fallback is then zero by construction, and the floor explores only executable options.
+(3) Executors do the 'how'; the net decides the 'whether'. Remove the hold rule from the THROW executor, so holding becomes PASS, and add inputs for the best flight score, its direction and the free directions. Turn the CAT_TRAP, LAY_LANE and RAT_TRAP economy gates (TRAP_FLOOR, TRAP_SURPLUS, CAT_LAY_FLOOR, TRAP_CAP) into inputs. Mask enemy-rat bites and grabs while G.coop, or make backstab an explicit option. Make promotions explicit, with an on-formSite input, so that PASS means only 'no action'. zdb labels keep their meaning.
+(4) Capability generalization. Replace the front-only X_* options (12-19) and the parameterised 21-34 with verb x 8-direction options acting on me+d: bite, bite with cheese (2-3 levels), grab, throw toward d, drop to d, rat trap, cat trap, place dirt, remove dirt. The executor turns first if needed, and a turn alone counts as executed, like zdb's turnOnly. Add PASS, BECOME_KING and TRANSFER (all, half), about 76 options in total. Use exact masks and per-direction tile inputs (8 directions x about 8 values: occupant type, team, hp and whether it faces us; wall, dirt, trap; cheese; flight score). Map zdb labels to (verb, direction) by recording the helper's chosen target in D.act. PRE and POST keep sharing the layout, with input 0 as the phase. DNet stays a fixed-size MLP.
+-- proposal_cost: (1) About 20 lines of Python plus a one-off net patch. Under half a day, including a rebuild and the 16/16 replay check; frozen-point behaviour changes only in states with own rat traps.
+(2) About 200-300 lines in Baby.java (plan/do split, actOk), plus an exact zdb replay (the existing 24/24 harness) and an RL smoke test. 1-2 days.
+(3) About 60-100 Java lines and about 6 new D inputs, plus re-imitation of points 2 and 3 (a teacher run of a few hours on the box). 1-2 days.
+(4) About 400-600 Java lines (enumeration, inputs, executor, label mapping). D's input width grows by about 64; the Python training scripts change only in widths. Then re-imitation, replay parity, and about 2-5k extra bytecodes per turn (limits are off). 3-5 days.
+-- coupling:
+   * Action cooldown: any PRE action leaves isActionReady false. POST then does not open (Baby.java:200), and BABY_MOVE digging and aimCarry (583-635) cannot use the action.
+   * Turning: tryThrow (695), biteEnemies (760) and tryBiteCat (809) turn as a side effect. With TURNING_COOLDOWN 10 (GameConstants.java:252), BABY_FACE then stays closed for this turn (Baby.java:229).
+   * carryRound (Baby.java:516, 534, 1966; reset at 53) drives the THROW hold rule (694) and input 13 (D.java:347). BABY_MOVE's aimCarry throws too.
+   * cashSite and cashTick (BABY_COMMS, Baby.java:158, 1600-1652) drive CASH_KING. formSite and the KING_FORM formation (Baby.java:1528-1532) drive the zdb promotion that PASS skips (181-185).
+   * Team trap counts: the babies' X_RAT_TRAP_FWD (1978-1981) and the king's A_TRAP_* (DK.java:518-528, 602-616) feed input 32 of every baby's PRE and POST net. A floor on KING_ACT therefore moves PRE inputs out of distribution.
+   * X_DIRT_PLACE and X_DIRT_REMOVE write Sym.mem (1988, 1992), which tryThrow's blocked-tile test (667-690) and Nav both read.
+   * Backstab is global: a single enemy bite or grab flips G.coop, and with it hostile() (240-242) and the coop input, for every point of both teams.
+   * Deliveries and transfers change raw and stored cheese (economy inputs of all points) and 'delivered' (893, 2021).
+
+## 3 BABY_ACT_POST (39 options) kind: Same 39 options as point 2: cascade branches (0-11), front-tile primitives (12-20) and exactly-masked parameterised primitives (21-38). The front tile is the one ahead after the move.
+-- fallback_explanation: cpi-x0 has 2,887 POST fallbacks out of 635,878 records (0.45%). Only 9 are argmax picks: argmax DELIVER (7,040 rows) fails 0.1% of the time, and argmax NAP, BITE_RAT and BITE_CAT never fail.
+2,850 of the fallbacks are floor picks (net probability < 1e-3) of options 0-20. actOk offers these without checking executability (2056-2057). Each gets about floor/21 (about 150 picks) and fails 83-100% of the time, except the front-tile options 16 and 18, which fail 37-41%.
+So POST fallback is pure exploration waste: the record's k never ran, zdb's POST cascade ran instead, and the label differs.
+The untrained input 32 also sits in this net (|W1| 0.075, nonzero in 92% of POST rows). It causes no fallbacks, but zeroing it turns 1,283 rows (0.2%) from PASS to DELIVER argmax. Because PASS also skips tryDeliver (225), cpi-x0 has about 100 POST turns per game where the imitation net would deliver but holds its cheese.
+rl-m2 it38 shows the same pattern (DELIVER 3,132 picks, fb 0.027; THROW 79 picks, fb 0.949).
+-- context_dependence: The option ids are the same as at PRE, but POST runs after the move: the front tile, 'moved' and 'why' (D.java:343-344) refer to the post-move state, and hostile is still the PRE-time value (Baby.java:136).
+zdb's POST behaviour differs from its PRE behaviour: no cat-trap branch, layLane only in coop, a throw only if moved and within budget, and tryDeliver always last (209-226). The net's executors drop all of those gates.
+CASH_KING is masked except on the cash site (2056-2057).
+-- features: Same 53-input layout as PRE (D.java:327: 'shared layout; feature 0 is the phase'). Here the moved and why inputs (343-344) actually vary. Input 32 is untrained, as at PRE. Pass-3 inputs 53-73 have zero weights.
+-- missing_information: Same gaps as at PRE. In addition: whether a POST throw without moving, which only the net can do (zdb never does, 210), is ever useful. The fallback labels are not retained.
+-- generalization_proposal: Use the same head and steps as PRE. POST and PRE already share one layout, with input 0 as the phase.
+At POST the argmax is already faithful, so step (2), exact masks, removes about 99% of fallbacks, and step (1) restores the 1,283 suppressed DELIVER argmaxes.
+Under step (3), turn zdb's POST-only gates into inputs: moved already exists; add bytecodes left if limits are ever turned on; the coop flag already exists for lanes.
+Optionally merge PRE and POST into one 'action slot' point that opens whenever the action is ready, before and after the move. The two nets would then share data: POST has most of the DELIVER labels (281k), PRE most of the THROW labels.
+-- proposal_cost: Mostly shared with PRE. The POST-specific part is under 50 Java lines, plus re-imitating point 3 together with point 2. Merging PRE and POST into one point is a D point-id and train_dp configuration change of about half a day. It breaks the 16/16 replay identity for points 2 and 3 until they are re-imitated.
+-- coupling:
+   * Runs after BABY_MOVE (187-195). If digging or aimCarry (583-635) already used the action, POST does not open (200).
+   * BABY_FREE (point 8, Baby.java:199) runs first; a pickup or own-trap removal there uses the action and closes POST.
+   * Turns made by POST bites or throws close BABY_FACE for this turn (229).
+   * DELIVER feeds allCheese, BUDGET and give for every point, and the 'delivered' count (893) that BABY_ROLE uses.
+   * LAY_LANE and CAT_TRAP draw on the same 10 cat traps (TrapType.java:17) as PRE's CAT_TRAP and the king's A_CAT_TRAP (DK.java:562).
+   * The same backstab and trap-count couplings as at PRE.
+
+## 4 BABY_FACE (13 options) kind: Mixed. Options 0-4 are guardTurn's target selectors (none, seen enemy baby, remembered enemy baby, heard enemy (dead), Nav.guard), each resolved to a direction at run time. Options 5-12 are absolute-direction turn primitives.
+-- fallback_explanation: cpi-x0 has 384 FACE fallbacks out of 349,251 records (0.11%). All of them are floor picks with net probability < 1e-3; no argmax pick ever fell back.
+faceOk masks only F_HEARD (Baby.java:2084), so F_SEEN, F_MEMORY and F_GUARD are offered even when their target is null. Their floor picks (about 146, 124 and 126) fail 99%, 96% and 95% of the time (145 + 119 + 120 fallbacks).
+When the argmax is a selector, its target always exists, because the inputs carry each target's direction (D.java:477-492).
+F_DIR picks never fail: the point opens only when turning is ready (229), and faceExec returns true once the robot faces the direction (2117-2120).
+rl-m2 it38 shows the same floor effect.
+-- context_dependence: F_SEEN, F_MEMORY and F_GUARD are relative: one id turns different ways in different states, and does nothing without a target. F_DIR is absolute.
+zdb's guardTurn does nothing in coop, while carrying, or when not turning-ready (Baby.java:247), and the label then stays F_NONE. The net's executors have no coop or carry check (2104-2121), so F_SEEN or F_MEMORY can turn the robot in coop or while carrying. F_GUARD cannot, because Nav.guard is null then (113-115).
+The facing chosen here takes effect next turn, in four ways:
+- It sets the 90-degree vision cone (BABY_RAT, r2 20: engine UnitType.java:5) that all points sense through.
+- It decides grab exposure: an enemy can grab a rat that cannot sense it, or one weaker by HEALTH_GRAB_THRESHOLD (RobotControllerImpl.java:1521-1536).
+- It fixes the 'front' tile for the X_*_FWD options, canThrowRat and the front inputs (D.java:415-424).
+- It sets the strafe cost of the next move (MOVE_STRAFE_COOLDOWN 18, GameConstants.java:100).
+FACE opens only if the action points did not already turn, so it is a residual turn.
+-- features: 32 inputs (D.java:462-505; the '(34)' in the comment at D.java:456 is stale). In order: role, round/10, hp, raw cheese, move and action readiness, moved, facing; direction+1 and d2 of the nearest seen enemy baby (477-478); direction+1 and d2 of the remembered threat (486-487); three always-zero 'heard' inputs (489-491), constant in imitation and in RL, hence inert; Nav.guard direction+1 (492); enemy counts in 8 directions (494-495); cat direction+1 (496); x, y, W, H; coop, carry code, guard != null (502-505).
+-- missing_information: Inputs a policy beyond guardTurn would need:
+- whether each nearby enemy faces us (grab threat in both directions);
+- the direction of the next move target (Nav.target) and the planned move, for the strafe cost;
+- per-direction unexplored tiles, cheese and mines (what the cone would reveal);
+- the own king's direction and the cat's heading;
+- whether next turn's PRE wants a particular front tile (a throw lane or a trap tile).
+Not measured: how closely the FACE net agrees with zdb in RL states (e.g. how often its argmax is F_NONE where guardTurn would turn).
+-- generalization_proposal: Interim: make faceOk per-turn and mask F_SEEN, F_MEMORY and F_GUARD when their target is null. That is about 5 lines and removes all 384 fallbacks without retraining.
+Full: make FACE a pure direction choice. The options become 'keep' plus 8 directions (or 7 relative rotations), all executable whenever the point opens, so fallback is 0 by construction. The selectors' information stays as inputs, where it already is (seen, memory and guard directions).
+The imitation label becomes the direction guardTurn turned to (me.directionTo(t)), or 'keep' when it did not turn; D.face (D.java:200) would record the direction.
+Add inputs for each of the 8 cones: enemy babies (count, nearest d2, whether it faces us), cat, unexplored tiles from Sym.mem, cheese, the own king, and the next move direction. RL can then learn scouting and defensive facing beyond guardTurn.
+-- proposal_cost: Interim mask: about 5-10 Java lines and no retraining; it only stops floor picks of target-less selectors. Direction head: about 60-120 Java lines (label remap, per-direction inputs), 40-60 more inputs, re-imitation of point 4 and a replay parity check, about 1 day. About 1-3k bytecodes per turn for the per-direction scans.
+-- coupling:
+   * It opens only if the turn is still unused. Turns made by tryThrow (695), biteEnemies (760), tryBiteCat (809), or the actExec turn-only successes (1938, 1948, 2079) keep it closed (229).
+   * Nav.guard (Baby.java:113-115) is shared with Nav movement. memoryThreat reads the start-of-turn 'seen' list.
+   * G.facing (2119, 2129) caches the facing for the next turn's movement and action code.
+   * The facing chosen here sets next turn's PRE front tile, both for the inputs (D.java:415-424) and for the X_* executors (Baby.java:1960-1993), and next turn's grab exposure.
+
+-- cross_cutting:
+   * Untrained input columns are a general hazard. train_dp.py:120-121 gives a constant input sd = 1, and because the input is always 0 its first-layer weights never receive a gradient. When RL, floors or other points later make that input vary, the frozen net gets an uncalibrated push. Here the input is 32 (team rat traps) at PRE and POST. zdb never places rat traps (placeRatTrap appears only at Baby.java:712, Baby.java:1980 and DK.java:614, all net-only paths). In cpi-x0 this input causes 90% of PRE fallbacks (THROW with nothing carried) and about 100 suppressed POST deliveries per game. Every point should be audited against its imitation data; constq.py does this for points 2-4. Fix by zeroing such columns at export and in widen (dpnet_io.py:215), or by clamping inputs to the imitation range.
+   * Mask and executor disagree. For options 0-20 of points 2 and 3, actOk (Baby.java:2056-2057) offers every option whether or not its executor can act, and faceOk (2083-2084) does the same for FACE. Exactly-masked options (pass-3 21-38, F_DIR) never fall back. The floor of 0.005 is spread evenly over the offered options, about 150 picks per option per 650k records. rl_train.py uses the fallback flag only for diagnostics (rl_train.py:536-541), so the policy gradient credits a k that never ran. That is harmless while points 2-4 are frozen, but configs/cpi-x0.json lists phase_b_unlocks [[2,3,4],[6],[1]]. Before unlocking them, add exact masks, or relabel or drop fallback records.
+   * Executors embed zdb's 'whether' logic: the THROW hold rule, cheese and budget floors, trap caps, coop-only lanes. The net decides 'whether' without seeing those inputs. The result is systematic fallback (THROW at carry age < 6 falls back 90% of the time), and RL cannot learn to override zdb's gates. Principle for the refactor: executors do the deterministic 'how' (target and geometry), gates become inputs, and the label stays zdb's decision.
+   * Points are coupled through their inputs. Exploration on one point shifts the state distribution that every other point sees. In cpi-x0 the KING_ACT floor of 0.1 gave 51 A_TRAP_FOE/A_TRAP_FORT picks per game, against 6.6 in rl-m2; with the babies' X_RAT_TRAP_FWD floor picks, 91.6% of PRE rows had own rat traps, against 0% in imitation. Floors and unlock schedules should be judged by what they do to the frozen points' inputs. Backstab is the same kind of risk: actExec bites and grabs have no hostile() check, so a floor pick during coop flips coop for both teams for the rest of the game (InternalRobot.java:623-625, 643-651).
+   * A_PASS bundles 'no action' with 'skip the rest of zdb's logic'. That logic includes the promotions at PRE (Baby.java:174-185) and tryDeliver, layLane and the bites at POST (209-226). Once masks are exact and promotions are explicit options, PASS should mean only 'no action'.
+   * Data retention. cpi-x0's raw decision files were deleted after rl_data extraction (games/j*/ keeps only result.json and trace.tsv), and the npz has no label column, so what zdb did on fallback rows cannot be recovered. decisions.read_rl already returns 'label' (decisions.py:97-150); adding it to rl_data's output would make fallback analysis direct. rl-m2's per-record data is also not on the box, so the nRatT explanation of its 1.4% THROW rate is inferred, not measured.
