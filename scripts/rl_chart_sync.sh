@@ -6,7 +6,7 @@
 # committed and pushed to the current branch. Run on the driver:
 #   setsid nohup scripts/rl_chart_sync.sh rl-s1 > runs/rl_chart_sync.log 2>&1 < /dev/null &
 # Env: GATE_MODE (the charted gate series, default anchor-zdpg39), GATE_LABEL, ANCHOR_LABEL (the plain anchor gate's
-# opponent in the status line, default "the start"), EVERY (poll seconds, default 120). Exits when runs/rl/RUN/STOP
+# opponent in the status line, default "the start"), TITLE (the chart's title), EVERY (poll seconds, default 120). Exits when runs/rl/RUN/STOP
 # exists on the box (after a last refresh).
 export TZ='PDT+7'
 cd "$(dirname "$0")/.." || exit 1
@@ -15,6 +15,7 @@ BOX=(ssh -i ~/.ssh/wsl_box -o ConnectTimeout=20 -o BatchMode=yes terry@100.93.26
 BR=rltest/bc26a0
 GATE_MODE=${GATE_MODE:-anchor-zdpg39} GATE_LABEL=${GATE_LABEL:-vs zdpg39 = rl-m2 v39 (32-game gate)}
 ANCHOR_LABEL=${ANCHOR_LABEL:-the start} EVERY=${EVERY:-120}
+TITLE=${TITLE:-$RUN: learner vs its start net and vs rl-m2 v39}
 SVG=docs/img/$RUN-score.svg
 TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
@@ -27,7 +28,7 @@ refresh() {
   touch $TMP/p/gates.jsonl
   python3 scripts/plot_rl_vs.py $TMP/p/progress.jsonl --opp v0 --pool-label "vs the start net v0 (pool games)" \
     --gates $TMP/p/gates.jsonl --gate-mode "$GATE_MODE" --gate-label "$GATE_LABEL" --out $SVG \
-    --title "$RUN: learner vs its start net and vs rl-m2 v39" > /dev/null || return 1
+    --title "$TITLE" > /dev/null || return 1
   python3 - $TMP/p "$GATE_MODE" "$ANCHOR_LABEL" <<'EOF' || return 1
 import json, re, sys, time
 from pathlib import Path
