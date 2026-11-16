@@ -804,6 +804,13 @@ before the game:
 - *Within 0.05 of gall:* the distillation kept gall's play. Whichever of the two is higher sets ε for the start.
 - *0.08 or more below gall:* the fit costs strength. KING_MOVE fits worst, so the next try is ε 0.1 there (or a wider net).
 
+**gall: 26/64 = 0.41 (t −1.53)** against zdpg39 (v39z with grouped floor 0.2 at all 7 trainable points). That is the
+*in between* reading: whole-net exploration at 0.2 costs about 0.17 against zfree's 0.58, more than the per-point
+tests (0.48-0.59) suggested, so the per-point costs partly compound. Per the reading, ε 0.1 comes next: v39zs10
+(`smooth_start.py`, ε 0.1 at the same points; package zdpy3) is built. Its test (sm10, same maps and seed) waits until
+the per-turn line is next on the box: the plan heads (section 21) go first, because committed decisions are this
+reading's other branch and they have a known answer to check learning against.
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
