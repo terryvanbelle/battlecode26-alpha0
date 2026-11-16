@@ -391,3 +391,22 @@ TV 0.016–0.027): zdpt02p 64/128 against zdpt02m (0.500, t 0.00). Step 0 discar
 judges and the guard (512 games), the fitted direction is consistent with no effect: the α = 1 judge's t 2.10 did
 not hold up against the start net (0.477) or at smaller steps. This agrees with the corrected fit (no point with
 t_fold_mean ≥ 2). Next, as set in sections 11–12: low-rank ES ([configs/es-lr0.json](../configs/es-lr0.json)).
+
+## 13. es-lr0 futility check after 6 updates (November 15, 2026)
+
+es-lr0 (low-rank ES, 651 coordinates: 161 biases, 483 low-rank, 7 log-temperatures; σ calibrated on the cpi-x0
+records, median 12.8 for biases and 15 for low-rank coordinates, times 0.2) started at 19:08 PDT. Per iteration
+(|t| > 2 share; split-half cosine): 0.044, −0.04; 0.042, −0.003; 0.066, +0.07; 0.055, +0.03; 0.048, −0.02;
+0.054, −0.007. Gate against zdpf005 at v3: 16/32 (v0 17/32). Pool games against the start net, iterations 0–4:
+65/160.
+
+**Pooled over iterations 0–5** (`es_propose.py`, 192 directions): |t| > 2 share 0.049 (chance 0.046), max |t|
+2.87, split-half cosine **+0.103**. The pre-set stop needs a cosine of at most 0.1 and a share of at most 0.07,
+so the run continues; the judge needs a cosine above 0.2. Two independent noise vectors over 651 coordinates have a
+cosine sd of about 1/√651 ≈ 0.04, so +0.10 is about 2.6 sd: perhaps a weak gradient spread over many coordinates,
+too weak for any single coordinate's t.
+
+Second checkpoint, set now (21:40 PDT) because section 11 set only one: after 12 updates (iterations 0–11, 384
+directions), the same pooled check. Cosine above 0.2: judge the pooled proposal (`es_propose.py --build zdplj`,
+section 11's judge and guard). Cosine at most 0.1: stop. In between: one last check after 18 updates, then stop
+unless the cosine is above 0.2.
