@@ -418,3 +418,21 @@ gradient spread over many coordinates would: no single coordinate stands out, bu
 gets less noisy. It is about 4 sd from zero under no signal. Meanwhile the centre drifts down: gates against zdpf005
 v3 16/32, v6 13/32, v9 10/32 (v0 17/32). The step rule moves coordinates that cross |t| > 2 by chance. That does not
 touch the pooled proposal, which `es_propose.py` builds from the start net (θ = 0).
+
+**After 18 updates (03:23 PDT November 16; iterations 0–17, 576 directions):** |t| > 2 share 0.068, max |t| 3.89,
+split-half cosine **+0.311**, above the 0.2 bar, so the pooled proposal goes to the judge. The cosine rose with the
+direction count (0.10, 0.17, 0.31), as a real gradient spread thin would. es-lr0 is stopped (STOP after iteration
+17; its drifting centre has no further use, and the box is needed for the judge).
+
+Proposal (`es_propose.py --iters 0-17 --build zdplj`, from the start net θ = 0, η 106.6 for mean TV 0.1 on the
+cpi-x0 records): packages zdpljp (θ + ηΔ) and zdpljm (θ − ηΔ). The largest-t coordinates are 13:logT (step −1.21,
+t −3.89), 10:b16, 11:c7.1, 13:c0.1, 13:b8 and 13:c19.2. The two sides are far from symmetric. Plus moves TV 0.03–0.30
+per point; minus raises point 13's temperature e^1.21 ≈ 3.4-fold, so its KING_FORM policy flips 90% of decisions. The
+antithetic judge will therefore mostly measure how bad the minus side is, and the guard (plus against the start net)
+is the test that matters.
+
+Judge, set now as in section 11 with n = 1: zdpljp against zdpljm on row 1 of the judge maps (28 maps on the box, 4 on
+the VM), seeds 3800101 and 3800102, both seats, 128 games. Then: t > 2, guard zdpljp against zdpg39 on the same
+maps with seeds 3800103 and 3800104 (accept if at least 0.5); 1 < t ≤ 2, 128 more games (seeds 3800105 and 3800106);
+otherwise halve α (0.5, then 0.25) and then discard. Because the judge is weak evidence here, the guard runs even
+if the judge passes, which section 11 already requires.
