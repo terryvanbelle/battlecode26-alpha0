@@ -203,7 +203,8 @@ public final class D {
     static int pick(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F, n);
         if (z == null) return -1;
-        int k = DNet.sample(z, fit(ok, z.length, DNet.reach(p)), NET_T, DNet.floor(p), alt(p));
+        boolean[] m = fit(ok, z.length, DNet.reach(p));
+        int k = DNet.sample(z, m, NET_T, DNet.floor(p), alt(p), DNet.floorWeights(p, m, z.length));
         if (RL) take(false);
         return k;
     }
@@ -212,7 +213,8 @@ public final class D {
     static int pick2(int p, boolean[] ok) {
         float[] z = DNet.logits(p, F2, n2);
         if (z == null) return -1;
-        int k = DNet.sample(z, fit(ok, z.length, DNet.reach(p)), NET_T, DNet.floor(p), alt(p));
+        boolean[] m = fit(ok, z.length, DNet.reach(p));
+        int k = DNet.sample(z, m, NET_T, DNet.floor(p), alt(p), DNet.floorWeights(p, m, z.length));
         if (RL) take(true);
         return k;
     }

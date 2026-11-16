@@ -1,0 +1,137 @@
+{
+ "claims_checked": 92,
+ "confirmed": 71,
+ "corrections": [
+  {
+   "claim": "BABY_ACT_PRE A_THROW 'runs tryThrow and fails under THROW_HOLD (Baby.java:1934-1938, 694), giving fallback 0.97'. Recommendation: make A_THROW return true when it holds.",
+   "verdict": "wrong",
+   "correction": "About 92% of A_THROW picks are made by rats carrying nothing, and the executor returns false before tryThrow is ever called. The hold rule explains only about 5% of the fallbacks. The cause is an input the imitation net never saw vary. ACT_PRE input 32 is the team's rat-trap count. It was always 0 in zdb's data because zdb never lays rat traps on its own, but in cpi-x0 it is nonzero in 91.6% of rows (mean 10.45). Trainable KING_ACT trap options produce those traps. Zeroing that input removes almost all the THROW argmaxes. The proposed 'return true when holding' fix would leave about 95% of the fallbacks in place. Also, actOk allows A_THROW even when the rat carries nothing.",
+   "evidence": "Baby.java:1934-1936 (`if (c == null || c.team == G.us) return false;`, before tryThrow); Baby.java:694 (hold rule); Baby.java:2056-2057 (options 0..20 always allowed); D.java:392 (input 32 = cap(rc.getNumberRatTraps(),31)). Scratchpad decomp.out: 56,463 THROW picks with carry=0 all fall back; carry=2 4,929 picks (3,151 fallbacks); argmax THROW with carry=2 and age<6 falls back 0.90. constq.out: input 32 nonzero in 0.916 of cpi-x0 rows (mean 10.45, max 25); with input 32 set to 0, argmax THROW goes from 61,248 to 1,999 rows; 56,082 of the 56,361 argmax fallbacks are rows whose argmax changes. teachq.out: rat-trap count is 0 in every imitation row. kpts: KING_ACT A_TRAP_FORT executes 10.7 times per team-game. docs/rl-es-plan.md:579-580."
+  },
+  {
+   "claim": "Fallback rows 'corrupt credit assignment': rl_train credits zdb's behaviour to the sampled option. Minimum fix: drop or down-weight flag-bit-0 rows in rl_train.",
+   "verdict": "wrong",
+   "correction": "Given the state and the sampled option k, the fallback is a fixed part of what the environment does in response to k. So the policy-gradient term grad log pi(k|s) * A(s,k) stays unbiased: it correctly scores 'choose k here, then zdb's fallback runs'. Dropping or down-weighting those rows conditions the update on the executor succeeding, and that biases it: options that usually fail stop getting signal, and the PPO ratios no longer describe the distribution that was actually sampled. The real costs are aliasing and wasted exploration. Several options produce the same behaviour, and most deviations are spent on options that can't act (fallback given a deviation: 0.79 at KING_ACT, 0.58 at KING_MOVE). Exact applicability masks, or merging options that behave identically, fix that. Removing rows does not.",
+   "evidence": "scripts/rl_train.py:20, 525-541 (the sampled k and its probability are kept; flag bit 0 is a diagnostic only); D.java:158-162; devfb-cpi-x0.json fb_given_dev: point 12 0.7914, point 10 0.5784."
+  },
+  {
+   "claim": "When a KING_ACT option fails, 'zdb's code for that phase runs', which corrupts the credit for options 1-4 and 7-10 (fallback 0.83-1.00).",
+   "verdict": "partly wrong",
+   "correction": "For KING_ACT the fallback is effectively a no-op. zdb's bite runs only at war, and only acts when an enemy is within reach, which is true in 0.3% of KING_ACT records. A failed option is then labelled A_NONE. zdb itself never labels options 3-10; its only labels are bite()'s A_BITE_KILL and A_BITE. So these deviations do nothing at all rather than run zdb behaviour. The bite options (1, 2, 7, 8) fail because no enemy is in reach (90.8-98.7% of their picks).",
+   "evidence": "King.java:57 (`if (!G.coop && !(D.NET && DK.hold)) bite(enemies)`); King.java:190-198 (bite returns when weakest() finds nothing; labels at 196-197 only); King.java:70 (an unlabelled record becomes A_NONE); King.java:228-239 (biteCat is net-only, called only from DK.java:517). kpts-cpi-x0.out: reach>0 in 0.3% of KING_ACT records; option 1 falls back 100% (reach==0 in 98.5%), 2 90.8%, 7 98.7%, 8 100%."
+  },
+  {
+   "claim": "'closer() and step() refuse steps that split the ring (King.java:582-618, 653-663), which is why K_CLOSER falls back 0.77'; K_WALK_HOME falls back 0.77 for the same reason.",
+   "verdict": "unsupported",
+   "correction": "The ring-split test is only one of several ways these executors fail, and it is relative: unplugged() refuses only a step that splits the ring more than the current tile. Both executors also fail whenever the king is already within Chebyshev distance 1 of home (K_AT_HOME is 27% of states), and closer() fails whenever no movable fan step is strictly closer, which happens to a 3x3 king crowded by babies. K_CLOSER's 50,595 picks are about 28 times the floor-level count of an option zdb never labels (K_WALK_HOME 1,823), so most of its fallbacks come from the net's own picks (argmax or high probability) in states where zdb would not step closer. zdb's dig, sidestep or stuck branch then runs. K_WALK_HOME is never labelled by zdb and is picked only at floor level.",
+   "evidence": "DK.java:401-411 (`G.cheb(c, h) > 1 && King.closer(...)` / `King.step(...)`); King.java:582-586 (`a <= 1 || a <= arcsHere(c)`); King.java:608-617 (canMove and strictly-closer tests); King.java:378-400 (no K_WALK_HOME label anywhere; grep finds no `D.lab = DK.K_WALK_HOME`). cpi-x0-summary point 10: K_CLOSER 50,595 picks with fallback 0.7708; K_WALK_HOME 1,823 with 0.7702; K_AT_HOME 27.34%."
+  },
+  {
+   "claim": "57.8% of KING_MOVE picks are stay-type (K_AT_HOME 27.3%, K_STUCK 20.0%, K_DIG_POOR 10.5%).",
+   "verdict": "wrong",
+   "correction": "The report lists eight identical stay options but counts only three of them. With all eight, stays are 448,606 of 602,744 picks (74.4%), and every one of them executes. On top of that, K_FORM_STILL is a stay whenever a site is open, and most fallback rows end in a zdb stay label as well.",
+   "evidence": "DK.java:418-420 (eight stay options return true); cpi-x0-summary point 10 option_hist: 6 K_THREAT_HOLD 31,828; 10 K_NO_HOME 39,686; 11 164,815; 14 K_DIG_WAIT 24,736; 15 63,233; 17 120,281; 18 2,169; 20 1,858; fallback 0.0 for all of them."
+  },
+  {
+   "claim": "zdb's king move cascade includes 'King.java:427-457: dodge with KING_DODGE_R2 25'. The cat-response item lists King.java:405-457 (king flee and dodge) as zdb behaviour.",
+   "verdict": "wrong",
+   "correction": "zdb's King.move() never calls dodge. Dodge runs only through the net's K_DODGE option, which zdb never labels, so the start net picks it only at floor level (1,799 picks, fallback 0.99, because it needs a cat within distance-squared 25). K_FORM_STILL and K_STAY are also never labelled by zdb. These are code paths the net could not have learned from imitation.",
+   "evidence": "King.java:378-400 (cascade: flee, threat hold, unplug, pile, home walk or dig, with no dodge); the only caller of King.dodge is DK.java:383; King.java:430-431; cpi-x0-summary point 10: option 0 has 1,799 picks with fallback 0.9917."
+  },
+  {
+   "claim": "Fight internals: pressKing (Baby.java:1165-1186, PRESS_GATHER_D2 vs PRESS_D2), ammoAway (1384) and related helpers are zdb's positioning inside the fight macros. Only Micro is called out as reached only through M_MICRO.",
+   "verdict": "partly wrong",
+   "correction": "pressKing, yieldKing and ammoAway, like Micro.act, are called only from the net's BABY_MOVE executors. zdb's moveDecision never reaches them, and zdb never labels M_PRESS, M_YIELD_KING, M_AMMO_AWAY, M_MICRO or M_MINE_STILL. Their behaviour, including the GATHER-specific PRESS_GATHER_D2 radius, never appeared in imitation data. These options are therefore floor-only, untested behaviours, not zdb internals that the net is merely choosing between.",
+   "evidence": "Callers: Baby.java:2323 (yieldKing), 2332 (ammoAway), 2354 (pressKing), 2357 (Micro.act); none in moveDecision Baby.java:1002-1101; grep finds no `D.lab = D.M_PRESS`, `M_YIELD_KING`, `M_AMMO_AWAY`, `M_MICRO` or `M_MINE_STILL` in Baby.java."
+  },
+  {
+   "claim": "'The imitation start is saturated ... deviations therefore come almost entirely from the floors.' Also: 'Many floor-sampled deviations therefore change nothing yet are still credited.'",
+   "verdict": "partly wrong",
+   "correction": "At KING_MOVE the start net is far from saturated: p_top_mean 0.916, saturated share 0.35. Its deviation rate is 0.173, against about 0.097 that the floor alone would produce, so roughly 44% of KING_MOVE deviations come from the net's own logits. Fallbacks also happen when the net picks its own argmax: about 43% of KING_MOVE fallbacks (fallback rate on argmax picks 0.0905), and 90% of ACT_PRE fallbacks (56,361 of 62,446, the A_THROW case). So fallback is not mainly a floor phenomenon.",
+   "evidence": "devfb-cpi-x0.json point 10: p_top_mean 0.9157, dev_rate 0.1727, fb_given_top 0.0905, fb_given_dev 0.5784; cpi-x0-summary point 10 saturated 0.346; decomp.out point 2: 'argmax picks fb 56361' of 62,446."
+  },
+  {
+   "claim": "KING_FORM: 'Stay fixed on the king side: KING_FORM's start options already open a site whenever none is open and slots remain (DK.java:636-639).'",
+   "verdict": "partly wrong",
+   "correction": "The mask does allow the open options, but the next turn the start net undoes nearly every net-made opening. F_WAR_OFF, F_CAP_OFF and F_CAP_GAP stay allowed while a site is open and always close it. Together they are the net's argmax in 62% of states (F_CAP_OFF 43.1%, F_WAR_OFF 19.1%). In cpi-x0, 12,401 sites were opened by the net (24.2 per team-game). A net-opened site stays open for a median of 1 KING_FORM record (p90 4), and the king count rose within 80 turns after only 1,285 of them (10.4%). As it stands, the start options are not a working lever.",
+   "evidence": "DK.java:634 (all options allowed), 635-638 (options 0-2 never masked), 646 (`case F_WAR_OFF: case F_CAP_OFF: case F_CAP_GAP: return formClose();`); kpts-cpi-x0.out P13."
+  },
+  {
+   "claim": "BREAK_ROUND: 'RL has no lever on when cooperation ends'; a failed ACT option runs zdb's block, which bites from round 30.",
+   "verdict": "partly wrong",
+   "correction": "RL can move the break earlier, but never later than round 30. hostile() is true for any ATTACK-role rat in any round, and trainable BABY_ROLE can assign R_ATTACK at birth or at any review. Rat traps placed by the trainable KING_ACT end cooperation when an enemy triggers them. Separately, in net mode zdb's pre-move bite block runs only on an ACT fallback, because A_PASS counts as acted. Baby.java:141 and 218-221 ('attackers bite only the enemy king' in cooperation) are dead code, because hostile() is already true for attackers.",
+   "evidence": "Baby.java:240-241 (`!G.coop || role == ATTACK || G.round >= Cfg.BREAK_ROUND`); Baby.java:1915 (R_ATTACK in roleSet); configs/rl-m2.json:26-34 (point 5 trainable); docs/rl-es-plan.md:542; Baby.java:1923 (A_PASS returns true), 130-145; Cfg.java:148."
+  },
+  {
+   "claim": "BABY_ROLE review cadence: 'Cfg.java:260-262 (10 for recording; RL configs use 50)', 'at most once per 50 rounds in RL'. Recommendation: review every 10 rounds in RL too. Review also happens 'after a role change' (Baby.java:86).",
+   "verdict": "wrong",
+   "correction": "RL builds use DP_ROLE_EVERY = 10. The '50' appears only in a stale comment in Cfg.java. rl_loop builds the bot without --cfg, and --cfg is the only way to override a Cfg constant. So 'review every 10 rounds in RL too' is already how it works. The 'role != roleAt0' trigger is dead: role is never assigned between line 50 and line 86, so reviews happen only every 10 rounds of life. Frequent reviews combined with the poisoned input 27 drive the measured GATHER<->FIGHT flip-flop, so adding reviews or event triggers would make that worse until the input is fixed.",
+   "evidence": "Cfg.java:262 (`DP_ROLE_EVERY = 10`); Cfg.java:260-261 (comment); scripts/rl_loop.sh:60 (build_dpnet.py ... --rl, with no --cfg); scripts/build_dpnet.py:73, 103-107; Baby.java:50, 86; role is assigned only at Baby.java:323-325 (born) and 1911-1915 (roleSet); docs/rl-es-plan.md:580-583 (input 27 causes 86% of the flip-flops)."
+  },
+  {
+   "claim": "Roles at birth: 'the first 6 babies gather; later ones alternate gatherer and cat-fighter by round parity' (GATHER_FIRST 6).",
+   "verdict": "partly wrong",
+   "correction": "idx = (cost-10)/10*4 is always a multiple of 4, built from the team's live baby count. After round 300 the first 8 babies gather (idx 0 or 4), and from idx 8 on they alternate. Before round 300, live counts 0-3 gather, 4-15 are attackers, and 16+ alternate.",
+   "evidence": "Baby.java:322-325; Cfg.java:123, 132, 145; engine getCurrentRatCost = 10 + 10*floor(numBabyRats/4) (RobotControllerImpl.java:965-968 in the scratchpad engine source)."
+  },
+  {
+   "claim": "Spawning: a core of 18 babies; 'Babies are capped at 18 (40 with 1000 banked, 80 with 3000; King.java:267-271)'.",
+   "verdict": "partly wrong",
+   "correction": "spawn() estimates the baby count as floor(n/4)*4 from the rat cost, so 'babies >= 18' first holds at 20 live babies. The effective core and cap are therefore 20, not 18. The 40, 80 and small-map 12 values are exact because they are multiples of 4. The count is team-wide, so every king applies the same cap to the team total.",
+   "evidence": "King.java:291 (`babies = (cost - 10) / 10 * 4`), 305 (boot), 316 (S_CAP); Cfg.java:5, 7, 11, 180, 188; engine cost formula as above."
+  },
+  {
+   "claim": "'The 18-baby cap is the main economic ceiling, and only net builds can lift it.'",
+   "verdict": "partly wrong",
+   "correction": "zdb's cheese floor stops spawning more often than the cap does. Over KING_SPAWN records, zdb's own state is S_FLOOR in 48.8%, S_CAP in 26.1%, no surplus in 21.3% and spawn in 3.7%. 58.1% of the states where the net picks S_FLOOR are also at the cap. Floor-sampled net builds already add about 49 spawns per team-game in cpi-x0, so the cap is already being lifted under exploration.",
+   "evidence": "King.java:311-316; kpts-cpi-x0.out P11 (zdb state shares; 'extra spawns per team-game 49.05'); kpts2.out P11."
+  },
+  {
+   "claim": "Promotion: 'Baby.java:180-185 (automatic promotion on the site centre unless netAct)'; promotions happen at 174-185 in the turn skeleton.",
+   "verdict": "partly wrong",
+   "correction": "formKing() promotes the rat itself (becomeRatKing) when it reaches the site centre. That happens inside BABY_MOVE, both through the net's M_FORM_KING and through zdb's fallback cascade, whatever netAct is. Joining a formation and promoting are one macro, not separate decisions.",
+   "evidence": "Baby.java:1542-1544, 1553-1554 (becomeRatKing inside formKing); Baby.java:1021 (cascade) and 2340-2342 (M_FORM_KING)."
+  },
+  {
+   "claim": "Avoid masks: macro steps never enter avoided tiles; 'Only the P_RISK0..7 primitives can.'",
+   "verdict": "wrong",
+   "correction": "aimCarry checks only rc.canMove before moving, never Nav.avoid. It runs both in zdb's cascade and in M_AIM_CARRY. It also throws inside BABY_MOVE, which uses up the action, so ACT_POST cannot open that turn.",
+   "evidence": "Baby.java:623 (`if (!rc.canMove(m)) break;`), 632 (rc.move), 633 (throwRat); callers Baby.java:1018 and 2327; compare Nav.free at Nav.java:66-69."
+  },
+  {
+   "claim": "Economy: 'KING_COMMS can set BUDGET only to 0, 100 or 1023 (DK.java:55)'. Recommendation: let the king write the budget as KING_VAL digits on slot 62.",
+   "verdict": "wrong",
+   "correction": "KC_SET0+i is allowed for all 64 slots whenever a KING_VAL net is present. It writes a 10-bit value built from KING_VAL digits, so option KC_SET0+62 can already write any BUDGET. The recommended mechanism already exists; it is simply frozen.",
+   "evidence": "DK.java:792, 803 (`a[KC_SET0 + i] = val` for i < 64), 874-880 (`Comms.write(i, D.digits(10, ...))`); Comms.java:18 (BUDGET = 62); cpi-x0-summary point 15 present (425 rows)."
+  },
+  {
+   "claim": "Comms: values the net writes (KING_COMMS KC_SET..., BABY_COMMS C_RAW) 'reach other robots only as net features ... never zdb code'.",
+   "verdict": "wrong",
+   "correction": "KC_SET can overwrite any slot that zdb code reads: king positions (delivery targets), mines (pickMine), the FORM site (formSite), BUDGET (trap and cat-bite spending) and SYM. The king's readSqueaks dispatches on the 4-bit type nibble alone, so a net raw squeak or KC_SQUEAK whose top nibble is 1-4 is parsed as zdb mine, symmetry, enemy-king or cat news. Net comms can therefore corrupt the state of zdb's protocol, which is the coupling behind the plan's 'about 7.8 random protocol edits per team-game' from KING_COMMS's floor.",
+   "evidence": "DK.java:874-880; Comms.java:10-18 (slot map); Baby.java:1528-1532 (formSite reads FORM_X/FORM_T), 57-58 (SYM merge), 802 and 850 (BUDGET readers); King.java:134-149 (switch on Comms.sqType only; SQ_SYM merges Sym); D.java:645 ('net-type' is decided by nibble alone); docs/rl-es-plan.md:585."
+  }
+ ],
+ "missed": [
+  "Coupling through inputs that were constant in the imitation data: trainable points change the inputs of frozen nets. KING_ACT rat traps feed ACT_PRE input 32 (D.java:392), which turns 56,296 empty-handed rows into an argmax THROW and so hands those turns to zdb's fallback. BABY_ROLE input 27 (rounds since an enemy king was seen) is set only by the net's own R_ATTACK (Baby.java:1915) and drives 86% of the GATHER<->FIGHT flip-flops (docs/rl-es-plan.md:578-583). Any redesign that changes upstream behaviour has to retrain or neutralise these columns.",
+  "Where KING_MOVE's fallbacks come from: K_PILE (38,711 picks, fallback 0.48), K_SIDESTEP (16,465, 0.53) and K_UNPLUG (4,639, 0.87) are left out of the report, yet K_PILE and K_SIDESTEP are the second and third largest sources after K_CLOSER. About 43% of KING_MOVE fallbacks occur on the net's argmax pick (fallback rate on argmax picks 0.0905).",
+  "Options zdb never labels, whose code never ran in imitation. KING_MOVE: K_DODGE, K_WALK_HOME, K_FORM_STILL, K_STAY (DK.java:382-420 vs King.java:378-400). KING_ACT: options 3-10 and the cheese-bite ladder 11-16 (zdb's labels exist only at King.java:196-197). BABY_MOVE: M_PRESS, M_YIELD_KING, M_AMMO_AWAY, M_MICRO, M_MINE_STILL. The start net gives them floor-level probability, so these are untried behaviours, not alternative branches of zdb.",
+  "More duplicate options the report did not list: K_WALK_HOME and K_SIDESTEP share one executor (DK.java:406-411); K_FORM_STILL is a stay whenever a site is open (DK.java:392); M_IDLE_SEEK and M_START_SEEK reduce to M_MINE_WANDER or M_MINE_GO whenever the seek cannot run (Baby.java:2470-2489).",
+  "The KING_FORM close options F_WAR_OFF, F_CAP_OFF and F_CAP_GAP are never masked and always close the site (DK.java:634-646), so the start policy undoes a net-made opening on the next record.",
+  "Exploration floors on frozen points add random actions to every game: floor 0.005 at BABY_MOVE, ACT and KING_COMMS (about 7.8 random protocol edits per team-game, docs/rl-es-plan.md:585). These can also overwrite zdb's protocol slots.",
+  "Spawn tile: at war with enemies in view, the goal is enemies[0], not the centre (King.java:322); a visible cat adds a repulsion term (King.java:331).",
+  "Dead code that affects how hostility is read: Baby.java:141 and 218-221 (the 'else if role == ATTACK' branches) can never run, because hostile() is true for attackers (Baby.java:240-241). The role-change review trigger at Baby.java:86 is also dead.",
+  "BABY_MOVE options use cooldowns that later points depend on: M_AIM_CARRY throws (Baby.java:633), and formKing can promote mid-move (Baby.java:1543, 1554), after which the baby turn ends (Baby.java:197)."
+ ],
+ "overall_reliability": "Moderately reliable as an inventory, unreliable as a diagnosis. Nearly all file:line citations, gates, masks, constants and quoted cpi-x0 rates check out: fallback rates, hold shares, saturation shares, R_KEEP 83%, MINE_PICK single-candidate 10.5%. But several causal explanations that drive its recommendations are wrong. A_THROW fails because of a poisoned rat-trap input on empty-handed rats, not the hold rule. A KING_ACT fallback is a no-op, not zdb behaviour. Fallback rows do not bias the gradient. The stay share is 74%, not 58%. dodge, press, yield and ammo are net-only, not zdb internals. In RL, BABY_ROLE is reviewed every 10 rounds, not 50. Net-made KING_FORM openings are undone on the next record. Net comms do reach zdb code. The report also misses the most important coupling: trainable king points change the inputs of frozen baby nets that were constant in imitation.",
+ "proposal_concerns": [
+  "Dropping or down-weighting fallback rows (the report's 'minimum' fix) would bias the policy gradient. Prefer exact applicability masks (side-effect-free versions of each executor's preconditions) and merging options that behave identically.",
+  "'Make a failed option a no-op' changes the start policy wherever its argmax relies on fallback: about 9% of ACT_PRE rows and 9% of KING_MOVE rows (fallback rate on argmax picks 0.0877 and 0.0905). For example, argmax K_CLOSER picks currently fall through to zdb's dig, sidestep or stuck branch and would instead freeze the king. On ACT_PRE, zdb's carry and bite block would stop running on those rows. Any such change needs re-imitation or re-calibration of the start.",
+  "The A_THROW fix is aimed at the wrong cause. Fix input 32: zero or clip imitation-constant inputs, or record imitation data with varied rat-trap counts. Also mask A_THROW unless the rat carries an enemy. 'Return true when holding' would remove only about 5% of the fallbacks.",
+  "Reviewing BABY_ROLE more often or on events would increase the input-27 flip-flops until that input and R_KEEP's encoding are fixed. Its premise (RL uses 50) is false; RL already reviews every 10 rounds.",
+  "New points labelled by zdb (KING_HOME anchor, a break-cooperation switch, a destination target) would start almost deterministic, because zdb's label hardly ever varies (one home mine per life, a break at round 30). That reproduces the 'no gradient when deterministic' trap in docs/rl-es-plan.md:565-569. They need an entropy-preserving start or imitation data with varied labels.",
+  "A break-cooperation register would change hostile(), which is an input to the frozen ACT nets (D.java:340). In imitation that input was tied to round < 30 or the ATTACK role, so a late break would show the nets an untrained input combination, the same failure as input 32.",
+  "Leaving KING_FORM 'fixed' because the start options already open sites does not work: F_CAP_OFF and F_WAR_OFF close net-made openings on the next record (only 10.4% lead to a new king). The close options need masking against net-opened sites, or the option needs some commitment.",
+  "Building on the nearest free ring tile when the chosen tile is blocked would help only about 25.5% of failed build picks. In 22.9% nothing is buildable or affordable, so those still fall back.",
+  "The economy-register proposal already exists (KC_SET0+62 with KING_VAL digits). Unfreezing it also unfreezes writes to zdb's protocol slots, so it needs per-slot masking."
+ ]
+}

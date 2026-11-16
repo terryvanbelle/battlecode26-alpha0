@@ -107,16 +107,48 @@ def fit_mask(mask, N, n):
     return out
 
 
-def probs(logits, mask=None, T=1.0, floor=0.0):
+def floor_weights(mask, groups, n=None):
+    """DNet.floorWeights for each row: [N, n] float32 shares of the floor (None when groups is None). groups = (g, gw):
+    g[k] is option k's group (0, or k >= len(g): dormant), gw[j] group j's weight. Each allowed group gets its weight's
+    share, split evenly over its allowed options; all zeros when no allowed option is in a weighted group."""
+    if groups is None:
+        return None
+    g, gw = np.asarray(groups[0], np.int64), np.asarray(groups[1], F32)
+    mask = np.asarray(mask, bool)
+    if mask.ndim == 1:
+        mask = mask[None, :]
+    N = mask.shape[0]
+    n = mask.shape[1] if n is None else n
+    allowed = fit_mask(mask, N, n)
+    gk = np.zeros(n, np.int64)
+    gk[:min(n, len(g))] = g[:n]
+    cnt = np.zeros((N, len(gw)), np.int64)
+    for j in range(1, len(gw)):
+        cnt[:, j] = (allowed & (gk == j)).sum(1)
+    gam = np.zeros(N, F32)
+    for j in range(1, len(gw)):                                # float sum in ascending group order, as Java
+        gam = np.where(cnt[:, j] > 0, (gam + gw[j]).astype(F32), gam)
+    w = np.zeros((N, n), F32)
+    with np.errstate(invalid='ignore', divide='ignore'):
+        for j in range(1, len(gw)):
+            v = ((gw[j] / gam).astype(F32) / cnt[:, j].astype(F32)).astype(F32)
+            sel = allowed & (gk == j)[None, :] & (gam > 0)[:, None]
+            w = np.where(sel, v[:, None], w)
+    return w
+
+
+def probs(logits, mask=None, T=1.0, floor=0.0, groups=None):
     """Probabilities [N, n] exactly as DNet.sample fills p[]: masked softmax of logits / T (relative to the best allowed
     logit, exp in double then cast to float, float32 running total), times (1 - floor), plus floor / m on each of the m
     allowed options. T <= 0: the argmax gets 1 - floor. Rows with nothing allowed are all zero.
+    groups = (g, gw) (W.G/W.GW, BUILD.json "groups"): the floor is spread by floor_weights instead of floor / m, and a
+    row whose weights are all zero gets no floor.
     numpy input: float32 result, bit-faithful to Java's arithmetic order. torch input (logits a tensor, mask a bool
     tensor or None): a differentiable float32 version of the same formula (for training; equal to ~1 ulp)."""
     try:
         import torch
         if isinstance(logits, torch.Tensor):
-            return _probs_torch(logits, mask, T, floor)
+            return _probs_torch(logits, mask, T, floor, groups)
     except ImportError:
         pass
     z = np.asarray(logits, dtype=F32)
@@ -128,7 +160,11 @@ def probs(logits, mask=None, T=1.0, floor=0.0):
     zm = np.where(allowed, z, -np.inf)
     best = np.argmax(zm, axis=1)   # first maximum, like Java's strict '>'
     zb = z[np.arange(N), best]
-    one_f = F32(1) - F32(floor)
+    fw = floor_weights(allowed, groups, n)
+    fl = np.full(N, F32(floor), F32)
+    if fw is not None:
+        fl = np.where(fw.sum(1, dtype=F32) > 0, fl, F32(0)).astype(F32)
+    one_f = (F32(1) - fl)[:, None]
     if T > 0:
         d = np.where(allowed, (z - zb[:, None]) / F32(T), -np.inf)   # float arithmetic; exp of allowed options only
         e = np.exp(d.astype(np.float64)).astype(F32)            # (float) Math.exp(double)
@@ -137,29 +173,48 @@ def probs(logits, mask=None, T=1.0, floor=0.0):
             p = (e / tot[:, None]) * one_f
     else:
         p = np.zeros((N, n), dtype=F32)
-        p[np.arange(N), best] = one_f
-    with np.errstate(invalid='ignore', divide='ignore'):
-        add = F32(floor) / m.astype(F32)                        # floor / m in float
-    p = np.where(allowed, p + add[:, None], F32(0)).astype(F32)
+        p[np.arange(N), best] = one_f[:, 0]
+    if fw is None:
+        with np.errstate(invalid='ignore', divide='ignore'):
+            add = (F32(floor) / m.astype(F32))[:, None]         # floor / m in float
+    else:
+        add = (fl[:, None] * fw).astype(F32)                    # floor * fw[k] in float
+    p = np.where(allowed, p + add, F32(0)).astype(F32)
     p[m == 0] = 0
     return p
 
 
-def _probs_torch(z, mask, T, floor):
+def _probs_torch(z, mask, T, floor, groups=None):
     import torch
     if mask is None:
         mask = torch.ones_like(z, dtype=torch.bool)
     m = mask.sum(1, keepdim=True).clamp(min=1).to(z.dtype)
     zm = torch.where(mask, z, torch.full_like(z, -float('inf')))
     zb = zm.max(1, keepdim=True).values.detach()
+    if groups is not None:
+        fw = torch.as_tensor(floor_weights(mask.cpu().numpy(), groups, z.shape[1]), device=z.device, dtype=z.dtype)
+        fl = floor * (fw.sum(1, keepdim=True) > 0).to(z.dtype)
+    else:
+        fw, fl = None, floor
     if T > 0:
         d = torch.where(mask, (z - zb) / T, torch.full_like(z, -1e4))   # masked options never reach exp (no inf/nan grads)
         e = torch.where(mask, torch.exp(d.double()).to(z.dtype), torch.zeros_like(z))
-        p = e / e.sum(1, keepdim=True) * (1 - floor)
+        p = e / e.sum(1, keepdim=True) * (1 - fl)
     else:
         p = torch.zeros_like(z)
-        p.scatter_(1, zm.argmax(1, keepdim=True), 1 - floor)
-    return torch.where(mask, p + floor / m, torch.zeros_like(p))
+        one = (1 - fl) if fw is not None else torch.full((z.shape[0], 1), 1 - floor, dtype=z.dtype, device=z.device)
+        p.scatter_(1, zm.argmax(1, keepdim=True), one)
+    return torch.where(mask, p + (floor / m if fw is None else fl * fw), torch.zeros_like(p))
+
+
+def load_groups(spec):
+    """Floor groups by point: {p: (g, gw)} from a groups JSON path or dict ({"<p>": {"g": [...], "gw": [...]}}, the
+    form build_dpnet --groups reads and BUILD.json "groups" stores). Empty or None: {} (uniform floors)."""
+    if not spec:
+        return {}
+    if isinstance(spec, (str, Path)):
+        spec = json.loads(Path(spec).read_text())
+    return {int(k): (list(v['g']), list(v['gw'])) for k, v in spec.items() if not k.startswith('_')}
 
 
 def col_stats(X, chunk=1 << 17):

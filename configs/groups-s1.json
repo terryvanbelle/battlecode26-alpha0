@@ -1,0 +1,7 @@
+{
+ "_doc": "Stage-1 floor groups (docs/rl-es-plan.md section 18): per point, g = the group of each option (0 = dormant: never floor-sampled), gw = the weight of each group (gw[0] = 0). DNet.floorWeights spreads the floor over the allowed groups by weight, evenly within a group.",
+ "_groups": {"2/3": ["dormant", "PASS", "COMBAT", "TERRAIN", "ECON"], "11": ["dormant", "HOLD", "SPAWN", "DIG"]},
+ "2": {"g": [1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "gw": [0, 1, 1, 1, 1]},
+ "3": {"g": [1, 2, 2, 2, 2, 2, 2, 3, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "gw": [0, 1, 1, 1, 1]},
+ "11": {"g": [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1], "gw": [0, 1, 1, 1]}
+}

@@ -134,8 +134,8 @@ Main structural findings (details and line numbers in the maps):
    (6, 9, 14, 15) and BABY_FREE (8) have always been frozen.
 
 ### 2e. Verifier corrections (added 10:30 PDT; these override the maps and 2d)
-From maps/verify-baby-move.json, verify-baby-act-face.json, verify-baby-role-comms-mine-free.json (the king and
-hidden-strategy verifications are still running; check maps/ for verify-king-*.json and verify-hidden-strategy.json):
+From maps/verify-baby-move.json, verify-baby-act-face.json, verify-baby-role-comms-mine-free.json (the king, comms
+and hidden-strategy verifications follow below):
 - BABY_ROLE flip-flopping comes from ONE poisoned input, not from R_KEEP: col 27 = cap(round - Baby.ekSeen, 255)
   (D.java:544) is written only by the net's R_ATTACK (Baby.java:1915) and never cleared, so it was always 255 in zdb-mode
   imitation data; after the net makes an attacker it reads 0-254 for 255 rounds and drives role logits to 100+ (86% of
@@ -188,6 +188,34 @@ King points (verify-king-move-turn.json, verify-king-spawn-act-form.json, added 
   turns in ~1% of records even at floor 0. Whether newborn facing matters is untested (sens16 compared random with
   less random). KING_TURN's sawEnemy input is one turn stale.
 - 'At home' is visible to KING_MOVE (features 23-24), so K_CLOSER's at-home failures are imitation errors.
+Comms, plumbing and hidden strategy (verify-king-comms-and-plumbing.json, verify-hidden-strategy.json, added 11:20 PDT):
+- Fallback rows do not bias the policy gradient: given (s, k), zdb's fallback is part of the environment's response to
+  k, so grad log pi(k|s) * A stays unbiased. Dropping or down-weighting them DOES bias it. The real costs are aliasing
+  and wasted exploration; the fix is exact applicability masks plus merging options that behave identically.
+- The fallback flag is set only when zdb's label differs from k (D.java:159-162), so fallback rates are lower bounds.
+- Floor 0 is not deterministic: NET_T = 1 is global, so the softmax tail still leaks (~0.6 KING_COMMS picks per
+  team-game at the calibrated -12 biases, each followed by uniform KING_VAL digits). zfree's KC is quieter, not silent.
+- KING_COMMS edits are also INPUT noise for the trainable nets: the baby comms block cb (R0-R2, BUDGET, ALERT, FORM age)
+  feeds points 1-3, 5, 6, 8, 9; BABY_ROLE reads all 64 raw slots.
+- BUDGET gates only non-defensive, non-coop cat traps and the +1 cheese on cat bites (Baby.java:802, 850); no band can
+  switch rat traps or rat bites off. KC_SET0+62 with KING_VAL digits can already write any BUDGET.
+- Aliased KC no-ops: one DROP FORM on a HOLD turn, one DROP SLOT/DROP_ALL (heartbeat stays fresh), ALERT edits in coop.
+  zdb rewrites heartbeat, SYM, BUDGET and FORM_T every king turn, so net writes there last one turn; R0-R2 are
+  overwritten on any heard type-3 squeak (King.java:143-146), baby C_RAW squeaks included. claimSlot falls back to
+  slot 0 when no slot is stale, so two kings can share it.
+- Point 14 was trained once (rl-m2 iteration 1, KL 0.055) and frozen when its KL jumped to 0.59 (be65c46).
+- KING_ACT fallbacks are effectively no-ops (zdb bites only at war with an enemy in reach, 0.3% of records).
+- Net-only behaviours that never ran in imitation: K_DODGE, K_WALK_HOME, K_FORM_STILL, K_STAY; KING_ACT 3-16; M_PRESS,
+  M_YIELD_KING, M_AMMO_AWAY, M_MICRO, M_MINE_STILL. KING_MOVE is not saturated (p_top 0.916; 44% of its deviations and
+  43% of its fallbacks come from the net's own argmax picks, K_CLOSER/K_PILE/K_SIDESTEP).
+- KING_FORM: F_CAP_OFF/F_WAR_OFF are the argmax in 62% of states and close net-opened sites on the next record (median
+  life 1 record; only 10.4% of 24.2 net openings per team-game led to a king).
+- RL builds review BABY_ROLE every 10 rounds (Cfg.DP_ROLE_EVERY; the 50 is a stale comment); the roleAt0 trigger is dead.
+- zdb's spawn: the baby count is floor(n/4)*4 from the rat cost, so the effective cap is 20; zdb's own spawn states are
+  S_FLOOR 48.8%, S_CAP 26.1%, no surplus 21.3%, spawn 3.7%. Floor-sampled builds add ~49 spawns per team-game in cpi-x0.
+- aimCarry throws inside BABY_MOVE (the action is spent; ACT_POST does not open). formKing promotes inside BABY_MOVE.
+- New zdb-labelled points (home anchor, break switch) would start deterministic (zdb's label hardly varies): they need
+  an entropy-preserving start. A break-coop register would show the frozen ACT nets untrained hostile() combinations.
 
 ## 3. Infrastructure facts (verify in code when it matters)
 - Java: java/bots/zdp/D.java (point ids, features, take/emit/fallback, records), DNet.java (per-point MLP n_in-64-64-n_out,

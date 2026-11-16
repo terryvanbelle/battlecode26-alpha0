@@ -359,7 +359,8 @@ public final class DK {
         if (D.point != point) return -1;
         float[] z = DNet.logits(point, D.F, D.n);
         if (z == null) return -1;
-        int k = DNet.sample(z, D.fit(allowed, z.length, DNet.reach(point)), NET_T, DNet.floor(point), D.alt(point));
+        boolean[] m = D.fit(allowed, z.length, DNet.reach(point));
+        int k = DNet.sample(z, m, NET_T, DNet.floor(point), D.alt(point), DNet.floorWeights(point, m, z.length));
         if (D.RL) D.take(false);   // king records go through D.emit (primary slot)
         return k;
     }

@@ -94,6 +94,8 @@ def build(cfg, net_path, name, compile_=True):
            '--floor', str(cfg.get('floor', 0.005)), '--temperature', str(cfg.get('temperature', 1.0))]
     if fl:
         cmd += ['--floor-points', fl]
+    if cfg.get('groups'):
+        cmd += ['--groups', str(cfg['groups'])]
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
     if compile_:
         from eval_student import compile_local

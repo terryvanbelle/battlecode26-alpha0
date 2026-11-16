@@ -620,3 +620,44 @@ competent, so RL can keep entropy, get a gradient and still play well.
 by a candidate scorer, zdb's strategy parameters as the actions, and a clean slate. Three judges score them for RL
 learnability, feasibility, and strategic ceiling, and a synthesizer writes the staged design. Brief:
 `diagnostics/zdp-action-space/design-brief.md`.
+
+## 18. Grouped floors: the first test of the redesign (November 16, 2026)
+
+Today a floor spreads uniformly over a point's allowed options. That puts 16 of KING_SPAWN's 22 options, and nearly all
+of BABY_ACT's floor mass, on builds, primitives and rat traps (a backstab trigger). Every design in the panel replaces
+this with a typed prior, so it is built and tested first.
+
+**Mechanism.** `DNet.floorWeights` gives each option a group (`W.G`; group 0 is dormant and never floor-sampled) and
+each group a weight (`W.GW`). The floor goes to the allowed groups in proportion to their weights, split evenly within a
+group. A row with no weighted group allowed gets no floor. A point without a table keeps the uniform floor, byte for
+byte. `build_dpnet.py --groups FILE` writes the tables and records them in BUILD.json. `dpnet_io.probs` and
+`floor_weights` mirror the arithmetic, and rl_data, rl_train, rl_loop (config key `groups`) and td_check pass the
+tables through. T0 (parity, run on the box): over 100,000 random rows (dormant and zero-weight groups, empty masks,
+ties, T = 0, options beyond the table), Java's weights and sampled probabilities equal numpy's bit for bit, and torch's
+are within 6e-7.
+
+**Stage-1 table** (`configs/groups-s1.json`):
+- BABY_ACT_PRE/POST: PASS; COMBAT (drop ally, throw, nap, the three bites); TERRAIN (cat trap, lane); ECON (deliver);
+  equal weights. Dormant: CASH_KING, RAT_TRAP and every primitive (cheese bites, drops, transfers, dirt, becoming king).
+- KING_SPAWN: HOLD (no surplus, floor, cap, blocked, hold); SPAWN (the 16 tiles); DIG; equal weights.
+
+The masks are unchanged, so a draw that cannot act still falls back to zdb as before. A correction from the
+verifiers stands: fallback rows do not bias the policy gradient (the fallback is part of the environment's response to
+the option), so RL keeps them. Exact masks are for aliasing and wasted exploration and come later.
+
+**Tests, readings set before the games.** Each package is v39 at zdpg39's floors except one point at grouped floor 0.2.
+Each plays zdpg39 for 64 games on the uniform sensitivity's maps and seed (row 4, 3801001), so it pairs with that
+row of the sensitivity table.
+1. *g2*, zdpgf2 at BABY_ACT_PRE (uniform: 0.22).
+2. *g11*, zdpgf11 at KING_SPAWN (uniform: 0.27).
+3. *g11h*, zdpgf11h at KING_SPAWN with weights HOLD 0.8, SPAWN 0.1, DIG 0.1.
+
+Readings:
+- g2 or g11 at 0.40 or more: which options are drawn is what costs strength, and a typed prior fixes most of it. Stage 2
+  builds the smoothed, grouped start.
+- Both within 0.05 of uniform (g2 at most 0.27, g11 at most 0.32): the cost is the number of executed deviations, not
+  their kind. Baby tactics stay frozen, and spawning needs a decision taken far less often (a population target with
+  commitment) rather than a better per-turn prior.
+- In between: the prior helps but does not suffice; proceed, expecting the baby points to stay frozen.
+- g11h at least 0.10 above g11: KING_SPAWN's cost is the extra builds, so per-turn spawn exploration must be rare or
+  committed.

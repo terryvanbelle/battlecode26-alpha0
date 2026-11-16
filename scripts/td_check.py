@@ -193,6 +193,7 @@ def main():
     cfg = json.loads(Path(a.config).read_text())
     floor = cfg['floor']
     fpts = {int(k): float(v) for k, v in (cfg.get('floor_points') or {}).items()}
+    groups = dpnet_io.load_groups(cfg.get('groups'))
     T = cfg.get('temperature', 1.0)
     rd = Path(a.run_dir)
     tdirs = [rd / f'iter-{k:04d}' / 'data' for k in ints(a.iters)]
@@ -236,7 +237,7 @@ def main():
             ls = nv[p]
             n_out = ls[-1]['w'].shape[0]
             m = dpnet_io.fit_mask(d['mask'][sel], len(sel), n_out)
-            pr = dpnet_io.probs(dpnet_io.forward(ls, d['x'][sel], exact=False), m, T, fl).astype(np.float64)
+            pr = dpnet_io.probs(dpnet_io.forward(ls, d['x'][sel], exact=False), m, T, fl, groups.get(p)).astype(np.float64)
             k = d['k'][sel].astype(np.int64)
             inr = k < n_out
             two = m.sum(1) >= 2

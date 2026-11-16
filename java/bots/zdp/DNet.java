@@ -30,6 +30,28 @@ public final class DNet {
     /** Point p's sampling floor (W.FL[p]; missing or < 0: D.NET_FLOOR). */
     static float floor(int p) { return p < W.FL.length && W.FL[p] >= 0 ? W.FL[p] : D.NET_FLOOR; }
 
+    /** How point p spreads its floor over the allowed options (null: uniformly, floor / m each). W.G[p] gives option
+     *  k's group (char k; 0 or beyond the string: dormant, never floor-sampled) and W.GW[p][g] group g's weight; each
+     *  allowed group gets its weight's share of the floor, split evenly over its allowed options. All zeros when no
+     *  allowed option is in a weighted group (sample() then gives the floor's mass to the softmax).
+     *  scripts/dpnet_io.py floor_weights mirrors this arithmetic. */
+    static float[] floorWeights(int p, boolean[] allowed, int n) {
+        if (p >= W.G.length || W.G[p] == null || W.G[p].isEmpty()) return null;
+        String g = W.G[p];
+        float[] gw = W.GW[p];
+        int[] cnt = new int[gw.length];
+        for (int k = 0; k < n && k < g.length(); k++) if (allowed == null || allowed[k]) cnt[g.charAt(k)]++;
+        float gam = 0;
+        for (int j = 1; j < gw.length; j++) if (cnt[j] > 0) gam += gw[j];
+        float[] w = new float[n];
+        if (gam <= 0) return w;
+        for (int k = 0; k < n && k < g.length(); k++) {
+            int j = g.charAt(k);
+            if (j > 0 && (allowed == null || allowed[k])) w[k] = gw[j] / gam / cnt[j];
+        }
+        return w;
+    }
+
     static void load() {
         int np = W.P.length;
         w = new float[np][][]; b = new float[np][][]; dims = new int[np][];
@@ -113,8 +135,17 @@ public final class DNet {
     static int sample(float[] z, boolean[] allowed, float t, float floor) { return sample(z, allowed, t, floor, false); }
 
     /** sample() drawing from the second stream (uniform2) when alt. */
-    static int sample(float[] z, boolean[] allowed, float t, float floor, boolean alt) {
+    static int sample(float[] z, boolean[] allowed, float t, float floor, boolean alt) { return sample(z, allowed, t, floor, alt, null); }
+
+    /** sample() with the floor spread by fw (floorWeights; null: floor / m on each allowed option). An all-zero fw
+     *  gives no floor: the softmax keeps all the mass. */
+    static int sample(float[] z, boolean[] allowed, float t, float floor, boolean alt, float[] fw) {
         if (D.RL) { lastK = -1; lastP = 1f; lastMask = allowed; lastN = z.length; }
+        if (fw != null) {
+            float s = 0;
+            for (int k = 0; k < z.length; k++) s += fw[k];
+            if (s <= 0) floor = 0;
+        }
         int n = z.length, best = -1;
         for (int k = 0; k < n; k++) if ((allowed == null || allowed[k]) && (best < 0 || z[k] > z[best])) best = k;
         if (best < 0) return -1;
@@ -127,7 +158,8 @@ public final class DNet {
             for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) { p[k] = (float) Math.exp((z[k] - z[best]) / t); tot += p[k]; }
             for (int k = 0; k < n; k++) p[k] = p[k] / tot * (1 - floor);
         } else p[best] = 1 - floor;
-        for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) p[k] += floor / m;
+        if (fw == null) { for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) p[k] += floor / m; }
+        else for (int k = 0; k < n; k++) if (allowed == null || allowed[k]) p[k] += floor * fw[k];
         float u = alt ? uniform2() : uniform(), acc = 0;
         for (int k = 0; k < n; k++) { acc += p[k]; if (u < acc) { if (D.RL) { lastK = k; lastP = p[k]; } return k; } }
         if (D.RL) { lastK = best; lastP = p[best]; }

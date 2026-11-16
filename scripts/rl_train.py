@@ -272,13 +272,13 @@ def build_model(layers64):
     return nn.Sequential(*mods)
 
 
-def policy_terms(model, X, mask, T, floor, chunk=1 << 16):
+def policy_terms(model, X, mask, T, floor, groups=None, chunk=1 << 16):
     """(probabilities, log probabilities with 0 on masked options) over all rows, no grad."""
     import torch
     ps, lps = [], []
     with torch.no_grad():
         for s in range(0, len(X), chunk):
-            p = dpnet_io.probs(model(X[s:s + chunk]), mask[s:s + chunk], T, floor)
+            p = dpnet_io.probs(model(X[s:s + chunk]), mask[s:s + chunk], T, floor, groups)
             ps.append(p); lps.append(torch.where(mask[s:s + chunk], torch.log(p.clamp_min(1e-30)), torch.zeros_like(p)))
     return torch.cat(ps), torch.cat(lps)
 
@@ -293,11 +293,11 @@ def entropy_rows(p, lp, mask):
     return -torch.where(mask, p * lp, torch.zeros_like(p)).sum(1)
 
 
-def pg_grad(model, X, mask, k, logq, A, T, floor):
+def pg_grad(model, X, mask, k, logq, A, T, floor, groups=None):
     """Flattened gradient of the unclipped surrogate mean(r A) (gradient-SNR diagnostic)."""
     import torch
     model.zero_grad()
-    p = dpnet_io.probs(model(X), mask, T, floor)
+    p = dpnet_io.probs(model(X), mask, T, floor, groups)
     lp = torch.log(p.gather(1, k[:, None]).squeeze(1).clamp_min(1e-30))
     (-(torch.exp(lp - logq) * A).mean()).backward()
     g = torch.cat([q.grad.flatten() for q in model.parameters()])
@@ -316,14 +316,20 @@ def train_point(p, d, layers, norm, anchor_layers, A, a, beta, rng, metrics):
     mask = dpnet_io.fit_mask(d['mask'], N, n_out)
     mu, sd = norm
     # behaviour (theta_k, exactly as the bot) and anchor probabilities from the folded nets
-    pk_bot = dpnet_io.probs(dpnet_io.forward(layers, x), mask, a.temperature, a.floor)
+    g = getattr(a, 'groups', None)
+    pk_bot = dpnet_io.probs(dpnet_io.forward(layers, x), mask, a.temperature, a.floor, g)
     p_k = pk_bot[np.arange(N), d['k']]
     dlog = np.abs(np.log(np.maximum(p_k, 1e-30)) - d['logq'])
-    soft_k = (p_k.astype(np.float64) - a.floor / np.maximum(mask.sum(1), 1)) / (1 - a.floor)   # softmax part, before the floor
+    fw = dpnet_io.floor_weights(mask, g, n_out)
+    if fw is None:
+        fl_k, fl_row = a.floor / np.maximum(mask.sum(1), 1), a.floor
+    else:
+        fl_k, fl_row = a.floor * fw[np.arange(N), d['k']].astype(np.float64), np.where(fw.sum(1) > 0, a.floor, 0.0)
+    soft_k = (p_k.astype(np.float64) - fl_k) / (1 - fl_row)   # softmax part, before the floor
     metrics.update(parity_median=float(np.median(dlog)), parity_p999=float(np.quantile(dlog, 0.999)),
                    parity_max=float(dlog.max()), sat_frac=float((soft_k > 0.999).mean()))
     if anchor_layers is not None:
-        pa = dpnet_io.probs(dpnet_io.forward(anchor_layers, x), mask, a.temperature, a.floor)
+        pa = dpnet_io.probs(dpnet_io.forward(anchor_layers, x), mask, a.temperature, a.floor, g)
         la = np.where(mask, np.log(np.maximum(pa, 1e-30)), 0).astype(np.float32)
     else:
         pa = la = None
@@ -340,7 +346,7 @@ def train_point(p, d, layers, norm, anchor_layers, A, a, beta, rng, metrics):
     T, f = a.temperature, a.floor
 
     def summary(tag):
-        pp, lp = policy_terms(model, tX, tm, T, f)
+        pp, lp = policy_terms(model, tX, tm, T, f, g)
         out = {f'entropy_{tag}': float(entropy_rows(pp, lp, tm).mean()),
                f'mean_probs_{tag}': [round(v, 6) for v in pp.mean(0).tolist()]}
         if tla is not None:
@@ -365,7 +371,7 @@ def train_point(p, d, layers, norm, anchor_layers, A, a, beta, rng, metrics):
             if len(idx) > 200000:
                 idx = rng.choice(idx, 200000, replace=False)
             it = torch.tensor(idx)
-            cos.append(pg_grad(model, tX[it], tm[it], tk[it], tq[it], tA[it], T, f))
+            cos.append(pg_grad(model, tX[it], tm[it], tk[it], tq[it], tA[it], T, f, g))
         den = float(cos[0].norm() * cos[1].norm())
         metrics['grad_snr_cos'] = float(cos[0] @ cos[1]) / den if den > 0 else None
 
@@ -377,7 +383,7 @@ def train_point(p, d, layers, norm, anchor_layers, A, a, beta, rng, metrics):
         for s in range(0, N, a.batch):
             idx = perm[s:s + a.batch]
             mk = tm[idx]
-            pp = dpnet_io.probs(model(tX[idx]), mk, T, f)
+            pp = dpnet_io.probs(model(tX[idx]), mk, T, f, g)
             lp = torch.where(mk, torch.log(pp.clamp_min(1e-30)), torch.zeros_like(pp))
             lpk = lp.gather(1, tk[idx][:, None]).squeeze(1)
             logr = lpk - tq[idx]
@@ -418,7 +424,7 @@ def train_point(p, d, layers, norm, anchor_layers, A, a, beta, rng, metrics):
     folded = dpnet_io.fold(trained, mu, sd)
     # export parity: the folded net as the bot will run it (float32) vs the trained model
     f32 = [dict(w=l['w'].astype(np.float32), b=l['b'].astype(np.float32)) for l in folded]
-    pb = dpnet_io.probs(dpnet_io.forward(f32, x, exact=False), mask, T, f)
+    pb = dpnet_io.probs(dpnet_io.forward(f32, x, exact=False), mask, T, f, g)
     pn = p_new.numpy()
     with np.errstate(divide='ignore'):
         dl = np.abs(np.log(np.maximum(pb, 1e-30)) - np.log(np.maximum(pn, 1e-30)))[mask]
@@ -443,6 +449,7 @@ def main():
     ap.add_argument('--points', default='5,7,10,11,12,13', help='trainable points (others are copied unchanged)')
     ap.add_argument('--floor', type=float, default=0.005, help="the build's NET_FLOOR (behaviour and trained policy)")
     ap.add_argument('--floor-points', default='', help='per-point floors P:F,... (the build\'s W.FL; others --floor)')
+    ap.add_argument('--groups', default='', help="floor groups JSON (the build's W.G/W.GW; build_dpnet --groups)")
     ap.add_argument('--temperature', type=float, default=1.0)
     ap.add_argument('--version', type=int, default=None, help='keep only records with this trailer NET_VERSION')
     ap.add_argument('--epochs', type=int, default=2)
@@ -478,6 +485,7 @@ def main():
     t0 = time.time()
     points = parse_points(a.points)
     fpts = {int(k): float(v) for k, v in (x.split(':') for x in a.floor_points.split(',') if x)}
+    groups = dpnet_io.load_groups(a.groups)
     if a.fake_reward:
         fp, fo = (int(v) for v in a.fake_reward.split(':'))
         a.fake_reward = (fp, fo)
@@ -588,8 +596,9 @@ def main():
         if anchor.get(p) is not None and anchor[p][-1]['w'].shape[0] != n_out:
             raise SystemExit(f'point {p}: the anchor has {anchor[p][-1]["w"].shape[0]} outputs, the net {n_out} '
                              '(widen the anchor with widen_dpnet.py too)')
-        ap_ = argparse.Namespace(**{**vars(a), 'floor': fpts.get(p, a.floor)})   # this point's floor
+        ap_ = argparse.Namespace(**{**vars(a), 'floor': fpts.get(p, a.floor), 'groups': groups.get(p)})   # this point's floor
         mt['floor'] = ap_.floor
+        mt['floor_groups'] = groups.get(p) is not None
         folded, _ = train_point(p, d, nets[p], (mu, sd), anchor.get(p), A, ap_, beta, rng, mt)
         mt['seconds'] = round(time.time() - tp, 1)
         new_norm[p] = (mu, sd)

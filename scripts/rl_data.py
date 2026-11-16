@@ -152,6 +152,8 @@ def main():
     floor = a.floor if a.floor is not None else bj.get('floor', cfg['floor'])
     # per-point floors (build_dpnet.py --floor-points; W.FL): the learner build's, else the config's
     fpts = {int(k): float(v) for k, v in (bj.get('floor_points') or cfg.get('floor_points') or {}).items()}
+    # floor groups (build_dpnet.py --groups; W.G/W.GW): the learner build's, else the config's file
+    groups = dpnet_io.load_groups(bj.get('groups') or cfg.get('groups'))
     T = a.temperature if a.temperature is not None else bj.get('temperature', cfg.get('temperature', 1.0))
     pcfg = cfg.get('parity', {})
     rng = np.random.default_rng(cfg['seed_base'] + a.iter)
@@ -223,7 +225,8 @@ def main():
                 acc.setdefault(p, Acc(cap if p in points else 0, rng)).add(row)
 
     # parity, per point
-    summary = dict(iter=a.iter, run=rd.name, learner=doc['learner'], floor=floor, floor_points=fpts, temperature=T,
+    summary = dict(iter=a.iter, run=rd.name, learner=doc['learner'], floor=floor, floor_points=fpts,
+                   floor_groups=sorted(groups), temperature=T,
                    games=len(doc['jobs']),
                    valid=nvalid, invalid=nbad, missing_decisions=missing, trainable=sorted(points), frozen_sample=fs,
                    score={o: dict(points=v[0], games=v[1], score=round(v[0] / v[1], 4) if v[1] else None)
@@ -244,7 +247,7 @@ def main():
             ls = nv[p]
             n_out = ls[-1]['w'].shape[0]
             pr = dpnet_io.probs(dpnet_io.forward(ls, d['x'][sel]), dpnet_io.fit_mask(d['mask'][sel], int(sel.sum()), n_out), T,
-                                fpts.get(p, floor))
+                                fpts.get(p, floor), groups.get(p))
             k = d['k'][sel]
             inr = k < n_out
             pk = np.zeros(len(k), np.float32)
