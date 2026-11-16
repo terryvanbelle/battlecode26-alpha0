@@ -811,6 +811,14 @@ tests (0.48-0.59) suggested, so the per-point costs partly compound. Per the rea
 the per-turn line is next on the box: the plan heads (section 21) go first, because committed decisions are this
 reading's other branch and they have a known answer to check learning against.
 
+**sm20: 20/64 = 0.31 (t −2.82)** against zdpg39 (zdpy2: v39z distilled toward ε 0.2, floor 0). That is 0.09 below
+gall, the *fit costs strength* reading: putting the same exploration inside the softmax costs more than the floor
+version, even though the held-out KL to the target is small (0.0004-0.19) and the top choice is kept in 89-99.97% of
+states. One explanation: the distilled net moves mass off the top choice in exactly the states where that choice
+matters, while a floor spreads it evenly. KING_MOVE fits worst (top choice kept 89%). The ε 0.1 start (v39zs10,
+zdpy3: Fisher share 0.12-0.37, top choice kept 89-99.98%) is the next per-turn test (sm10). Per-turn exploration at
+the 0.2 level costs 0.1-0.25 of a game against v39 either way, which strengthens the plan heads' claim to go first.
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
