@@ -616,6 +616,14 @@ competent, so RL can keep entropy, get a gradient and still play well.
    mostly saturated logits plus uniform floors, and a soft start with floor 0 in today's space becomes a cheap RL
    candidate alongside the redesign.
 
+**Results (11:26-11:46 PDT).**
+- *zfree:* 74/128 = 0.578, t 1.86 (95% 0.49-0.66). Under the t > 2 bar, so hygiene: floor 0 at frozen points and the
+  zeroed constant columns stay in every future build.
+- *soft3:* 24/64 = 0.375, t −1.86. Between the readings: softening today's trained king and role points costs about an
+  eighth of a game, so they cannot simply be made soft for RL.
+- *e20:* 15/64 = 0.234, t −4.84, 0.34 below zfree. Today's action space cannot carry entropy even when exploration is
+  directed through each point's own softmax. The redesign is necessary, and e20 is its R1 baseline.
+
 **Design.** A panel of four independent redesigns runs next: repair in place, a hierarchy of committed targets chosen
 by a candidate scorer, zdb's strategy parameters as the actions, and a clean slate. Three judges score them for RL
 learnability, feasibility, and strategic ceiling, and a synthesizer writes the staged design. Brief:
