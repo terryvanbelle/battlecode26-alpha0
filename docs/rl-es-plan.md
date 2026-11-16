@@ -853,6 +853,15 @@ them every turn):
   - *start < 0.46:* the start is too soft; σ 0.4 (p(zdb) ≈ 0.9, Fisher ≈ 0.2) and retest.
   - *uniform < 0.30:* some bins are harmful, not just neutral; drop the outer bins of the heads stage 0 found sharp
     (RUSH 32, LOAD 10-15, CORE 24/18) before RL.
+**T1 and T1b results.** T1 (zdpp0): 8 of 8 units exactly zdb. T1b first failed (zdpp3, 6 of 8: canyoudig ended at
+round 171/211 instead of 258, the winner following the seat). Variants located it: without the plan pick at all
+(zdpp4) the games diverged the same way, and crediting DP.plan's bytecodes to the ledger (zdpp5) changed nothing.
+The cause was older net-mode code: in any `D.NET` build, BABY_MOVE's wrapper ran its pre-pick bookkeeping
+(`netBook`: attackers' enemy-king memory and stall tracker) and BABY_ACT_PRE's hook reset `G.facing` (and returned
+early for kings) even when the build had no net for that point. Builds with nets at all of points 1-16 (every RL run
+so far, rl-s1 included) never reached that case. Fix: `D.net(p)` (a net build that carries a net for p) gates those
+two hooks. T1b again (zdpp6): 8 of 8 units exactly zdb. Pass.
+
 - *The known answer:* if rl-p1 learns, CORE's mass should move toward 12/8 (bin 2) within ~10 iterations. If CORE has
   not moved by iteration 15 while its Fisher share stays above 0.3, the credit assignment is too weak, and the next
   step is plan cadence 100 with 256 games per iteration (design C's T7 fallback).

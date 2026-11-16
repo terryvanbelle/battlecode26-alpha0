@@ -225,6 +225,11 @@ public final class D {
     /** Option k of point p is reachable in this build (gates behaviour that is not an option, e.g. role resets). */
     static boolean has(int p, int k) { return k < DNet.reach(p); }
 
+    /** Net mode at point p: a net build that carries a net for p. Hooks that do work before their pick (bookkeeping,
+     *  state resets) test this rather than NET, so a point without a net runs zdb's code exactly (design C's builds
+     *  carry nets only for the plan heads; section 21, T1b). */
+    static boolean net(int p) { return NET && DNet.has(p); }
+
     /** fit(ok, len) cut to the first act options (act >= len: unchanged, null stays null). */
     static boolean[] fit(boolean[] ok, int len, int act) {
         if (act >= len) return fit(ok, len);

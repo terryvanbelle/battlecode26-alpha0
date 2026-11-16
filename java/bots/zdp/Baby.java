@@ -120,7 +120,7 @@ public final class Baby {
         Debug.mark(31);
         if (D.ON && rc.isActionReady()) D.babyAct(D.BABY_ACT_PRE, robots, false, '-');   // BABY_ACT_PRE opens
         boolean netAct = false;
-        if (D.NET && D.point == D.BABY_ACT_PRE) {
+        if (D.net(D.BABY_ACT_PRE) && D.point == D.BABY_ACT_PRE) {
             int k = D.pick(D.BABY_ACT_PRE, actOk(D.BABY_ACT_PRE));
             netAct = k >= 0 && actExec(k, robots);
             if (netAct) D.lab = k;
@@ -189,7 +189,7 @@ public final class Baby {
             int cdD = G.debt, cbD = G.bc();   // ledger (K 9): decision record, BABY_MOVE features
             D.babyMove();
             G.debt = cdD + G.bc() - cbD + 9;
-            if (D.NET) netMove(); else moveDecision();
+            if (D.net(D.BABY_MOVE)) netMove(); else moveDecision();
             int cdE = G.debt, cbE = G.bc();   // ledger (K 9)
             D.emit();
             G.debt = cdE + G.bc() - cbE + 9;
