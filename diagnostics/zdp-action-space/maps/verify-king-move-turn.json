@@ -1,0 +1,87 @@
+{
+ "claims_checked": 94,
+ "confirmed": 83,
+ "corrections": [
+  {
+   "claim": "KING_TURN missing_information: 'there is no sensitivity run for point 16 (only sens10-13 exist)'.",
+   "verdict": "wrong",
+   "correction": "A point-16 sensitivity run exists, and it had finished before the report was written. zdph16 (floor 0.2 at point 16) against zdpg39 scored 31/64 = 0.484, t \u22120.27, 95% interval 0.37-0.60: flat. One caveat for using it: zdpg39 also turns at random (about 1.5% of KING_TURN records at floor 0.005). So the test compares more random facing with less random facing. Nothing has yet compared random facing with zdb's fixed facing.",
+   "evidence": "docs/rl-es-plan.md:538 ('KING_TURN (16) | 31/64 = 0.48 | \u22120.3 | flat'); /tmp/claude-1000/-home-terryvanbelle-projects-vibe-bc26a0/31310128-fb77-4058-8e53-1da41e55d47b/scratchpad/aspace/sens16.log, last line (result JSON; file time 16:13 UTC, while the map file is 17:15 UTC); diagnostics/zdp-action-space/analysis/fisher-cpi-x0.json '16'.f005.dev_rate = 0.0148"
+  },
+  {
+   "claim": "KING_TURN missing_information: 'A newborn's cooldowns at birth, i.e. whether it can turn before its first sense. The engine digest does not say.'",
+   "verdict": "wrong",
+   "correction": "The digest does say. A new robot starts with all cooldowns at 10, and they drop to 0 at its first turn, so it can move, turn and act on that turn. Turning has its own cooldown, separate from moving and acting. So proposal 4 (the newborn turns before its first sense) is legal as written, and the newborn can still move forward and act on the same turn.",
+   "evidence": "docs/rules/engine-checked-digest.md:38; :63-64 (act/move/turn allowed when cd < 10; turn(d) then move(d) costs 10 move + 10 turn); :109 (turn: turning cd +10)"
+  },
+  {
+   "claim": "KING_TURN missing_information: 'Where a king's initial facing comes from (map file or engine).' This is also behind the point's framing that KT_ZDB equals zdb only while the king keeps an unspecified initial facing.",
+   "verdict": "wrong",
+   "correction": "The digest answers this. The map writer stores 'toward the map center', and spawnRobot converts it to directionTo((W-1)/2, (H-1)/2). A promoted king is the same robot as the baby, so it keeps the baby's facing. zdb's king never turns, so in zdb a starting king faces the centre for the whole game. spawn() also puts the newborn on the ring tile nearest the centre (or nearest enemies[0] at war). zdb's real policy is therefore 'newborns face the centre, away from the king'. The probe's 12.8% centre match is what the floor's random turning destroyed. It is not evidence that zdb's facing is arbitrary.",
+   "evidence": "docs/rules/engine-checked-digest.md:338 and :37; DK.java:941 (the bot's only rc.turn); King.java:319-339 (spawn tile scored toward the centre, or enemies[0] at war)"
+  },
+  {
+   "claim": "KING_TURN fallback_explanation: the net 'is still the calibrated widen init (scripts/dpnet_io.py:215-230)'... 'Every direction pick is therefore floor noise'. proposal_cost: 'it is still the calibrated init'.",
+   "verdict": "partly wrong",
+   "correction": "The calibrated init has an all-zero last layer, so its logits are constant: KT_ZDB leads every direction by ln(10\u00b79/0.005) = 9.80 in every row. The report's own measurements do not fit that net: last-layer weights up to 0.63, biases +0.05 and \u22129.6 to \u22129.7, and a lead of 6.8 at the median and 2.9 at p1. The Fisher data does not fit it either. The deviation rate at floor 0.005 is 1.48%, against 0.48% for the init. Rows with s_top > 0.999 are 1.1%, against 100% for the init. So something changed the last layer after the init. This host has no runs/ directory, so I could not tell what. What this means in practice: at the deployment floor, about 1.0 of the roughly 1.5 points of random turning per record comes from the net's own tail, not the floor. That tail stays at floor 0, because NET_T is 1. The conclusion 'untrained, so re-initialising loses nothing' still holds.",
+   "evidence": "scripts/dpnet_io.py:239-242 and 313-318 (last layer np.zeros, b[1:] = \u2212ln(10m/floor)); dpnet_io.py:175-181 (fold changes only layer 1); diagnostics/zdp-action-space/analysis/fisher-cpi-x0.json '16' (f005: dev_rate 0.01477, sat_share_rows 0.0113); java/bots/zdp/D.java:30 (NET_T = 1); DNet.java:123-130"
+  },
+  {
+   "claim": "KING_MOVE coupling: 'Economy: every executed step calls pickUp (DK.java:398, 403, 409, 427; King.java:179-188).'",
+   "verdict": "wrong",
+   "correction": "Only the K_PILE, K_CLOSER, K_SIDESTEP/K_WALK_HOME and K_MOVE_N executors call pickUp. The K_CAT_FLEE, K_UNPLUG and K_DODGE executors step without it, and so do zdb's own flee and unplug exits. Their cheese is picked up by the next turn's pickUp, one turn later.",
+   "evidence": "DK.java:382-395 (dodge, flee and unplug executors, no pickUp); King.java:383, 440, 602 (rc.move in flee, dodge and unplug, no pickUp); King.java:385 (zdb's unplug exit); King.java:43 (pickUp at the start of every king turn); DK.java:398, 403, 409, 427 (the four that do call it)"
+  },
+  {
+   "claim": "KING_MOVE coupling: 'clearNow keeps kings out of a site's 3x3 (King.java:885-896), which is the reason K_FORM_STILL exists (DK.java:392)'. Option 4: 'A stay that keeps the king off a site it is forming.'",
+   "verdict": "wrong",
+   "correction": "clearNow has no side effects. It tests whether a candidate site's 3x3 is inside the map, sensed, passable and free of non-baby robots. It is used only to choose sites and to build features, and nothing moves a king off a site. The K_FORM_STILL label comes from a branch in zdb's original King.move, switched off by a Cfg flag, that held the king still while a formation site was open. The behaviour-exact cleanup in pass 2A deleted it as dead code. So K_FORM_STILL is one of the dead-config labels, like K_LANE, K_NO_MINE, K_OFF_SITE, K_PATH and K_WALK_HOME. Its net executor is 'stay if formSite != null'.",
+   "evidence": "King.java:885-896; callers King.java:849 and 877, DK.java:326 and 680; `git show 6513b19:java/bots/zdp/King.java` line 497: 'if (Cfg.FORM_STILL && formSite != null) { mineWhy = 'f'; D.lab = DK.K_FORM_STILL; return; }' (removed in 0ac0a97, 'zdp pass 2A: behaviour-exact cleanup'); DK.java:392"
+  },
+  {
+   "claim": "KING_MOVE fallback_explanation: 'The net cannot see most of these preconditions: ... At home is only a capped Chebyshev distance (DK.java:140).'",
+   "verdict": "partly wrong",
+   "correction": "'At home' is visible. Features 23-24 give whether a home exists and the Chebyshev distance to it. It is the same home the executors use: homeMine, or pickHomeMine(start) when it is unset, which is what DK.home() assigns. The cap at 63 does not affect the \u2264 1 test. K_CLOSER's at-home failures (37% of its argmax picks) and the anchor's 16k at-home K_CLOSER argmaxes are therefore imitation errors on an input the net can see: a fine threshold on an unscaled distance. Information is not missing. An explicit at-home bit would be a cheap fix.",
+   "evidence": "DK.java:137-140; DK.java:439-442 (home()); DK.java:403 (K_CLOSER needs h != null && cheb > 1)"
+  },
+  {
+   "claim": "K_CLOSER context_dependence: 'The net's version skips all of those checks.'",
+   "verdict": "partly wrong",
+   "correction": "It keeps two of zdb's conditions, 'home known' and 'not at home' (h != null && cheb(c,h) > 1), as the report's own executor field says. It skips only the flee, threat, unplug and pile checks.",
+   "evidence": "DK.java:401-405"
+  },
+  {
+   "claim": "CC 8: 'Yet KING_MOVE had the highest CPI fold t of the 7 points (1.97, docs/rl-es-plan.md:363)... The current action space blurs what signal there is.'",
+   "verdict": "unsupported",
+   "correction": "The figure 1.97 is right. But the plan's own sham-null analysis concludes it is chance: the largest of 7 null fold means reaches 1.97 about 16% of the time, so the probe shows no state-dependent signal at any point. It is not evidence that KING_MOVE has a signal that the action space hides. KING_TURN's fold t is 0.47.",
+   "evidence": "docs/rl-es-plan.md:363, 367, 372-374"
+  },
+  {
+   "claim": "KING_TURN coupling: 'BABY_ROLE at birth (Baby.java:41-47) and BABY_FACE (4) decide the newborn's later facings.'",
+   "verdict": "partly wrong",
+   "correction": "BABY_ROLE at birth only sets the role: born() and roleExec contain no turn. The newborn's later facings come from BABY_FACE and from BABY_MOVE's turns and steps. The king's facing governs the newborn's whole first sense, which happens before any turn of its own.",
+   "evidence": "Baby.java:41-48; Baby.java:318-325 (born); Baby.java:61 (sense() with the inherited facing)"
+  },
+  {
+   "claim": "KING_TURN missing_information: 'How many KING_TURN records are followed by a build in the same turn. The RL records keep the net's KING_SPAWN pick, so builds zdb made under fallback cannot be separated out.'",
+   "verdict": "partly wrong",
+   "correction": "The count can be recovered from p16.npz alone. KING_TURN's features include King.spawned, which only King.build increments. rl_data keeps robot and round, so consecutive records of the same king show each build, whether zdb or the net made it. The existing breakdown already bounds the number: about 39.7k executed net build picks, plus at most about 9k zdb builds after fallback in zdb-spawn states. That is roughly 9-10% of the 518k KING_TURN records. Keeping only records with a build would cut them about tenfold. The report's conclusion ('most are not followed by a build') still holds.",
+   "evidence": "DK.java:924 (D.f(D.cap(King.spawned, 255))); King.java:349-352 (spawned++ only in build); scripts/rl_data.py:218-221 (robot and round kept); diagnostics/zdp-action-space/analysis/kpts-cpi-x0.out:4-10 (77,055 build picks, 48.4% fallback; executed builds by zdb state; zdb-spawn build picks 23,611, 61.9% executed)"
+  }
+ ],
+ "missed": [
+  "KING_TURN's sawEnemy input (DK.java:922) is one turn stale. King.sawEnemy is assigned at the top of spawn() (King.java:287), and spawn() runs after KING_TURN (King.java:46-51). Every other point that reads it opens after spawn().",
+  "A KING_MOVE dig (K_DIG, K_DIGSTEP_N, or K_DODGE's dig) costs 5 cheese and adds 25 to the action cooldown (engine digest :136). Cooldowns fall by 10 per turn (digest :38), and acting needs cd < 10 (digest :63). So the action is still not ready on the next turn (15). A dig therefore takes away the next turn's build, its KING_ACT, and its KING_TURN record, since KING_TURN needs isActionReady (King.java:46). The report covers only the same-turn direction (spawn or act ruling out the dig). The net's digs also drop KING_DIG_MIN (DK.java:445-449), so they can cost builds at any cheese level from 5 up.",
+  "Floor 0 does not stop KING_TURN's random turning. With NET_T = 1 (D.java:30; DNet.java:123-130), v39's point-16 net samples its own tail in about 1.0% of records: fisher-cpi-x0.json '16' gives a deviation rate of 0.0148 at floor 0.005, and the floor accounts for only 0.0044 of it. So zdpz in the zfree test (floor 0 at 16; docs/rl-es-plan.md:591-593) still randomises facing. Removing that noise needs a forced KT_ZDB, either by mask or by zeroing the last layer.",
+  "The threat freeze counts enemies in view even during cooperation. The enemies array is sensed with no coop check (King.java:40), and King.java:384 tests enemies.length > 0. In contrast, spawn's siege and war tests, sawEnemy and the war goal all use !G.coop (King.java:287, 296, 322). If the freeze becomes a decision or a feature, the coop state should be part of it.",
+  "Slot edge case: claimSlot falls back to slot 0 when all 5 slots are fresh (King.java:11-17; Comms.java:12, KING_SLOTS = 5). With 6 or more live kings, several kings run KING_FORM and formation (King.java:72), and K_FORM_STILL can act for each of them. 'Always fails for kings other than slot 0' is true only while there are at most 5 kings."
+ ],
+ "overall_reliability": "High on the code plumbing. Locations, masks, executors, the fallback mechanics, rl_train crediting the non-acting option (rl_train.py:525), the 8 identical stays, and K_CAT_FLEE acting as 'defer to zdb' all check out. Every probe number I could recompute matches cpi-x0-summary.json, devfb-cpi-x0.json and kpts-cpi-x0.out. Those include 17.5% fallback, 68.5% of non-stay picks falling back, the per-option fallback shares, 465,206 KT_ZDB picks and 259 direction argmax rows. The weaknesses are in context and history. Three of KING_TURN's 'missing information' items are already answered in the repo: the sens16 run, digest line 38 on newborn cooldowns, and digest line 338 on the initial facing. The description of point 16's net as 'the calibrated init' contradicts the report's own numbers and the Fisher data. Two coupling claims are wrong: that every step calls pickUp, and that clearNow is why K_FORM_STILL exists. 'At home' is visible to the net, not hidden. None of these errors overturns the main diagnosis. KING_MOVE's static mask is looser than its executors, which causes the fallback and wrong credit. Its options are zdb's reasons, not actions. KING_TURN is untrained noise, and its effect depends on a facing that persists and on a spawn tile chosen later.",
+ "proposal_concerns": [
+  "Moving KING_TURN into King.build: build() runs while KING_SPAWN's record is still open in D's primary slot. King.java:51 emits that record only after spawn() returns, and DK.java:484 calls build from inside the net executor. DK.netPick and D.open use that same slot (DK.java:358-365, D.java:128). So the hook must either move KING_TURN to the secondary slot (D.open2, D.pick2 and D.emit2: D.java:130, 184-191, 212-216) or emit KING_SPAWN first. The 30-50 line estimate leaves this out.",
+  "'KT_ZDB again equals zdb's behaviour' holds only until the king's first direction pick. The facing persists across builds (DK.java:941 is the only turn), so after that KT_ZDB means 'keep whatever the last build set', which still depends on history. Better: make the options relative to the tile's outward direction with no 'keep' option, and label the teacher with the facing zdb actually has. That is the initial facing toward the centre (digest :338), and spawn already scores tiles toward the centre (King.java:319-339).",
+  "Whether the newborn's facing matters at all is untested. sens16 was flat (t \u22120.27), but both sides turned at random. Before writing tile-relative KING_TURN code, play a build with KT_ZDB forced (no turning at all) against zdpg39. Floor 0 is not enough, because the net's tail still turns about 1% of the time. The cheapest design may be to drop KING_TURN, or to let the newborn turn before its first sense, which is legal per digest :38.",
+  "Proposal 5 (call DK.home() every turn before the pick) moves the first home-mine pick earlier than zdb makes it. zdb assigns it only when the cascade reaches King.java:386, which flee, threat-hold and unplug turns never do. pickHomeMine depends on the mines known and the other kings' positions at that moment (King.java:920-942). Assigning on the first movement-ready turn can therefore pick a different mine from zdb's, one that is never revised, and it moves net-build features away from the teacher data. Alternatives: keep the would-be home as a feature (as DK.java:138 does) and assign it where zdb does, or make the home mine an explicit decision (proposal 6).",
+  "DIG_i: the 16-tile ring covers every tile a king dig can target: removeDirt range 8 (digest :136), and the dirtStep and digTile tiles both lie in the ring (King.java:461-473, 623-650). digAt is reached only from movement code (King.java:400, 455; DK.java:447), so the relabel 'DIG_i if digAt ran' is clean. But each dig costs the next turn's action (see the second missed item), and the proposed mask (isActionReady && canRemoveDirt) allows digs at 5 cheese where zdb needs 100. The candidate inputs should therefore include cheese and that next-turn cost to builds. Otherwise RL will see digs that starve builds only through delayed outcomes."
+ ]
+}

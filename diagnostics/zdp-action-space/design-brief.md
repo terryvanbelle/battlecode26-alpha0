@@ -41,13 +41,13 @@ points at v39's normal floors (0.005; point 5 at 0.001). 64 games each against z
 | 4 | BABY_FACE | 27/64 = 0.42 | -1.3 | mild |
 | 5 | BABY_ROLE | 32/64 = 0.50 | 0.0 | flat |
 | 6 | BABY_COMMS | 26/64 = 0.41 | -1.6 | mild |
-| 7 | MINE_PICK | pending | | |
-| 8 | BABY_FREE | pending | | |
+| 7 | MINE_PICK | 28/64 = 0.44 | -1.7 | mild |
+| 8 | BABY_FREE | 28/64 = 0.44 | -0.9 | mild |
 | 10 | KING_MOVE | 34/64 = 0.53 | +0.4 | flat |
 | 11 | KING_SPAWN | 17/64 = 0.27 | -3.7 | sharp |
 | 12 | KING_ACT | 28/64 = 0.44 | -1.3 | mild |
 | 13 | KING_FORM | 24/64 = 0.375 | -2.0 | moderate |
-| 14 | KING_COMMS | pending | | |
+| 14 | KING_COMMS | 19/64 = 0.30 | -3.7 | sharp (frozen, never trained: random shared-array edits) |
 | 16 | KING_TURN | 31/64 = 0.48 | -0.3 | flat |
 
 Caveat: uniform noise measures how costly undirected choices are at a point. That depends on the option set (e.g. 16 of
@@ -165,6 +165,29 @@ hidden-strategy verifications are still running; check maps/ for verify-king-*.j
 - Enemy rats never hear squeaks; cats hear both teams but react only in attack mode.
 - C_CASH_LEAD skips zdb's endgame gate (round >= 1880, one king, bank), so it is a king-formation trigger at any round.
 - Dead zdb code: the ATTACK-only king bites at Baby.java:141 and 218-221 can never run.
+King points (verify-king-move-turn.json, verify-king-spawn-act-form.json, added 10:50 PDT):
+- Every net open at KING_FORM resets King.formStart (King.java:714), which zdb's own formation gate and endKing read
+  (King.java:698: round - formStart < FORM_TTL 60 + FORM_RETRY 150), so each exploratory open shuts zdb's formation off
+  for up to 210 rounds. With a site open, 7 of KING_FORM's 8 allowed options close it (at floor 0.1 a site lives at
+  most ~11 turns); with none open, 17 of 25 options open one. Openers are not masked for the engine's king limits
+  (< 5 kings; < 2 after round 1200).
+- A_BITE_KING can never execute: a king attacks within dist^2 8 of its centre and two 3x3 kings' centres are >= 9 apart.
+  The kingReach feature is therefore always false. Retarget to enemy-king body tiles or drop it.
+- Traps do not block builds (canBuildRat checks range, readiness, cheese, occupancy, passability; dirt and occupancy
+  block). KING_SPAWN's exact per-tile mask is canBuildRat(tile); S_DIG also fails on the bot's own bank < 45 guard.
+- KING_MOVE's digs (K_DIG, K_DIGSTEP_N, K_DODGE) are a second consumer of the king's action after KING_ACT: a merged
+  "one king action per ready turn" decision must include them. Only 25-cost actions (dirt, digs) reliably block the
+  next turn's spawn; cooldown falls 10 per turn and acting needs cd < 10.
+- Engine trap caps are team-wide and shared by babies and kings: 25 rat traps, 10 cat traps.
+- A_BITE_KILL executes only on 11-20 hp targets with bank >= 300 + (hp-10)^2; its exact mask is biteCheese > 0 &&
+  canAttack, already computed as a feature (DK.java:253).
+- Records: the 256-char indicator cap is bypassed in harness runs; the real limit is the bot's char[192] buffer D.F/F2
+  (header 4 + features + RL trailer 5 + ceil(nOpt/16)), and the trailer is silently dropped when it would not fit.
+  Per-candidate records must size or raise this buffer.
+- KING_TURN: the king never turns in zdb (a starting king faces the map centre all game); the net's own softmax tail
+  turns in ~1% of records even at floor 0. Whether newborn facing matters is untested (sens16 compared random with
+  less random). KING_TURN's sawEnemy input is one turn stale.
+- 'At home' is visible to KING_MOVE (features 23-24), so K_CLOSER's at-home failures are imitation errors.
 
 ## 3. Infrastructure facts (verify in code when it matters)
 - Java: java/bots/zdp/D.java (point ids, features, take/emit/fallback, records), DNet.java (per-point MLP n_in-64-64-n_out,

@@ -531,14 +531,21 @@ floors (zdpg39) for 64 games (judge maps row 4, seed 3801001; box `runs/cpi/sens
 | BABY_FACE (4) | 27/64 = 0.42 | −1.3 | mild |
 | BABY_ROLE (5) | 32/64 = 0.50 | 0.0 | flat |
 | BABY_COMMS (6) | 26/64 = 0.41 | −1.6 | mild |
+| MINE_PICK (7) | 28/64 = 0.44 | −1.7 | mild |
+| BABY_FREE (8) | 28/64 = 0.44 | −0.9 | mild |
 | KING_MOVE (10) | 34/64 = 0.53 | +0.4 | flat |
 | KING_SPAWN (11) | 17/64 = 0.27 | −3.7 | sharp |
 | KING_ACT (12) | 28/64 = 0.44 | −1.3 | mild |
 | KING_FORM (13) | 24/64 = 0.375 | −2.0 | moderate |
+| KING_COMMS (14) | 19/64 = 0.30 | −3.7 | sharp |
 | KING_TURN (16) | 31/64 = 0.48 | −0.3 | flat |
 
-MINE_PICK (7), BABY_FREE (8) and KING_COMMS (14) are still running. Uniform choices measure the option set as much as
-the precision a point needs: 16 of KING_SPAWN's 22 options mean "spawn now", and BABY_ACT's random picks spend cheese on
+![Per-point sensitivity](img/zdp-sensitivity.svg)
+
+Of the six sharp or moderate points, only KING_SPAWN and KING_FORM were ever trained by RL. KING_COMMS, never trained
+and frozen in rl-m2, is as sharp as the baby tactics: random edits to the shared array break the team's coordination.
+At its rl-m2 floor of 0.005 it still made about 7.8 random edits per team-game. Uniform choices measure the option set
+as much as the precision a point needs: 16 of KING_SPAWN's 22 options mean "spawn now", and BABY_ACT's random picks spend cheese on
 bites, traps and transfers, or place rat traps (which end cooperation when an enemy triggers them).
 
 **Gradient signal.** rl_train's PPO ratio differentiates the floor-mixed probability p = (1−f)·softmax(z) + f/m. The

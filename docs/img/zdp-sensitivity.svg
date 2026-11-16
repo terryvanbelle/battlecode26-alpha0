@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 504" width="760" height="504" role="img" aria-label="Per-point sensitivity: exploration floor 0.2 at one decision point">
+<style>
+svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;--s1:#eb6834;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+@media (prefers-color-scheme: dark){svg{--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--grid:#3a3936;--s0:#3987e5;--s1:#d95926;}}
+.t{fill:var(--ink);font-size:15px;font-weight:600}.st{fill:var(--ink2);font-size:12px}.ax{fill:var(--ink2);font-size:11px}.lb{fill:var(--ink);font-size:12px}.lg{fill:var(--ink);font-size:12px}.gl{stroke:var(--grid);stroke-width:1}.ref{stroke:var(--ink2);stroke-width:1;stroke-dasharray:4 4}.wh0{stroke:var(--s0);stroke-width:2;stroke-linecap:round;opacity:.5}.dot0{fill:var(--s0);stroke:var(--surface);stroke-width:2}.wh1{stroke:var(--s1);stroke-width:2;stroke-linecap:round;opacity:.5}.dot1{fill:var(--s1);stroke:var(--surface);stroke-width:2}
+</style>
+<rect width="760" height="504" fill="var(--surface)"/>
+<text class="t" x="16" y="24">Per-point sensitivity: exploration floor 0.2 at one decision point</text>
+<text class="st" x="16" y="43">rl-m2 v39 against itself, 64 games per point; score with 95% interval. Lower = costlier to explore.</text>
+<circle class="dot0" cx="21" cy="66" r="5"/><text class="lg" x="31" y="70">frozen in rl-m2</text>
+<circle class="dot1" cx="160.0" cy="66" r="5"/><text class="lg" x="170.0" y="70">trainable in rl-m2</text>
+<line class="gl" x1="190.0" x2="190.0" y1="88" y2="460"/>
+<text class="ax" x="190.0" y="476" text-anchor="middle">0.00</text>
+<line class="gl" x1="282.5" x2="282.5" y1="88" y2="460"/>
+<text class="ax" x="282.5" y="476" text-anchor="middle">0.25</text>
+<line class="gl" x1="375.0" x2="375.0" y1="88" y2="460"/>
+<text class="ax" x="375.0" y="476" text-anchor="middle">0.50</text>
+<line class="gl" x1="467.5" x2="467.5" y1="88" y2="460"/>
+<text class="ax" x="467.5" y="476" text-anchor="middle">0.75</text>
+<line class="gl" x1="560.0" x2="560.0" y1="88" y2="460"/>
+<text class="ax" x="560.0" y="476" text-anchor="middle">1.00</text>
+<line class="ref" x1="375.0" x2="375.0" y1="88" y2="460"/>
+<text class="ax" x="379.0" y="90">even</text>
+<text class="ax" x="375.0" y="494" text-anchor="middle">score</text>
+<g><title>BABY_ACT_PRE (2): 14/64 = 0.22, t -4.8 (95% 0.14-0.33)</title><text class="lb" x="178" y="113.0" text-anchor="end">BABY_ACT_PRE (2)</text><line class="wh0" x1="239.9" x2="313.7" y1="109.0" y2="109.0"/><circle class="dot0" cx="271.0" cy="109.0" r="5"/><text class="ax" x="572" y="113.0">14/64 = 0.22, t -4.8</text></g>
+<g><title>BABY_MOVE (1): 17/64 = 0.27, t -4.3 (95% 0.17-0.38)</title><text class="lb" x="178" y="139.0" text-anchor="end">BABY_MOVE (1)</text><line class="wh0" x1="254.0" x2="332.4" y1="135.0" y2="135.0"/><circle class="dot0" cx="288.3" cy="135.0" r="5"/><text class="ax" x="572" y="139.0">17/64 = 0.27, t -4.3</text></g>
+<g><title>KING_SPAWN (11): 17/64 = 0.27, t -3.7 (95% 0.17-0.38)</title><text class="lb" x="178" y="165.0" text-anchor="end">KING_SPAWN (11)</text><line class="wh1" x1="254.0" x2="332.4" y1="161.0" y2="161.0"/><circle class="dot1" cx="288.3" cy="161.0" r="5"/><text class="ax" x="572" y="165.0">17/64 = 0.27, t -3.7</text></g>
+<g><title>BABY_ACT_POST (3): 18/64 = 0.28, t -3.7 (95% 0.19-0.40)</title><text class="lb" x="178" y="191.0" text-anchor="end">BABY_ACT_POST (3)</text><line class="wh0" x1="258.8" x2="338.5" y1="187.0" y2="187.0"/><circle class="dot0" cx="294.0" cy="187.0" r="5"/><text class="ax" x="572" y="191.0">18/64 = 0.28, t -3.7</text></g>
+<g><title>KING_COMMS (14): 19/64 = 0.30, t -3.7 (95% 0.20-0.42)</title><text class="lb" x="178" y="217.0" text-anchor="end">KING_COMMS (14)</text><line class="wh0" x1="263.6" x2="344.5" y1="213.0" y2="213.0"/><circle class="dot0" cx="299.9" cy="213.0" r="5"/><text class="ax" x="572" y="217.0">19/64 = 0.30, t -3.7</text></g>
+<g><title>KING_FORM (13): 24/64 = 0.38, t -2.0 (95% 0.27-0.50)</title><text class="lb" x="178" y="243.0" text-anchor="end">KING_FORM (13)</text><line class="wh1" x1="288.7" x2="374.1" y1="239.0" y2="239.0"/><circle class="dot1" cx="328.8" cy="239.0" r="5"/><text class="ax" x="572" y="243.0">24/64 = 0.38, t -2.0</text></g>
+<g><title>BABY_COMMS (6): 26/64 = 0.41, t -1.6 (95% 0.29-0.53)</title><text class="lb" x="178" y="269.0" text-anchor="end">BABY_COMMS (6)</text><line class="wh0" x1="299.0" x2="385.6" y1="265.0" y2="265.0"/><circle class="dot0" cx="340.3" cy="265.0" r="5"/><text class="ax" x="572" y="269.0">26/64 = 0.41, t -1.6</text></g>
+<g><title>BABY_FACE (4): 27/64 = 0.42, t -1.3 (95% 0.31-0.54)</title><text class="lb" x="178" y="295.0" text-anchor="end">BABY_FACE (4)</text><line class="wh0" x1="304.2" x2="391.2" y1="291.0" y2="291.0"/><circle class="dot0" cx="346.1" cy="291.0" r="5"/><text class="ax" x="572" y="295.0">27/64 = 0.42, t -1.3</text></g>
+<g><title>BABY_FREE (8): 28/64 = 0.44, t -0.9 (95% 0.32-0.56)</title><text class="lb" x="178" y="321.0" text-anchor="end">BABY_FREE (8)</text><line class="wh0" x1="309.5" x2="396.9" y1="317.0" y2="317.0"/><circle class="dot0" cx="351.9" cy="317.0" r="5"/><text class="ax" x="572" y="321.0">28/64 = 0.44, t -0.9</text></g>
+<g><title>KING_ACT (12): 28/64 = 0.44, t -1.3 (95% 0.32-0.56)</title><text class="lb" x="178" y="347.0" text-anchor="end">KING_ACT (12)</text><line class="wh1" x1="309.5" x2="396.9" y1="343.0" y2="343.0"/><circle class="dot1" cx="351.9" cy="343.0" r="5"/><text class="ax" x="572" y="347.0">28/64 = 0.44, t -1.3</text></g>
+<g><title>MINE_PICK (7): 28/64 = 0.44, t -1.7 (95% 0.32-0.56)</title><text class="lb" x="178" y="373.0" text-anchor="end">MINE_PICK (7)</text><line class="wh1" x1="309.5" x2="396.9" y1="369.0" y2="369.0"/><circle class="dot1" cx="351.9" cy="369.0" r="5"/><text class="ax" x="572" y="373.0">28/64 = 0.44, t -1.7</text></g>
+<g><title>KING_TURN (16): 31/64 = 0.48, t -0.3 (95% 0.37-0.60)</title><text class="lb" x="178" y="399.0" text-anchor="end">KING_TURN (16)</text><line class="wh0" x1="325.5" x2="413.6" y1="395.0" y2="395.0"/><circle class="dot0" cx="369.2" cy="395.0" r="5"/><text class="ax" x="572" y="399.0">31/64 = 0.48, t -0.3</text></g>
+<g><title>BABY_ROLE (5): 32/64 = 0.50, t +0.0 (95% 0.38-0.62)</title><text class="lb" x="178" y="425.0" text-anchor="end">BABY_ROLE (5)</text><line class="wh1" x1="331.0" x2="419.0" y1="421.0" y2="421.0"/><circle class="dot1" cx="375.0" cy="421.0" r="5"/><text class="ax" x="572" y="425.0">32/64 = 0.50, t +0.0</text></g>
+<g><title>KING_MOVE (10): 34/64 = 0.53, t +0.4 (95% 0.41-0.65)</title><text class="lb" x="178" y="451.0" text-anchor="end">KING_MOVE (10)</text><line class="wh1" x1="342.0" x2="429.8" y1="447.0" y2="447.0"/><circle class="dot1" cx="386.5" cy="447.0" r="5"/><text class="ax" x="572" y="451.0">34/64 = 0.53, t +0.4</text></g>
+</svg>

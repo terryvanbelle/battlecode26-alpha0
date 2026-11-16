@@ -1,0 +1,99 @@
+{
+ "claims_checked": 62,
+ "confirmed": 50,
+ "corrections": [
+  {
+   "claim": "King points pick their option through D.pick (D.java:203-209).",
+   "verdict": "partly wrong",
+   "correction": "King points pick through DK.netPick, which wraps the same DNet.sample: a masked softmax plus floor/m on each allowed option. The sampling semantics in the report are right, but the cited path is not.",
+   "evidence": "DK.java:358-365 (netPick), used at DK.java:495 and 620; DNet.java:116-135."
+  },
+  {
+   "claim": "A_BITE with no target: the attack throws, and the exception is caught at DK.java:499.",
+   "verdict": "wrong",
+   "correction": "Nothing is thrown. King.weakest(enemies) returns null, so execKingAct returns false and zdb's own bite runs as the fallback (unless coop or hold skips it).",
+   "evidence": "DK.java:507-509 (b == null -> return false); King.java:57 (zdb bite skipped when coop or hold)."
+  },
+  {
+   "claim": "A_BITE_KING falls back because the king cannot act ('in the data, always').",
+   "verdict": "unsupported",
+   "correction": "It always falls back, but for a geometric reason, not a data one. The executor needs rc.canAttack(enemy king's centre). A king can only attack within dist^2 8 of its own centre. Two 3x3 kings cannot overlap, so their centres are at least Chebyshev 3 apart (dist^2 >= 9), and the option can never execute. The same centre test makes the KING_ACT feature kingReach always false, and it leaves enemy kings out of the reach/weak/kill-bite features. zdb's own bite does hit king body tiles, so the features and the actual targets disagree.",
+   "evidence": "DK.java:551-553 (A_BITE_KING executor); GameConstants.java:179 (RAT_KING_ATTACK_DISTANCE_SQUARED = 8); RobotControllerImpl.java:1046-1052; DK.java:241-255 (reach/weak/kingReach from canAttack(e.location)); King.java:205-225 (weakest/kingTile body tiles); DK.java:579-589 (weakestLoc)."
+  },
+  {
+   "claim": "KING_ACT's trap/dirt/dig cooldowns close KING_SPAWN on the next turn; fort traps and moat fill put the king on cooldown for 1-2 turns.",
+   "verdict": "partly wrong",
+   "correction": "Cooldown drops by 10 each turn, and the king is ready only when cooldown < 10, so the leftover cooldown when it acts is 0 or 5. Attacks and cat traps (cost 10) never block the next turn. A rat trap (15) blocks the next turn only if 5 was left over, so it blocks 0 or 1 turns. Dirt place/remove and digs (25) block 1 or 2 turns. Only the 25-cost actions reliably close the next turn's KING_SPAWN. Within one turn the coupling runs the other way: a build (cost 10) leaves the king not ready, so KING_ACT never opens after a build.",
+   "evidence": "InternalRobot.java:354-355 (ready iff < COOLDOWN_LIMIT), 1167 (-10 per turn); GameConstants.java:244, 257; RobotControllerImpl.java:1016 (build cooldown)."
+  },
+  {
+   "claim": "Traps placed on ring tiles make those tiles unbuildable (a spawn/act coupling).",
+   "verdict": "wrong",
+   "correction": "canBuildRat checks only range, action-ready, cheese, occupancy and passability. isPassable is false only for walls, dirt and flying robots. Traps do not block builds; dirt (moat fill) and occupancy do. The report's missing_information says it did not check this.",
+   "evidence": "RobotControllerImpl.java:977-999; GameWorld.java:478-482."
+  },
+  {
+   "claim": "A_CAT_TRAP is allowed only in cooperation or within 100 rounds of a backstab.",
+   "verdict": "partly wrong",
+   "correction": "The engine rule is coop OR (at most 100 rounds since the backstab AND our team is not the backstabber). The engine also caps cat traps at 10 per team, a cap shared with babies, who lay cat traps too. A cat trap also needs its cheese cost and a passable, unoccupied tile with no own trap and no mine. The 19.8% coop fallback probably includes hits on the team cap.",
+   "evidence": "GameWorld.java:420-423 (catTrapsAllowed); TrapType.java:17 (maxCount 10); RobotControllerImpl.java:339-364, 356; Baby.java:823, 851 (babies place cat traps)."
+  },
+  {
+   "claim": "KING_SPAWN options fall back only on engine preconditions.",
+   "verdict": "partly wrong",
+   "correction": "S_DIG can also fail on the bot's own guard: digRing returns without digging when the bank is below 45. That is policy, not an engine rule. The proposal's masks need this predicate too.",
+   "evidence": "King.java:361-377 (bank < 45 guard at 363); DK.java:472."
+  },
+  {
+   "claim": "A newborn baby's role comes from Baby.born.",
+   "verdict": "wrong",
+   "correction": "In net builds, BABY_ROLE (point 5) is sampled at birth right after born(), and roleExec(k) overrides the role born() set. The recorded label is the final role.",
+   "evidence": "Baby.java:41-46 (born(); D.pick(D.BABY_ROLE, D.roleOk(0)); roleExec(k); D.lab = D.roleLab())."
+  },
+  {
+   "claim": "A king forms only when babies fill the 3x3.",
+   "verdict": "partly wrong",
+   "correction": "becomeRatKing needs at least 7 allied baby rats among the 9 tiles. All 9 tiles must be on the map and passable, with no cat or king in the 3x3. The team also needs cheese >= 50, fewer than 5 kings, and fewer than 2 kings after round 1200.",
+   "evidence": "RobotControllerImpl.java:1158-1213 (numAllyRats < 7 throws at ~1211); GameConstants.java:68 (5 kings), 75 (2 after cutoff), 82 (cutoff 1200), 219 (upgrade cost 50)."
+  },
+  {
+   "claim": "A_BITE_KILL: a cheese-boosted kill bite on the weakest enemy (fallback explained only by targets/bank).",
+   "verdict": "partly wrong",
+   "correction": "biteCheese returns 0, and the option falls back, when the target has hp <= 10 (a plain bite already kills it) or when (hp-10)^2 > min(100, bank-300). So A_BITE_KILL executes only on targets with 11-20 hp and a bank of at least 300 + (hp-10)^2. Its mask should be biteCheese > 0 && canAttack(loc, c), which DK.java:253 already computes as a feature (that feature excludes kings).",
+   "evidence": "King.java:259-264 (biteCheese); DK.java:510-515 (executor); DK.java:253."
+  },
+  {
+   "claim": "Records go out as indicator strings capped at 256 chars (GameConstants.java:53; truncation at RobotControllerImpl.java:1579-1581). Per-candidate KING_ACT records (~190 chars) still fit; only a merged record would reach the limit.",
+   "verdict": "partly wrong",
+   "correction": "In recorded runs the 256 cap does not apply. The student harness intercepts '\\uDEC0' strings at the top of setIndicatorString, before the engine truncates, and Decisions.take writes all n features. The real limit is the bot's buffer: D.F/F2 = char[192]. That buffer holds the 4 header chars, the features and the RL trailer (5 + ceil(nOpt/16) chars). The trailer is silently dropped when it would not fit, and D.f has no bounds check. A ~190-char KING_ACT record already overflows today's buffer. Raising it is a one-line change, but the cost estimate should plan around 192, not 256.",
+   "evidence": "D.java:112 (char[192]); D.java:140-142 (trailer dropped if at+5+words > B.length); D.java:164-167 (F[n++] unchecked); D.java:179; scripts/build_student.py:52-55; java/student/alpha0/student/Decisions.java:32-49."
+  },
+  {
+   "claim": "KING_FORM options 0-6 are the same action with a site open, and 0-2 equal 8-12 with no site open.",
+   "verdict": "partly wrong",
+   "correction": "With a site open, options 0-3, 5 and 6 just close it. F_RICH_GAP (4) also sets formStart = round - FORM_TTL - FORM_RETRY, which reopens zdb's own formation gate at once, so its effect is different. With no site open, 0-2 still call closeForm and write FORM_T = 0, while 8-12 write nothing. They are the same only when FORM_T is already 0.",
+   "evidence": "DK.java:642-660 (execKingForm); King.java:722-725 (closeForm), 735-737 (richDrop), 740-743 (richGap), 698 (gate)."
+  }
+ ],
+ "missed": [
+  "KING_MOVE also uses the king's action. K_DIG, K_DIGSTEP_N and K_DODGE dig after KING_ACT has run (King.java:395-400, 445-455; DK.java:412-417, 430-433). A merged 'one king-action decision per action-ready turn' still leaves this second consumer of the action outside it.",
+  "Rat traps placed in cooperation (A_TRAP_FORT/A_TRAP_FOE/A_TRAP_*) carry a backstab risk. When an enemy triggers our rat trap, the engine calls backstab against the trigger's opponent (GameWorld.java:639-642). That ends coop, makes OUR team the backstabber, and with it removes our cat-trap rights (GameWorld.java:420-423). The trap executors never check G.coop (DK.java:520-562, 602-616). Bites and grabs on rats also backstab (InternalRobot.java:623-625, 649); the report covered bites only.",
+  "Floor asymmetry at KING_FORM with a site open: 7 of the 8 allowed options close the site. Options 0-2, 5 and 6 call formClose, and 3 and 4 call closeForm (King.java:735-743); only F_HOLD keeps it. At cpi-x0's floor of 0.1, the floor alone closes an open site with probability >= 8.75% per turn, an expected life of at most ~11 turns. This mirrors the 17/25 opener share when no site is open (configs/cpi-x0.json; DK.java:631-640).",
+  "Every net open resets King.formStart = round (King.java:714). zdb's formation gate (King.java:698: round - formStart < FORM_TTL 60 + FORM_RETRY 150 -> F_IDLE) and endKing (King.java:~765) both read formStart. So each exploratory open shuts zdb's own formation off for up to 210 rounds (Cfg.java:44). This likely explains why the gate rarely passes. F_RICH_GAP does the opposite (King.java:742).",
+  "Openers are not masked for the engine's king limits. formAllowed masks them only at numKings >= KING_SLOTS 5 (DK.java:637-638; Comms.java:12). After round 1200, a team with >= 2 kings cannot form another (GameConstants.java:75-82; RobotControllerImpl.java ~1173-1176), yet sites can still open and pull babies. zdb itself caps formation at FORM_MAX 2 (Cfg.java:46; King.java:731), or 4 with a rich bank (Cfg.java:52).",
+  "An open formation site affects baby points beyond the report's list: the BABY_MOVE mask M_FORM_KING (Baby.java:2268), the endCat skip while a site is fresh (Baby.java:1411), auto-promotion in the action phase (Baby.java:181-184), and the comms FORM-age feature that every baby point reads (D.java:698).",
+  "Answers to the report's open question on team dirt: team dirt starts at 0 (TeamInfo.java:31), gains 1 per removeDirt and loses 1 per placeDirt (TeamInfo.java:223-233). placeDirt needs team dirt > 0 and a tile that is not a mine (RobotControllerImpl.java:253-274). So moat fill depends on earlier digs, by kings or babies.",
+  "Engine trap caps the action-space masks need: 25 rat traps per team (TrapType.java:12) and 10 cat traps per team (TrapType.java:17). Babies count toward both caps, and king traps take their cheese from the shared bank.",
+  "The KING_ACT feature spawnWhy (DK.java:280) never takes its 'build' value. A build costs cooldown 10, which leaves the king not action-ready, so KING_ACT does not open on that turn. The 'b' value is dead for that point."
+ ],
+ "overall_reliability": "Mostly reliable on data and core structure; less reliable on engine rules and cross-point couplings. Every measured number I checked (kpts-cpi-x0/kpts2/kpts3 outputs, cpi-x0-summary.json, the plan table at docs/rl-es-plan.md:500-506) reproduced. So did the descriptions of masks, executors, fallback mechanics, feature/label lists, and the claim that fallen-back picks still drive the RL gradient (scripts/rl_train.py:525-542; the flags are read only at line 538). Two claims are wrong: A_BITE does not throw, and traps do not block builds. Several are partly wrong or incomplete: cooldown blocking, cat-trap legality, kill-bite conditions, king-formation rules, the newborn's role source, the 256 vs 192 record limit, and which KING_FORM options are equivalent. One mechanism is misexplained: A_BITE_KING is geometrically impossible, and the same flaw blinds the kingReach/reach features to enemy kings. It also missed couplings that matter to its own proposal: KING_MOVE digs share the action, rat traps can trigger a coop backstab, exploratory opens reset formStart, and the floor churns open sites. None of these overturns the main conclusion: fallback comes from masks that do not match executor preconditions, and per-candidate masks plus executors would fix it. Several do change what the masks and features must contain.",
+ "proposal_concerns": [
+  "A merged king-action decision must also include KING_MOVE's digs (K_DIG, K_DIGSTEP_N, K_DODGE), since they use the same action after KING_ACT. Otherwise the 'one record per action-ready turn' design still has two consumers of the king's action.",
+  "The proposed 'action-cooldown cost' feature should encode turns blocked, not raw cost. With a leftover of 0 or 5, cost 10 never blocks the next turn, 15 blocks 0-1 turns and 25 blocks 1-2. Only the 25-cost actions (dirt, digs) reliably cost the next turn's spawn.",
+  "Masks meant to equal executor preconditions need more than the canPlace* calls. They must cover the engine trap caps (rat 25, cat 10, both shared with babies), exclusion of the backstabber, cheese costs from the shared bank, and attack-tile passability. They also need a coop guard or feature for rat traps (an enemy trigger makes us the backstabber) as well as bites. And they must include the bot-side guard on S_DIG (bank < 45).",
+  "Drop A_BITE_KING, or retarget it to enemy-king body tiles as King.kingTile does. Rewrite the kingReach/reach/weak features to test body tiles too. Per-target candidates built on the current canAttack(e.location) logic would inherit the blind spot to enemy kings.",
+  "The KING_SPAWN per-tile mask can be exactly canBuildRat(tile). Traps never block builds, so the proposed trap-on-tile features are not needed to explain build failures; dirt and occupancy are what block.",
+  "The KING_FORM redesign (commitment/TTL, minimum babies) should also separate net opens from King.formStart. Otherwise zdb's own gate stays off for 210 rounds after each exploratory open. It should also fix the floor asymmetry: 7 of 8 allowed options close an open site, and 17 of 25 open one when none is open. One fix is an open/keep/close head sampled before the site kind. Openers should be masked by the engine's king limits (2 after round 1200), or sites that cannot form will still pull babies.",
+  "Size the records against the bot's 192-char D.F buffer, which includes the header and the RL trailer, or raise it. The engine's 256 cap is bypassed in harness runs. At the proposed ~190 chars, a KING_ACT record would already overflow or lose its trailer."
+ ]
+}
