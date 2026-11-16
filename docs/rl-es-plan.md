@@ -410,3 +410,11 @@ Second checkpoint, set now (21:54 PDT) because section 11 set only one: after 12
 directions), the same pooled check. Cosine above 0.2: judge the pooled proposal (`es_propose.py --build zdplj`,
 section 11's judge and guard). Cosine at most 0.1: stop. In between: one last check after 18 updates, then stop
 unless the cosine is above 0.2.
+
+**After 12 updates (00:41 PDT November 16; iterations 0–11, 384 directions):** |t| > 2 share 0.049, max |t| 3.00,
+split-half cosine **+0.170**: between the bars, so the last check comes after 18 updates (cosine above 0.2: judge the
+pooled proposal from the start net; otherwise stop). The cosine rose from 0.103 as the directions doubled, as a weak
+gradient spread over many coordinates would: no single coordinate stands out, but the two halves agree more as each
+gets less noisy. It is about 4 sd from zero under no signal. Meanwhile the centre drifts down: gates against zdpf005
+v3 16/32, v6 13/32, v9 10/32 (v0 17/32). The step rule moves coordinates that cross |t| > 2 by chance. That does not
+touch the pooled proposal, which `es_propose.py` builds from the start net (θ = 0).
