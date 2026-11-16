@@ -728,6 +728,30 @@ the far variants first, then the other side, then the near neighbours.
 - *A variant at t ≥ 2.5* shows zdb's constant is off-optimum there. The start still centres on zdb's value (RL, not
   hand-tuning, must find the better one), but it shows that RL can gain on that head.
 
+**Results** (all 24 variants, 64 games each against zdb on row 3, seed 3801401; `s0_report.py` on the box; small/large
+= the 16 maps below/above the median area 1800):
+
+| Head | Variant: score (t) | Small | Large |
+|---|---|---|---|
+| POSTURE | coop, no rush 0.56 (0.94) · no rush 0.56 (0.94) · break 120 0.50 (30 of 32 units exactly zdb) | 0.50 · 0.53 · 0.50 | 0.63 · 0.59 · 0.50 |
+| ARMY | cap 40 0.48 · cap 12 0.55 (0.83) · cap 24 0.50 | 0.44 · 0.53 · 0.47 | 0.53 · 0.56 · 0.53 |
+| CORE | 8/4 0.45 (−0.77) · **12/8 0.61 (+2.03)** · **24 0.41 (−2.25)** | 0.47 · 0.59 · 0.38 | 0.44 · 0.63 · 0.44 |
+| THRIFT | floors ×3 0.52 · ×0.5 0.45 (−1.0) · ×1.5 0.47 | 0.50 · 0.56 · 0.53 | 0.53 · **0.34 (−2.61)** · 0.41 |
+| ROLES | no fighters 0.45 · all fight 0.52 · fight 1/4 0.45 | 0.53 · 0.47 · 0.47 | 0.38 · 0.56 · 0.44 |
+| RUSH | **to 32 0.36 (−2.33)** · to 8 0.52 · to 24 0.47 | **0.28 (−3.42)** · 0.47 · 0.38 | 0.44 · 0.56 · 0.56 |
+| LOAD | deliver 90 0.52 · 15 0.39 (−1.75) · 45 0.56 (+1.07) | 0.56 · 0.50 · 0.56 | 0.47 · **0.28 (−2.41)** · 0.56 |
+| KINGS | 1 king 0.53 · 4 kings 0.48 (16 units exactly zdb) · 3 kings 0.47 (16 exactly zdb) | 0.50 · 0.50 · 0.47 | 0.56 · 0.47 · 0.47 |
+
+Against the readings:
+- *Slope: met.* Three variants are at |t| ≥ 2 overall (rush to 32, core 24, core 12/8), against about 1.1 expected
+  by chance among 24 (three or more by chance: about 10%). No head's halves differ by 0.25 (the largest gaps are
+  0.22, at floors ×0.5 and deliver 15, both worse on large maps). So the parametric plan heads go ahead (section 21).
+- *Tolerance:* every head has a near neighbour of zdb's value at 0.42 or more (8 of 8), so a start spread over
+  neighbouring bins costs little. That supports σ 0.6.
+- *No variant at t ≥ 2.5.* Harmful moves outnumber helpful ones (6 of the 7 hits at |t| ≥ 2 overall or on a half are
+  losses), so zdb sits near a local optimum of its own family against itself. Core 12/8 is the one clear gain and
+  the known answer section 21 watches for. LOAD has a gradient too (15 0.39, 30 zdb, 45 0.56).
+
 ## 20. Grouped floors on the whole net (November 16, 2026)
 
 Section 18's two points lost nothing at grouped floor 0.2, while e20 (every trainable point softened through its own
@@ -782,12 +806,12 @@ before the game:
 
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
-**Why now.** With 21 of 24 stage-0 variants played, three are at |t| ≥ 2, which is section 19's pre-set slope reading:
-rush to 32 at 0.36 (t −2.33), core 24 at 0.41 (t −2.25), and **core 12/8 at 0.61 (t +2.03)**. The core-babies class
-has a peak below zdb's 18/12 (8/4 0.45, 12/8 0.61, 24/24 0.41). Under no effect at all, three or more such hits among
-21 happen about 6% of the time, so this is modest evidence. It is also a known answer RL can be checked against: a
-plan head that can move CORE from zdb's bin to 12/8 has about 0.1 of a game to gain against zdb. Two knobs were
-nearly inert: break at 120 played exactly as zdb on 30 of 32 maps, and 4 kings on 16 of 32.
+**Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
+(t −2.33), core 24 at 0.41 (t −2.25) and **core 12/8 at 0.61 (t +2.03)**. The core-babies class has a peak below
+zdb's 18/12 (8/4 0.45, 12/8 0.61, 24/24 0.41). Three or more such hits among 24 happen by chance about 10% of the
+time, so this is modest evidence. It is also a known answer RL can be checked against: a plan head that can move CORE
+from zdb's bin to 12/8 has about 0.1 of a game to gain against zdb. Two knobs were nearly inert: break at 120 played
+exactly as zdb on 30 of 32 units, and 4 or 3 kings on 16 of 32.
 
 **What is built** (stage 1 of `design-C`: the net picks zdb's strategy constants at coarse times, zdb's code executes
 them every turn):
