@@ -482,3 +482,38 @@ both seats).
 - Otherwise: the es-lr0 direction has no measurable value at any step size tried, and ES at this budget is done.
   The plan returns to RL proper, starting from the critic (held-out AUC 0.70), which section 12 identified as the
   limit on per-decision credit.
+
+**Line search result (08:11 PDT):** zdpltp (TV 0.25 along es-lr0's Δ) against rl-m2 v39: **129/256 = 0.504** (t 0.13,
+95% CI 0.44–0.56). Not above 2, so under the pre-set rule ES at this budget is done. A step 2.5× larger along
+the best direction ES found changes the outcome no more than the small one did.
+
+## 16. Next: the action space itself (November 16, 2026)
+
+The user's diagnosis: perhaps the problem is not the optimizer but the landscape. If the mapping from network outputs
+to actions is over-constrained, then essentially only zdb's controller can perform well, every direction is downhill,
+and the useful directions are too weak to find. The user gave full latitude to refactor zdp, including dropping exact
+imitation of zdb. That work comes before any further RL or ES (and before the critic work that section 15 named).
+
+First evidence, from the cpi-x0 probe records (rl-m2 v39 with exploration floors): a large share of the net's
+deviations from its own top choice never happen. The option's executor cannot act, so zdb's cascade runs instead (the
+record's fallback flag):
+
+| Point | Deviation rate | Falling back | Real deviations |
+|---|---|---|---|
+| BABY_ACT_POST (3) | 0.5% | 89% | 0.06% |
+| KING_ACT (12) | 9.7% | 79% | 2.0% |
+| BABY_ACT_PRE (2) | 1.5% | 64% (and 9% of top choices) | 0.5% |
+| KING_MOVE (10) | 17% | 58% (and 9% of top choices) | 7.3% |
+| KING_SPAWN (11) / KING_FORM (13) | 12% / 11% | 39% / 37% | 7% |
+| BABY_MOVE (1) | 1.2% | 13% | 1.0% |
+| BABY_ROLE (5), BABY_FREE (8), KING_COMMS (14), KING_TURN (16) | — | 0% | — |
+
+The pass-3 points (plain actions) never fall back. The pass-1 points (branches of zdb's cascade) often do. Two
+investigations run next:
+1. A code map of every point (a workflow of readers, each checked by an adversarial verifier). For each option it
+   records what the executor does, when the option is offered, why it falls back, which earlier cascade branches it
+   implicitly relies on, and what couples it to other points. It also inventories the strategy hard-coded outside any
+   point.
+2. Per-point sensitivity: rl-m2 v39 with exploration floor 0.2 at one point only (packages zdph<p>), each against
+   v39 for 64 games on the same maps and seeds (judge maps row 4, seed 3801001). This shows where deviations are
+   costly (sharp) and where they are nearly free (flat).
