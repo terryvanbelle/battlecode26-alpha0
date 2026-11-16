@@ -381,3 +381,7 @@ VM 12/16).** t > 2, so step 0 goes to its guard (t0a1g: zdpt0p against zdpg39 on
   (seeds 41 and 42), for the chart against the earlier runs.
 - Score < 0.5: the α = 0.5 attempt (zdpt01p against zdpt01m, seeds 3800011 and 3800012), then 0.25 (zdpt02*,
   seeds 3800021 and 3800022), as in section 11; discard after that and start low-rank ES.
+
+**Guard t0a1g: zdpt0p 61/128 against zdpg39 (0.477, t −0.62; box 53/112, VM 8/16): step 0 at α = 1 rejected.** The
+α = 0.5 attempt (same Δ, points 10 and 11; mean TV 0.03–0.06, top choice flips in 3–6% of decisions) is judged as
+t0a05: zdpt01p against zdpt01m, seeds 3800011 and 3800012, started 18:19 PDT.
