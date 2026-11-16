@@ -406,7 +406,7 @@ so the run continues; the judge needs a cosine above 0.2. Two independent noise 
 cosine sd of about 1/√651 ≈ 0.04, so +0.10 is about 2.6 sd: perhaps a weak gradient spread over many coordinates,
 too weak for any single coordinate's t.
 
-Second checkpoint, set now (21:40 PDT) because section 11 set only one: after 12 updates (iterations 0–11, 384
+Second checkpoint, set now (21:54 PDT) because section 11 set only one: after 12 updates (iterations 0–11, 384
 directions), the same pooled check. Cosine above 0.2: judge the pooled proposal (`es_propose.py --build zdplj`,
 section 11's judge and guard). Cosine at most 0.1: stop. In between: one last check after 18 updates, then stop
 unless the cosine is above 0.2.
