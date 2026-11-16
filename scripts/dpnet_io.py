@@ -162,6 +162,19 @@ def _probs_torch(z, mask, T, floor):
     return torch.where(mask, p + floor / m, torch.zeros_like(p))
 
 
+def col_stats(X, chunk=1 << 17):
+    """Column mean and sd of X for input normalisation, accumulated in float64 chunk by chunk; an exactly constant
+    column (max == min) or one with sd < 1e-3 gets sd 1. float32 sums along axis 0 drift: a constant 255 over 780k rows
+    gave mean 255.92 and sd 0.91, which escaped the sd guard and trained the column as a unit-scale input that net-mode
+    values then blew up (BABY_ROLE's input 27: logits above 100)."""
+    n = len(X)
+    mu = sum(X[i:i + chunk].sum(0, dtype=np.float64) for i in range(0, n, chunk)) / n
+    var = sum(((X[i:i + chunk] - mu) ** 2).sum(0) for i in range(0, n, chunk)) / n
+    sd = np.sqrt(var)
+    const = (X.max(0) == X.min(0)) | (sd < 1e-3)
+    return mu, np.where(const, 1.0, sd)
+
+
 def unfold(layers, mu, sd):
     """Folded layers -> layers acting on (x - mu) / sd (float64): W1 = W1f * sd, b1 = b1f + W1f @ mu."""
     out = [dict(w=np.asarray(l['w'], np.float64).copy(), b=np.asarray(l['b'], np.float64).copy()) for l in layers]

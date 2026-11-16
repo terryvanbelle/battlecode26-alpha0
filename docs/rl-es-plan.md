@@ -598,7 +598,7 @@ competent, so RL can keep entropy, get a gradient and still play well.
    against zdpg39, 64 games (row 6, seed 3801201). At least 0.45: entropy is nearly free at the points RL trains, and the
    trap sits mostly at points RL never trained (baby tactics) and at KING_SPAWN. At most 0.35: carrying entropy costs a
    lot where RL actually trains too, so the redesign must cover the king points as well.
-3. *e20*, added at 11:05 PDT: zdpe20 against zdpg39, 64 games (judge maps row 7, seed 3801301). zdpe20 is zdpz with
+3. *e20*, added at 10:30 PDT: zdpe20 against zdpg39, 64 games (judge maps row 7, seed 3801301). zdpe20 is zdpz with
    each of the 11 trainable points softened by its own temperature, chosen so that its Fisher trace with floor 0 is
    20% of a uniform policy's on cpi-x0 states. This is requirement R1 of the redesign, measured in today's action space.
    The temperatures (`analysis/fisher_T.py`) are 4.0, 6.8, 9.1, 8.3 and 12.8 at baby points 1–5, 2.1 at mine pick, and

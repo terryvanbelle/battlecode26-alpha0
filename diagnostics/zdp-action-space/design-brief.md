@@ -133,7 +133,7 @@ Main structural findings (details and line numbers in the maps):
 10. Only points 5, 7, 10, 11, 12, 13 (16 dropped after iteration 0) were ever trained by RL. Baby tactics (1-4), comms
    (6, 9, 14, 15) and BABY_FREE (8) have always been frozen.
 
-### 2e. Verifier corrections (added 10:55 PDT; these override the maps and 2d)
+### 2e. Verifier corrections (added 10:30 PDT; these override the maps and 2d)
 From maps/verify-baby-move.json, verify-baby-act-face.json, verify-baby-role-comms-mine-free.json (the king and
 hidden-strategy verifications are still running; check maps/ for verify-king-*.json and verify-hidden-strategy.json):
 - BABY_ROLE flip-flopping comes from ONE poisoned input, not from R_KEEP: col 27 = cap(round - Baby.ekSeen, 255)
