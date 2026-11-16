@@ -314,3 +314,41 @@ Written while cpi-x0 was still collecting, before any of its records were fitted
 - σ: calibrated on the probe records (mean |dP| 0.1), times sigma_scale 0.2. That puts the total logit perturbation at about 1.1 times es-m3's.
 - Everything else is as es-m3: 160 games per iteration, pool, gates and fitness.
 - Futility, pre-set: after 6 updates, stop if the pooled gradient (es_propose over all directions) has a split-half cosine of at most 0.1 and a |t| > 2 share of at most 0.07. If the cosine is above 0.2, the pooled proposal goes to the 1-D judge above.
+
+## 12. cpi-x0 probe result; the out-of-fold t was miscalibrated (November 15, 2026)
+
+**Probe.** 256 mirror games of rl-m2 v39 under the stage-B floors, all valid (box 213, VM 43). Natural deviations
+from the top choice, against C0's 256 games at floor 0.005: point 5 34.5k (11.7×), 7 15.6k (1.7×), 10 104k (2.1×),
+11 90.8k (3.4×), 12 69.3k (6.6×), 13 49.6k (8.0×), 16 52.8k (5.4×). The critic (trained on rl-m2 iterations 32–38)
+scores the probe's bins at AUC 0.696 (Brier 0.221 against 0.25).
+
+**Phase A.** The deviation effect on the TD target is negative at all six Phase-A points (t −0.68, −1.11, −1.05,
+−2.04, −0.42, −1.36; median |t| 1.08). That is the cost of exploring off a decent policy, not a usable direction.
+
+**CPI fit (as pre-registered), pooled out-of-fold t:** 5 0.04, 7 −3.82, 10 2.76, 11 2.08, 12 −0.97, 13 0.93,
+16 0.58 (in-sample t 5.9–12.9). On the mc target (secondary): 5 2.81, 7 0.88, 10 0.92, 11 −0.59, 12 0.10, 13 0.15,
+16 −0.59. By section 11's rule (t ≥ 2 at 2 or more points), points 10 and 11 qualified. Step 0 was built
+(`cpi_step.py`, η 152 and 607, logit offset sd 3.2 and 8.9; mean TV 0.100/0.100 plus, 0.102/0.157 minus; the top
+choice flips in 9–16% of decisions) and its judge t0a1 started at 17:36 PDT (zdpt0p against zdpt0m; maps: row 0 of
+the judge permutation, the first 28 on the box and the last 4 on the VM, seeds 3800001 and 3800002 on both: the
+hosts split by map rather than by seed because the VM is about 6× slower per game).
+
+**The statistic was wrong.** Point 7 at −3.82 (and −2.32 in C0) is far outside N(0, 1), so the t got a direct null
+test: `td_check.py --sham N` redraws every record's option from π(·|x), choices that cannot affect Y, and reruns the
+same out-of-fold check.
+- Synthetic data (256 games, no leverage, effective games 253): the pooled t has sham sd 1.48–1.62; each fold's own t
+  (fit on one half, test on the other) has sd 1.06–1.18; the two folds' t correlate at 0.99. A planted effect gives
+  fold t ≈ 30, so the check has power.
+- Why: the two halves' terms are bᴬ′M_B bᴮ and bᴮ′M_A bᴬ (b a half's score vector, M its ridge inverse), nearly the
+  same number, but the pooled clustered standard error treats them as independent. The pooled t is about √2 too
+  large. Section 11's "t ≥ 2" was in effect a 1.41 bar: about 8% false positives per point and about 10% for "2 or
+  more of 7" with no signal at all, not the ~1% intended.
+- Fix (`td_check.py`, `cpi_step.py`): `t_fold_mean`, the mean of the two folds' own t, replaces the pooled t.
+
+**Corrected rule (written at 17:45 PDT, after seeing point 5's per-fold t and before points 7–16's):** section 11's
+rule with t_fold_mean in place of the pooled t: t_fold_mean ≥ 2 at 2 or more of the 7 points means CPI, otherwise
+low-rank ES. For the judge already running (t0a1, built under the old rule), its own paired t still counts:
+- t > 2: the guard against zdpg39 as in section 11, whatever the fit says.
+- 1 < t ≤ 2: 128 more games, as in section 11.
+- t ≤ 1: if the corrected rule also fails, discard step 0 without the α = 0.5 and 0.25 retries (they were meant for
+  a direction the fit supports) and start low-rank ES. If the corrected rule passes, continue section 11 as written.

@@ -4,8 +4,9 @@ state-dependent advantage fit, written as the two judged nets theta + alpha Delt
 cpi_step.py --net NET.json --fit FIT.json --data DIR [DIR ...] --config C --out OUT [--points 12,13 | --min-t 2]
             [--tv 0.1] [--alpha 1] [--build PREFIX]
 
-FIT is td_check.py --cpi --save-fit on records played by NET. Per point p (default: the fit's points with out-of-fold
-t >= --min-t), with h the net's last hidden layer after ReLU and pc_r(h) = ((h - mu) / sd) . vt_r / s_r the fit's
+FIT is td_check.py --cpi --save-fit on records played by NET. Per point p (default: the fit's points whose mean
+per-fold out-of-fold t, t_fold_mean, is >= --min-t; a fit saved before t_fold_mean existed falls back to the pooled
+t_oof / sqrt(2)), with h the net's last hidden layer after ReLU and pc_r(h) = ((h - mu) / sd) . vt_r / s_r the fit's
 basis, Delta adds eta_p (W[k, 0] + sum_r W[k, 1 + r] pc_r(h)) to option k's logit: the last layer gets
     w[k] += eta_p sum_r W[k, 1 + r] vt_r / (sd s_r),    b[k] += eta_p (W[k, 0] - sum_r W[k, 1 + r] ((mu / sd) . vt_r) / s_r).
 eta_p is set so that the mean total-variation distance between pi_{theta + Delta} and pi_theta over the point's
@@ -67,7 +68,9 @@ def main():
     if a.points:
         points = [int(p) for p in a.points.split(',')]
     else:
-        points = sorted(int(p) for p, f in fit.items() if (f.get('t_oof') or 0) >= a.min_t)
+        tsel = {int(p): f['t_fold_mean'] if f.get('t_fold_mean') is not None else (f.get('t_oof') or 0) / 2 ** 0.5
+                for p, f in fit.items()}
+        points = sorted(p for p, t in tsel.items() if t >= a.min_t)
     if not points:
         raise SystemExit(f'no point with out-of-fold t >= {a.min_t}')
     raw = dpnet_io.load_raw(a.net)
