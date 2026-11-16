@@ -268,6 +268,38 @@ def gae(rows, v, lam):
     return out
 
 
+def event_gae(rows, v, ri, key, lam):
+    """Semi-MDP GAE (gamma = 1, lambda) over one point's own decision times, for committed decisions.
+
+    ri: each record's bin (record_rows; -1 = none, A = 0). key: the sequence each record belongs to (team-game, or
+    team-game and robot). A sequence's events are its distinct bins in round order (records of one sequence sharing a
+    bin share one event and one A). delta_i = v(event i+1) - v(event i), and z - v(last event); A_i = sum_j lambda^(j-i)
+    delta_j. lambda = 1 gives z - V(bin), as gae(lambda = 1) does; lambda = 0 gives the change in V over the decision's
+    commitment (to the sequence's next decision, or to the outcome)."""
+    ri = np.asarray(ri, np.int64); key = np.asarray(key, np.int64)
+    A = np.zeros(len(ri))
+    ok = ri >= 0
+    if not ok.any():
+        return A
+    k, b = key[ok], ri[ok]
+    rr = rows['round'].astype(np.int64)[b]
+    order = np.lexsort((b, rr, k))
+    ks, bs = k[order], b[order]
+    new = np.r_[True, (ks[1:] != ks[:-1]) | (bs[1:] != bs[:-1])]
+    ev = np.cumsum(new) - 1                       # event number of each sorted record
+    ek, eb = ks[new], bs[new]
+    vs = v[eb].astype(np.float64); zs = rows['z'][eb].astype(np.float64)
+    last = np.r_[ek[1:] != ek[:-1], True]
+    delta = np.where(last, zs, np.r_[vs[1:], 0.0]) - vs
+    Ae = np.empty(len(vs)); acc = 0.0
+    for i in range(len(vs) - 1, -1, -1):
+        acc = delta[i] + (0.0 if last[i] else lam * acc)
+        Ae[i] = acc
+    Ao = np.empty(len(order)); Ao[order] = Ae[ev]
+    A[ok] = Ao
+    return A
+
+
 def record_rows(rows, game, team, rnd):
     """Index into rows (team-game bins) of each record's bin: the latest row of its team-game with round <= rnd, the
     first row before that; -1 when its team-game has no rows."""

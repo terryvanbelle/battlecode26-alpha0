@@ -253,7 +253,7 @@ def gae_rows(a, vdirs, dir_index, V):
     rows = {k: x[tgt] for k, x in allrows.items()}
     A_rows = rl_critic.gae(rows, v, a.gae_lambda)
     m.update(rows=int(len(v)), adv_rows_sd=float(A_rows.std()))
-    return rows, A_rows, m
+    return rows, A_rows, m, v
 
 
 # ---------------------------------------------------------------------------------------------------- policy
@@ -471,6 +471,8 @@ def main():
                     help='value model: trace = logistic V on the bin trace (default); rich / richlin = rl_critic.py')
     ap.add_argument('--gae-lambda', type=float, default=1.0, help='GAE lambda over 10-round bins (1 = z - V, default)')
     ap.add_argument('--critic-folds', type=int, default=4, help='cross-fitting folds of the rich critics')
+    ap.add_argument('--event-lambda', default='', help='P:LAMBDA[:robot],...: point P\'s advantage is GAE over its own '
+                    'decision times per team-game (per robot with :robot), rl_critic.event_gae, no pair baseline')
     ap.add_argument('--fake-reward', default='', help='point:option planted test: A = 1 if k == option else 0')
     ap.add_argument('--max-rows', type=int, default=2_000_000, help='per-point uniform subsample cap')
     ap.add_argument('--val-frac', type=float, default=0.1)
@@ -505,13 +507,19 @@ def main():
     data = load_dirs(a.data, [p for p in points if p in nets], dir_index)
     if not 0 <= a.gae_lambda <= 1:
         raise SystemExit('--gae-lambda must be in [0, 1]')
-    use_gae = not a.fake_reward and not a.no_value and (a.critic != 'trace' or a.gae_lambda < 1)
+    event = {}
+    for x in (x for x in a.event_lambda.split(',') if x):
+        f = x.split(':')
+        if len(f) not in (2, 3) or not 0 <= float(f[1]) <= 1 or (len(f) == 3 and f[2] != 'robot'):
+            raise SystemExit(f'--event-lambda {x}: want P:LAMBDA or P:LAMBDA:robot, LAMBDA in [0, 1]')
+        event[int(f[0])] = (float(f[1]), len(f) == 3)
+    use_gae = not a.fake_reward and not a.no_value and (a.critic != 'trace' or a.gae_lambda < 1 or bool(event))
     V = Value(None if a.no_value or (use_gae and a.critic != 'trace') else value_rows(vdirs, dir_index), a.val_frac,
               a.seed)   # no rows: V = 0
     gae = None
     if use_gae:
-        grows, gA, gm = gae_rows(a, vdirs, dir_index, V)
-        gae = (grows, gA)
+        grows, gA, gm, gv = gae_rows(a, vdirs, dir_index, V)
+        gae = (grows, gA, gv)
         base = {} if a.no_pair or a.gae_lambda < 1 else pair_baseline_rows(grows, gA)
         print(f'critic: {gm}', flush=True)
     else:
@@ -564,10 +572,18 @@ def main():
             if gae is not None:
                 ri = rl_critic.record_rows(gae[0], d['game'], d['team'], d['round'])
                 mt['no_bin'] = int((ri < 0).sum())   # records of a team-game without bins: A = 0 (none expected)
-                A = np.where(ri >= 0, gae[1][np.maximum(ri, 0)], 0.0)
+                if p in event:
+                    lam, per_robot = event[p]
+                    key = d['game'].astype(np.int64) * 2 + d['team'].astype(np.int64)
+                    if per_robot:
+                        key = key * 65536 + (d['robot'].astype(np.int64) & 0xFFFF)
+                    A = rl_critic.event_gae(gae[0], gae[2], ri, key, lam)
+                    mt['event_lambda'], mt['event_robot'] = lam, per_robot
+                else:
+                    A = np.where(ri >= 0, gae[1][np.maximum(ri, 0)], 0.0)
             else:
                 A = d['z'].astype(np.float64) - V(d['trace'])
-            if base:
+            if base and p not in event:
                 gk = d['game'] * 2 + d['team'].astype(np.int64)
                 b = np.array([base.get(int(g), np.nan) for g in gk])
                 mt['paired_frac'] = float(np.isfinite(b).mean())
