@@ -352,3 +352,32 @@ low-rank ES. For the judge already running (t0a1, built under the old rule), its
 - 1 < t ≤ 2: 128 more games, as in section 11.
 - t ≤ 1: if the corrected rule also fails, discard step 0 without the α = 0.5 and 0.25 retries (they were meant for
   a direction the fit supports) and start low-rank ES. If the corrected rule passes, continue section 11 as written.
+
+**Per-fold t and sham null on the probe** (`td_check.py --cpi --sham 30`, 30 sham draws per point; fold t's, then
+t_fold_mean; the sham's pooled-t sd, fold sd and fold correlation):
+
+| point | fold t | t_fold_mean | sham pooled sd | sham fold sd | fold corr | effective games |
+|---|---|---|---|---|---|---|
+| 5 BABY_ROLE | −0.09, 0.18 | 0.05 | 1.24 | 0.89, 0.92 | 0.96 | 127 |
+| 7 MINE_PICK | −5.06, −1.25 | −3.16 | 2.87 | 3.40, 1.07 | 0.36 | 1.5 |
+| 10 KING_MOVE | 1.73, 2.21 | 1.97 | 1.39 | 0.99, 1.00 | 0.97 | 118 |
+| 11 KING_SPAWN | 1.46, 1.58 | 1.52 | 1.68 | 1.17, 1.25 | 0.95 | 136 |
+| 12 KING_ACT | −0.94, −0.47 | −0.71 | 1.44 | 1.18, 0.97 | 0.85 | 46 |
+| 13 KING_FORM | 0.59, 0.70 | 0.65 | 1.17 | 0.90, 0.87 | 0.79 | 36 |
+| 16 KING_TURN | 0.39, 0.54 | 0.47 | 1.32 | 0.97, 0.97 | 0.94 | 137 |
+
+- Point 7's −3.8 is leverage: one game holds 81% of the out-of-fold Σ Â² (effective games 1.5 of 256), and its
+  sham t has sd 2.9 with 16 of 30 draws beyond ±2. The statistic means nothing there (40 options, many rare).
+- Elsewhere the sham confirms the √2: pooled sd 1.2–1.7, fold sd 0.9–1.25, fold correlation 0.79–0.97.
+- **The corrected rule fails:** no point has t_fold_mean ≥ 2 (point 10 1.97, point 11 1.52). Across 7 points, the
+  largest of 7 null fold means reaches 1.97 about 16% of the time, so the probe shows no state-dependent signal
+  beyond chance.
+
+**Judge t0a1: zdpt0p 75/128 against zdpt0m (0.586, paired t 2.10 over 64 units, Wilson 0.499–0.668; box 63/112,
+VM 12/16).** t > 2, so step 0 goes to its guard (t0a1g: zdpt0p against zdpg39 on the same maps, seeds 3800003 and
+3800004, 128 games, started 17:58 PDT). Set before its result:
+- Score ≥ 0.5: accept. θ₁ = zdpt0p's net. Probe cpi-x1 ([configs/cpi-x1.json](../configs/cpi-x1.json), cpi-x0's
+  probe of θ₁) feeds step 1's fit (t_fold_mean rule, `--sham 30`). θ₁ also plays the 32-game gate against zdpf005
+  (seeds 41 and 42), for the chart against the earlier runs.
+- Score < 0.5: the α = 0.5 attempt (zdpt01p against zdpt01m, seeds 3800011 and 3800012), then 0.25 (zdpt02*,
+  seeds 3800021 and 3800022), as in section 11; discard after that and start low-rank ES.
