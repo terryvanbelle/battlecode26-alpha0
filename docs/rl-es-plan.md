@@ -436,3 +436,31 @@ the VM), seeds 3800101 and 3800102, both seats, 128 games. Then: t > 2, guard zd
 maps with seeds 3800103 and 3800104 (accept if at least 0.5); 1 < t ≤ 2, 128 more games (seeds 3800105 and 3800106);
 otherwise halve α (0.5, then 0.25) and then discard. Because the judge is weak evidence here, the guard runs even
 if the judge passes, which section 11 already requires.
+
+**Guard (04:05 PDT):** zdpljp against the start net zdpg39 scored 67/128 = 0.523 (t 0.49, 95% CI 0.44–0.61).
+That meets the pre-set bar of at least 0.5, so the step is **accepted**. The evidence is the gradient check (cosine
++0.31) plus a guard that found no harm. The guard does not show an improvement. The judge itself, zdpljp against
+zdpljm, scored 119/128 (t 17.5), mostly because the minus side is degenerate, as predicted above.
+
+## 14. es-lr1: fixed-centre ES from the accepted step (November 16, 2026)
+
+What es-lr0 showed: the per-iteration step rule (move each coordinate whose |t| exceeds 2) moves by chance and
+degrades the centre (gates 17, 16, 13, 10, 11, 14 out of 32). The pooled gradient over 576 directions held a real
+direction (cosine rising 0.10, 0.17, 0.31). So es-lr1 keeps the centre fixed and only collects directions for one
+pooled proposal at a time.
+
+- Centre θ1 = zdpljp (box runs/es/es-lr0/prop-0-17/plus/net.json, step baked into the weights, es_basis kept since
+  the hidden layers are unchanged). σ is es-lr0's sigma.json, not recalibrated: θ1 is only TV 0.1 from θ0.
+  `step_frac` 0, so the centre never moves. Same 160 games per iteration, fitness and floors as es-lr0. Pool
+  packages zdpg39 and zdpljp. Package prefix zdpv, seed base 3950000. One anchor gate after iteration 0 (θ1
+  against zdpf005, 32 games).
+- Checks (es_propose over all directions so far, from θ1), pre-set:
+  - After 6 updates: stop if the cosine is at most 0.1 and the |t| > 2 share at most 0.07.
+  - After 12 updates: stop if the cosine is at most 0.1.
+  - The first check, at 6, 12 or 18 updates, whose cosine is above 0.2 ends the run and the proposal is tested.
+    After 18 updates without one, stop.
+- Test of a proposal: the guard alone, θ1 + ηΔ (TV 0.1) against θ1, 128 games on row 2 of the judge maps (28 maps
+  on the box, 4 on the VM), seeds 3800203 and 3800204. Accept if the score is at least 0.5; an accepted step starts
+  es-lr2 under the same rules. The antithetic judge is dropped. It measures the direction, but a temperature
+  coordinate makes the two sides so lopsided that it mostly scores the minus side's collapse (section 13: t 17.5,
+  then a guard at 0.52). The cosine already supplies the direction evidence.
