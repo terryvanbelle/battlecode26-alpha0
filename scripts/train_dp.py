@@ -1,9 +1,12 @@
 """Train the decision nets (one small MLP per decision point) on zdp decision records.
 
 train_dp.py --games 'runs/dp/teacher-v1/games/*' --out runs/dp/net-v1 [--hidden 64,64] [--epochs 20] [--device cpu]
+    [--points 5,7] [--smooth 5:0.1,7:0.1 [--groups configs/groups-s1.json]]
 
 Reads decisions-*.bin.gz from each game dir, splits train/val by game, trains a classifier per point
-(label = the option zdb took) and writes net.json (float weights, input normalisation folded into layer 1),
+(label = the option zdb took; --smooth P:EPS trains point P toward (1 - EPS) onehot + EPS w, where w is uniform over
+the options, or the floor-group weights of --groups with every option allowed, so dormant options get no smoothing
+mass; the start then carries entropy inside its softmax with logit gaps near ln((1 - EPS) / (EPS w_k))) and writes net.json (float weights, input normalisation folded into layer 1),
 norm.npz (the mu/sd folded in, keys mu_<p>/sd_<p>; rl_train.py unfolds with them) and metrics.json.
 scripts/build_dpnet.py packs net.json into a net-mode bot.
 """
@@ -100,6 +103,9 @@ def main():
     ap.add_argument('--device', default='cpu')
     ap.add_argument('--keep0', default='', help='per-point keep probability for label-0 records only, e.g. 2:0.05')
     ap.add_argument('--keep', default='', help='per-point subsampling, e.g. 1:0.3,2:0.1 (keep probability)')
+    ap.add_argument('--points', default='', help='train only these points (default: every point in the data)')
+    ap.add_argument('--smooth', default='', help='per-point label smoothing P:EPS,... (toward w; see the docstring)')
+    ap.add_argument('--groups', default='', help='floor groups JSON: the smoothing target w per point')
     a = ap.parse_args()
     torch.manual_seed(0)
     dirs = sorted({d for g in a.games for d in glob.glob(g)})
@@ -107,6 +113,11 @@ def main():
     keep = {int(k): float(v) for k, v in (x.split(':') for x in a.keep.split(',') if x)}
     keep0 = {int(k): float(v) for k, v in (x.split(':') for x in a.keep0.split(',') if x)}
     data = load(dirs, keep, keep0)
+    only = {int(x) for x in a.points.split(',') if x}
+    if only:
+        data = {p: v for p, v in data.items() if p in only}
+    smooth = {int(k): float(v) for k, v in (x.split(':') for x in a.smooth.split(',') if x)}
+    groups = dpnet_io.load_groups(a.groups)
     counts = option_counts()
     hidden = [int(h) for h in a.hidden.split(',') if h]
     rng = np.random.default_rng(0)
@@ -124,12 +135,22 @@ def main():
         tX = torch.tensor((Xt - mu32) / sd32, device=a.device); ty = torch.tensor(yt, device=a.device)
         vX = torch.tensor((Xv - mu32) / sd32, device=a.device); vy = torch.tensor(yv, device=a.device)
         sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, a.epochs)
+        eps = smooth.get(pt, 0.0)
+        if eps > 0:
+            w = dpnet_io.floor_weights(np.ones((1, n_out), bool), groups.get(pt), n_out)
+            w = np.full(n_out, 1.0 / n_out) if w is None or w.sum() <= 0 else w[0].astype(np.float64) / w[0].sum()
+            tw = torch.tensor(w, dtype=torch.float32, device=a.device)
         for ep in range(a.epochs):
             model.train()
             perm = torch.randperm(len(tX), device=a.device)
             for i in range(0, len(perm), a.batch):
                 idx = perm[i:i + a.batch]
-                loss = nn.functional.cross_entropy(model(tX[idx]), ty[idx])
+                z = model(tX[idx])
+                if eps > 0:   # soft-target cross-entropy: (1 - eps) onehot(y) + eps w
+                    lsm = torch.log_softmax(z, 1)
+                    loss = -((1 - eps) * lsm.gather(1, ty[idx][:, None]).squeeze(1) + eps * (lsm * tw).sum(1)).mean()
+                else:
+                    loss = nn.functional.cross_entropy(z, ty[idx])
                 opt.zero_grad(); loss.backward(); opt.step()
             sched.step()
         model.eval()
@@ -138,12 +159,17 @@ def main():
             acc = float((lv.argmax(1) == vy).float().mean()) if lv is not None else None
             vloss = float(nn.functional.cross_entropy(lv, vy)) if lv is not None else None
             tacc = float((model(tX).argmax(1) == ty).float().mean())
+            pv = torch.softmax(lv, 1) if lv is not None else None   # the start's own softmax (T 1, all options)
+            ptop = float(pv.max(1).values.mean()) if pv is not None else None
+            fish = float((1 - (pv * pv).sum(1)).mean()) if pv is not None else None   # Fisher trace of the logits
         base = float((yv == np.bincount(yt).argmax()).mean()) if len(yv) else None   # on the (subsampled) val set
         hist = np.bincount(y, minlength=n_out).tolist()
         metrics[pt] = dict(train=int(len(yt)), val=int(len(yv)), n_in=int(X.shape[1]), n_out=n_out, val_acc=acc,
-                           val_loss=vloss, train_acc=tacc, majority_baseline=base, label_hist=hist)
+                           val_loss=vloss, train_acc=tacc, majority_baseline=base, label_hist=hist, smooth=eps,
+                           val_p_top=ptop, val_fisher=fish, fisher_uniform=1 - 1 / n_out)
         print(f'point {pt}: {len(yt)} train / {len(yv)} val, {X.shape[1]} features, {n_out} options; '
-              f'val acc {acc} (majority {base}), train acc {tacc:.3f}', flush=True)
+              f'val acc {acc} (majority {base}), train acc {tacc:.3f}; smooth {eps}, val p_top {ptop}, '
+              f'Fisher {fish} (uniform {1 - 1 / n_out:.3f})', flush=True)
         # export with normalisation folded into layer 1: W1 (x - mu) / sd + b1 = (W1 / sd) x + (b1 - W1 mu / sd)
         lins = [m for m in model if isinstance(m, nn.Linear)]
         layers = dpnet_io.fold([dict(w=l.weight.detach().cpu().double().numpy(), b=l.bias.detach().cpu().double().numpy())
