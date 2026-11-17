@@ -143,7 +143,7 @@
   "beta_end": 0.03,
   "beta_anneal_iters": 20,
   "max_anchor_kl": 0.5,
-  "c_ent": 0.003,
+  "c_ent": 0.0,
   "adv_clip": 5.0,
   "value_window": 3,
   "value_val_frac": 0.1,

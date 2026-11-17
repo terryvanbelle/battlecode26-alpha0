@@ -3,7 +3,8 @@
   - The decision table holds every recorded choice, grouped by turn in order, with its options; subsets keep them.
   - net_from_json gives ZNet.java's logits from raw inputs; unfold / export keep the function for any standardisation.
   - zdn_rl_data passes parity when the records' q came from the nets that played, fails (exit 2) when they did not.
-  - zdn_rl_train: --lr 0 leaves the nets byte-identical; a planted reward moves the policy toward the rewarded choice.
+  - zdn_rl_train: --lr 0 leaves the nets byte-identical; a planted reward moves the policy toward the rewarded choice,
+    and the credit check reports it (credit_corr > 0); credit() on hand-made numbers, including rl-s2's drift.
 """
 import json, subprocess, sys
 from pathlib import Path
@@ -202,3 +203,25 @@ def test_train_identity_and_planted_reward(tmp_path):
 
     before, after = p_kind(nets / '0/baby.json'), p_kind(tmp_path / 'new/baby.json')
     assert after > before + 0.03, (before, after, m['units']['baby'])
+    # the credit check sees it: the rewarded kind's mass went up, and the policy change follows the advantages
+    mb = m['units']['baby']
+    assert mb['dlog_by_step_kind']['2'] > 0 and mb['credit_corr'] > 0.3, (mb['dlog_by_step_kind'], mb['adv_by_step_kind'], mb['credit_corr'])
+    assert set(mb['step_kind_mass_start']) == set(mb['step_kind_mass_end'])
+    assert abs(sum(mb['step_kind_mass_start'].values()) - 1) < 1e-3     # per step row, the kinds' masses sum to 1
+
+
+def test_credit_check_numbers():
+    import zdn_rl_train as T
+    adv = {0: [1000, 0.003], 1: [300, -0.005], 2: [250, -0.012], 3: [40, 0.5]}      # kind 3: too few rows, ignored
+    start = {0: 0.9, 1: 0.05, 2: 0.04, 3: 0.01}
+    mt = dict(adv_by_step_kind=adv, step_kind_mass_start=start, step_kind_mass_end={0: 0.86, 1: 0.07, 2: 0.06, 3: 0.01})
+    T.credit(mt)          # rl-s2's pattern: rare kinds gain mass against their advantages
+    assert set(mt['dlog_by_step_kind']) == {0, 1, 2} and mt['credit_corr'] < -0.9
+    mt.update(step_kind_mass_end={0: 0.93, 1: 0.045, 2: 0.025, 3: 0.01})
+    T.credit(mt)          # mass follows the advantages
+    assert mt['credit_corr'] > 0.9 and mt['dlog_by_step_kind'][2] < mt['dlog_by_step_kind'][1] < 0 < mt['dlog_by_step_kind'][0]
+    mt = dict(adv_by_step_kind={0: [100, 0.1], 1: [100, -0.1]}, step_kind_mass_start={0: 0.5, 1: 0.5},
+              step_kind_mass_end={0: 0.6, 1: 0.4})
+    T.credit(mt)          # fewer than three kinds: no correlation
+    assert mt['credit_corr'] is None and len(mt['dlog_by_step_kind']) == 2
+    assert np.isnan(T.wcorr([1, 1, 1], [1, 2, 3], [1, 1, 1])) and abs(T.wcorr([1, 2, 3], [2, 4, 6], [1, 5, 1]) - 1) < 1e-12

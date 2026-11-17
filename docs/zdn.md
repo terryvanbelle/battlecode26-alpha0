@@ -115,7 +115,9 @@ registers form a chain, not independent guesses.
 - tests/test_zdn_rl.py: the decision table (every recorded choice, grouped by turn, with its options), the net loader
   (net_from_json reproduces the packed net's logits from raw inputs; unfold and export keep the function), the data
   stage's parity check (passes on true q, exit 2 on corrupted q), and the trainer (--lr 0 leaves the nets
-  byte-identical; a planted outcome moves the policy toward the rewarded choice).
+  byte-identical; a planted outcome moves the policy toward the rewarded choice, and the credit check reports it).
+- tests/test_rl_loop_zdn.py: rl_loop.sh's zdn stages call the zdn scripts with the config's values, and a KL refusal
+  rolls both units back (stubbed scripts, no games).
 
 **Readings for zdn1** (the first imitation net), set before its games:
 - Label coverage on teacher-zdn1: at least 98% of register and step records labelled, and no ERROR records. Below that,
@@ -151,9 +153,20 @@ the zdp nets, with these stages swapped:
   1e-3, 99.9th percentile under 2e-3, else stop). At most 150,000 turns per unit.
 - Train (`zdn_rl_train.py`): PPO over every head, registers and steps, babies and kings. A turn's advantage comes from
   its team-game and 10-round bin through the critic (rl_critic's rich critic, GAE lambda 0.9), and all of the turn's
-  choices share it. Loss per sampled multi-option choice: the clipped surrogate with r = pi(choice) / exp(-q / 4096),
-  an entropy bonus, and a KL leash to the imitation nets (beta 0.1 annealed to 0.03). An update stops early when the
+  choices share it. Loss per sampled multi-option choice: the clipped surrogate with r = pi(choice) / exp(-q / 4096)
+  and a KL leash to the imitation nets (beta 0.1 annealed to 0.03). No entropy bonus: in rl-s2 it moved mass onto
+  rare options against their advantages (below); the leash to the label-smoothed imitation nets keeps the policy soft. An update stops early when the
   approximate KL to the playing net exceeds 0.05. If a unit's KL to the anchor ends above 0.5, nothing is exported
   and the net is rolled back. The standardisation is the imitation run's (norm.npz), carried with the nets.
+- Credit check, every update: per chosen step kind, the change of the step policy's mass against the kind's mean
+  advantage, and their correlation over kinds (credit_corr, in the log and progress.jsonl). It should be positive;
+  rl-s2's drift had it near -1.
+**Why no entropy bonus (rl-s2's credit check, November 17).** rl-s2 pooled 47/96 = 0.49 against its start over
+the v9, v12 and v15 gates (38/96 against zdb). On iteration 14's states, options the start played under 2% of the
+time gained probability by v15 at five of seven points (log ratio +0.26 to +0.43), although their games ended no
+better. Where the advantage per option is logged (point 16), it ranks options as their results do (correlation
++0.95), and the policy moved against it (-0.95). The systematic part of the update was the entropy bonus (c_ent
+0.01); the advantage signal per option was a few thousandths of its spread.
+
 - Gates: as for rl-s2. The anchor gate plays the imitation player zdn1, every third version, with zdb tracked. The
   field never feeds back into training.

@@ -220,7 +220,7 @@ row.update(value=m.get('value'), critic=m.get('critic'), exported=m.get('exporte
            train={p: {k2: v.get(k2) for k2 in ('used', 'kl_anchor_end', 'kl_old_new', 'entropy_end', 'clip_frac', 'early_stop', 'grad_snr_cos', 'alarms')}
                   for p, v in (m.get('points') or {}).items()})
 row['train_units'] = {u: {k2: v.get(k2) for k2 in ('usable_rows', 'turns', 'steps', 'early_stop', 'kl_anchor_end', 'kl_old_end',
-                                                   'entropy_start', 'entropy_end', 'clip_frac')}
+                                                   'entropy_start', 'entropy_end', 'clip_frac', 'credit_corr')}
                       for u, v in (m.get('units') or {}).items()}
 row['rollback'] = js(f'{rd}/nets/{k + 1}/ROLLBACK.json')
 row['state'] = js(f'{rd}/state.json')

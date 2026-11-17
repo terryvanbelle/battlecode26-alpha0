@@ -857,6 +857,34 @@ plan that wins. The per-turn line is the capability-complete one.
 - *Strength:* zdb gates pooled over the same versions. At 0.50 or more, the learner has made up the 0.17 that
   exploration cost the start.
 
+**rl-s2 result (November 17, 10:52 PDT; stopped after iteration 14 to give the box to zdn).**
+- *Learning:* the anchor gates at v9, v12 and v15 pooled 10 + 19 + 18 = 47/96 = 0.49 against the start: no learning
+  by the reading above.
+- *Strength:* 12 + 10 + 16 = 38/96 = 0.40 against zdb; the 0.17 that exploration cost the start was not made up.
+- *Credit check* (iteration 14's records of v14, nets v0 and v15; mean raw advantage per option pooled from the
+  iteration logs, which carry it for points with up to 16 options):
+
+  | Point | KL(v15‖v0) | Options under 2% at v0: log change, mean z | Common options: log change, mean z | corr(change, z) |
+  |---|---|---|---|---|
+  | 5 | 0.014 | 3: −0.19, +0.04 | 3: +0.01, +0.09 | +0.76 |
+  | 7 | 0.033 | 3: +0.04, +0.51 | 7: 0.00, +0.06 | −0.09 |
+  | 10 | 0.050 | 17: +0.26, +0.03 | 8: −0.03, +0.05 | −0.23 |
+  | 11 | 0.041 | 18: +0.26, +0.01 | 4: −0.03, +0.04 | −0.14 |
+  | 12 | 0.019 | 9: +0.43, −0.01 | 1: −0.05, +0.05 | −0.84 |
+  | 13 | 0.021 | 10: +0.28, +0.03 | 5: −0.02, +0.05 | +0.02 |
+  | 16 | 0.010 | 8: +0.37, +0.02 | 1: −0.03, +0.07 | −0.93 |
+
+  Advantages per option are logged at points 5 and 16. At point 16 the advantage per option tracks the mean result
+  (correlation +0.95; the rare options' A is −0.002 to −0.013, the common option's +0.003), and the policy moved
+  against it (−0.95). Point 5 moved with its advantages (+0.70; advantage against result +0.44).
+- *Reading:* the estimator credits options in the right order; the update did not follow it. Mass moved from common
+  options to rare ones at five of seven points, the signature of the entropy bonus (c_ent 0.01, the largest rl-s2
+  used). Per option, the advantage differences are a few thousandths against a spread near 1 after
+  standardisation, and the entropy gradient acts on every state in the same direction. The same SNR limit as
+  section 21's plan heads, with a regulariser that has a direction of its own.
+- *Consequences for zdn's RL* (docs/zdn.md, "RL"): no entropy bonus (the KL leash to the label-smoothed imitation net
+  keeps the policy soft), and the same check logged on every update (credit_corr per unit).
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36

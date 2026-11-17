@@ -4,7 +4,7 @@ policy-gradient update of all registers and steps with a KL leash to the anchor 
 zdn_rl_train.py --nets runs/rl/R/nets/3 --anchor runs/zdn/zdn1 --data runs/rl/R/iter-0003/data \\
     --value-data runs/rl/R/iter-000{1,2,3}/data --out runs/rl/R/nets/4 [--version 3] [--units baby,king]
     [--temperature 1] [--lr 3e-4] [--epochs 2] [--batch-turns 512] [--clip 0.2] [--target-kl 0.05] [--grad-clip 0.5]
-    [--beta 0.05] [--c-ent 0.003] [--max-anchor-kl 0.5] [--adv-clip 5] [--critic trace|richlin|rich]
+    [--beta 0.05] [--c-ent 0] [--max-anchor-kl 0.5] [--adv-clip 5] [--critic trace|richlin|rich]
     [--gae-lambda 1] [--critic-folds 4] [--device auto]
 
 --nets holds the learner theta_k (the nets that played --data): <unit>.json, and <unit>.norm.npz (the training
@@ -17,7 +17,11 @@ rl_critic's critic; then standardised per unit and clipped at --adv-clip.
 Loss over the rows of a batch of turns (a row: one sampled choice with at least two options, of any head):
   -mean min(r A, clip(r, 1 - clip, 1 + clip) A) - c_ent mean H(pi) + beta mean KL(pi || anchor),
   r = pi(label) / exp(-q / 4096) (q: the behaviour log-probability the player recorded; zdn_rl_data checked it).
+The entropy bonus defaults to 0: in rl-s2 (c_ent 0.01) it pushed mass onto rare options against their advantages
+(docs/rl-es-plan.md section 20, "rl-s2 result"); the KL leash to the label-smoothed imitation net keeps the policy soft.
 A batch whose approximate KL(theta_k -> theta) exceeds --target-kl stops the unit's training (before its update).
+Credit check (metrics and log): per chosen step kind, the change of the step policy's mass over the update against the
+kind's mean raw advantage (credit_corr: their row-weighted correlation over kinds).
 Outputs in --out: <unit>.json and <unit>.norm.npz per unit (inputs copied unchanged when a unit took no step),
 metrics.json. When a unit's KL to the anchor ends above --max-anchor-kl, only metrics.json is written; exit code 3.
 """
@@ -59,6 +63,26 @@ def advantages(a, tabs, dir_index):
         m[f'{unit}_no_bin'] = int((ri < 0).sum())
         out[unit] = A
     return out, m
+
+
+def wcorr(x, y, w):
+    """Weighted Pearson correlation (nan when either side is constant)."""
+    x, y, w = (np.asarray(v, np.float64) for v in (x, y, w))
+    w = w / w.sum()
+    mx, my = (w * x).sum(), (w * y).sum()
+    vx, vy = (w * (x - mx) ** 2).sum(), (w * (y - my) ** 2).sum()
+    return float((w * (x - mx) * (y - my)).sum() / np.sqrt(vx * vy)) if vx > 0 and vy > 0 else float('nan')
+
+
+def credit(mt, min_rows=50):
+    """The credit check (rl-s2's lesson, docs/zdn.md "RL"): per step kind chosen at least min_rows times, the change of
+    the step policy's mass on that kind over this update (dlog = log end/start) against the kind's mean raw advantage.
+    A policy that moves with its advantages has credit_corr > 0; rl-s2's entropy-driven drift had it near -1."""
+    s, e, adv = mt.get('step_kind_mass_start', {}), mt.get('step_kind_mass_end', {}), mt.get('adv_by_step_kind', {})
+    ks = [k for k, (n, _) in adv.items() if n >= min_rows and s.get(k, 0) > 0 and e.get(k, 0) > 0]
+    mt['dlog_by_step_kind'] = {k: round(float(np.log(e[k] / s[k])), 4) for k in ks}
+    mt['credit_corr'] = wcorr([mt['dlog_by_step_kind'][k] for k in ks], [adv[k][1] for k in ks], [adv[k][0] for k in ks]) \
+        if len(ks) >= 3 else None
 
 
 def train_unit(a, unit, tab, A_turn, dev, mt):
@@ -113,15 +137,24 @@ def train_unit(a, unit, tab, A_turn, dev, mt):
             kla = kla.index_put((ip,), (p[:, :K] * (lsm[:, :K] - alsm[:, :K])).sum(-1))
         lq = torch.from_numpy(-tab['q'][rows].astype(np.float32) / zdn_rl.LOGP_SCALE).to(dev)
         At = torch.from_numpy(A[tab['turn'][rows]].astype(np.float32)).to(dev)
-        return rows, lp, lq, At, ent, kla
+        return rows, lp, lq, At, ent, kla, full
 
     def summary(tag):
         net.eval()
         tot = dict(ent=0.0, kla=0.0, klold=0.0, n=0)
-        byh = {}
+        byh, mass, nstep = {}, {}, 0
         with torch.no_grad():
             for i in range(0, len(ev_turns), a.batch_turns):
-                rows, lp, lq, _, ent, kla = terms(ev_turns[i:i + a.batch_turns], False)
+                rows, lp, lq, _, ent, kla, full = terms(ev_turns[i:i + a.batch_turns], False)
+                for h, (pos, lsm) in full.items():   # the step policy's mass per option kind (the credit check)
+                    if h >= 0:
+                        continue
+                    kd = zdn_rl.gather(tab, rows[pos])[0]
+                    K = min(kd.shape[1], lsm.shape[1])
+                    pm, kd = lsm[:, :K].exp().cpu().numpy().astype(np.float64), kd[:, :K]
+                    for k in np.unique(kd[kd >= 0]):
+                        mass[int(k)] = mass.get(int(k), 0.0) + float(pm[kd == k].sum())
+                    nstep += len(pos)
                 lr_ = (lp - lq)
                 klo = (lr_.exp() - 1 - lr_)          # approx KL(theta_k -> theta), per row
                 tot['ent'] += float(ent.sum()); tot['kla'] += float(kla.sum()); tot['klold'] += float(klo.sum()); tot['n'] += len(rows)
@@ -135,6 +168,7 @@ def train_unit(a, unit, tab, A_turn, dev, mt):
         mt[f'entropy_{tag}'] = tot['ent'] / n; mt[f'kl_anchor_{tag}'] = tot['kla'] / n; mt[f'kl_old_{tag}'] = tot['klold'] / n
         mt[f'by_head_{tag}'] = {str(h): dict(rows=v[2], entropy=round(v[0] / v[2], 4), kl_anchor=round(v[1] / v[2], 4))
                                 for h, v in sorted(byh.items())}
+        mt[f'step_kind_mass_{tag}'] = {k: v / max(nstep, 1) for k, v in sorted(mass.items())}
 
     summary('start')
     opt = torch.optim.Adam(net.parameters(), lr=a.lr)
@@ -143,7 +177,7 @@ def train_unit(a, unit, tab, A_turn, dev, mt):
     for ep in range(a.epochs):
         perm = rng.permutation(turns)
         for i in range(0, len(perm), a.batch_turns):
-            rows, lp, lq, At, ent, kla = terms(perm[i:i + a.batch_turns], True)
+            rows, lp, lq, At, ent, kla, _ = terms(perm[i:i + a.batch_turns], True)
             if not len(rows):
                 continue
             logr = lp - lq
@@ -164,6 +198,7 @@ def train_unit(a, unit, tab, A_turn, dev, mt):
             break
     mt.update(steps=steps, clip_frac=clipped / seen if seen else 0.0, early_stop=stopped)
     summary('end')
+    credit(mt)
     if steps == 0:
         return None
     return net.cpu(), norm
@@ -187,7 +222,7 @@ def main():
     ap.add_argument('--target-kl', type=float, default=0.05)
     ap.add_argument('--grad-clip', type=float, default=0.5)
     ap.add_argument('--beta', type=float, default=0.05)
-    ap.add_argument('--c-ent', type=float, default=0.003)
+    ap.add_argument('--c-ent', type=float, default=0.0, help='entropy bonus (0: the KL leash keeps the policy soft)')
     ap.add_argument('--max-anchor-kl', type=float, default=0.5)
     ap.add_argument('--adv-clip', type=float, default=5.0)
     ap.add_argument('--critic', default='trace', choices=('trace', 'richlin', 'rich'))
@@ -245,6 +280,9 @@ def main():
               f"KL old {mt.get('kl_old_start', 0):.2e} -> {mt.get('kl_old_end', 0):.4f}, clip {mt.get('clip_frac', 0):.3f}", flush=True)
         if 'adv_by_step_kind' in mt:
             print(f"{unit} advantage by chosen step kind (rows, mean raw A): {mt['adv_by_step_kind']}", flush=True)
+        if mt.get('dlog_by_step_kind'):
+            print(f"{unit} credit: corr(policy change, advantage) over step kinds {mt.get('credit_corr')}; "
+                  f"dlog by kind {mt['dlog_by_step_kind']}", flush=True)
     metrics['refused'] = refused
     if refused:
         metrics['exported'] = False
