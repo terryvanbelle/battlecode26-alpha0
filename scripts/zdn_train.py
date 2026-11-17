@@ -46,20 +46,19 @@ def load(paths, unit, max_turns):
         if R is None:
             R = [dict(kind=[], x=[], lab=[], nk=g['nk']) for g in r['regs']]
         for rr, g in zip(R, r['regs']):
-            rr['kind'].append(g['kind']); rr['x'].append(g['x'].astype(np.int16)); rr['lab'].append(g['lab'])
+            rr['kind'].append(g['kind'].astype(np.int16)); rr['x'].append(g['x'].astype(np.int16)); rr['lab'].append(g['lab'])
         ti = np.array([key.get((int(a), int(b)), -1) for a, b in zip(s['robot'], s['round'])], np.int64)
         ok = ti >= 0
         nk_step = s['nk']
         St['turn'].append(ti[ok]); St['step'].append(s['step'][ok]); St['label'].append(s['label'][ok])
-        St['ctx'].append(s['ctx'][ok].astype(np.int16)); St['kind'].append(s['kind'][ok]); St['x'].append(s['x'][ok].astype(np.int16))
+        St['ctx'].append(s['ctx'][ok].astype(np.int16)); St['kind'].append(s['kind'][ok].astype(np.int16)); St['x'].append(s['x'][ok].astype(np.int16))
         nturn += len(r['robot'])
         if nturn >= max_turns:
             break
-    cat = lambda xs: np.concatenate(xs) if xs else None
-    T = {k: cat(v) for k, v in T.items()}
-    St = {k: (_padcat(v) if k in ('kind', 'x') else cat(v)) for k, v in St.items()}
+    T = {k: _cat(v) for k, v in T.items()}
+    St = {k: (_padcat(v) if k in ('kind', 'x') else _cat(v)) for k, v in St.items()}
     St['nk'] = nk_step
-    R = [{k: (v if k == 'nk' else _padcat(v) if k in ('kind', 'x') else cat(v)) for k, v in rr.items()} for rr in (R or [])]
+    R = [{k: (v if k == 'nk' else _padcat(v) if k in ('kind', 'x') else _cat(v)) for k, v in rr.items()} for rr in (R or [])]
     return T, St, R
 
 
@@ -79,20 +78,52 @@ def reg_context(R):
     return out
 
 
+def _cat(arrs):
+    """np.concatenate along axis 0 into one preallocated array, freeing each piece once copied (arrs is emptied), so
+    the peak is the result plus one piece rather than twice the data. None for no pieces."""
+    if not arrs:
+        return None
+    out = np.empty((sum(len(a) for a in arrs),) + arrs[0].shape[1:], np.result_type(*arrs))
+    o = 0
+    for i in range(len(arrs)):
+        a, arrs[i] = arrs[i], None
+        out[o:o + len(a)] = a
+        o += len(a)
+    arrs.clear()
+    return out
+
+
 def _padcat(arrs):
+    """_cat with axis 1 padded to the longest piece: -1 for 2-d pieces (option kinds), 0 for 3-d (option features)."""
     K = max(a.shape[1] for a in arrs)
-    out = []
-    for a in arrs:
-        if a.shape[1] < K:
-            pad = [(0, 0), (0, K - a.shape[1])] + [(0, 0)] * (a.ndim - 2)
-            a = np.pad(a, pad, constant_values=(-1 if a.ndim == 2 else 0))
-        out.append(a)
-    return np.concatenate(out)
+    out = np.empty((sum(len(a) for a in arrs), K) + arrs[0].shape[2:], np.result_type(*arrs))
+    o = 0
+    for i in range(len(arrs)):
+        a, arrs[i] = arrs[i], None
+        n, k = a.shape[:2]
+        out[o:o + n, :k] = a
+        out[o:o + n, k:] = -1 if a.ndim == 2 else 0
+        o += n
+    arrs.clear()
+    return out
 
 
-def stats(X, axis=0):
-    X = X.astype(np.float64)
-    mu, sd = X.mean(axis), X.std(axis)
+def stats(X, axis=0, rows=None, chunk=1 << 22):
+    """Per-column mean and sd over the rows of X (all, or the indices `rows`), accumulated in float64 over chunks of
+    at most `chunk` elements: no float64 copy of X (the trunk input has over a thousand columns). Constant columns get
+    sd 1."""
+    assert axis == 0
+    rows = np.arange(len(X)) if rows is None else np.asarray(rows)
+    chunk = max(1, chunk // max(1, int(np.prod(X.shape[1:]))))      # rows per chunk
+    N = max(len(rows), 1)
+    s = np.zeros(X.shape[1:], np.float64)
+    for i in range(0, len(rows), chunk):
+        s += X[rows[i:i + chunk]].sum(0, dtype=np.float64)
+    mu = s / N
+    v = np.zeros_like(s)
+    for i in range(0, len(rows), chunk):
+        v += ((X[rows[i:i + chunk]].astype(np.float64) - mu) ** 2).sum(0)
+    sd = np.sqrt(v / N)
     sd = np.where(sd < 1e-6, 1.0, sd)   # constant columns: centred, not scaled
     return mu.astype(np.float32), sd.astype(np.float32)
 
@@ -122,7 +153,9 @@ class Scorer(nn.Module):
         if self.C is not None:
             u = u + self.C(ctx)
         k = kind.clamp(min=0)
-        v = torch.einsum('bkd,bkhd->bkh', x, self.B[k]) if x.shape[0] * x.shape[1] < 200000 else self._v_loop(k, x)
+        # B[k] materialises [batch, K, Hh, D]: only while that stays small (64 MB); else one matmul per kind
+        v = torch.einsum('bkd,bkhd->bkh', x, self.B[k]) if x.shape[0] * x.shape[1] * self.B[0].numel() <= (1 << 24) \
+            else self._v_loop(k, x)
         v = v + self.E[k]
         z = self.w(torch.relu(u[:, None, :] + v)).squeeze(-1)
         return z.masked_fill(kind < 0, -1e9)
@@ -190,9 +223,9 @@ def main():
     D_step = St['x'].shape[2]
     reg_dims = [(max(r['nk'], int(r['kind'].max()) + 1), r['x'].shape[2]) for r in R]
     RC = reg_context(R)
-    SL = np.concatenate([T['S'], T['L']], 1)
     tr_t = ~val_turn
-    mu_SL, sd_SL = stats(SL[tr_t])
+    (mu_S, sd_S), (mu_L, sd_L) = (stats(T[k], rows=np.nonzero(tr_t)[0]) for k in ('S', 'L'))
+    mu_SL, sd_SL = np.concatenate([mu_S, mu_L]), np.concatenate([sd_S, sd_L])
     mu_c, sd_c = stats(St['ctx'])
     kst_step = kind_stats(St['kind'], St['x'], nK_step)
     kst_reg = [kind_stats(r['kind'], r['x'], nK) for r, (nK, D) in zip(R, reg_dims)]
@@ -200,7 +233,7 @@ def main():
     dev = torch.device(a.device)
     net = ZNet(nS, nL, nC, (nK_step, D_step), reg_dims).to(dev)
     opt = torch.optim.Adam(net.parameters(), lr=a.lr)
-    tS = lambda idx: torch.from_numpy((SL[idx] - mu_SL) / sd_SL).float().to(dev)
+    tS = lambda idx: torch.from_numpy((np.concatenate([T['S'][idx], T['L'][idx]], 1) - mu_SL) / sd_SL).float().to(dev)
 
     def kx(kind, x, ks):
         mu, sd = ks

@@ -24,6 +24,52 @@ def test_reg_context():
     assert rc[2].tolist() == [[0, 1, 0, 0, 1, 0, 0], [1, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 1, 0, 0]]
 
 
+def test_low_memory_helpers_match_numpy():
+    """_cat/_padcat (fill one preallocated array, freeing the pieces) and the chunked stats equal what the plain numpy
+    versions computed before (np.concatenate of np.pad'ed pieces; float64 mean/std of the selected rows)."""
+    rng = np.random.default_rng(3)
+    for nd in (2, 3):
+        pieces = [rng.integers(-1, 30, (int(rng.integers(0, 9)), int(rng.integers(1, 7))) + ((4,) if nd == 3 else ())).astype(np.int16)
+                  for _ in range(7)]
+        K = max(a.shape[1] for a in pieces)
+        old = np.concatenate([np.pad(a, [(0, 0), (0, K - a.shape[1])] + [(0, 0)] * (nd - 2), constant_values=(-1 if nd == 2 else 0))
+                              for a in pieces])
+        work = list(pieces)
+        new = zdn_train._padcat(work)
+        assert new.dtype == old.dtype and np.array_equal(new, old) and work == []
+    pieces = [rng.integers(0, 255, (int(rng.integers(0, 50)), 5)).astype(np.uint8) for _ in range(6)]
+    work = list(pieces)
+    assert np.array_equal(zdn_train._cat(work), np.concatenate(pieces)) and work == [] and zdn_train._cat([]) is None
+    X = rng.integers(-300, 300, (1000, 12)).astype(np.int16)
+    X[:, 3] = 7                                                     # a constant column: sd 1
+    rows = np.sort(rng.choice(1000, 640, replace=False))
+    for r in (None, rows):
+        Xs = (X if r is None else X[r]).astype(np.float64)
+        mu, sd = zdn_train.stats(X, rows=r, chunk=100 * 12)            # 100 rows per chunk
+        sd0 = Xs.std(0); sd0[sd0 < 1e-6] = 1
+        assert np.array_equal(mu, Xs.mean(0).astype(np.float32)) and np.allclose(sd, sd0.astype(np.float32), rtol=1e-6)
+        assert sd[3] == 1 and mu[3] == 7
+
+
+def test_scorer_paths_agree():
+    """The scorer's two ways of computing the option term (gathered B[kind] einsum for small batches, one matmul per
+    kind for large ones) give the same logits."""
+    torch.manual_seed(0)
+    sc = zdn_train.Scorer(H=8, nC=3, nK=5, D=6, Hh=16)
+    h, ctx = torch.randn(40, 8), torch.randn(40, 3)
+    kind = torch.randint(-1, 5, (40, 9)); kind[:, 0] = 0
+    x = torch.randn(40, 9, 6)
+    small = sc(h, ctx, kind, x)                                   # 40 * 9 * 96 elements: the einsum path
+    assert 40 * 9 * sc.B[0].numel() <= (1 << 24)
+    u = sc.A(h) + sc.C(ctx)
+    v = sc._v_loop(kind.clamp(min=0), x) + sc.E[kind.clamp(min=0)]
+    loop = sc.w(torch.relu(u[:, None, :] + v)).squeeze(-1).masked_fill(kind < 0, -1e9)
+    assert torch.allclose(small, loop, atol=1e-5)
+    hb, cb = h.repeat(1200, 1), ctx.repeat(1200, 1)                  # 48000 * 9 * 96 > 2^24: the loop path
+    big = sc(hb, cb, kind.repeat(1200, 1), x.repeat(1200, 1, 1))
+    assert torch.allclose(big[:40], small, atol=1e-5) and torch.allclose(big[-40:], small, atol=1e-5)
+
+
 def test_export_folds_standardisation_exactly(tmp_path):
     """The packed net on raw inputs (ZNet.java's math) gives the trained net's logits on standardised inputs."""
     net, st = zh.random_net()
