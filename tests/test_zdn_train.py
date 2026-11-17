@@ -111,6 +111,31 @@ def _synthetic_games(root, games=8, turns=80, steps=3, seed=0):
         zh.write(d / 'decisions-A.bin.gz', recs)
 
 
+def test_keep_frac_subsamples_whole_turns(tmp_path):
+    """--keep-frac keeps a random subset of turns, each with its own registers and all of its steps, and nothing else."""
+    import glob
+    _synthetic_games(tmp_path / 'games')
+    files = sorted(glob.glob(str(tmp_path / 'games/*/decisions-*.bin.gz')))
+    T1, S1, R1 = zdn_train.load(files, 'baby', 10 ** 9)
+    T2, S2, R2 = zdn_train.load(files, 'baby', 10 ** 9, 0.5, np.random.default_rng(7))
+    n1, n2 = len(T1['S']), len(T2['S'])
+    assert n1 == 640 and 0.4 * n1 < n2 < 0.6 * n1
+    full = {(int(g),) + tuple(s) + tuple(l): i for i, (g, s, l) in enumerate(zip(T1['game'], T1['S'].tolist(), T1['L'].tolist()))}
+    assert len(full) == n1                                          # the key identifies a turn
+    m = np.array([full[(int(g),) + tuple(s) + tuple(l)] for g, s, l in zip(T2['game'], T2['S'].tolist(), T2['L'].tolist())])
+    assert len(set(m.tolist())) == n2 and np.all(np.diff(m) > 0)     # a subset, in order
+    for r1, r2 in zip(R1, R2):
+        for k in ('kind', 'x', 'lab'):
+            assert np.array_equal(r2[k], r1[k][m]), k
+    idx = np.concatenate([np.nonzero(S1['turn'] == i)[0] for i in m])
+    assert len(S2['turn']) == len(idx) == 3 * n2
+    assert np.array_equal(m[S2['turn']], S1['turn'][idx])
+    for k in ('step', 'label', 'ctx', 'kind', 'x'):
+        assert np.array_equal(S2[k], S1[k][idx]), k
+    T3, _, _ = zdn_train.load(files, 'baby', 10 ** 9, 0.5, np.random.default_rng(7))
+    assert np.array_equal(T3['S'], T2['S'])                           # seeded
+
+
 def test_train_end_to_end(tmp_path, monkeypatch):
     _synthetic_games(tmp_path / 'games')
     out = tmp_path / 'net'

@@ -1,7 +1,7 @@
 """Imitation training for zdn (docs/zdn.md): one net per unit type (baby, king), trained on teacher records.
 
   zdn_train.py --games 'runs/teacher-zdn1/games/*' --unit baby --out runs/zdn/net-b1 [--epochs 8] [--smooth 0.1]
-               [--max-turns 600000] [--val-every 10] [--device cuda]
+               [--max-turns 600000] [--keep-frac 1.0] [--val-every 10] [--device cuda]
 
 Net (mirrored by java/bots/zdn/ZNet.java):
   trunk  h = relu(W2 relu(W1 [S; L]* + b1) + b2)              (* standardised; the standardisation is folded in)
@@ -12,7 +12,9 @@ Net (mirrored by java/bots/zdn/ZNet.java):
          logit_c = w . relu(u + v_c) + w0
   softmax over the record's options (padding masked).
 Loss: cross-entropy with label smoothing over the record's options; records whose label matched no option are
-skipped. Validation: every --val-every'th game (by sorted path) is held out.
+skipped. Validation: every --val-every'th game (by sorted path) is held out. --keep-frac keeps a uniform random
+fraction of each file's turns (with their steps): more games for the same memory than --max-turns, which stops after
+the first files.
 Writes OUT/net.json (weights with the standardisation folded in, plus dims and kind counts), OUT/norm.npz (that
 standardisation, for RL: zdn_rl.Norm), OUT/train.log lines.
 """
@@ -26,8 +28,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import zdn_data  # noqa: E402
 
 
-def load(paths, unit, max_turns):
-    """Concatenate one unit's records over files. Returns (turn arrays, step arrays, register arrays)."""
+def low_fragmentation_malloc():
+    """glibc: serve every allocation over 64 KB by mmap (returned to the OS when freed) instead of letting the dynamic
+    threshold climb to 32 MB, where the per-file arrays of load() fragment the heap (peak RSS 975 -> 722 MB on 31k
+    baby turns). No-op elsewhere."""
+    try:
+        import ctypes
+        libc = ctypes.CDLL('libc.so.6')
+        libc.mallopt(-3, 1 << 16)    # M_MMAP_THRESHOLD
+        libc.mallopt(-1, 0)          # M_TRIM_THRESHOLD
+    except (OSError, AttributeError):
+        pass
+
+
+def load(paths, unit, max_turns, keep_frac=1.0, rng=None):
+    """Concatenate one unit's records over files, keeping each turn (and its steps) with probability keep_frac.
+    Returns (turn arrays, step arrays, register arrays)."""
+    rng = rng if rng is not None else np.random.default_rng(0)
     T = dict(S=[], L=[], game=[])
     R = None
     St = dict(turn=[], step=[], label=[], ctx=[], kind=[], x=[])
@@ -41,6 +58,10 @@ def load(paths, unit, max_turns):
         r, s = d['reg'], d['step']
         if r is None or s is None:
             continue
+        if keep_frac < 1:
+            keep = np.nonzero(rng.random(len(r['robot'])) < keep_frac)[0]
+            r = dict(r, regs=[{k: (v[keep] if isinstance(v, np.ndarray) else v) for k, v in g.items()} for g in r['regs']],
+                     **{k: v[keep] for k, v in r.items() if k != 'regs' and isinstance(v, np.ndarray)})
         key = {(int(a), int(b)): nturn + i for i, (a, b) in enumerate(zip(r['robot'], r['round']))}
         T['S'].append(r['S'].astype(np.int16)); T['L'].append(r['L'].astype(np.uint8)); T['game'].append(np.full(len(r['robot']), gi, np.int32))
         if R is None:
@@ -200,6 +221,7 @@ def main():
     ap.add_argument('--lr', type=float, default=1e-3)
     ap.add_argument('--batch', type=int, default=1024)
     ap.add_argument('--max-turns', type=int, default=600000)
+    ap.add_argument('--keep-frac', type=float, default=1.0, help='keep each turn with this probability')
     ap.add_argument('--val-every', type=int, default=10)
     ap.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu')
     ap.add_argument('--seed', type=int, default=0)
@@ -212,7 +234,8 @@ def main():
 
     files = sorted(f for g in sorted(glob.glob(a.games)) for f in glob.glob(g + '/decisions-*.bin.gz'))
     t0 = time.time()
-    T, St, R = load(files, a.unit, a.max_turns)
+    low_fragmentation_malloc()
+    T, St, R = load(files, a.unit, a.max_turns, a.keep_frac, np.random.default_rng(a.seed + 1))
     nT, nM = len(T['S']), len(St['turn'])
     say(f'{a.unit}: {len(files)} files, {nT} turns, {nM} steps, {len(R)} registers ({time.time() - t0:.0f} s)')
 
