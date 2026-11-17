@@ -829,6 +829,25 @@ the 0.2 level costs 0.1-0.25 of a game against v39 either way, which strengthens
 - *Under 0.40:* exploration inside the softmax costs strength even at 0.1, and the per-turn start goes back to v39z
   with a floor.
 
+**sm10: 27/64 = 0.42 (t −1.15)** against zdpg39. That is the middle reading. On the same 64 games (paired by map,
+both seats), zdpy3 against the others:
+- zfree: −0.17 a game (t −2.0)
+- gall: +0.02 (t 0.2)
+- sm20: +0.11 (t 1.3)
+
+Exploration at 0.1 inside the softmax costs about what the 0.2 floor costs, and less than 0.2 inside the softmax.
+Per the reading, zdpy3's net is the per-turn start with a stronger leash.
+
+**rl-s2** (configs/rl-s2.json) is rl-s1 with these changes:
+- start and anchor v39zs10; package zdpy4, which is zdpy3 rebuilt with the per-game-seeded DNet. On arrows with
+  seeds 11 and 12, team A's decisions under zdpy3 matched for the first 107; under zdpy4 they differ from the 8th;
+- β from 0.1 to 0.03 over 20 iterations (rl-s1: 0.03 to 0.01);
+- prefix zdpa, seed base 3100000;
+- zdb (zdpc00) tracked at each anchor gate.
+
+It takes the box once rl-p3's v15 gates are in. rl-p3 has answered its question: the plan heads learn the opening
+plan that wins. The per-turn line is the capability-complete one.
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
