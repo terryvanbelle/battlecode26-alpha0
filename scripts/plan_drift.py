@@ -1,12 +1,13 @@
 """Plan-head drift (docs/rl-es-plan.md section 21): each net version's mean policy per plan head on a fixed set of states.
 
-  plan_drift.py --run runs/rl/rl-p1 [--states runs/plan/states] [--from-iter 0] [--json OUT]
+  plan_drift.py --run runs/rl/rl-p1 [--states runs/plan/states] [--from-iter 0] [--json OUT] [--summary]
 
 The states are the plan heads' records (p20..p27.npz, rl_data output) of one early iteration, copied once to --states
 (from runs/rl/RUN/iter-NNNN/data when --states is empty), so every version is read on the same states. For each
 nets/<v>/net.json the script prints, per head, the mean softmax over all options (temperature 1, no floor: the
 policy rl-p1 samples), its mean bin and the share on zdb's bin. CORE (point 22) moving its mass toward bin 2 (12/8)
-is the known answer rl-p1 is checked against.
+is the known answer rl-p1 is checked against. --summary prints only one line (the latest version against v0), for
+rl_chart_sync.sh's status line.
 """
 import argparse, json, shutil, sys
 from pathlib import Path
@@ -25,6 +26,7 @@ def main():
     ap.add_argument('--states', default='runs/plan/states')
     ap.add_argument('--from-iter', type=int, default=0, help='iteration whose records seed --states')
     ap.add_argument('--json', help='write the table here as JSON lines (one per version)')
+    ap.add_argument('--summary', action='store_true', help='one line: the latest version against v0')
     a = ap.parse_args()
     run, st = Path(a.run), Path(a.states)
     if not any(st.glob('p2*.npz')):
@@ -56,6 +58,15 @@ def main():
                                           p_zdb=round(float(m[ZDB[p]]), 3), rows=len(x))
         rows.append(row)
     names = [HEADS[p] for p in X]
+    if a.summary:
+        f, l = rows[0], rows[-1]
+        mb = ', '.join(f"{n} {f['heads'][n]['mean_bin']:.2f} → {l['heads'][n]['mean_bin']:.2f}" for n in names
+                       if n in f['heads'] and n in l['heads'])
+        c0, c1 = f['heads'].get('CORE'), l['heads'].get('CORE')
+        core = (f"; CORE's mass on 12/8 {c0['p'][2]:.3f} → {c1['p'][2]:.3f}, on 15/10 {c0['p'][3]:.3f} → {c1['p'][3]:.3f}"
+                if c0 and c1 else '')
+        print(f"Plan heads' mean bin, v{f['version']} → v{l['version']} (zdb's bins: POSTURE 0, KINGS 1, CORE 4, the rest 3): {mb}{core}")
+        return
     print('version  ' + '  '.join(f'{n:>14}' for n in names) + '   (mean bin / p at zdb bin)')
     for r in rows:
         print(f"v{r['version']:<7} " + '  '.join(f"{r['heads'][n]['mean_bin']:6.2f} / {r['heads'][n]['p_zdb']:.2f}" if n in r['heads'] else f"{'':>14}" for n in names))

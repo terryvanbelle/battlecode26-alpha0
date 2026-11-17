@@ -6,7 +6,8 @@
 # committed and pushed to the current branch. Run on the driver:
 #   setsid nohup scripts/rl_chart_sync.sh rl-s1 > runs/rl_chart_sync.log 2>&1 < /dev/null &
 # Env: GATE_MODE (the charted gate series, default anchor-zdpg39), GATE_LABEL, ANCHOR_LABEL (the plain anchor gate's
-# opponent in the status line, default "the start"), TITLE (the chart's title), EVERY (poll seconds, default 120). Exits when runs/rl/RUN/STOP
+# opponent in the status line, default "the start"), TITLE (the chart's title), EXTRA (a command run on the box in the
+# sandbox; its last output line is appended to the status line), EVERY (poll seconds, default 120). Exits when runs/rl/RUN/STOP
 # exists on the box (after a last refresh).
 export TZ='PDT+7'
 cd "$(dirname "$0")/.." || exit 1
@@ -29,10 +30,13 @@ refresh() {
   python3 scripts/plot_rl_vs.py $TMP/p/progress.jsonl --opp v0 --pool-label "vs the start net v0 (pool games)" \
     --gates $TMP/p/gates.jsonl --gate-mode "$GATE_MODE" --gate-label "$GATE_LABEL" --out $SVG \
     --title "$TITLE" > /dev/null || return 1
-  python3 - $TMP/p "$GATE_MODE" "$ANCHOR_LABEL" <<'EOF' || return 1
+  : > $TMP/extra
+  [ -n "$EXTRA" ] && { timeout 300 "${BOX[@]}" "cd $BR && $EXTRA" 2> /dev/null | tail -1 > $TMP/extra || : > $TMP/extra; }
+  python3 - $TMP/p "$GATE_MODE" "$ANCHOR_LABEL" $TMP/extra <<'EOF' || return 1
 import json, re, sys, time
 from pathlib import Path
 d, gmode, alabel = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+extra = Path(sys.argv[4]).read_text().strip()
 rows = [json.loads(l) for l in open(d / 'progress.jsonl') if l.strip()]
 gates = [json.loads(l) for l in open(d / 'gates.jsonl') if l.strip()]
 fmt = lambda mode: ', '.join(f"v{g['version']} {g['points']:g}/{g['games']}" for g in sorted(
@@ -45,7 +49,8 @@ text = (f"Updated automatically after each iteration ([rl_chart_sync.sh](scripts
         f"{time.strftime('%B %-d, %H:%M PDT')}, " + (f"after iteration {last}" if last >= 0 else "no iteration finished yet")
         + (f". Gates against {alabel}: {fmt('anchor')}" if fmt('anchor') else '')
         + (f". Against {opp}: {fmt(gmode)}" if fmt(gmode) else '')
-        + (f". Pool games against v0, iterations 0–{last}: {p:g}/{n} = {p / max(n, 1):.2f}" if n else '') + '.')
+        + (f". Pool games against v0, iterations 0–{last}: {p:g}/{n} = {p / max(n, 1):.2f}" if n else '') + '.'
+        + (f' {extra.rstrip(".")}.' if extra else ''))
 f = Path('PROGRESS.md'); s = f.read_text()
 s2, k = re.subn(r'<!-- RL_STATUS_START -->.*?<!-- RL_STATUS_END -->',
                 lambda _: f'<!-- RL_STATUS_START -->{text}<!-- RL_STATUS_END -->', s, flags=re.S)
