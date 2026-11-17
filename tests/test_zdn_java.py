@@ -2,7 +2,8 @@
 
   - ZNet.java computes the same logits as the trained torch net (through export + pack + the Java parser).
   - The teacher build (zdb + recorder) plays exactly like plain zdb (same trajectory hash), raises nothing, and labels
-    its records: every register value and primitive of zdb's is one of zdn's options.
+    its records: every register value and primitive of zdb's is one of zdn's options. The state's margin columns equal
+    a Python reference computed from the state's other columns.
   - The zdn player runs without errors and records, with no net (uniform choices) and with a net trained on the
     teacher's records (recording a sample of turns); its random draws differ across game seeds.
   - Every recorded choice's q is the log-probability the player sampled it with: log(1/n) without a net; with a net,
@@ -16,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 np = pytest.importorskip('numpy')
-import build_zdn, zdn_data  # noqa: E402
+import build_zdn, zdn_data, zdn_margins  # noqa: E402
 import zdn_helpers as zh  # noqa: E402
 
 JDK = ROOT / 'vendor/jdk/bin'
@@ -124,6 +125,20 @@ def test_recorder_labels_zdb_choices(teacher_games):
             ends = int((chosen == 0).sum())
             assert 0.98 * len(r['robot']) <= ends <= len(r['robot']), (side, unit)   # one END per recorded turn
         assert (d['baby']['step']['kind'][np.arange(len(d['baby']['step']['label'])), np.maximum(d['baby']['step']['label'], 0)] == 1).any()
+
+
+@need_engine
+def test_state_margins(teacher_games):
+    """The state ends with the spawn-economy margins, computed from the state's own columns (scripts/zdn_margins.py),
+    and in a real game the kings' cheese margins come within their clipping window of some floor."""
+    _, _, g = teacher_games
+    for side in 'AB':
+        d = zdn_data.read(g / f'decisions-{side}.bin.gz')
+        for unit in ('baby', 'king'):
+            S = d[unit]['reg']['S']
+            assert np.array_equal(S[:, -13:], zdn_margins.margins(S[:, :-13])), (side, unit)
+        K = d['king']['reg']['S'][:, -13:]
+        assert (np.abs(K[:, :6]) < 50).any() and len(np.unique(K[:, :6])) > 5, side   # some floor within reach
 
 
 def _check_player_records(f):

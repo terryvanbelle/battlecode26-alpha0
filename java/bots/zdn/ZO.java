@@ -185,6 +185,7 @@ public final class ZO {
     static void put(int v) { sb[sn++] = ZG.sat(v); }
 
     static void putBit(boolean b) { sb[sn++] = b ? 1 : 0; }
+    static int clip(int v, int k) { return v < -k ? -k : v > k ? k : v; }
 
     static void oneHot(int v, int n) { for (int i = 0; i < n; i++) sb[sn++] = i == v ? 1 : 0; }
 
@@ -282,6 +283,15 @@ public final class ZO {
         int threat = 0;
         for (RobotInfo q : ZM.robots) if (q.team == ZG.them && q.type != UnitType.RAT_KING && q.location.distanceSquaredTo(me) <= 18) threat++;
         put(threat);
+        // spawn economics near their thresholds (docs/zdn.md, "State margins"): global cheese and the baby count range
+        // over thousands, so a floor a few cheese away is invisible to a standardised input; clipped margins resolve it
+        int m = ZG.global - cost, bab = (cost - 10) / 10 * 4;
+        int zf = cost == 10 ? 20 : bab < 8 ? 100 : 300;
+        put(clip(m, 50)); put(clip(m - 20, 50)); put(clip(m - 100, 50)); put(clip(m - 300, 50));
+        put(clip(m - Math.min(zf, 2 * (2000 - r)), 50)); put(clip(ZC.surplus() - cost - 100, 50));
+        put(clip(bab - 8, 3)); put(clip(bab - 18, 3)); put(clip(bab - 40, 3)); put(clip(bab - 80, 3));
+        put(clip(bab - (ZG.W * ZG.H <= 441 ? 12 : 18), 3));
+        putBit(ZG.global >= 1000); putBit(ZG.global >= 3000);
         int[] out = new int[sn];
         System.arraycopy(sb, 0, out, 0, sn);
         return out;

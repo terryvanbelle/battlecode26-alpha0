@@ -85,6 +85,8 @@ public final class ZPlayer {
         if (king) kingPre();
         int[] S = ZO.state(), L = ZO.grid();
         ZNet net = net(king);
+        if (net != null && (S.length != net.nS || L.length != net.nL))   // a net trained on another input layout
+            throw new IllegalStateException("zdn net expects S " + net.nS + " L " + net.nL + ", state has " + S.length + " " + L.length);
         float[] h = net == null ? null : net.trunk(concat(S, L));
         ZR.begin();
         ZO.nSmp = 0;

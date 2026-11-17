@@ -101,6 +101,23 @@ has 8 GB). zdn_train.py therefore concatenates in place, keeps no float64 or ful
 allocations by mmap (heap fragmentation had added a third). --keep-frac keeps a random share of every game's turns, so
 a capped run still sees every game.
 
+**State margins (zdn2).** zdb's spawn rule is a set of sharp thresholds. Below its core count (12 babies on maps
+of up to 441 tiles, else 18), it builds as soon as global cheese minus the rat's cost reaches its floor: 100 below
+8 babies, 300 from 8 on, 20 for a 10-cheese rat, and never more than 2 · (2000 − round). Past the core count, it builds
+when its surplus estimate clears the cost by 100. In teacher-zdn1 the first rule is exact: in boot zdb builds on 99 to
+100% of the turns at or above its floor, and on 0.1% below it. Standardised, global cheese ranges over thousands, so the
+few cheese between waiting and building are nearly invisible to the net. zdn1's king put 0.37 on building where zdb
+built in boot (0.08 where it waited) and built on a third of those turns at argmax; past boot, 0.16. The state now
+ends with 13 margin columns: cheese minus cost against 0, 20, 100, 300 and the floor, the surplus against cost + 100
+(clipped to ±50), the baby count against 8, 18, 40, 80 and the core count (clipped to ±3), and global cheese at or
+above 1000 and 3000. ZO.state computes them in the game. They are a function of the older columns
+([scripts/zdn_margins.py](../scripts/zdn_margins.py)), so the teacher-zdn1 records train with the margins appended
+(`python scripts/zdn_margins.py scripts/zdn_train.py ...`), with no re-collection. The king trained on all 145k turns
+went from validation step loss 0.397 to 0.240 (accuracy 0.929 to 0.963; exact build tile 0.18 to 0.67). Where zdb
+builds, its build probability went from 0.37 to 0.77 in boot (argmax 0.34 to 0.80) and from 0.16 to 0.77 past boot;
+where zdb waits, from 0.08 to 0.04. A trial on 36k turns had learned no build rule with or without the margins: too
+little data to show the change.
+
 ## Tests, readings set before their games
 
 **Code tests.**
@@ -113,10 +130,13 @@ a capped run still sees every game.
   training run on synthetic records with a learnable rule.
 - tests/test_zdn_java.py: ZNet.java's logits equal torch's (export, pack, then the Java parser). Engine games on
   DefaultSmall: the teacher plays exactly like zdp (same trajectory hash), raises nothing, and labels at least 98% of
-  register values and steps, with one END per recorded turn. The player runs and records without errors, both with no
+  register values and steps, with one END per recorded turn. The state's margin columns equal scripts/zdn_margins.py's
+  function of the columns before them, and the king's cheese margins come within their clipping window. The player runs and records without errors, both with no
   net and with a net trained on the teacher game's records. Its random draws differ across game seeds (they repeated
   before the fix below). Every recorded q is the probability the player sampled with: log(1/n) with no net, and with
   a net what zdn_rl recomputes in Python from the record (median gap under 1e-3).
+- tests/test_zdn_margins.py: the margin columns on hand-worked states (both floors, the end-of-game cap, the core
+  count at 441 tiles), and the read hook (appends the margins once, keeps the dtype, refuses states that have them).
 - tests/test_zdn_rl.py: the decision table (every recorded choice, grouped by turn, with its options), the net loader
   (net_from_json reproduces the packed net's logits from raw inputs; unfold and export keep the function), the data
   stage's parity check (passes on true q, exit 2 on corrupted q), and the trainer (--lr 0 leaves the nets
@@ -133,6 +153,15 @@ a capped run still sees every game.
   0.40 or more against the held-out field counts as competent. RL starts from zdn1 whatever the score, unless it is
   below 0.15, which would point at a bug (ERROR records, an input mismatch between teacher and player) rather than a
   weak policy.
+
+**zdn1 against its readings.** Labels 99.6% or more, no ERROR records; validation step accuracy 0.93 (king) and 0.88
+(baby). Strength 51/192 = 0.27 against the held-out field and 0/64 against zdb. By the reading above RL should have
+started from zdn1. I held it for one fix instead: the kings' under-building (State margins, above) was a diagnosed input
+defect, cheap to repair and clearly limiting (zdn1 ended games with 6 babies to the opponent's 26).
+
+**Readings for zdn2** (zdn1 plus the margins; same teacher records, same training settings), set before its games:
+RL starts from zdn2 if its held-out field score is at least zdn1's 0.27, and from zdn1 otherwise. Either way RL starts
+after this check, with no further imitation fixes first.
 
 ## RL
 
