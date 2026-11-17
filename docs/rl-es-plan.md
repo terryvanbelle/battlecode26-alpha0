@@ -962,3 +962,15 @@ Consequences for earlier runs:
 
 **rl-p3 (from 21:41 PDT)** is rl-p2 with that fix: anchor zdpp8, prefix zdpi, seed base 3000000. The readings are
 rl-p2's. `plan_picks.py` runs from the chart sync each iteration, so the pooled regression covers iterations 0-10.
+
+**rl-p3 estimator check after iteration 6 (00:05 PDT):** the learning rule follows the evidence.
+- rl_train now logs each plan head's mean raw advantage per option. In iteration 6, CORE's per-option mean advantage
+  matched its per-option mean result to within 0.02. The critic sees only game state, so at a plan decision V is
+  close to 0 and A is close to z. It neither removes variance nor distorts the credit.
+- No cheap baseline is left: map and map × seat explain under 3% of the result's variance. The mirror games
+  (60%) already compare two learner plans in one game.
+- Each head's change in log-probability per option from v0 to v7 correlates with the pooled mean result per pick:
+  POSTURE 0.77, CORE 0.88, ROLES 0.95, ARMY 0.97.
+- CORE moved toward 10/6 and 12/8 (log p +0.24 each), as stage 0 predicts, but away from 15/10 (−0.32), whose picks
+  have so far scored −0.03. So the pre-set reading, the share below 18/12, has not risen yet.
+- The limit is the amount of evidence: per-bin mean results differ by 0.05 to 0.1 with standard errors around 0.1.
