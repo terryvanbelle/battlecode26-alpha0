@@ -57,9 +57,29 @@ public final class Game {
         GameWorld world;
         long turns, sampledTurns, ends, studentTurns, studentPrimitives, exhaustedTurns;
         Net mixNet; double mixP, mixT; Random mixRng;
+        final long botSeed;
         Bot(Team team, String pkg, String classes, OutputStream out, Records rec, double p, double pKing, long seed) {
             super(team, pkg, CrossPlayLanguage.JAVA, null, classes, out, false);
             this.rec = rec; this.p = p; this.pKing = pKing; this.pBoost = p; this.rng = new Random(seed); this.teamIndex = team.ordinal();
+            this.botSeed = seed;
+        }
+        /** The engine seeds each robot's sandboxed Math.random with its robot ID, and IDs repeat on every game of a
+         *  map, so a bot's random draws repeated across seeds (docs/rl-es-plan.md section 21, rl-p2). Reseed it from
+         *  the game seed, team and robot ID: right after the sandbox is built (its thread has run RobotMonitor.init and
+         *  paused) and before the robot's first turn, when Math.random's Random is still unmade (it is made lazily). */
+        void reseed(InternalRobot robot) {
+            try {
+                Field sb = PlayerControlProvider.class.getDeclaredField("sandboxes"); sb.setAccessible(true);
+                Object sp = ((Map<?, ?>) sb.get(this)).get(robot.getID());
+                Field il = sp.getClass().getDeclaredField("individualLoader"); il.setAccessible(true);
+                Object loader = il.get(sp);
+                Class<?> rm = (Class<?>) loader.getClass().getMethod("loadClass", String.class)
+                    .invoke(loader, "battlecode.instrumenter.inject.RobotMonitor");
+                Field rs = rm.getDeclaredField("randomSeed"); rs.setAccessible(true);
+                long h = (botSeed + 1) * 0x9E3779B97F4A7C15L + robot.getID() * 0xBF58476D1CE4E5B9L;
+                h ^= h >>> 31; h *= 0x94D049BB133111EBL; h ^= h >>> 29;
+                rs.setInt(null, (int) h);
+            } catch (ReflectiveOperationException | RuntimeException e) { failures.add("reseed_failed:" + robot.getID() + ":" + e); }
         }
         @Override public void matchStarted(GameWorld w) { world = w; super.matchStarted(w); }
         /** Rare, decisive baby states (state-based, so the recorded P(action | state) stays unbiased). */
@@ -74,6 +94,7 @@ public final class Game {
         @Override public void robotSpawned(InternalRobot robot) {
             super.robotSpawned(robot);
             if (getTerminated(robot)) failures.add("init_failed:" + robot.getID());
+            else reseed(robot);
         }
         @Override public void robotKilled(InternalRobot robot) { super.robotKilled(robot); obs.forget(robot.getID()); }
         @Override public void runRobot(InternalRobot robot) {

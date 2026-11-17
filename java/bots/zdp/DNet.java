@@ -105,9 +105,15 @@ public final class DNet {
     /** Net-mode sampling stream (separate from zdb's G.rand, so zdb's own random choices keep their sequence). */
     static int rng;
 
+    /** Per-game entropy for the streams' seeds. Robot IDs repeat on every game of a map, so a stream seeded from the
+     *  ID and round alone drew the same numbers in every game (rl-p1/rl-p2's plan heads: the first plan's picks were
+     *  fixed per map and seat). Our runner (alpha0.student.Game) seeds the sandbox's Math.random from the game seed,
+     *  team and robot; under the official engine it is seeded by the robot ID, which adds nothing but costs nothing. */
+    static int entropy() { return (int) (long) (Math.random() * 4294967296.0); }
+
     static float uniform() {
         int x = rng;
-        if (x == 0) x = G.myId * 0x9E3779B1 + G.round * 0x85EBCA6B + 1;
+        if (x == 0) { x = (G.myId * 0x9E3779B1 + G.round * 0x85EBCA6B + 1) ^ entropy(); if (x == 0) x = 1; }
         x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
         rng = x;
         return (x >>> 8) / 16777216f;
@@ -118,7 +124,7 @@ public final class DNet {
 
     static float uniform2() {
         int x = rng2;
-        if (x == 0) x = G.myId * 0x2545F491 + G.round * 0x27D4EB2F + 7;
+        if (x == 0) { x = (G.myId * 0x2545F491 + G.round * 0x27D4EB2F + 7) ^ entropy(); if (x == 0) x = 1; }
         x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
         rng2 = x;
         return (x >>> 8) / 16777216f;

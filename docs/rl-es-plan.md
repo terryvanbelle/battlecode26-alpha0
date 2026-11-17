@@ -930,3 +930,35 @@ Readings, set before the games:
   GAE) is the next thing to fix, within RL.
 - *Strength:* if the gates against zdb at v3 score under 0.40, the exploratory start costs too much; restart with
   U 0.25.
+
+**rl-p2 stopped after iteration 4 (21:40 PDT): every plan draw repeated per map.** I was setting up the pooled
+pick-vs-result regression (`scripts/plan_picks.py`) when the picks' spread failed to match the policy. POSTURE at v3
+drew bin 4 in 52 of 204 team-games at p 0.09, and never drew bins 2 or 6 (p 0.07 each). The cause:
+- DNet seeds its sampling stream at first use from the robot ID and round.
+- The engine numbers robots 1, 2, 3, … in spawn order on every game of a map, so 204 team-games had only 12
+  distinct planning kings.
+- The sandbox seeds `Math.random` with the robot ID as well, so a bot had no per-game randomness at all.
+
+Games still differ by seed, because the engine's own randomness drives the cats: all 60 of 60 repeated matchups had
+different outcomes. But the plan draws for a given map and seat repeated. The first plan repeated exactly: in a seed
+test (zdpp7 against itself on arrows, 6 seeds), all six games drew the same 8-head first plan for each team. Later
+plans repeated through the same stream.
+
+Consequences for earlier runs:
+- rl-p1 had the same defect, so its null result has a second cause besides the dilution above.
+- rl-p2's pick-vs-result fits so far (ROLES ⅓ t 3.1, ARMY bin 2 t 3.0) are map-and-seat effects, not plan effects.
+- The per-turn RL runs (rl-m*, rl-s*) shared the stream. Every baby's draws were fixed by its ID and first round,
+  so each map's early game repeated until the cats' randomness pulled the states apart. Their exploration was less
+  varied than their game counts imply.
+
+**Fix:**
+- The runner (`alpha0.student.Game`) reseeds each robot's sandboxed `Math.random` from the game seed, team and
+  robot ID, right after the sandbox is built.
+- DNet mixes one `Math.random` draw into each stream's seed.
+- Under the official engine `Math.random` stays seeded by the robot ID. Bots that never call it are unaffected:
+  zdb and the field bots in java/bots don't, and zdpp7 (old DNet) under the new runner still drew identical plans on
+  all 6 seeds.
+- With zdpp8 (rl-p2's start, new DNet), the same test drew 6 different first plans per team.
+
+**rl-p3 (from 21:41 PDT)** is rl-p2 with that fix: anchor zdpp8, prefix zdpi, seed base 3000000. The readings are
+rl-p2's. `plan_picks.py` runs from the chart sync each iteration, so the pooled regression covers iterations 0-10.
