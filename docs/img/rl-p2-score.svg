@@ -7,7 +7,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <rect width="720" height="380" fill="var(--surface)"/>
 <text class="t" x="64" y="24">rl-p2: plan-head learner (plans held 500 rounds) vs its start net and vs zdb</text>
 <text class="st" x="64" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>
-<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 50/104 = 0.48</text>
+<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 61/130 = 0.47</text>
 <circle class="dot1" cx="455.4" cy="62" r="5"/><text class="lg" x="465.4" y="66">vs zdb = zdpc00 (32-game gate): pooled 20/32 = 0.62</text>
 <line class="gl" x1="64" x2="696" y1="324.0" y2="324.0"/>
 <text class="ax" x="56" y="328.0" text-anchor="end">0.00</text>
@@ -28,9 +28,10 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <text class="ax" x="696.0" y="342" text-anchor="middle">4</text>
 <text class="ax" x="380.0" y="366" text-anchor="middle">learner version (iteration)</text>
 <text class="ax" transform="translate(16 204.0) rotate(-90)" text-anchor="middle">score</text>
-<polyline class="ln0" points="222.0,204.0 380.0,213.2"/>
+<polyline class="ln0" points="222.0,204.0 380.0,213.2 538.0,222.5"/>
 <g><title>v1 vs the start net v0 (pool games): 26/52 = 0.50 (95% 0.37-0.63)</title><line class="wh0" x1="222.0" x2="222.0" y1="235.5" y2="172.5"/><circle class="dot0" cx="222.0" cy="204.0" r="5"/></g>
 <g><title>v2 vs the start net v0 (pool games): 24/52 = 0.46 (95% 0.33-0.59)</title><line class="wh0" x1="380.0" x2="380.0" y1="244.0" y2="181.2"/><circle class="dot0" cx="380.0" cy="213.2" r="5"/></g>
+<g><title>v3 vs the start net v0 (pool games): 11/26 = 0.42 (95% 0.26-0.61)</title><line class="wh0" x1="538.0" x2="538.0" y1="262.7" y2="177.5"/><circle class="dot0" cx="538.0" cy="222.5" r="5"/></g>
 <polyline class="ln1" points="557.0,174.0"/>
 <g><title>v3 vs zdb = zdpc00 (32-game gate): 20/32 = 0.62 (95% 0.45-0.77)</title><line class="wh1" x1="557.0" x2="557.0" y1="215.4" y2="139.0"/><circle class="dot1" cx="557.0" cy="174.0" r="5"/></g>
 </svg>
