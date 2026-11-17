@@ -95,7 +95,11 @@ excluded maps as before, no bytecode limits (scripts/pipeline_zdn1.sh).
 
 **Training.** Cross-entropy per head over the legal options with label smoothing, on the box's GPU. The smoothing keeps
 the start soft enough for RL. Register r's scorer also sees one-hots of the kinds chosen for registers 0..r-1, so the
-registers form a chain, not independent guesses.
+registers form a chain, not independent guesses. Memory, not GPU time, limits the data: one baby turn holds about
+8 KB of features (int16, option lists padded to the longest), and a training run peaks near twice that per turn (the box
+has 8 GB). zdn_train.py therefore concatenates in place, keeps no float64 or full-width copies, and serves large
+allocations by mmap (heap fragmentation had added a third). --keep-frac keeps a random share of every game's turns, so
+a capped run still sees every game.
 
 ## Tests, readings set before their games
 
@@ -104,8 +108,9 @@ registers form a chain, not independent guesses.
   dropped), the player build, the Java-literal escaping of packed nets, the pack layout (a reader mirroring
   ZNet.java), and the record reader on synthetic records (including the ERROR record).
 - tests/test_zdn_train.py: the register context, the export's folding of the standardisation (packed-net math on raw
-  inputs equals the torch net on standardised inputs), and a small end-to-end training run on synthetic records with a
-  learnable rule.
+  inputs equals the torch net on standardised inputs), the low-memory helpers (equal to plain numpy), the scorer's two
+  paths (gathered and per-kind), --keep-frac (whole turns with all their steps, seeded), and a small end-to-end
+  training run on synthetic records with a learnable rule.
 - tests/test_zdn_java.py: ZNet.java's logits equal torch's (export, pack, then the Java parser). Engine games on
   DefaultSmall: the teacher plays exactly like zdp (same trajectory hash), raises nothing, and labels at least 98% of
   register values and steps, with one END per recorded turn. The player runs and records without errors, both with no
