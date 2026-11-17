@@ -894,3 +894,39 @@ movement per iteration, still bounded by target_kl).
 - *The known answer:* if rl-p1 learns, CORE's mass should move toward 12/8 (bin 2) within ~10 iterations. If CORE has
   not moved by iteration 15 while its Fisher share stays above 0.3, the credit assignment is too weak, and the next
   step is plan cadence 100 with 256 games per iteration (design C's T7 fallback).
+
+**rl-p1 result: stopped after iteration 9 (19:25 PDT), not 15.** Gates against the start: v3 16/32, v6 15/32,
+v9 17/32; against zdb: 21/32, 21/32, 18/32 (no zdb gate of v0 on those seeds, so no baseline). Pool games against v0,
+iterations 0-8: 115/220 = 0.52. CORE did not move (mass on 12/8 0.010 → 0.016, mean bin 3.95 → 3.91); POSTURE
+wandered (mean bin 0.34 → 0.93 at v7 → 0.67 at v9), the walk of a head with one pick per game and no signal. Why the
+signal is missing, from rl-p1's own records (iteration 8, 204 team-games):
+- CORE had 26.5 picks per team-game: 1 first plan, 0.87 at the break, 0.65 on king-count changes and 22.4 epoch
+  re-plans. Each pick was an independent draw, so one pick governed about 4% of a game.
+- Regressing the team's result on its share of CORE picks below zdb's bin gives slope −0.70 (t −1.09) at
+  iteration 7 and +0.67 (t 0.99) at iteration 8. That share has sd about 0.07 across team-games, so the slope's
+  standard error is about 1. Stage 0's whole-game effect (12/8: +0.11 score, about +0.2 in result units) predicts a
+  slope near 0.2, invisible at that noise.
+- A pick's effect scales with the share of the game it governs, and the number of picks with the inverse, so the
+  signal per iteration scales with the square root of that share: re-planning every 100 rounds gains √2, while
+  holding plans across the game gains up to √26 ≈ 5. Exploration was thin as well: 12/8 drew 1.2% of CORE's picks.
+
+The pre-set fallback (cadence 100, 256 games) would leave about 13 independent picks per game, still far below
+the signal needed, so the remaining 6 iterations would only have confirmed a null result.
+
+**rl-p2 (from about 19:30 PDT).** Plans are committed:
+- `DP.PLAN_EVERY` is 500, so a plan holds 500 rounds. Re-plans at the break and on king-count changes stay. That
+  leaves about 4.5 plans per team-game.
+- The start explores more: `plan_start.py --uniform 0.5` (runs/plan/start2) gives p(zdb bin) 0.40-0.47, Fisher
+  share 0.84-0.92, and 0.073 on CORE's 12/8.
+- Anchor package zdpp7 (that start). Batch 256, since each head now has about 900 rows per iteration. The rest is
+  rl-p1 from iteration 2.
+- No identity rerun: the change only removes plan events, and a plan of zdb bins is zdb (T1, T1b).
+- Expected per-iteration signal on CORE's 12/8: about 6× rl-p1's (√(26/4.5) from commitment, √(0.073/0.012) from
+  exploration). That is about 1 standard error per iteration.
+
+Readings, set before the games:
+- *The known answer:* by iteration 10, CORE's mass below 18/12 (bins 0-3, 0.37 at the start) reaches 0.5 or more,
+  and the result-on-pick regression pooled over iterations 1-10 has the same sign. Otherwise the estimator (critic,
+  GAE) is the next thing to fix, within RL.
+- *Strength:* if the gates against zdb at v3 score under 0.40, the exploratory start costs too much; restart with
+  U 0.25.

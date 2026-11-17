@@ -5,7 +5,7 @@ import battlecode.common.*;
 /**
  * Plan heads (design C, docs/rl-es-plan.md section 21): the net picks zdb's strategy constants (Plan) at coarse,
  * committed times, and zdb's code executes them every turn. A king calls plan() each turn after publishing; a plan
- * is due on the team's first king turn, in the first king turn of each 50-round epoch, when cooperation has ended
+ * is due on the team's first king turn, in the first king turn of each 500-round epoch, when cooperation has ended
  * since the last plan, and when the live king count has changed. The first king to take its turn while one is due
  * opens the heads in order (TP_POSTURE .. TP_KINGS), one record each, and writes the new plan (Plan.write), so later
  * kings that round see it as current.
@@ -28,7 +28,9 @@ public final class DP {
         TP_ROLES_OPTIONS = 7, TP_RUSH_OPTIONS = 6, TP_LOAD_OPTIONS = 7, TP_KINGS_OPTIONS = 4;
     /** A plan's cause (feature 2). */
     static final int PC_FIRST = 0, PC_EPOCH = 1, PC_BREAK = 2, PC_KINGS = 3;
-    static final int PLAN_EVERY = 50, KINGS_UNTIL = 1150;
+    /** Epoch length: 50 in rl-p1, whose ~26 independent re-draws per game made one pick's effect on the result too
+     *  small to detect; 500 leaves ~4.5 plans per game (first, 500/1000/1500, the break, king-count changes). */
+    static final int PLAN_EVERY = 500, KINGS_UNTIL = 1150;
 
     /** The first round this king saw cooperation over (-1: not yet). */
     static int coopEnd = -1;

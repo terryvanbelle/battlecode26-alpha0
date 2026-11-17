@@ -2,13 +2,14 @@ package zdp;
 
 /**
  * The team plan (design C, docs/rl-es-plan.md section 21): live values of zdb's strategy constants, one bin per head.
- * A king opens the plan heads (DP) on its first turn, every 50 rounds and on two events, and writes the bins into
- * the spare high bits of the MINE slots (Comms.PLAN0); every robot reads them at the start of its turn (read()).
+ * A king opens the plan heads (DP) on its first turn, every DP.PLAN_EVERY (500) rounds and on two events, and writes
+ * the bins into the spare high bits of the MINE slots (Comms.PLAN0); every robot reads them at the start of its turn
+ * (read()).
  * Each head's zdb bin (ZDB) returns zdb's own Cfg constant, so a plan of zdb bins plays zdb exactly; no plan written
  * yet (stamp 0) means zdb bins.
  *
  * Plan word (PLAN_BITS bits, 4 per slot over PLAN_SLOTS slots): bits 0-23 the 8 heads' bins (3 bits each), 24-29 the
- * plan's epoch (round / 50) + 1 (0: no plan), 30 cooperation when planned, 31-33 the live kings when planned.
+ * plan's epoch (round / DP.PLAN_EVERY) + 1 (0: no plan), 30 cooperation when planned, 31-33 the live kings when planned.
  */
 final class Plan {
     static final int POSTURE = 0, ARMY = 1, CORE = 2, THRIFT = 3, ROLES = 4, RUSH = 5, LOAD = 6, KINGS = 7, HEADS = 8;
