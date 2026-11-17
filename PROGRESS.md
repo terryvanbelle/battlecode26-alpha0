@@ -114,11 +114,13 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
       ![rl-s2: per-turn learner vs its start net and vs zdb](docs/img/rl-s2-score.svg)
   - **zdn: no decision tree** (started November 17, 2026, on the user's direction). The decision points above still run zdb's if/then cascade, and the net only picks branches in it. zdn discards the cascade entirely. Code keeps only perception, path distances, legality, message encoding and execution. A net makes every choice: first a few memory registers (role, mode, mine, explore point, cash site, goal; for kings, home and formation), each chosen from a list of candidates, then the turn's primitive actions one at a time from the legal options, until it picks END. [Design](docs/zdn.md).
     - **Teacher records.** zdb runs with a recorder that sees each of its calls and labels it among zdn's options. On four smoke games, the recorder left zdb's play unchanged (identical trajectory hashes), and 99.8–100% of zdb's register values and primitives matched an option.
-    - **Tests** ([test_zdn.py](tests/test_zdn.py), [test_zdn_train.py](tests/test_zdn_train.py), [test_zdn_java.py](tests/test_zdn_java.py)) cover:
+    - **Tests** ([test_zdn.py](tests/test_zdn.py), [test_zdn_train.py](tests/test_zdn_train.py), [test_zdn_java.py](tests/test_zdn_java.py), [test_zdn_rl.py](tests/test_zdn_rl.py), [test_rl_loop_zdn.py](tests/test_rl_loop_zdn.py)) cover:
       - the builds and the record and net formats;
       - the trainer's folding of input standardisation into the exported weights;
       - Java-vs-torch logit parity;
-      - engine games for the recorder and the player.
+      - engine games for the recorder and the player, including that its random draws differ across game seeds and that each recorded choice carries the log-probability it was sampled with (Java and Python agree to under 1e-3);
+      - the RL data stage, the trainer, and the RL loop's zdn stages.
+    - **RL pipeline ready** (November 17, 10:20 PDT). PPO over every head (registers and steps, babies and kings), self-play only, with the same gates as rl-s2: [docs/zdn.md](docs/zdn.md#rl), [configs/rl-zdn1.json](configs/rl-zdn1.json). It starts once zdn1 is trained. Fixed on the way: the zdn player's policy drew from a stream that repeated across game seeds (the bug rl-p2 had).
     - **Now:** collecting 600 teacher games ([configs/teacher-zdn1.json](configs/teacher-zdn1.json)) for the first imitation net, zdn1. It will be read against the readings set in [docs/zdn.md](docs/zdn.md#tests-readings-set-before-their-games); 0.40 or more against the held-out field counts as competent. RL from zdn1 follows.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
