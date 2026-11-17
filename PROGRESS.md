@@ -112,6 +112,14 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
     - <!-- RL_STATUS_START -->Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last November 17, 09:26 PDT, after iteration 12. Gates against the start (zdpy4): v3 19/32, v6 17/32, v9 10/32, v12 19/32. Against zdpc00: v3 13/32, v6 15/32, v9 12/32, v12 10/32. Pool games against v0, iterations 0–12: 131/260 = 0.50.<!-- RL_STATUS_END -->
 
       ![rl-s2: per-turn learner vs its start net and vs zdb](docs/img/rl-s2-score.svg)
+  - **zdn: no decision tree** (started November 17, 2026, on the user's direction). The decision points above still run zdb's if/then cascade, and the net only picks branches in it. zdn discards the cascade entirely. Code keeps only perception, path distances, legality, message encoding and execution. A net makes every choice: first a few memory registers (role, mode, mine, explore point, cash site, goal; for kings, home and formation), each chosen from a list of candidates, then the turn's primitive actions one at a time from the legal options, until it picks END. [Design](docs/zdn.md).
+    - **Teacher records.** zdb runs with a recorder that sees each of its calls and labels it among zdn's options. On four smoke games, the recorder left zdb's play unchanged (identical trajectory hashes), and 99.8–100% of zdb's register values and primitives matched an option.
+    - **Tests** ([test_zdn.py](tests/test_zdn.py), [test_zdn_train.py](tests/test_zdn_train.py), [test_zdn_java.py](tests/test_zdn_java.py)) cover:
+      - the builds and the record and net formats;
+      - the trainer's folding of input standardisation into the exported weights;
+      - Java-vs-torch logit parity;
+      - engine games for the recorder and the player.
+    - **Now:** collecting 600 teacher games ([configs/teacher-zdn1.json](configs/teacher-zdn1.json)) for the first imitation net, zdn1. It will be read against the readings set in [docs/zdn.md](docs/zdn.md#tests-readings-set-before-their-games); 0.40 or more against the held-out field counts as competent. RL from zdn1 follows.
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
   - New decision points: BABY_FREE (pickup and trap removal), KING_COMMS (shared-array edits), KING_TURN (facing), and the value-digit points BABY_VAL/KING_VAL (free squeaks and slot writes).
   - New options on existing points: strafe and risky steps, bite amounts, drops, transfers, R_KEEP role reviews, raw/relay squeaks.
