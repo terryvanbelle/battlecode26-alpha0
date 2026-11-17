@@ -589,6 +589,10 @@ def main():
                 mt['paired_frac'] = float(np.isfinite(b).mean())
                 A = A - np.where(np.isfinite(b), b, 0.0)
             mt['adv_raw_mean'], mt['adv_raw_sd'] = float(A.mean()), float(A.std())
+            if d['mask'].shape[1] <= 16:   # the signal per option before standardising (plan heads, section 21)
+                kk = d['k'].astype(np.int64)
+                mt['adv_by_option'] = {int(o): [int((kk == o).sum()), round(float(A[kk == o].mean()), 4)]
+                                       for o in np.unique(kk) if o >= 0}
             A = np.clip((A - A.mean()) / (A.std() + 1e-8), -a.adv_clip, a.adv_clip)
         n_in = nets[p][0]['w'].shape[1]
         dmu = d['x'].astype(np.float32).mean(0); dsd = d['x'].astype(np.float32).std(0)
@@ -639,6 +643,8 @@ def main():
               f'KL anchor {mt.get("kl_anchor_start", 0):.4f} -> {mt.get("kl_anchor_end", 0):.4f}, entropy '
               f'{mt["entropy_start"]:.4f} -> {mt["entropy_end"]:.4f}, clip {mt["clip_frac"]:.3f}, parity median '
               f'{mt["parity_median"]:.2e}, changed {mt["changed"]}, alarms {alarms}', flush=True)
+        if 'adv_by_option' in mt:
+            print(f'point {p} advantage by option (records, mean raw A): {mt["adv_by_option"]}', flush=True)
 
     metrics['refused'] = refused
     metrics['changed_points'] = sorted(new_layers)
