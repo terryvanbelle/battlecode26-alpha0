@@ -848,6 +848,15 @@ Per the reading, zdpy3's net is the per-turn start with a stronger leash.
 It takes the box once rl-p3's v15 gates are in. rl-p3 has answered its question: the plan heads learn the opening
 plan that wins. The per-turn line is the capability-complete one.
 
+**rl-s2 readings, set at 06:30 PDT** (after v3 and v6, before the rest):
+- *Gates so far:* v3 scored 19/32 against the start and 13/32 against zdb; v6 17/32 and 15/32.
+- *Learning:* pool the anchor gates at v9, v12 and v15 (96 games, after iteration 14, about 10:30 PDT). A score of
+  0.58 or more (Wilson lower bound about 0.48) says the per-turn learner beats its start. Pooled at 0.50 or less, it
+  doesn't. In that case, check credit per point, as was done for rl-p3: the advantage per option against the mean
+  result per option, and the policy change against both.
+- *Strength:* zdb gates pooled over the same versions. At 0.50 or more, the learner has made up the 0.17 that
+  exploration cost the start.
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
