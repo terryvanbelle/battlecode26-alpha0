@@ -109,7 +109,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
 
       ![rl-p3: plan-head learner vs its start net and vs zdb](docs/img/rl-p3-score.svg)
   - **RL run `rl-s2`** (started November 17, 2026, 02:38 PDT): self-play PPO-lite on the 7 per-turn points (baby movement and actions, king spawn, action, formation and facing). It starts from the ε 0.1 smoothed start (zdpy4), whose exploration lives inside the softmax, with a KL leash to it that is stronger than planned for rl-s1. The plan heads are left at zdb's choices. Config: [configs/rl-s2.json](configs/rl-s2.json).
-    - <!-- RL_STATUS_START -->Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last November 17, 05:57 PDT, after iteration 5. Gates against the start (zdpy4): v3 19/32, v6 17/32. Against zdpc00: v3 13/32, v6 15/32. Pool games against v0, iterations 0–5: 84/174 = 0.48.<!-- RL_STATUS_END -->
+    - <!-- RL_STATUS_START -->Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last November 17, 06:25 PDT, after iteration 6. Gates against the start (zdpy4): v3 19/32, v6 17/32. Against zdpc00: v3 13/32, v6 15/32. Pool games against v0, iterations 0–6: 95/192 = 0.49.<!-- RL_STATUS_END -->
 
       ![rl-s2: per-turn learner vs its start net and vs zdb](docs/img/rl-s2-score.svg)
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
