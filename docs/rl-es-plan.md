@@ -974,3 +974,27 @@ rl-p2's. `plan_picks.py` runs from the chart sync each iteration, so the pooled 
 - CORE moved toward 10/6 and 12/8 (log p +0.24 each), as stage 0 predicts, but away from 15/10 (−0.32), whose picks
   have so far scored −0.03. So the pre-set reading, the share below 18/12, has not risen yet.
 - The limit is the amount of evidence: per-bin mean results differ by 0.05 to 0.1 with standard errors around 0.1.
+
+**rl-p3 reading at iteration 10 (01:10 PDT): the pre-set test fails, but the plan heads are learning, at the first
+plan.**
+- *As pre-set:* CORE's share below 18/12, averaged over all plan states, is 0.37 at v11, where it started; the test
+  needed 0.5 or more. The pooled fit has the predicted sign: a game under fewer core babies than 18/12 scores
+  +0.12 (t 1.88). The per-bin fit puts the effect on the high side, though: 21/15 −0.22 (t −2.4), 24/18 −0.22
+  (t −1.9), while 8/4, 12/8 and 15/10 are within 0.04 of 18/12.
+- *Read by plan:* the policy treats the first plan and the re-plans differently. About 3 of a team-game's 3.8
+  CORE picks are re-plans, so the all-states average mostly shows the re-plans. On the 256 first-plan states,
+  CORE's p on 18/12 rose from 0.40 to 0.63 (peak 0.71 at v9); 21/15 fell from 0.15 to 0.04, 15/10 from 0.15 to 0.05,
+  8/4 from 0.07 to 0.03. 10/6 rose from 0.07 to 0.12.
+- *Against the first picks' results:* the mean result of a first pick by CORE bin (iterations 0-10, 2,296 team-games)
+  is 8/4 −0.11, 10/6 +0.04, 12/8 −0.01, 15/10 −0.12, 18/12 +0.07, 21/15 −0.12, 24/18 −0.12. The first-plan policy
+  moved toward exactly those bins. Late re-plans' results are flatter (±0.04), and the late policy stayed broad
+  (18/12 at 0.28).
+- *The premise was wrong, not the learner.* Stage 0's answer (12/8 scored 0.61 against zdb, both holding one plan
+  all game) doesn't carry over to self-play in which every other head is also drawn. Here, the opening CORE that
+  wins is zdb's own 18/12, and RL found it. The other heads moved at the first plan too, by p on zdb's bin:
+  ROLES 0.40 → 0.53 and KINGS 0.46 → 0.61 up; ARMY 0.40 → 0.23, THRIFT 0.40 → 0.28, RUSH 0.41 → 0.27,
+  LOAD 0.40 → 0.17 and POSTURE 0.47 → 0.39 down.
+- *Strength:* against zdb, v3 13/32, v6 15/32, v9 16/32.
+- *Decision:* rl-p3 continues unchanged; the learning rate stays. The larger learning rate I had lined up assumed
+  the policy was following the evidence too slowly, but the first-plan policy moves fast, so it isn't needed.
+  `plan_drift.py` now reports first-plan states separately, and the chart sync's status line carries them.
