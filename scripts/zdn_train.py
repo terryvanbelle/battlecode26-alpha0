@@ -13,7 +13,8 @@ Net (mirrored by java/bots/zdn/ZNet.java):
   softmax over the record's options (padding masked).
 Loss: cross-entropy with label smoothing over the record's options; records whose label matched no option are
 skipped. Validation: every --val-every'th game (by sorted path) is held out.
-Writes OUT/net.json (weights with the standardisation folded in, plus dims and kind counts), OUT/train.log lines.
+Writes OUT/net.json (weights with the standardisation folded in, plus dims and kind counts), OUT/norm.npz (that
+standardisation, for RL: zdn_rl.Norm), OUT/train.log lines.
 """
 import argparse, glob, json, math, sys, time
 from pathlib import Path
@@ -279,7 +280,16 @@ def main():
         say(f'epoch {ep + 1}: val step loss {vl:.4f} acc {va:.4f}; register acc {ra}; step acc by chosen kind {pk}')
 
     export(net, out / 'net.json', mu_SL, sd_SL, mu_c, sd_c, kst_step, kst_reg, dict(unit=a.unit, nS=nS, nL=nL, nC=nC))
-    say(f'wrote {out / "net.json"}')
+    save_norm(out / 'norm.npz', mu_SL, sd_SL, mu_c, sd_c, [kst_step] + kst_reg)
+    say(f'wrote {out / "net.json"}, {out / "norm.npz"}')
+
+
+def save_norm(path, mu_SL, sd_SL, mu_c, sd_c, kst):
+    """The standardisation the net was trained with (zdn_rl.Norm's file: RL keeps training in the same scale)."""
+    d = dict(mu_SL=mu_SL, sd_SL=sd_SL, mu_c=mu_c, sd_c=sd_c, nhead=np.int64(len(kst)))
+    for i, (mu, sd) in enumerate(kst):
+        d[f'kmu{i}'], d[f'ksd{i}'] = mu, sd
+    np.savez(path, **d)
 
 
 def export(net, path, mu_SL, sd_SL, mu_c, sd_c, kst_step, kst_reg, meta):

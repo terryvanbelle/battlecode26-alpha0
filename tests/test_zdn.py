@@ -55,12 +55,14 @@ def test_teacher_build_rejects_a_drifted_patch(tmp_path, monkeypatch):
 def test_player_build(tmp_path):
     build_zdn.build_player('zdnx', record=True, out=tmp_path)
     d = tmp_path / 'zdnx'
-    assert 'public static boolean RECORD = true;' in (d / 'ZPlayer.java').read_text()
+    assert 'public static int RECORD_PER_MILLE = 1000;' in (d / 'ZPlayer.java').read_text()
     zw = (d / 'ZW.java').read_text()
     assert zw.startswith('package zdnx;')
     assert 'static final String[] BABY = {};' in zw and 'static final String[] KING = {};' in zw
     build_zdn.build_player('zdnx', out=tmp_path)
-    assert 'public static boolean RECORD = false;' in (d / 'ZPlayer.java').read_text()
+    assert 'public static int RECORD_PER_MILLE = 0;' in (d / 'ZPlayer.java').read_text()
+    build_zdn.build_player('zdnx', record=25, out=tmp_path)
+    assert 'public static int RECORD_PER_MILLE = 25;' in (d / 'ZPlayer.java').read_text()
     assert {f.name for f in d.glob('*.java')} == {f.name for f in build_zdn.ZDN.glob('*.java')}
 
 
@@ -140,8 +142,10 @@ def test_reader_round_trip(tmp_path):
         zh.record(11, 5, 200, None, zh.reg_feats([-2, 3, 40000 - 32768], [0, 7, 200], regs_a)),
         zh.record(11, 5, 201, 1, zh.step_feats(0, [1, -1], [0, 1], [[3, -3], [2, 2]], 2, 21)),
         zh.record(11, 5, 201, -1, zh.step_feats(1, [0, 0], [0, 1, 2], [[0, 0], [1, 1], [-5, 6]], 2, 21)),
-        zh.record(12, 6, 200, None, zh.reg_feats([1, 1, 1], [1, 2, 3], regs_b)),
-        zh.record(12, 6, 201, 0, zh.step_feats(0, [9, 9], [0], [[0, 1]], 2, 21)),
+        zh.record(12, 6, 200, None, zh.reg_feats([1, 1, 1], [1, 2, 3], regs_b, version=7, q=[1234, 0])),
+        zh.record(12, 6, 201, 0, zh.step_feats(0, [9, 9], [0], [[0, 1]], 2, 21, q=65534)),
+        zh.record(13, 6, 200, None, zh.reg_feats([4, 4, 4], [0, 0, 0], regs_b, ver=1)),    # the first collection's VER 1
+        zh.record(13, 6, 201, 0, zh.step_feats(0, [8, 8], [0], [[0, 1]], 2, 21, ver=1)),
         zh.record(40, 6, 210, None, zh.reg_feats([1], [1], [([0, 1], [[1, 2, 3], [4, 5, 6]], 1, 3, 2)]), king=True),
         zh.record(40, 6, 299, 5, zh.error_feats('java.lang.RuntimeException: boom')),
     ]
@@ -149,17 +153,20 @@ def test_reader_round_trip(tmp_path):
     zh.write(f, recs)
     d = zdn_data.read(f)
     r, s = d['baby']['reg'], d['baby']['step']
-    assert r['robot'].tolist() == [11, 12] and r['round'].tolist() == [5, 6]
-    assert r['S'].tolist() == [[-2, 3, 40000 - 32768], [1, 1, 1]]
-    assert r['L'].tolist() == [[0, 7, 200], [1, 2, 3]]
+    assert r['robot'].tolist() == [11, 12, 13] and r['round'].tolist() == [5, 6, 6]
+    assert r['S'].tolist() == [[-2, 3, 40000 - 32768], [1, 1, 1], [4, 4, 4]]
+    assert r['L'].tolist() == [[0, 7, 200], [1, 2, 3], [0, 0, 0]]
+    assert r['version'].tolist() == [-1, 7, -1]
     g0, g1 = r['regs']
     assert g0['nk'] == 2 and g1['nk'] == 4
-    assert g0['kind'].tolist() == [[0, 1, 1], [1, -1, -1]]
+    assert g0['kind'].tolist() == [[0, 1, 1], [1, -1, -1], [1, -1, -1]]
     assert g0['x'][0].tolist() == [[5, -3], [0, 0], [-7, 9]] and g0['x'][1, 0].tolist() == [-1, 2]
-    assert g0['lab'].tolist() == [2, 0] and g1['lab'].tolist() == [-1, 1]
-    assert s['label'].tolist() == [1, -1, 0] and s['step'].tolist() == [0, 1, 0] and s['nk'] == 21
-    assert s['ctx'].tolist() == [[1, -1], [0, 0], [9, 9]]
-    assert s['kind'].tolist() == [[0, 1, -1], [0, 1, 2], [0, -1, -1]]
+    assert g0['lab'].tolist() == [2, 0, 0] and g1['lab'].tolist() == [-1, 1, 1]
+    assert g0['q'].tolist() == [-1, 1234, -1] and g1['q'].tolist() == [-1, 0, -1]
+    assert s['label'].tolist() == [1, -1, 0, 0] and s['step'].tolist() == [0, 1, 0, 0] and s['nk'] == 21
+    assert s['q'].tolist() == [-1, -1, 65534, -1]
+    assert s['ctx'].tolist() == [[1, -1], [0, 0], [9, 9], [8, 8]]
+    assert s['kind'].tolist() == [[0, 1, -1], [0, 1, 2], [0, -1, -1], [0, -1, -1]]
     assert s['x'][1, 2].tolist() == [-5, 6]
     k = d['king']['reg']
     assert k['robot'].tolist() == [40] and k['regs'][0]['x'][0].tolist() == [[1, 2, 3], [4, 5, 6]]

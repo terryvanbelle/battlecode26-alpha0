@@ -4,10 +4,15 @@ The file format is decisions-v1 (scripts/decisions.py): a 14-byte header (int32 
 uint8 king, uint16 point, uint16 label, uint16 n) and n uint16 features. zdn uses these points:
 
   REG  (200 baby, 210 king): one per sampled turn, before the robot acts. label unused. Features:
-       VER, nS, nL, nR, S[nS], L[nL], then per register r: K_r, lab_r, D_r, NK_r, K_r rows of (kind, D_r features)
+       VER, nS, nL, nR, S[nS], L[nL], then per register r: K_r, lab_r, D_r, NK_r, K_r rows of (kind, D_r features);
+       VER 2 adds a trailer: version, q_r per register
   STEP (201 baby, 211 king): one per primitive call of that turn, and one for END. label = index of the chosen
        option among the K (0xFFFF: the call matched no option). Features:
-       VER, step, nC, D, K, NK, ctx[nC], K rows of (kind, D features)
+       VER, step, nC, D, K, NK, ctx[nC], K rows of (kind, D features); VER 2 adds q
+
+  q = round(-4096 log p) of the chosen option under the policy that sampled it (0xFFFF: not sampled, e.g. the teacher's
+  labels of zdb's choices); version = the player's net version (0xFFFF: none). VER 1 records (the first teacher
+  collection) have neither; both read as -1.
 
   ERROR (299): an exception the bot caught (label = where: 1 player, 2-5 recorder start/pre/post/end); features are
        the exception's text.
@@ -27,7 +32,7 @@ OFF = 32768
 REG = {200: 'baby', 210: 'king'}
 STEP = {201: 'baby', 211: 'king'}
 ERROR = 299
-VER = 1
+VERS = (1, 2)
 
 
 def _scan(buf):
@@ -43,8 +48,9 @@ def _scan(buf):
 
 def read(path, kinds=('baby', 'king')):
     """{unit: dict(reg=..., step=...)} for one file. reg: robot, round, S [N, nS] int32 (signed), L [N, nL] int32,
-    regs: list per register of dict(kind [N, Kmax] int32 (-1 pad), x [N, Kmax, D] int32, lab [N] int32 (-1 none), nk).
-    step: robot, round, step, label (-1 none), ctx [M, nC], kind [M, Kmax] (-1 pad), x [M, Kmax, D], nk."""
+    version [N] (-1 none), regs: list per register of dict(kind [N, Kmax] int32 (-1 pad), x [N, Kmax, D] int32,
+    lab [N] int32 (-1 none), q [N] int32 (-1 none), nk).
+    step: robot, round, step, label (-1 none), q (-1 none), ctx [M, nC], kind [M, Kmax] (-1 pad), x [M, Kmax, D], nk."""
     buf = gzip.decompress(Path(path).read_bytes())
     recs = _scan(buf)
     out = {}
@@ -79,17 +85,17 @@ def _hdr(buf, o):
 def _read_reg(buf, regs):
     if not regs:
         return None
-    robots, rounds, S, L, R = [], [], [], [], None
+    robots, rounds, S, L, vers, R = [], [], [], [], [], None
     for o, n in regs:
         f = np.frombuffer(buf, dtype='>u2', count=n, offset=o + HEAD).astype(np.int32)
-        if f[0] != VER:
+        if f[0] not in VERS:
             continue
         nS, nL, nR = int(f[1]), int(f[2]), int(f[3])
         p = 4
         s = f[p:p + nS] - OFF; p += nS
         l = f[p:p + nL]; p += nL
         if R is None:
-            R = [dict(kind=[], x=[], lab=[], nk=0) for _ in range(nR)]
+            R = [dict(kind=[], x=[], lab=[], q=[], nk=0) for _ in range(nR)]
         for r in range(nR):
             K, lab, D, nk = int(f[p]), int(f[p + 1]), int(f[p + 2]), int(f[p + 3]); p += 4
             R[r]['nk'] = nk
@@ -97,6 +103,14 @@ def _read_reg(buf, regs):
             R[r]['kind'].append(rows[:, 0])
             R[r]['x'].append(rows[:, 1:] - OFF)
             R[r]['lab'].append(-1 if lab == NONE else lab)
+        if f[0] >= 2:
+            vers.append(-1 if f[p] == NONE else int(f[p]))
+            for r in range(nR):
+                R[r]['q'].append(-1 if f[p + 1 + r] == NONE else int(f[p + 1 + r]))
+        else:
+            vers.append(-1)
+            for r in range(nR):
+                R[r]['q'].append(-1)
         robot, rnd, _ = _hdr(buf, o)
         robots.append(robot); rounds.append(rnd); S.append(s); L.append(l)
     regs_out = []
@@ -109,23 +123,24 @@ def _read_reg(buf, regs):
         for i, (k, xx) in enumerate(zip(r['kind'], r['x'])):
             kind[i, :len(k)] = k
             x[i, :len(k)] = xx
-        regs_out.append(dict(kind=kind, x=x, lab=np.array(r['lab'], np.int32), nk=r['nk']))
+        regs_out.append(dict(kind=kind, x=x, lab=np.array(r['lab'], np.int32), q=np.array(r['q'], np.int32), nk=r['nk']))
     return dict(robot=np.array(robots, np.int32), round=np.array(rounds, np.int32), S=np.array(S, np.int32),
-                L=np.array(L, np.int32), regs=regs_out)
+                L=np.array(L, np.int32), version=np.array(vers, np.int32), regs=regs_out)
 
 
 def _read_step(buf, steps):
     if not steps:
         return None
-    robots, rounds, stepi, labels, ctx, kinds, xs, nk = [], [], [], [], [], [], [], 0
+    robots, rounds, stepi, labels, qs, ctx, kinds, xs, nk = [], [], [], [], [], [], [], [], 0
     for o, n in steps:
         f = np.frombuffer(buf, dtype='>u2', count=n, offset=o + HEAD).astype(np.int32)
-        if f[0] != VER:
+        if f[0] not in VERS:
             continue
         st, nC, D, K, nk = int(f[1]), int(f[2]), int(f[3]), int(f[4]), int(f[5])
         p = 6
         c = f[p:p + nC] - OFF; p += nC
-        rows = f[p:p + K * (1 + D)].reshape(K, 1 + D)
+        rows = f[p:p + K * (1 + D)].reshape(K, 1 + D); p += K * (1 + D)
+        qs.append(-1 if f[0] < 2 or f[p] == NONE else int(f[p]))
         robot, rnd, label = _hdr(buf, o)
         robots.append(robot); rounds.append(rnd); stepi.append(st); labels.append(-1 if label == NONE else label)
         ctx.append(c); kinds.append(rows[:, 0]); xs.append(rows[:, 1:] - OFF)
@@ -138,7 +153,7 @@ def _read_step(buf, steps):
         kind[i, :len(k)] = k
         x[i, :len(k)] = xx
     return dict(robot=np.array(robots, np.int32), round=np.array(rounds, np.int32), step=np.array(stepi, np.int32),
-                label=np.array(labels, np.int32), ctx=np.array(ctx, np.int32), kind=kind, x=x, nk=nk)
+                label=np.array(labels, np.int32), q=np.array(qs, np.int32), ctx=np.array(ctx, np.int32), kind=kind, x=x, nk=nk)
 
 
 def main():

@@ -81,17 +81,37 @@ public final class ZNet {
         return z;
     }
 
+    /** The policy's own random stream. Robot IDs repeat on every game of a map, so a stream seeded from them (or from
+     *  birth facts, like ZG.rand) would replay the same draws on every game of a map and seat (the rl-p2 bug,
+     *  docs/rl-es-plan.md section 21). Math.random is seeded per game, team and robot by our runner
+     *  (alpha0.student.Game reseed) and per robot by the official engine. */
+    static int prng;
+
+    static int draw(int n) {
+        if (prng == 0) { prng = (ZG.id * 0x9E3779B1 + 0x632BE5AB) ^ (int) (long) (Math.random() * 4294967296.0); if (prng == 0) prng = 1; }
+        int x = prng;
+        x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+        prng = x;
+        return (x >>> 1) % n;
+    }
+
+    /** log p of the option the last sample() returned (0 when it was forced: one option, or T <= 0). */
+    static double lastLogp;
+
     /** Sample an index from softmax(z / T); T <= 0 takes the argmax. */
     static int sample(float[] z, int n, float T) {
         int best = 0;
         for (int i = 1; i < n; i++) if (z[i] > z[best]) best = i;
+        lastLogp = 0;
         if (T <= 0 || n <= 1) return best;
         double m = z[best], tot = 0;
         double[] p = new double[n];
         for (int i = 0; i < n; i++) { p[i] = z[i] == Float.NEGATIVE_INFINITY ? 0 : Math.exp((z[i] - m) / T); tot += p[i]; }
-        double u = (ZG.rand(1 << 24) + 0.5) / (1 << 24) * tot;
-        for (int i = 0; i < n; i++) { u -= p[i]; if (u <= 0) return i; }
-        return best;
+        double u = (draw(1 << 24) + 0.5) / (1 << 24) * tot;
+        int pick = best;
+        for (int i = 0; i < n; i++) { u -= p[i]; if (u <= 0 && p[i] > 0) { pick = i; break; } }
+        lastLogp = Math.log(p[pick] / tot);
+        return pick;
     }
 
     /** The trunk on the turn's inputs x = [S; L] (raw values; the standardisation is folded into W1). */

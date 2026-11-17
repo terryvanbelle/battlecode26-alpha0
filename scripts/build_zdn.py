@@ -4,7 +4,10 @@
                                        # zdb (java/bots/zdp) + zdn perception + the recorder (zdn-teacher), one package;
                                        # records sampled turns per mille of baby / king turns
   build_zdn.py --player zdn0 [--baby runs/zdn/b1/net.json] [--king runs/zdn/k1/net.json] [--temperature 1.0]
-               [--record]              # zdn alone; no net = uniform choices; --record: REG/STEP records every turn
+               [--record [PER_MILLE]] [--record-king PER_MILLE] [--version V]
+                                       # zdn alone; no net = uniform choices; --record: REG/STEP records of a
+                                       # random sample of turns (default every turn; --record-king: kings' rate,
+                                       # default the same); --version: the nets' RL version, in the records' trailer
 
 The teacher build patches zdp's sources (each patch must match exactly once):
   RobotPlayer  the engine's RobotController is wrapped in RcLog (every primitive reaches ZT.pre/post); ZT.start after
@@ -79,7 +82,10 @@ def build_teacher(name, baby_pm=15, king_pm=100, out=None):
     print(f'wrote {dest} (teacher: zdb + zdn recorder; sampled per mille: baby {baby_pm}, king {king_pm})')
 
 
-def build_player(name, baby=None, king=None, temperature=1.0, record=False, out=None):
+def build_player(name, baby=None, king=None, temperature=1.0, record=0, out=None, record_king=None, version=-1):
+    """record: recorded turns per mille (True = every turn); record_king: the kings' rate (None: the same)."""
+    pm = 1000 if record is True else int(record or 0)
+    pmk = pm if record_king is None else int(record_king)
     dest = Path(out or ROOT / 'build/botsrc') / name
     shutil.rmtree(dest, ignore_errors=True)
     dest.mkdir(parents=True)
@@ -87,14 +93,15 @@ def build_player(name, baby=None, king=None, temperature=1.0, record=False, out=
         if f.name == 'ZW.java':
             continue
         s = renamed(f.read_text(), 'zdn', name)
-        if f.name == 'ZPlayer.java' and record:
-            old = 'public static boolean RECORD = false;'
-            if s.count(old) != 1:
-                raise SystemExit('ZPlayer.java: no RECORD flag')
-            s = s.replace(old, 'public static boolean RECORD = true;')
+        if f.name == 'ZPlayer.java':
+            for old, v in (('public static int RECORD_PER_MILLE = 0;', pm), ('public static int RECORD_KING_PER_MILLE = 0;', pmk)):
+                if s.count(old) != 1:
+                    raise SystemExit(f'ZPlayer.java: no {old.split()[3]} constant')
+                s = s.replace(old, old.replace('= 0;', f'= {v};'))
         (dest / f.name).write_text(s)
-    zdn_pack.write_zw(dest / 'ZW.java', name, baby, king, temperature)
-    print(f'wrote {dest} (player; baby net {baby or "none"}, king net {king or "none"}, T {temperature}, record {record})')
+    zdn_pack.write_zw(dest / 'ZW.java', name, baby, king, temperature, version)
+    print(f'wrote {dest} (player; baby net {baby or "none"}, king net {king or "none"}, T {temperature}, '
+          f'records per mille {pm} (kings {pmk}), version {version})')
 
 
 def main():
@@ -105,7 +112,9 @@ def main():
     ap.add_argument('--baby')
     ap.add_argument('--king')
     ap.add_argument('--temperature', type=float, default=1.0)
-    ap.add_argument('--record', action='store_true')
+    ap.add_argument('--record', nargs='?', const=1000, default=0, type=int, metavar='PER_MILLE')
+    ap.add_argument('--record-king', type=int, metavar='PER_MILLE')
+    ap.add_argument('--version', type=int, default=-1)
     ap.add_argument('--baby-pm', type=int, default=15)
     ap.add_argument('--king-pm', type=int, default=100)
     ap.add_argument('--out', help='parent directory of the package (default build/botsrc)')
@@ -116,7 +125,7 @@ def main():
     if a.teacher:
         build_teacher(name, a.baby_pm, a.king_pm, a.out)
     else:
-        build_player(name, a.baby, a.king, a.temperature, a.record, a.out)
+        build_player(name, a.baby, a.king, a.temperature, a.record, a.out, a.record_king, a.version)
 
 
 if __name__ == '__main__':

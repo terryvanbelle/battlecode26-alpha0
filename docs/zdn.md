@@ -81,8 +81,8 @@ RcLog around the RobotController, ZT.start/end around the turn, ZT.goal at Nav.g
 moveDecision (the MODE register), and ZT.sample at every exploration draw (the EXPL register's candidates). Perception
 and register bookkeeping run every turn. Records are written on a hashed sample of turns, per mille of baby and king
 turns. An exception the recorder or the player catches is sent as an ERROR record (point 299), so collection and tests
-can count them. `scripts/build_zdn.py --player NAME [--baby net.json --king net.json] [--record]` writes the player; with
-no net it chooses uniformly.
+can count them. `scripts/build_zdn.py --player NAME [--baby net.json --king net.json] [--record PM] [--version V]`
+writes the player; with no net it chooses uniformly.
 
 **Smoke (09:20 PDT).** On four games (one rush map, three gather maps), the teacher's trajectory hash equals plain
 zdp's for the same seed: the recorder does not change zdb's play. Every register value and every primitive zdb used
@@ -109,7 +109,13 @@ registers form a chain, not independent guesses.
 - tests/test_zdn_java.py: ZNet.java's logits equal torch's (export, pack, then the Java parser). Engine games on
   DefaultSmall: the teacher plays exactly like zdp (same trajectory hash), raises nothing, and labels at least 98% of
   register values and steps, with one END per recorded turn. The player runs and records without errors, both with no
-  net and with a net trained on the teacher game's records.
+  net and with a net trained on the teacher game's records. Its random draws differ across game seeds (they repeated
+  before the fix below). Every recorded q is the probability the player sampled with: log(1/n) with no net, and with
+  a net what zdn_rl recomputes in Python from the record (median gap under 1e-3).
+- tests/test_zdn_rl.py: the decision table (every recorded choice, grouped by turn, with its options), the net loader
+  (net_from_json reproduces the packed net's logits from raw inputs; unfold and export keep the function), the data
+  stage's parity check (passes on true q, exit 2 on corrupted q), and the trainer (--lr 0 leaves the nets
+  byte-identical; a planted outcome moves the policy toward the rewarded choice).
 
 **Readings for zdn1** (the first imitation net), set before its games:
 - Label coverage on teacher-zdn1: at least 98% of register and step records labelled, and no ERROR records. Below that,
@@ -123,4 +129,31 @@ registers form a chain, not independent guesses.
 
 ## RL
 
-To be filled in: PPO over all heads, self-play only, the same gates as before.
+**Policy randomness.** The player samples from its own stream, seeded from Math.random, which our runner reseeds per
+game, team and robot (alpha0.student.Game). Robot IDs and the opening repeat on every game of a map, so a stream
+seeded from them repeats its draws across seeds. That was rl-p2's bug, and zdn's first player had it too: its
+policy drew from zdb's birth-seeded stream, and its kings from a constant one. The recorder's turn sampling has a
+stream of its own, so recording never changes play. The VM's main checkout ran the runner from before the reseed
+fix; it was rebuilt on November 17 (the teacher collection is unaffected: zdb is deterministic, and the engine
+varies with the game seed; only 7 of teacher-dp2's 1000 games were duplicates).
+
+**Records.** RL builds record a random sample of turns (`--record PM`, `--record-king PM`). Each record is VER 2: every
+choice carries q = round(-4096 log p) under the policy that sampled it (0 when forced), and each turn carries the net
+version. The teacher's records carry no q.
+
+**Pipeline** (scripts/rl_loop.sh with config "kind": "zdn"; configs/rl-zdn1.json). Each iteration is the same as for
+the zdp nets, with these stages swapped:
+- Build: `build_zdn.py --player zdnr<k>`, with nets/<k>/{baby,king}.json, 20 per mille of baby turns and 250 per mille
+  of king turns recorded, and version k.
+- Data (`zdn_rl_data.py`): the learner sides' records become one decision table per unit. A row is one sampled choice
+  (register or step) with its options stored ragged. The tables are joined with z, the seat-swapped pairs and the
+  trace. Parity: log p is recomputed from each record with the version's net and compared with q (median under
+  1e-3, 99.9th percentile under 2e-3, else stop). At most 150,000 turns per unit.
+- Train (`zdn_rl_train.py`): PPO over every head, registers and steps, babies and kings. A turn's advantage comes from
+  its team-game and 10-round bin through the critic (rl_critic's rich critic, GAE lambda 0.9), and all of the turn's
+  choices share it. Loss per sampled multi-option choice: the clipped surrogate with r = pi(choice) / exp(-q / 4096),
+  an entropy bonus, and a KL leash to the imitation nets (beta 0.1 annealed to 0.03). An update stops early when the
+  approximate KL to the playing net exceeds 0.05. If a unit's KL to the anchor ends above 0.5, nothing is exported
+  and the net is rolled back. The standardisation is the imitation run's (norm.npz), carried with the nets.
+- Gates: as for rl-s2. The anchor gate plays the imitation player zdn1, every third version, with zdb tracked. The
+  field never feeds back into training.

@@ -5,4 +5,5 @@ final class ZW {
     static final String[] BABY = {};
     static final String[] KING = {};
     static final float TEMPERATURE = 1.0f;
+    static final int VERSION = -1;
 }

@@ -11,8 +11,23 @@ public final class ZPlayer {
     static ZNet babyNet, kingNet;
     static boolean babyTried, kingTried;
     public static final int MAX_STEPS = 16;
-    /** Record every turn (RL collection); off in plain play. */
-    public static boolean RECORD = false;
+    /** Recorded turns per mille, babies' and kings' (RL collection: REG/STEP records of a random sample of turns); 0
+     *  in plain play. */
+    public static int RECORD_PER_MILLE = 0;
+    public static int RECORD_KING_PER_MILLE = 0;
+    static int recRng;
+
+    /** Whether to record this turn: a per-game stream (seeded like ZNet.draw), never the policy's own draws. */
+    static boolean recordTurn() {
+        int pm = ZG.king ? RECORD_KING_PER_MILLE : RECORD_PER_MILLE;
+        if (pm <= 0) return false;
+        if (pm >= 1000) return true;
+        if (recRng == 0) { recRng = (ZG.id * 0x85EBCA6B + 0x1B873593) ^ (int) (long) (Math.random() * 4294967296.0); if (recRng == 0) recRng = 1; }
+        int x = recRng;
+        x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+        recRng = x;
+        return (x >>> 1) % 1000 < pm;
+    }
 
     public static void run(RobotController rc) {
         ZG.init(rc);
@@ -48,12 +63,18 @@ public final class ZPlayer {
         return x;
     }
 
+    /** log p of the last choose() (the record's q). */
+    static double logp;
+
     /** Pick one option: the net's softmax at ZW.TEMPERATURE, or uniform when there is no net. */
     static int choose(ZNet net, ZNet.Scorer sc, float[] h, float[] ctx, ZO.Opts o) {
+        logp = 0;
         if (o.n <= 1) return 0;
-        if (net == null || sc == null) return ZG.rand(o.n);
+        if (net == null || sc == null) { logp = -Math.log(o.n); return ZNet.draw(o.n); }
         float[] z = ZNet.logits(sc, h, ctx, o.n, o.kind, o.x);
-        return ZNet.sample(z, o.n, ZW.TEMPERATURE);
+        int pick = ZNet.sample(z, o.n, ZW.TEMPERATURE);
+        logp = ZNet.lastLogp;
+        return pick;
     }
 
     static void turn() throws GameActionException {
@@ -67,25 +88,27 @@ public final class ZPlayer {
         float[] h = net == null ? null : net.trunk(concat(S, L));
         ZR.begin();
         ZO.nSmp = 0;
+        boolean rec = recordTurn();
 
         // ---- registers
         int nR = king ? ZR.NK : ZR.NB;
         int[] nk = king ? ZO.REG_K_KING : ZO.REG_K_BABY;
         ZO.Opts[] regs = king ? ZO.regK : ZO.regB;
         float[] rctx = new float[ZO.regCtxLen(king)];
-        int[] lab = new int[nR];
+        int[] lab = new int[nR], q = new int[nR];
         int off = 0;
         for (int r = 0; r < nR; r++) {
             if (!king && r == ZR.R_EXPL) ZO.fillSamples();
             ZO.Opts o = ZO.regOptions(r);
             int pick = choose(net, net == null ? null : net.regs[r], h, rctx, o);
             lab[r] = pick;
+            q[r] = ZE.q(logp);
             setRegister(king, r, o, pick);
             int k = o.kind[pick];
             if (k >= 0 && k < nk[r]) rctx[off + k] = 1;
             off += nk[r];
         }
-        if (RECORD) ZE.reg(king, S, L, regs, nk, lab);
+        if (rec) ZE.reg(king, S, L, regs, nk, lab, q, ZW.VERSION);
         if (king) formWrites();
 
         // ---- primitive steps
@@ -99,7 +122,7 @@ public final class ZPlayer {
             ZO.fillGoal(o.n, o.kind, o.x, o.ex, o.ey, o.dir, here.x, here.y, goal);
             int[] ctx = ZO.context();
             int pick = choose(net, net == null ? null : net.step, h, toF(ctx), o);
-            if (RECORD) ZE.step(king, s, ctx, o, ZO.NK, pick);
+            if (rec) ZE.step(king, s, ctx, o, ZO.NK, pick, ZE.q(logp));
             if (o.kind[pick] == ZO.K_END) break;
             if (!exec(o, pick)) break;
             ZO.noteDone(o.op[pick]);

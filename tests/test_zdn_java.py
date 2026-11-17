@@ -4,7 +4,9 @@
   - The teacher build (zdb + recorder) plays exactly like plain zdb (same trajectory hash), raises nothing, and labels
     its records: every register value and primitive of zdb's is one of zdn's options.
   - The zdn player runs without errors and records, with no net (uniform choices) and with a net trained on the
-    teacher's records.
+    teacher's records (recording a sample of turns); its random draws differ across game seeds.
+  - Every recorded choice's q is the log-probability the player sampled it with: log(1/n) without a net; with a net,
+    what zdn_rl recomputes in Python from the record (the RL parity check, on real games).
 """
 import json, os, struct, subprocess, sys
 from pathlib import Path
@@ -141,12 +143,58 @@ def _check_player_records(f):
     return d
 
 
-@need_engine
-def test_player_without_net_runs_and_records(built):
+@pytest.fixture(scope='module')
+def player_nonet(built):
     build_zdn.build_player('zdnx', record=True, out=built / 'src')
     javac(sorted((built / 'src/zdnx').glob('*.java')), built / 'classes/zdnx')
-    game(built / 'g-player', f"bot:zdnx:{built / 'classes/zdnx'}", f"bot:zdp:{built / 'classes/zdp'}", decisions='A')
-    _check_player_records(built / 'g-player/decisions-A.bin.gz')
+    return f"bot:zdnx:{built / 'classes/zdnx'}", f"bot:zdp:{built / 'classes/zdp'}"
+
+
+@need_engine
+def test_player_without_net_runs_and_records(built, player_nonet):
+    game(built / 'g-player', *player_nonet, decisions='A')
+    d = _check_player_records(built / 'g-player/decisions-A.bin.gz')
+    s = d['baby']['step']
+    n = (s['kind'] >= 0).sum(1)
+    multi = n >= 2
+    assert multi.sum() > 100 and (s['q'][multi] == np.round(4096 * np.log(n[multi]))).all() and (s['q'][~multi] == 0).all()
+    for g in d['baby']['reg']['regs']:
+        n = (g['kind'] >= 0).sum(1)
+        assert (g['q'] == np.where(n >= 2, np.round(4096 * np.log(np.maximum(n, 1))), 0)).all()
+    assert (d['baby']['reg']['version'] == -1).all()
+
+
+def _q_parity(f, unit, net_json):
+    """|log p recomputed by zdn_rl - (-q / 4096)| of the sampled multi-option choices of one unit."""
+    import torch, zdn_rl
+    tab = zdn_rl.load_table([f], unit)
+    net = zdn_rl.net_from_json(json.loads(Path(net_json).read_text()))
+    rows = np.nonzero((tab['q'] >= 0) & (tab['n'] >= 2))[0]
+    with torch.no_grad():
+        _, lp, _ = zdn_rl.logp_rows(net, zdn_rl.Norm.identity(net), tab, np.unique(tab['turn'][rows]), 1.0, 'cpu', rows=rows)
+    return tab, np.abs(lp.numpy().astype(np.float64) + tab['q'][rows] / 4096)
+
+
+def _first_king_turn(f):
+    """The register and step labels of the first king's first recorded turn."""
+    d = zdn_data.read(f)
+    r, s = d['king']['reg'], d['king']['step']
+    i = int(np.lexsort((r['robot'], r['round']))[0])
+    robot, rnd = r['robot'][i], r['round'][i]
+    steps = (s['robot'] == robot) & (s['round'] == rnd)
+    return int(robot), int(rnd), [int(g['lab'][i]) for g in r['regs']] + s['label'][steps].tolist()
+
+
+@need_engine
+def test_player_draws_differ_across_game_seeds(built, player_nonet):
+    """Robot IDs and the opening position repeat on every game of a map; the policy's draws must not (rl-p2's bug)."""
+    if not (built / 'g-player/result.json').exists():
+        game(built / 'g-player', *player_nonet, decisions='A')
+    game(built / 'g-player-s4', *player_nonet, decisions='A', seed=4)
+    a = _first_king_turn(built / 'g-player/decisions-A.bin.gz')
+    b = _first_king_turn(built / 'g-player-s4/decisions-A.bin.gz')
+    assert a[:2] == b[:2]          # the same robot and round, so the same inputs and options
+    assert a[2] != b[2]
 
 
 @need_engine
@@ -159,7 +207,15 @@ def test_player_with_trained_net(built, teacher_games):
                         '--out', str(out), '--epochs', '1', '--device', 'cpu', '--val-every', '2'],
                        check=True, capture_output=True, text=True, timeout=900)
         nets[unit] = str(out / 'net.json')
-    build_zdn.build_player('zdny', baby=nets['baby'], king=nets['king'], record=True, out=built / 'src')
+    build_zdn.build_player('zdny', baby=nets['baby'], king=nets['king'], record=200, record_king=1000, version=5, out=built / 'src')
     javac(sorted((built / 'src/zdny').glob('*.java')), built / 'classes/zdny')
-    game(built / 'g-net', f"bot:zdny:{built / 'classes/zdny'}", f"bot:zdp:{built / 'classes/zdp'}", decisions='A')
-    _check_player_records(built / 'g-net/decisions-A.bin.gz')
+    res = game(built / 'g-net', f"bot:zdny:{built / 'classes/zdny'}", f"bot:zdp:{built / 'classes/zdp'}", decisions='A')
+    d = _check_player_records(built / 'g-net/decisions-A.bin.gz')
+    recorded = sum(len(d[u]['reg']['robot']) for u in ('baby', 'king') if d[u]['reg'] is not None)
+    kings = len(d['king']['reg']['robot'])
+    assert 0.14 < (recorded - kings) / (res['A']['turns'] - kings) < 0.26     # babies: 200 per mille of turns
+    for unit in ('baby', 'king'):
+        tab, dl = _q_parity(built / 'g-net/decisions-A.bin.gz', unit, nets[unit])
+        assert (tab['version'] == 5).all()
+        assert len(dl) > (100 if unit == 'baby' else 20), unit
+        assert np.median(dl) < 1e-3 and np.quantile(dl, 0.999) < 2e-3, (unit, np.median(dl), np.quantile(dl, 0.999), dl.max())

@@ -13,6 +13,9 @@
 #   7 build zdpr<k+1>   8 gates on schedule (anchor every anchor_every, promotion every promote_every or when the
 #     anchor reaches promote_if_anchor; a promoted net gets strength_check; field rule: fail -> roll back to best, lr/2,
 #     field_fail_stop fails in a row -> STOP)   9 prune   10 a row in progress.jsonl
+# Config "kind": "dp" (default: zdp decision-point nets, build_dpnet / rl_data / rl_train, nets/<v>/net.json) or "zdn"
+# (docs/zdn.md: zdn players, build_zdn / zdn_rl_data / zdn_rl_train, nets/<v>/{baby,king}.json + .norm.npz; start_nets
+# and anchor_nets {"baby": net.json, "king": net.json}, norm.npz beside each; record_per_mille {"baby", "king"}).
 export TZ='PDT+7'
 cd "$(dirname "$0")/.." || exit 1
 PY=${PY:-.venv/bin/python}
@@ -34,6 +37,8 @@ POINTS=$(cfgv "['trainable_points']")
 FPTS=$($PY -c "import json; print(','.join(f'{p}:{f}' for p, f in sorted((json.load(open('$CFG')).get('floor_points') or {}).items(), key=lambda kv: int(kv[0]))))")
 # floor groups (W.G/W.GW): config "groups" = a groups JSON path, for build_dpnet.py and rl_train.py
 FGROUPS=$($PY -c "import json; print(json.load(open('$CFG')).get('groups') or '')")
+KIND=$($PY -c "import json; print(json.load(open('$CFG')).get('kind', 'dp'))")
+UNITS="baby king"
 log() { echo "$(date +%m-%d\ %H:%M:%S) $*" | tee -a $LOG; }
 st() {   # st get KEY | st set KEY VALUE (json value)
   $PY - "$RD/state.json" "$@" <<'EOF'
@@ -59,7 +64,12 @@ stage() {   # stage DIR NAME CMD...: run unless DIR/.NAME exists; time it into D
 build_pkg() {   # version: zdpr<v> from nets/<v>, RL build, compiled; marker nets/<v>/.built
   local v=$1
   [ -f $RD/nets/$v/.built ] && [ -d build/bots/$PREFIX$v ] && return 0
-  $PY scripts/build_dpnet.py --net $RD/nets/$v/net.json --name $PREFIX$v --temperature $TEMP --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${FGROUPS:+--groups $FGROUPS} --rl --version $v --run $RUN >> $LOG 2>&1 || return 1
+  if [ "$KIND" = zdn ]; then
+    $PY scripts/build_zdn.py --player $PREFIX$v --baby $RD/nets/$v/baby.json --king $RD/nets/$v/king.json --temperature $TEMP \
+      --record $(cfgv "['record_per_mille']['baby']") --record-king $(cfgv "['record_per_mille']['king']") --version $v >> $LOG 2>&1 || return 1
+  else
+    $PY scripts/build_dpnet.py --net $RD/nets/$v/net.json --name $PREFIX$v --temperature $TEMP --floor $FLOOR ${FPTS:+--floor-points $FPTS} ${FGROUPS:+--groups $FGROUPS} --rl --version $v --run $RUN >> $LOG 2>&1 || return 1
+  fi
   $PY -c "import sys; sys.path.insert(0, 'scripts'); from eval_student import compile_local; compile_local('$PREFIX$v')" >> $LOG 2>&1 || return 1
   touch $RD/nets/$v/.built
 }
@@ -68,8 +78,16 @@ rollback() {   # rollback V REASON [TO]: nets/V := nets/TO (default: the best), 
   best=${best:-0}
   log "ROLLBACK v$v -> v$best ($2)"
   mkdir -p $RD/nets/$v
-  cp $RD/nets/$best/net.json $RD/nets/$v/net.json
-  [ -f $RD/nets/$best/norm.npz ] && cp $RD/nets/$best/norm.npz $RD/nets/$v/norm.npz
+  if [ "$KIND" = zdn ]; then
+    local u
+    for u in $UNITS; do
+      cp $RD/nets/$best/$u.json $RD/nets/$v/$u.json
+      [ -f $RD/nets/$best/$u.norm.npz ] && cp $RD/nets/$best/$u.norm.npz $RD/nets/$v/$u.norm.npz
+    done
+  else
+    cp $RD/nets/$best/net.json $RD/nets/$v/net.json
+    [ -f $RD/nets/$best/norm.npz ] && cp $RD/nets/$best/norm.npz $RD/nets/$v/norm.npz
+  fi
   echo "{\"rolled_back_to\": $best, \"reason\": \"$2\"}" > $RD/nets/$v/ROLLBACK.json
   rm -f $RD/nets/$v/.built
   build_pkg $v
@@ -108,6 +126,20 @@ print(t['beta_end'] + (t['beta_start'] - t['beta_end']) * max(0.0, 1 - $k / t['b
   local lr=$(st get lr)
   [ -n "$lr" ] || { lr=$(cfgv "['train']['lr']"); st set lr $lr; }
   local T="['train']"
+  if [ "$KIND" = zdn ]; then
+    local zc=$($PY -c "
+import json; t = json.load(open('$CFG'))['train']
+print(' '.join(f'--{a} {t[k]}' for k, a in (('critic', 'critic'), ('gae_lambda', 'gae-lambda'), ('critic_folds', 'critic-folds'), ('device', 'device')) if k in t))")
+    $PY -u scripts/zdn_rl_train.py --nets $RD/nets/$k --anchor $RD/anchor --data $I/data --value-data $vd \
+      --out $RD/nets/$((k + 1)) --version $k --temperature $TEMP --beta $beta --lr $lr --epochs $(cfgv "$T['epochs']") \
+      --batch-turns $(cfgv "$T['batch_turns']") --clip $(cfgv "$T['ppo_clip']") --target-kl $(cfgv "$T['target_kl']") \
+      --grad-clip $(cfgv "$T['grad_clip']") --c-ent $(cfgv "$T['c_ent']") --max-anchor-kl $(cfgv "$T['max_anchor_kl']") \
+      --adv-clip $(cfgv "$T['adv_clip']") --val-frac $(cfgv "$T['value_val_frac']") --threads $(cfgv "$T['threads']") \
+      --seed $k $zc > $I/train.log 2>&1
+    rc=$?
+    if [ $rc -eq 3 ]; then rollback $((k + 1)) "KL refusal at iter $k" $k; return $?; fi
+    return $rc
+  fi
   local nokl=$($PY -c "import json; print('--no-kl' if json.load(open('$CFG'))['train'].get('no_kl') else '')")   # M1 only
   # optional critic / GAE (rl_train --critic, --gae-lambda, --event-lambda "P:L[:robot],..."): absent keys keep rl_train's defaults
   local crit=$($PY -c "
@@ -168,7 +200,7 @@ print(' '.join(sorted({'$PREFIX%d' % m['version'] for m in p['members']} | {'$PR
   done
   local N=$(cfgv "['keep_npz_iters']") j
   for ((j = 0; j <= k - N; j++)); do
-    rm -f $RD/iter-$(printf %04d $j)/data/p*.npz $RD/iter-$(printf %04d $j)/games/*/decisions-*.bin.gz
+    rm -f $RD/iter-$(printf %04d $j)/data/{p*,baby,king}.npz $RD/iter-$(printf %04d $j)/games/*/decisions-*.bin.gz
   done
 }
 
@@ -181,12 +213,15 @@ row = dict(iter=k, time=time.time())
 def js(p):
     return json.load(open(p)) if os.path.exists(p) else None
 s = js(f'{I}/data/summary.json') or {}
-row.update(games=s.get('valid'), score=s.get('score'), parity=s.get('parity'),
+row.update(games=s.get('valid'), score=s.get('score'), parity=s.get('parity'), units=s.get('units'),
            points={p: {k2: v.get(k2) for k2 in ('rows', 'picked', 'fallback', 'saturated', 'parity_median')} for p, v in s.get('points', {}).items()})
 m = js(f'{rd}/nets/{k + 1}/metrics.json') or {}
 row.update(value=m.get('value'), critic=m.get('critic'), exported=m.get('exported'), refused=m.get('refused'),
            train={p: {k2: v.get(k2) for k2 in ('used', 'kl_anchor_end', 'kl_old_new', 'entropy_end', 'clip_frac', 'early_stop', 'grad_snr_cos', 'alarms')}
                   for p, v in (m.get('points') or {}).items()})
+row['train_units'] = {u: {k2: v.get(k2) for k2 in ('usable_rows', 'turns', 'steps', 'early_stop', 'kl_anchor_end', 'kl_old_end',
+                                                   'entropy_start', 'entropy_end', 'clip_frac')}
+                      for u, v in (m.get('units') or {}).items()}
 row['rollback'] = js(f'{rd}/nets/{k + 1}/ROLLBACK.json')
 row['state'] = js(f'{rd}/state.json')
 st = {}
@@ -201,8 +236,18 @@ print(json.dumps(row))
 EOF
 }
 
-# ---- start: nets/0 is the start net
-if [ ! -f $RD/nets/0/net.json ]; then
+# ---- start: nets/0 is the start net (zdn: the start nets and the anchor nets, each with its norm.npz)
+if [ "$KIND" = zdn ] && [ ! -f $RD/nets/0/baby.json ]; then
+  mkdir -p $RD/nets/0 $RD/anchor
+  for u in $UNITS; do
+    SN=$(cfgv "['start_nets']['$u']") AN=$($PY -c "import json; c = json.load(open('$CFG')); print((c.get('anchor_nets') or c['start_nets'])['$u'])")
+    cp $SN $RD/nets/0/$u.json; [ -f $(dirname $SN)/norm.npz ] && cp $(dirname $SN)/norm.npz $RD/nets/0/$u.norm.npz
+    cp $AN $RD/anchor/$u.json
+  done
+  cp $CFG $RD/config.json
+  log "START run $RUN (zdn) from $(cfgv "['start_nets']")"
+fi
+if [ "$KIND" != zdn ] && [ ! -f $RD/nets/0/net.json ]; then
   SN=$(cfgv "['start_net']")
   mkdir -p $RD/nets/0 && cp $SN $RD/nets/0/net.json
   [ -f $(dirname $SN)/norm.npz ] && cp $(dirname $SN)/norm.npz $RD/nets/0/norm.npz
@@ -223,12 +268,13 @@ while [ $k -lt $MAX_ITER ]; do
   over && exit 0
   stage $I collected collect $k || { log "collect iter $k: too few games"; exit 1; }
   over && exit 0
-  stage $I data $PY -u scripts/rl_data.py --config $CFG --run $RUN --iter $k >> $I/data.log 2>&1
+  DATA=scripts/rl_data.py; [ "$KIND" = zdn ] && DATA=scripts/zdn_rl_data.py
+  stage $I data $PY -u $DATA --config $CFG --run $RUN --iter $k >> $I/data.log 2>&1
   rc=$?; [ $rc -eq 0 ] || { log "rl_data iter $k failed (rc $rc$([ $rc -eq 2 ] && echo ', PARITY')); see $I/data.log"; exit 1; }
   tail -1 $I/data.log | tee -a $LOG
   over && exit 0
   stage $I trained train $k || { log "train iter $k failed; see $I/train.log"; exit 1; }
-  grep '^point\|^value\|^critic\|^wrote\|^REFUSED' $I/train.log | cut -c1-200 >> $LOG
+  grep '^point\|^value\|^critic\|^wrote\|^REFUSED\|^baby\|^king' $I/train.log | cut -c1-200 >> $LOG
   build_pkg $((k + 1)) || { log "build v$((k + 1)) failed"; exit 1; }
   stage $I gated gates $((k + 1))
   prune $k
