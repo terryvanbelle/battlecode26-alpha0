@@ -1,12 +1,12 @@
 {
  "name": "rl-zdn1",
  "kind": "zdn",
- "purpose": "zdn RL (docs/zdn.md, \"RL\"): self-play PPO over every head of the zdn nets (registers and primitive steps, baby and king), from the imitation nets zdn1 (teacher-zdn1), KL-leashed to them. Self-play only; zdb (zdpc00) and the held-out field are benchmarks.",
+ "purpose": "zdn RL (docs/zdn.md, \"RL\"): self-play PPO over every head of the zdn nets (registers and primitive steps, baby and king), from the imitation nets zdn2 (teacher-zdn1 with the state margins), KL-leashed to them. Self-play only; zdb (zdpc00) and the held-out field are benchmarks.",
  "start_nets": {
-  "baby": "runs/zdn/zdn1-baby/net.json",
-  "king": "runs/zdn/zdn1-king/net.json"
+  "baby": "runs/zdn/zdn2-baby/net.json",
+  "king": "runs/zdn/zdn2-king/net.json"
  },
- "anchor_package": "zdn1",
+ "anchor_package": "zdn2",
  "package_prefix": "zdnr",
  "bootstrap_zdb": 0.0,
  "floor": 0.0,

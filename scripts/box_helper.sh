@@ -2,6 +2,7 @@
 # Driver-side helper for scripts/box_split.sh: runs requests the VM pipeline posts in runs/box/ on the Windows box
 # (WSL2, reached over Tailscale) and copies finished games back to the VM. Run it in the background on the driver.
 source ~/projects/vibe/2026b/tools/vm.sh >/dev/null 2>&1
+source "$(dirname "$0")/helper_lib.sh"
 BOX=(ssh -i ~/.ssh/wsl_box -o ConnectTimeout=20 -o ServerAliveInterval=30 -o BatchMode=yes terry@100.93.26.126)
 R=projects/vibe/bc26a0
 vm() { ensure_vm >/dev/null 2>&1; timeout "${T:-120}" ssh "${SSHO[@]}" "$USER_NAME@$IP" "$@"; }
@@ -22,7 +23,7 @@ while true; do
     misses=0 state=failed
     while true; do
       sleep 60
-      if out=$(T=30 box "cd $R; if [ -f runs/box/$tag.rc ]; then echo rc=\$(cat runs/box/$tag.rc); elif pgrep -f 'box/$tag[.]log' >/dev/null; then echo RUNNING \$(tail -1 runs/box/$tag.log | cut -c1-80); else echo DIED; fi"); then
+      if out=$(T=30 box "$(job_state $R $tag)"); then
         misses=0
         case $out in
           RUNNING*) status "$tag" running "${out#RUNNING }";;

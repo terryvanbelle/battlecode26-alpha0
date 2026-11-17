@@ -163,6 +163,23 @@ defect, cheap to repair and clearly limiting (zdn1 ended games with 6 babies to 
 RL starts from zdn2 if its held-out field score is at least zdn1's 0.27, and from zdn1 otherwise. Either way RL starts
 after this check, with no further imitation fixes first.
 
+**zdn2 against its reading** (14:40 PDT). 52/192 = 0.27 against the held-out field (95% CI 0.21–0.34; zdn1 51/192)
+and 0/64 against zdb, so RL starts from zdn2. The better build decisions did not change the score, because building was
+not the limit. Game statistics (our side, mean per game):
+
+| Opponent | zdb: rounds, cheese delivered | zdn2: rounds, cheese delivered |
+|---|---|---|
+| AlexT101 | 427, 1865 | 162, 94 |
+| VarunVejalla | 632, 2821 | 162, 100 |
+| daannte | 340, 1178 | 126, 49 |
+| quesswho | 40 (win) | 79 (81% wins) |
+| Guzzi | 72 (win) | 313 (53% wins) |
+
+zdn's robots per round roughly match zdb's. Against the aggressive bots it delivers about 0.6 cheese per round to
+zdb's 4.5, and its kings die early; against the weak ones its attack is slow. Both are sequences of many choices (gather,
+carry, deliver; converge on a king). A per-step imitation fit of 0.88 compounds over those sequences, and RL from self-play
+is meant to repair exactly that.
+
 ## RL
 
 **Policy randomness.** The player samples from its own stream, seeded from Math.random, which our runner reseeds per

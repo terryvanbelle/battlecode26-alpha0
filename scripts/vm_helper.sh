@@ -13,6 +13,7 @@
 # BOX_R / VM_R: the sandboxes (relative to the homes). The VM sandbox keeps only the current request's packages and
 # run dir. Config on the box: box_slice = the VM's share, workers_box = the VM's workers, workers_vm = the box's own.
 source ~/projects/vibe/2026b/tools/vm.sh >/dev/null 2>&1
+source "$(dirname "$0")/helper_lib.sh"
 set -o pipefail   # a failed tar on either end fails the copy
 BOX=(ssh -i ~/.ssh/wsl_box -o ConnectTimeout=20 -o ServerAliveInterval=30 -o BatchMode=yes terry@100.93.26.126)
 BR=${BOX_R:-rltest/bc26a0}
@@ -55,7 +56,7 @@ d['game_timeout_seconds']=max(d.get('game_timeout_seconds', 1200), ${VM_GAME_TIM
     misses=0 state=failed
     while true; do
       sleep 60
-      if out=$(T=30 vm "cd $VR; if [ -f runs/box/$tag.rc ]; then echo rc=\$(cat runs/box/$tag.rc); elif pgrep -f 'box/$tag[.]log' >/dev/null; then echo RUNNING \$(tail -1 runs/box/$tag.log | cut -c1-80); else echo DIED; fi"); then
+      if out=$(T=30 vm "$(job_state $VR $tag)"); then
         misses=0
         case $out in
           RUNNING*) status "$tag" running "${out#RUNNING }";;
