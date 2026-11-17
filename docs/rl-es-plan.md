@@ -819,6 +819,16 @@ matters, while a floor spreads it evenly. KING_MOVE fits worst (top choice kept 
 zdpy3: Fisher share 0.12-0.37, top choice kept 89-99.98%) is the next per-turn test (sm10). Per-turn exploration at
 the 0.2 level costs 0.1-0.25 of a game against v39 either way, which strengthens the plan heads' claim to go first.
 
+**sm10 (started November 17, 01:50 PDT, on the box beside rl-p3, 3 workers).** It is zdpy3 against zdpg39 on the same
+64 games as gall and sm20. Neither package draws from `Math.random`, so the runner's per-game seeding
+(section 21) doesn't change them, and the three tests stay paired. Readings, set before the games:
+- *0.50 or more:* exploration at 0.1, inside the softmax, costs at most about 0.08 of zfree's 0.58. zdpy3 is the
+  per-turn RL start, rebuilt with the per-game-seeded DNet.
+- *0.40 to 0.50:* about gall's cost. zdpy3 is still the start, because its exploration carries gradient, but the
+  per-turn run needs a stronger KL leash.
+- *Under 0.40:* exploration inside the softmax costs strength even at 0.1, and the per-turn start goes back to v39z
+  with a floor.
+
 ## 21. Plan heads: design C's stage 1 (November 16, 2026)
 
 **Why now.** Stage 0 (section 19) met its slope reading: three of 24 variants are at |t| ≥ 2, rush to 32 at 0.36
