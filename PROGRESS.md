@@ -104,7 +104,7 @@ Details: [lean imitation pipeline](docs/lean-imitation.md).
     - Together these give about 6× rl-p1's signal per iteration on 12/8.
     - Reading set before the games: by iteration 10, the share of core-baby picks below zdb's 18/12 should rise from 0.37 to 0.5 or more. If it doesn't, the estimator (critic, advantages) is the next thing to fix.
     - Config: [configs/rl-p2.json](configs/rl-p2.json).
-    - <!-- RL_STATUS_START -->Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last November 16, 20:13 PDT, after iteration 1. Pool games against v0, iterations 0–1: 26/52 = 0.50. Plan heads' mean bin, v0 → v2 (zdb's bins: POSTURE 0, KINGS 1, CORE 4, the rest 3): POSTURE 1.60 → 1.75, ARMY 3.00 → 2.95, CORE 3.50 → 3.52, THRIFT 3.00 → 3.01, ROLES 3.00 → 3.05, RUSH 2.75 → 2.82, LOAD 3.00 → 2.99, KINGS 1.25 → 1.17; CORE's mass on 12/8 0.073 → 0.060, on 15/10 0.154 → 0.170.<!-- RL_STATUS_END -->
+    - <!-- RL_STATUS_START -->Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last November 16, 20:37 PDT, after iteration 1. Gates against the start (zdpp7): v3 15/32. Pool games against v0, iterations 0–1: 26/52 = 0.50. Plan heads' mean bin, v0 → v3 (zdb's bins: POSTURE 0, KINGS 1, CORE 4, the rest 3): POSTURE 1.60 → 1.67, ARMY 3.00 → 2.92, CORE 3.50 → 3.44, THRIFT 3.00 → 3.09, ROLES 3.00 → 3.00, RUSH 2.75 → 2.85, LOAD 3.00 → 3.04, KINGS 1.25 → 1.11; CORE's mass on 12/8 0.073 → 0.083, on 15/10 0.154 → 0.172.<!-- RL_STATUS_END -->
 
       ![rl-p2: plan-head learner vs its start net and vs zdb](docs/img/rl-p2-score.svg)
 - **zdp pass 3, capability completion (November 14, 2026).** The RL start net can now do anything zdb's code can.
