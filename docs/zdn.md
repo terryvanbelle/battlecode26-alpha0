@@ -329,3 +329,21 @@ Against zdb it is 0/32 at all twelve gates so far. King updates 31–36: credit_
 The gates measure the learner only against zdn2 and zdb, so v36 is also playing zdn2's held-out field games beside the
 loop: 192 games, the same opponents, maps and seeds as zdn2's 52/192. That shows whether winning 0.6 against the start
 carries over to the field.
+
+**Field check of v36** (05:00 PDT). 55/192 = 0.29 against the held-out field (95% CI 0.23–0.35), against zdn2's 52/192
+= 0.27 on the same games. RL's gain against its start net (0.59 over v27–v36) has not carried over to the field. Our
+side's game statistics are means per game:
+
+| Opponent | zdn2: wins, rounds, cheese delivered | v36: wins, rounds, cheese delivered |
+|---|---|---|
+| AlexT101 | 0/32, 162, 94 | 0/32, 189, 230 |
+| VarunVejalla | 0/32, 162, 100 | 0/32, 178, 151 |
+| daannte | 0/32, 126, 49 | 0/32, 149, 122 |
+| Guzzi | 17/32, 313, 1148 | 16/32, 310, 1002 |
+| examplefuncsplayer | 9/32, 427, 2160 | 12/32, 545, 2704 |
+| quesswho | 26/32, 79, 41 | 27/32, 101, 81 |
+
+Against the aggressive bots v36 lasts 10–20% longer and delivers 1.5 to 2.5 times the cheese. It is still nowhere near
+zdb (340–630 rounds and 1,200–2,800 cheese against the same bots), and it wins none of those games. Self-play has made
+v36 better at beating its own family. It hasn't yet learned to survive an opponent that rushes the king, which zdn's
+self-play games rarely contain.
