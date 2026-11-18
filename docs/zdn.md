@@ -221,3 +221,18 @@ better. Where the advantage per option is logged (point 16), it ranks options as
 
 - Gates: as for rl-s2. The anchor gate plays the imitation player zdn1, every third version, with zdb tracked. The
   field never feeds back into training.
+
+**rl-zdn1 through iteration 5** (November 17, 17:02 PDT). Started 14:42 from zdn2; about 20 minutes per iteration,
+30 with gates. Parity passes every iteration (median 5e-5). Against zdn2: v3 20/32, v6 14/32 (pooled 34/64 = 0.53).
+Against zdb: 0/32 at both. Pool games against v0: 96/174 = 0.55. The policy has hardly moved: KL to the anchor
+0.02 for both units (cap 0.5), entropy flat, and each update uses about 0.007 of its 0.05 KL budget. Baby
+credit_corr is positive on every update (0.27 to 0.73); king's is mixed (-0.68 to +0.57, four of six negative) over
+only nine step kinds. The critic's held-out Brier fell from 0.227 to 0.174 (0.25 is chance). Self-play games are
+getting shorter: 28.8k recorded-sample baby turns in iteration 0, 21.7k in iteration 5.
+
+**Reading for rl-zdn1 at v12** (set before the v9 and v12 gates; about 19:30 PDT). Pool v9 and v12 against zdn2.
+- Wilson lower bound above 0.5: RL is working; leave it alone.
+- Otherwise, if KL to the anchor is still under 0.05: the update is too small to show anything in 12 iterations.
+  Double it (4 epochs instead of 2; the 0.05 per-update KL stop stays) and continue the same run.
+- If king credit_corr is negative on most of iterations 6–11 while baby's stays positive: before changing the update,
+  look at the king's advantage and mass change per kind for the kinds that drive the correlation.
