@@ -347,3 +347,24 @@ Against the aggressive bots v36 lasts 10–20% longer and delivers 1.5 to 2.5 ti
 zdb (340–630 rounds and 1,200–2,800 cheese against the same bots), and it wins none of those games. Self-play has made
 v36 better at beating its own family. It hasn't yet learned to survive an opponent that rushes the king, which zdn's
 self-play games rarely contain.
+
+### rl-zdn1 stopped at iteration 41
+
+The run was stopped on November 18 at 06:13 PDT, during iteration 41's games, for a shutdown. v39 scored 19/32 against
+zdn2 and 0/32 against zdb, so v36 and v39 pooled 41/64 = 0.64 against zdn2. Pool games against v0 over iterations
+1–40 came to 256/444 = 0.58; the learner never won every game against v0, so the chart never switched to the newest
+version. The field check planned for v48 was not run.
+
+The nets (v0–v41), records and logs stay on the box in ~/rltest/bc26a0/runs/rl/rl-zdn1. The loop resumes where it
+stopped, since each finished stage is skipped (iteration 41 replays its collection):
+
+    # on the box, in ~/rltest/bc26a0
+    setsid nohup scripts/rl_loop.sh configs/rl-zdn1.json > runs/rl/rl-zdn1.out 2>&1 < /dev/null &
+    # on the driver: the VM's share of the games, and the PROGRESS chart
+    VM_JAVA_FLAGS='-Xmx1200m -XX:+UseSerialGC' setsid nohup scripts/vm_helper.sh > runs/vm_helper.log 2>&1 < /dev/null &
+    GATE_MODE=anchor-zdpc00 GATE_LABEL='vs zdpc00 = zdb (32-game gate)' ANCHOR_LABEL='the start (zdn2)' \
+      TITLE='rl-zdn1: learner vs its start net (zdn2) and vs zdb' \
+      setsid nohup scripts/rl_chart_sync.sh rl-zdn1 > runs/rl_chart_sync-zdn1.log 2>&1 < /dev/null &
+
+The box also ran a memory guard, /tmp/memguard.sh, which kills the youngest game JVM when less than 500 MB is free (the
+loop replays that game). It lives in the box's /tmp, so it may need writing again after a reboot.
