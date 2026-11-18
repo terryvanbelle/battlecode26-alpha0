@@ -281,3 +281,27 @@ iterations 11–16 (32/38).
 - If both are lower, with v21+v24 under 0.55 and pool under 0.70, go back to 2 epochs and keep the run.
 - Otherwise keep 4 epochs. If king BUILD mass keeps rising against its advantage, measure BUILD against END in matched
   king states (same round bin, cheese and baby count) before changing anything.
+
+**rl-zdn1 at v24, against its reading** (00:25 PDT, November 18). v21 scored 11/32 and v24 10/32 against zdn2, so
+21/64 = 0.33, against 58/96 = 0.60 for v9–v15. Both were 0/32 against zdb. Pool games against v0 over iterations 17–24
+came to 29/54 = 0.54, against 32/38 over iterations 11–16. Both fell below the reading's thresholds (0.55 and 0.70), so
+iteration 26's update and later ones use 2 epochs again, in the same run. The learner is now clearly worse than zdn2,
+and worse than v9–v18 were.
+- **The king is drifting.** Its credit_corr on nets 21–26 was +0.04, +0.24, -0.08, -0.34, -0.42 and -0.75. Its
+  entropy at the start of each update was 0.64 and 0.65 on nets 25 and 26, above the start net's 0.63 and rising.
+  BUILD keeps gaining mass (dlog +0.045, +0.047, +0.053 on nets 24–26) although its mean advantage is -0.04 to -0.07.
+  The babies look healthy: entropy steady at 0.71–0.72, and credit positive on every update but one.
+- **A likely mechanism, not yet tested.** For a peaked policy (king END about 0.76 of the step mass, and near 1 in many
+  states), noise in the update raises entropy on average. Entropy is convex in the logit gap near a corner, so a
+  zero-mean random walk in the logits spreads mass from the dominant option onto rare ones. A bigger update (4 epochs)
+  means a bigger walk. The anchor leash is what holds this back, and it weakened in the same window. beta anneals from
+  0.1 to 0.03 over iterations 0–20, so it was 0.044 at iteration 16 and reached the floor at 20. The 4 epochs and the
+  weaker leash are confounded.
+
+**Reading at v30** (set before the v27 and v30 gates; about 02:00 PDT). Pool v27 and v30 against zdn2; both versions
+were trained at 2 epochs throughout.
+- 0.5 or more: the drop was the 4 epochs. Keep the run.
+- 0.45 to 0.5: keep it and read again at v33.
+- Under 0.45: the weaker leash, or the drift it lets through, is the likely cause. Stop rl-zdn1. Start rl-zdn2 from
+  v18's nets (20/32 against zdn2, the last good gate), with the same anchor zdn2, 2 epochs, and beta held at 0.1 (no
+  annealing).
