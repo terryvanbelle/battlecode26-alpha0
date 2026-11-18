@@ -305,3 +305,17 @@ were trained at 2 epochs throughout.
 - Under 0.45: the weaker leash, or the drift it lets through, is the likely cause. Stop rl-zdn1. Start rl-zdn2 from
   v18's nets (20/32 against zdn2, the last good gate), with the same anchor zdn2, 2 epochs, and beta held at 0.1 (no
   annealing).
+
+**rl-zdn1 at v30, against its reading** (02:10 PDT). v27 scored 20/32 and v30 15/32 against zdn2, so 35/64 = 0.55. Both
+were 0/32 against zdb. By the reading the drop came from the 4 epochs, and the run continues unchanged. Back at 2
+epochs, the king's drift stopped. Over nets 27–30 its credit_corr was 0.00, +0.63, -0.49 and +0.55. Entropy at the
+start of each update held at 0.65 (0.652, 0.650, 0.653, 0.646), still above the start net's 0.63 but no longer
+rising. BUILD's dlog was -0.010, -0.042, +0.055 and -0.004, so BUILD no longer gains. KL to the anchor held at 0.08.
+One measure disagrees: pool games against v0 for versions 26–29 came to 8/26 = 0.31, against 32/38 for versions 11–16.
+Those are training maps, at about six games an iteration. The gate uses the eight ZMAPS.
+
+**Reading at v36** (set before the v33 and v36 gates; about 04:00 PDT). Pool v33 and v36 against zdn2, and pool
+games against v0 over iterations 30–35.
+- If v33+v36 is under 0.5 and pool games against v0 are under 0.5, the run has settled below its iteration 11–16 level.
+  Stop rl-zdn1 and start rl-zdn2 as planned at v30: from v18's nets, anchor zdn2, 2 epochs, beta held at 0.1.
+- Otherwise keep it.
