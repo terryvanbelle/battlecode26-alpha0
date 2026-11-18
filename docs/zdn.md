@@ -245,3 +245,39 @@ iteration). By the time of the read, v15 had played its gate too (19/32; v9–v1
 0.50). Pool games against v0 had risen to 28/32 over iterations 11–15, against 23/52 and 29/52 in iterations 1 and 2.
 These are about six games an iteration since PFSP started at iteration 10. The 32-game gate against the same net reads
 lower. Against zdb: 0/32 at every gate so far.
+
+**rl-zdn1's king under 4 epochs** (22:30 PDT, after the v18 gate). v18 scored 20/32 against zdn2 and 0/32 against
+zdb. Pooled over v9–v18, the learner has 78/128 = 0.61 against zdn2 (Wilson 0.52–0.69). The first four 4-epoch king
+updates (nets 17–20) raised entropy inside each update by +0.028, +0.016, +0.007 and +0.006, and their credit_corr
+was negative every time (-0.18, -0.29, -0.06, -0.36). That is not a runaway. Entropy at the start of each update, on
+fresh games, was 0.59, 0.62, 0.63 and 0.63. The start net had 0.63 to 0.64 at nets 1 and 2, and the 2-epoch updates
+ranged from 0.59 to 0.62. The within-update rise is shrinking. Per step kind over the four updates:
+
+| King kind | rows/update | mean raw A | mass | sum of dlog, 4 epochs (nets 17–20) | sum of dlog, 2 epochs (nets 7–16) |
+|---|---|---|---|---|---|
+| END | 17,296 | -0.001 | 0.757 | -0.032 | -0.030 |
+| MOVE | 1,760 | -0.002 | 0.078 | +0.073 | +0.276 (A +0.014) |
+| BUILD | 1,810 | -0.045 | 0.079 | +0.147 | -0.047 (A -0.025) |
+| TURN | 675 | -0.052 | 0.030 | +0.154 | -0.041 |
+| ALERT | 521 | -0.128 | 0.023 | +0.030 | +0.002 |
+| DIG | 254 | -0.006 | 0.011 | +0.031 | +0.586 (A +0.009) |
+| PICK | 241 | +0.023 | 0.011 | -0.015 | +0.016 |
+| RTRAP | 78 | -0.005 | 0.004 | +0.087 | -0.188 |
+| BITE | 66 | -0.227 | 0.003 | +0.044 | +0.039 |
+
+Mass leaves END, which has about zero advantage, for nearly every other kind, including BUILD, TURN, ALERT and BITE,
+whose mean advantages are negative. Under 2 epochs the largest moves (DIG +0.59, MOVE +0.28) went with positive
+advantage. Under 4 epochs BUILD reversed, from -0.05 to +0.15, and kings now build more although building turns score
+below average. Unlike in rl-s2, a kind's mean advantage here is a weak measure for the king. All of a turn's choices
+share its advantage, and the critic sees only team, game and 10-round bin. So kinds that kings use when attacked
+(BITE -0.23, ALERT -0.13) score low whatever their merit, and a turn that goes worse than the bin predicts pushes mass
+from the chosen kind onto the others. Nothing changed for now. Pool games against v0 dipped for the 4-epoch versions:
+10/20 over iterations 17–19, against 28/32 over iterations 11–15 for 2-epoch versions. Those are about six games an
+iteration, and v18's 32-game gate against zdn2 held at 20/32.
+
+**Reading at v24** (about 00:20 PDT, set before the v21 and v24 gates). Compare the 4-epoch versions with the 2-epoch
+ones: v21+v24 against zdn2 with v9–v15 (58/96 = 0.60), and pool games against v0 over iterations 17–24 with
+iterations 11–16 (32/38).
+- If both are lower, with v21+v24 under 0.55 and pool under 0.70, go back to 2 epochs and keep the run.
+- Otherwise keep 4 epochs. If king BUILD mass keeps rising against its advantage, measure BUILD against END in matched
+  king states (same round bin, cheese and baby count) before changing anything.
