@@ -7,7 +7,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <rect width="720" height="398" fill="var(--surface)"/>
 <text class="t" x="64" y="24">rl-zdn1: learner vs its start net (zdn2) and vs zdb</text>
 <text class="st" x="64" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>
-<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 233/408 = 0.57</text>
+<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 240/416 = 0.58</text>
 <circle class="dot1" cx="69" cy="80" r="5"/><text class="lg" x="79" y="84">vs zdpc00 = zdb (32-game gate): pooled 0/384 = 0.00</text>
 <line class="gl" x1="64" x2="696" y1="342.0" y2="342.0"/>
 <text class="ax" x="56" y="346.0" text-anchor="end">0.00</text>
@@ -36,7 +36,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <text class="ax" x="678.9" y="360" text-anchor="middle">36</text>
 <text class="ax" x="380.0" y="384" text-anchor="middle">learner version (iteration)</text>
 <text class="ax" transform="translate(16 222.0) rotate(-90)" text-anchor="middle">score</text>
-<polyline class="ln0" points="81.1,235.8 98.2,208.2 115.2,194.3 132.3,194.3 149.4,182.0 166.5,208.7 183.6,153.4 200.6,239.1 217.7,242.0 234.8,204.9 251.9,132.0 269.0,142.0 286.1,102.0 303.1,142.0 320.2,142.0 337.3,182.0 354.4,262.0 371.5,262.0 388.5,162.0 405.6,302.0 422.7,252.0 439.8,132.0 456.9,182.0 473.9,182.0 491.0,222.0 508.1,222.0 525.2,262.0 542.3,302.0 559.4,282.0 576.4,192.0 593.5,102.0 610.6,182.0 627.7,222.0 644.8,142.0 661.8,262.0"/>
+<polyline class="ln0" points="81.1,235.8 98.2,208.2 115.2,194.3 132.3,194.3 149.4,182.0 166.5,208.7 183.6,153.4 200.6,239.1 217.7,242.0 234.8,204.9 251.9,132.0 269.0,142.0 286.1,102.0 303.1,142.0 320.2,142.0 337.3,182.0 354.4,262.0 371.5,262.0 388.5,162.0 405.6,302.0 422.7,252.0 439.8,132.0 456.9,182.0 473.9,182.0 491.0,222.0 508.1,222.0 525.2,262.0 542.3,302.0 559.4,282.0 576.4,192.0 593.5,102.0 610.6,182.0 627.7,222.0 644.8,142.0 661.8,262.0 678.9,132.0"/>
 <g><title>v1 vs the start net v0 (pool games): 23/52 = 0.44 (95% 0.32-0.58)</title><line class="wh0" x1="81.1" x2="81.1" y1="266.2" y2="203.6"/><circle class="dot0" cx="81.1" cy="235.8" r="5"/></g>
 <g><title>v2 vs the start net v0 (pool games): 29/52 = 0.56 (95% 0.42-0.68)</title><line class="wh0" x1="98.2" x2="98.2" y1="240.4" y2="177.8"/><circle class="dot0" cx="98.2" cy="208.2" r="5"/></g>
 <g><title>v3 vs the start net v0 (pool games): 16/26 = 0.62 (95% 0.43-0.78)</title><line class="wh0" x1="115.2" x2="115.2" y1="239.9" y2="155.8"/><circle class="dot0" cx="115.2" cy="194.3" r="5"/></g>
@@ -72,6 +72,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <g><title>v33 vs the start net v0 (pool games): 3/6 = 0.50 (95% 0.19-0.81)</title><line class="wh0" x1="627.7" x2="627.7" y1="297.0" y2="147.0"/><circle class="dot0" cx="627.7" cy="222.0" r="5"/></g>
 <g><title>v34 vs the start net v0 (pool games): 5/6 = 0.83 (95% 0.44-0.97)</title><line class="wh0" x1="644.8" x2="644.8" y1="237.2" y2="109.2"/><circle class="dot0" cx="644.8" cy="142.0" r="5"/></g>
 <g><title>v35 vs the start net v0 (pool games): 2/6 = 0.33 (95% 0.10-0.70)</title><line class="wh0" x1="661.8" x2="661.8" y1="318.8" y2="174.0"/><circle class="dot0" cx="661.8" cy="262.0" r="5"/></g>
+<g><title>v36 vs the start net v0 (pool games): 7/8 = 0.88 (95% 0.53-0.98)</title><line class="wh0" x1="678.9" x2="678.9" y1="215.0" y2="107.4"/><circle class="dot0" cx="678.9" cy="132.0" r="5"/></g>
 <polyline class="ln1" points="117.3,342.0 168.5,342.0 219.8,342.0 271.0,342.0 322.3,342.0 373.5,342.0 424.8,342.0 476.0,342.0 527.2,342.0 578.5,342.0 629.7,342.0 681.0,342.0"/>
 <g><title>v3 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="117.3" x2="117.3" y1="342.0" y2="316.3"/><circle class="dot1" cx="117.3" cy="342.0" r="5"/></g>
 <g><title>v6 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="168.5" x2="168.5" y1="342.0" y2="316.3"/><circle class="dot1" cx="168.5" cy="342.0" r="5"/></g>
