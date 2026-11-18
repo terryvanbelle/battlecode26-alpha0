@@ -319,3 +319,13 @@ games against v0 over iterations 30–35.
 - If v33+v36 is under 0.5 and pool games against v0 are under 0.5, the run has settled below its iteration 11–16 level.
   Stop rl-zdn1 and start rl-zdn2 as planned at v30: from v18's nets, anchor zdn2, 2 epochs, beta held at 0.1.
 - Otherwise keep it.
+
+**rl-zdn1 at v36, against its reading** (04:15 PDT). v33 scored 19/32 and v36 22/32 against zdn2, so 41/64 = 0.64.
+Pool games against v0 over iterations 30–35 came to 25/38 = 0.66. Neither is under 0.5, so rl-zdn1 continues
+unchanged and no restart from v18 is needed. Over the 2-epoch gates v27–v36 the learner has 76/128 = 0.59 against zdn2.
+Against zdb it is 0/32 at all twelve gates so far. King updates 31–36: credit_corr +0.57, +0.53, +0.40, -0.72, +0.15,
++0.16. Entropy at the start of each update was 0.60 to 0.65, at about the start net's level. BUILD's dlog summed to
+-0.02. KL to the anchor was 0.09 to 0.10. Babies: credit mostly positive (two updates near 0), entropy 0.68 to 0.70.
+The gates measure the learner only against zdn2 and zdb, so v36 is also playing zdn2's held-out field games beside the
+loop: 192 games, the same opponents, maps and seeds as zdn2's 52/192. That shows whether winning 0.6 against the start
+carries over to the field.
