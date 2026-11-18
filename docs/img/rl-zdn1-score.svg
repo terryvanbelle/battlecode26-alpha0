@@ -7,7 +7,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <rect width="720" height="398" fill="var(--surface)"/>
 <text class="t" x="64" y="24">rl-zdn1: learner vs its start net (zdn2) and vs zdb</text>
 <text class="st" x="64" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>
-<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 223/390 = 0.57</text>
+<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 226/396 = 0.57</text>
 <circle class="dot1" cx="69" cy="80" r="5"/><text class="lg" x="79" y="84">vs zdpc00 = zdb (32-game gate): pooled 0/352 = 0.00</text>
 <line class="gl" x1="64" x2="696" y1="342.0" y2="342.0"/>
 <text class="ax" x="56" y="346.0" text-anchor="end">0.00</text>
@@ -35,7 +35,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <text class="ax" x="677.4" y="360" text-anchor="middle">33</text>
 <text class="ax" x="380.0" y="384" text-anchor="middle">learner version (iteration)</text>
 <text class="ax" transform="translate(16 222.0) rotate(-90)" text-anchor="middle">score</text>
-<polyline class="ln0" points="82.6,235.8 101.2,208.2 119.8,194.3 138.4,194.3 156.9,182.0 175.5,208.7 194.1,153.4 212.7,239.1 231.3,242.0 249.9,204.9 268.5,132.0 287.1,142.0 305.6,102.0 324.2,142.0 342.8,142.0 361.4,182.0 380.0,262.0 398.6,262.0 417.2,162.0 435.8,302.0 454.4,252.0 472.9,132.0 491.5,182.0 510.1,182.0 528.7,222.0 547.3,222.0 565.9,262.0 584.5,302.0 603.1,282.0 621.6,192.0 640.2,102.0 658.8,182.0"/>
+<polyline class="ln0" points="82.6,235.8 101.2,208.2 119.8,194.3 138.4,194.3 156.9,182.0 175.5,208.7 194.1,153.4 212.7,239.1 231.3,242.0 249.9,204.9 268.5,132.0 287.1,142.0 305.6,102.0 324.2,142.0 342.8,142.0 361.4,182.0 380.0,262.0 398.6,262.0 417.2,162.0 435.8,302.0 454.4,252.0 472.9,132.0 491.5,182.0 510.1,182.0 528.7,222.0 547.3,222.0 565.9,262.0 584.5,302.0 603.1,282.0 621.6,192.0 640.2,102.0 658.8,182.0 677.4,222.0"/>
 <g><title>v1 vs the start net v0 (pool games): 23/52 = 0.44 (95% 0.32-0.58)</title><line class="wh0" x1="82.6" x2="82.6" y1="266.2" y2="203.6"/><circle class="dot0" cx="82.6" cy="235.8" r="5"/></g>
 <g><title>v2 vs the start net v0 (pool games): 29/52 = 0.56 (95% 0.42-0.68)</title><line class="wh0" x1="101.2" x2="101.2" y1="240.4" y2="177.8"/><circle class="dot0" cx="101.2" cy="208.2" r="5"/></g>
 <g><title>v3 vs the start net v0 (pool games): 16/26 = 0.62 (95% 0.43-0.78)</title><line class="wh0" x1="119.8" x2="119.8" y1="239.9" y2="155.8"/><circle class="dot0" cx="119.8" cy="194.3" r="5"/></g>
@@ -68,6 +68,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <g><title>v30 vs the start net v0 (pool games): 5/8 = 0.62 (95% 0.31-0.86)</title><line class="wh0" x1="621.6" x2="621.6" y1="268.6" y2="134.8"/><circle class="dot0" cx="621.6" cy="192.0" r="5"/></g>
 <g><title>v31 vs the start net v0 (pool games): 6/6 = 1.00 (95% 0.61-1.00)</title><line class="wh0" x1="640.2" x2="640.2" y1="195.7" y2="102.0"/><circle class="dot0" cx="640.2" cy="102.0" r="5"/></g>
 <g><title>v32 vs the start net v0 (pool games): 4/6 = 0.67 (95% 0.30-0.90)</title><line class="wh0" x1="658.8" x2="658.8" y1="270.0" y2="125.2"/><circle class="dot0" cx="658.8" cy="182.0" r="5"/></g>
+<g><title>v33 vs the start net v0 (pool games): 3/6 = 0.50 (95% 0.19-0.81)</title><line class="wh0" x1="677.4" x2="677.4" y1="297.0" y2="147.0"/><circle class="dot0" cx="677.4" cy="222.0" r="5"/></g>
 <polyline class="ln1" points="122.0,342.0 177.8,342.0 233.5,342.0 289.3,342.0 345.1,342.0 400.8,342.0 456.6,342.0 512.3,342.0 568.1,342.0 623.9,342.0 679.6,342.0"/>
 <g><title>v3 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="122.0" x2="122.0" y1="342.0" y2="316.3"/><circle class="dot1" cx="122.0" cy="342.0" r="5"/></g>
 <g><title>v6 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="177.8" x2="177.8" y1="342.0" y2="316.3"/><circle class="dot1" cx="177.8" cy="342.0" r="5"/></g>
