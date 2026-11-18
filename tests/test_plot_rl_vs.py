@@ -19,7 +19,7 @@ def progress(tmp_path, scores):
 SCORES = [
     (0, {}),                                         # iteration 0 plays only itself
     (1, {'v0': (5, 10)}),
-    (2, {'v0': (4, 4)}),                             # every game won, but too few to switch on
+    (2, {'v0': (4, 4)}),                             # every game won, but too few, and iteration 1 lost some
     (3, {'v0': (9, 9), 'v2': (3, 8)}),               # every game won: the switch
     (4, {'v0': (8, 8), 'v2': (5, 9), 'v3': (6, 10)}),
     (13, {'v0': (7, 8), 'v12': (2, 6), 'v4': (5, 9)}),   # newest by number, not by text
@@ -31,6 +31,23 @@ def test_switches_after_the_first_perfect_iteration(tmp_path):
     assert switch == 3
     assert before == [(1, 5, 10), (2, 4, 4), (3, 9, 9)]
     assert after == [(4, 6, 10, 'v3'), (13, 2, 6, 'v12')]
+
+
+def test_perfect_run_counts_back_to_enough_games(tmp_path):
+    rows = [(1, 5, 10), (2, 4, 4), (3, 6, 6)]
+    assert pv.perfect_run(rows, 8) == [(2, 4, 4), (3, 6, 6)]
+    assert pv.perfect_run(rows, 11) is None                  # reaches iteration 1, which lost games
+    assert pv.perfect_run(rows[:2], 8) is None               # all won, but only 4 games
+    assert pv.perfect_run([(1, 9.5, 10)], 8) is None         # a draw is not a win
+
+
+def test_switch_over_several_small_iterations(tmp_path):
+    scores = [(10, {'v0': (5, 6)}), (11, {'v0': (6, 6)}), (12, {'v0': (6, 6), 'v10': (4, 8)}), (13, {'v12': (3, 6)})]
+    before, after, switch = pv.newest_after_perfect(progress(tmp_path, scores), 'v0')
+    assert (switch, after) == (12, [(13, 3, 6, 'v12')])
+    assert pv.pool_status(progress(tmp_path, scores)) == (
+        'Pool games against v0, iterations 10–12: 17/18 = 0.94; the learner won all 12 in iterations 11–12, so the chart '
+        'now compares against the newest pool version: iteration 13 against v12: 3/6')
 
 
 def test_no_switch_without_a_perfect_iteration(tmp_path):
@@ -48,10 +65,10 @@ def test_last_row_per_iteration_wins(tmp_path):
 def test_status_sentence(tmp_path):
     assert pv.pool_status(progress(tmp_path, SCORES[:3])) == 'Pool games against v0, iterations 1–2: 9/14 = 0.64'
     assert pv.pool_status(progress(tmp_path, SCORES[:4])) == (
-        'Pool games against v0, iterations 1–3: 18/23 = 0.78; the learner won all 9 at iteration 3, so the chart now '
+        'Pool games against v0, iterations 1–3: 18/23 = 0.78; the learner won all 9 in iteration 3, so the chart now '
         'compares against the newest pool version')
     assert pv.pool_status(progress(tmp_path, SCORES)) == (
-        'Pool games against v0, iterations 1–3: 18/23 = 0.78; the learner won all 9 at iteration 3, so the chart now '
+        'Pool games against v0, iterations 1–3: 18/23 = 0.78; the learner won all 9 in iteration 3, so the chart now '
         'compares against the newest pool version: iterations 4–13 8/16 = 0.50 (iteration 13 against v12: 2/6)')
     assert pv.pool_status(progress(tmp_path, SCORES[:1])) == ''
 

@@ -236,3 +236,12 @@ getting shorter: 28.8k recorded-sample baby turns in iteration 0, 21.7k in itera
   Double it (4 epochs instead of 2; the 0.05 per-update KL stop stays) and continue the same run.
 - If king credit_corr is negative on most of iterations 6–11 while baby's stays positive: before changing the update,
   look at the king's advantage and mass change per kind for the kinds that drive the correlation.
+
+**rl-zdn1 at v12, against its reading** (read at 21:00 PDT, an hour and a half late: nothing checked it between
+turns). v9 19/32 and v12 20/32 against zdn2, so 39/64 = 0.61 with a Wilson lower bound of 0.49, not above 0.5. KL to
+the anchor was 0.03 for both units, and king credit_corr was negative on three of iterations 6–11, not most. By the
+reading, then: 4 epochs instead of 2 from iteration 16's update on, in the same run (rl_loop reads the config each
+iteration). By the time of the read, v15 had played its gate too (19/32; v9–v15 pooled 58/96 = 0.60, lower bound
+0.50). Pool games against v0 had risen to 28/32 over iterations 11–15, against 23/52 and 29/52 in iterations 1 and 2.
+These are about six games an iteration since PFSP started at iteration 10. The 32-game gate against the same net reads
+lower. Against zdb: 0/32 at every gate so far.

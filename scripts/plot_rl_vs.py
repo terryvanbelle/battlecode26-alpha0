@@ -8,9 +8,10 @@ progress.jsonl, plus optional gate series from gates.jsonl (e.g. the anchor-zdb 
   scripts/plot_rl_vs.py OUT/progress.jsonl --opp zdpg0,zdpg39 ...   (an ES run, after scripts/es_progress.py RUN OUT)
 
 Pool series: iteration k's pool games, the learner (version k) against --opp (a comma list is pooled). Gate series: one point per gated version.
-With --newest-after-perfect (one --opp): once the learner wins every pool game against --opp in an iteration (at least
-MIN_PERFECT_GAMES games), the comparison against --opp has nothing left to show, so from the next iteration on the
-chart follows the learner against the newest pool version it played instead (a third series; a mark at the switch).
+With --newest-after-perfect (one --opp): once the learner wins every one of its latest pool games against --opp (the
+latest iterations back to at least MIN_PERFECT_GAMES games; after PFSP starts v0 gets about 6 games an iteration), the
+comparison against --opp has nothing left to show, so from the next iteration on the chart follows the learner
+against the newest pool version it played instead (a third series; a mark at the switch).
 Score = points / games (win 1, draw 0.5) with a Wilson 95% interval; the dashed line is 0.5 (even). No dependencies
 (plain Python, hand-written SVG that follows the viewer's light/dark theme; hover a point for its numbers).
 """
@@ -52,17 +53,17 @@ def pool_series(path, opp):
 
 
 def newest_after_perfect(path, opp, min_games=MIN_PERFECT_GAMES):
-    """The pool series against opp up to and including the first iteration in which the learner won every game against
-    it (at least min_games games), then, from the next iteration on, against the newest version (vN) that iteration's
-    pool games played. Returns (rows against opp [(k, points, games)], rows after the switch [(k, points, games,
-    opponent)], the switch iteration or None)."""
+    """The pool series against opp up to and including the first iteration k by which the learner won every one of
+    its latest games against opp (iterations k, k-1, ... back to at least min_games games), then, from the next
+    iteration on, against the newest version (vN) that iteration's pool games played. Returns (rows against opp
+    [(k, points, games)], rows after the switch [(k, points, games, opponent)], the switch iteration or None)."""
     before, after, switch = [], [], None
     for k, sc in pool_scores(path).items():
         if switch is None:
             p, g = sc.get(opp, {}).get('points', 0), sc.get(opp, {}).get('games', 0)
             if g:
                 before.append((k, p, g))
-                if g >= min_games and p == g:
+                if perfect_run(before, min_games):
                     switch = k
             continue
         vs = [o for o in sc if re.fullmatch(r'v\d+', o) and sc[o].get('games')]
@@ -70,6 +71,18 @@ def newest_after_perfect(path, opp, min_games=MIN_PERFECT_GAMES):
             o = max(vs, key=lambda o: int(o[1:]))
             after.append((k, sc[o]['points'], sc[o]['games'], o))
     return before, after, switch
+
+
+def perfect_run(rows, min_games):
+    """The latest rows [(k, points, games)] that hold at least min_games games, if the learner won all of them."""
+    n = 0
+    for i in range(len(rows) - 1, -1, -1):
+        if rows[i][1] != rows[i][2]:
+            return None
+        n += rows[i][2]
+        if n >= min_games:
+            return rows[i:]
+    return None
 
 
 def pool_status(path, opp='v0', min_games=MIN_PERFECT_GAMES):
@@ -82,12 +95,16 @@ def pool_status(path, opp='v0', min_games=MIN_PERFECT_GAMES):
     s = f"Pool games against {opp}, iterations {before[0][0]}–{before[-1][0]}: {p:g}/{n} = {p / n:.2f}"
     if switch is None:
         return s
-    g = before[-1][2]
-    s += f"; the learner won all {g} at iteration {switch}, so the chart now compares against the newest pool version"
+    run = perfect_run(before, min_games)
+    g = sum(r[2] for r in run)
+    s += (f"; the learner won all {g} in iteration{'s' if len(run) > 1 else ''} "
+          + (f"{run[0][0]}–{switch}" if len(run) > 1 else f"{switch}")
+          + ", so the chart now compares against the newest pool version")
     if after:
         P, N = sum(r[1] for r in after), sum(r[2] for r in after)
         k, pk, gk, o = after[-1]
-        s += (f": iterations {after[0][0]}–{k} {P:g}/{N} = {P / N:.2f} (iteration {k} against {o}: {pk:g}/{gk})")
+        s += (f": iteration {k} against {o}: {pk:g}/{gk}" if len(after) == 1 else
+              f": iterations {after[0][0]}–{k} {P:g}/{N} = {P / N:.2f} (iteration {k} against {o}: {pk:g}/{gk})")
     return s
 
 
