@@ -1,7 +1,8 @@
 #!/bin/bash
 # Keep an RL run's PROGRESS.md chart and status line current. After every finished iteration (or new gate) of
 # runs/rl/RUN in the box sandbox: its progress.jsonl and gates.jsonl are copied here, scripts/plot_rl_vs.py draws
-# docs/img/RUN-score.svg (pool games against v0, plus one gate series), the one-line status between
+# docs/img/RUN-score.svg (pool games against v0 until the learner wins every one in an iteration, then against the
+# newest pool version: plot_rl_vs.py --newest-after-perfect; plus one gate series), the one-line status between
 # <!-- RL_STATUS_START --> and <!-- RL_STATUS_END --> in PROGRESS.md is rewritten, and only those two paths are
 # committed and pushed to the current branch. Run on the driver:
 #   setsid nohup scripts/rl_chart_sync.sh rl-s1 > runs/rl_chart_sync.log 2>&1 < /dev/null &
@@ -28,6 +29,7 @@ refresh() {
   rm -rf $TMP/p && mkdir $TMP/p && tar xzf $TMP/p.tgz -C $TMP/p || return 1
   touch $TMP/p/gates.jsonl
   python3 scripts/plot_rl_vs.py $TMP/p/progress.jsonl --opp v0 --pool-label "vs the start net v0 (pool games)" \
+    --newest-after-perfect \
     --gates $TMP/p/gates.jsonl --gate-mode "$GATE_MODE" --gate-label "$GATE_LABEL" --out $SVG \
     --title "$TITLE" > /dev/null || return 1
   : > $TMP/extra
@@ -35,21 +37,22 @@ refresh() {
   python3 - $TMP/p "$GATE_MODE" "$ANCHOR_LABEL" $TMP/extra <<'EOF' || return 1
 import json, re, sys, time
 from pathlib import Path
+sys.path.insert(0, 'scripts')
+from plot_rl_vs import pool_status
 d, gmode, alabel = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
 extra = Path(sys.argv[4]).read_text().strip()
 rows = [json.loads(l) for l in open(d / 'progress.jsonl') if l.strip()]
 gates = [json.loads(l) for l in open(d / 'gates.jsonl') if l.strip()]
 fmt = lambda mode: ', '.join(f"v{g['version']} {g['points']:g}/{g['games']}" for g in sorted(
     (g for g in gates if g['mode'] == mode), key=lambda g: g['version']))
-p = sum(r['score'].get('v0', {}).get('points', 0) for r in rows)
-n = sum(r['score'].get('v0', {}).get('games', 0) for r in rows)
+pool = pool_status(d / 'progress.jsonl', 'v0')
 last = max((r['iter'] for r in rows), default=-1)
 opp = gmode.split('-', 1)[1] if '-' in gmode else gmode
 text = (f"Updated automatically after each iteration ([rl_chart_sync.sh](scripts/rl_chart_sync.sh)); last "
         f"{time.strftime('%B %-d, %H:%M PDT')}, " + (f"after iteration {last}" if last >= 0 else "no iteration finished yet")
         + (f". Gates against {alabel}: {fmt('anchor')}" if fmt('anchor') else '')
         + (f". Against {opp}: {fmt(gmode)}" if fmt(gmode) else '')
-        + (f". Pool games against v0, iterations 0–{last}: {p:g}/{n} = {p / max(n, 1):.2f}" if n else '') + '.'
+        + (f". {pool}" if pool else '') + '.'
         + (f' {extra.rstrip(".")}.' if extra else ''))
 f = Path('PROGRESS.md'); s = f.read_text()
 s2, k = re.subn(r'<!-- RL_STATUS_START -->.*?<!-- RL_STATUS_END -->',

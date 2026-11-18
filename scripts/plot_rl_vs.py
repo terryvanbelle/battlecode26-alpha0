@@ -4,17 +4,22 @@ progress.jsonl, plus optional gate series from gates.jsonl (e.g. the anchor-zdb 
 
   scripts/plot_rl_vs.py runs/rl/RUN/progress.jsonl --out docs/img/RUN.svg [--opp v0]
       [--gates runs/rl/RUN/gates.jsonl --gate-mode anchor-zdb --gate-label "vs zdb (32-game gate)"]
-      [--title T] [--mark K:TEXT ...] [--pool-label L] [--xlabel L]
+      [--title T] [--mark K:TEXT ...] [--pool-label L] [--xlabel L] [--newest-after-perfect [--newest-label L]]
   scripts/plot_rl_vs.py OUT/progress.jsonl --opp zdpg0,zdpg39 ...   (an ES run, after scripts/es_progress.py RUN OUT)
 
 Pool series: iteration k's pool games, the learner (version k) against --opp (a comma list is pooled). Gate series: one point per gated version.
+With --newest-after-perfect (one --opp): once the learner wins every pool game against --opp in an iteration (at least
+MIN_PERFECT_GAMES games), the comparison against --opp has nothing left to show, so from the next iteration on the
+chart follows the learner against the newest pool version it played instead (a third series; a mark at the switch).
 Score = points / games (win 1, draw 0.5) with a Wilson 95% interval; the dashed line is 0.5 (even). No dependencies
 (plain Python, hand-written SVG that follows the viewer's light/dark theme; hover a point for its numbers).
 """
-import argparse, json, math
+import argparse, json, math, re
 
-# categorical slots 1 and 2 of the dataviz reference palette (light, dark)
-COLORS = [('#2a78d6', '#3987e5'), ('#eb6834', '#d95926')]
+# categorical slots 1-3 of the dataviz reference palette (light, dark); each series keeps its slot whether or not the
+# others are drawn: the pool series 0, the gate series 1, the newest-version series 2
+COLORS = [('#2a78d6', '#3987e5'), ('#eb6834', '#d95926'), ('#1baf7a', '#199e70')]
+MIN_PERFECT_GAMES = 8
 
 
 def wilson(p, n, z=1.96):
@@ -26,16 +31,64 @@ def wilson(p, n, z=1.96):
     return max(0.0, c - h), min(1.0, c + h)
 
 
-def pool_series(path, opp):
+def pool_scores(path):
+    """Each iteration's pool score ({opponent: {points, games}}), the last row per iteration, in iteration order."""
     rows = {}
     for line in open(path):
-        r = json.loads(line)
-        sc = r.get('score') or {}
+        if line.strip():
+            r = json.loads(line)
+            rows[r['iter']] = r.get('score') or {}
+    return dict(sorted(rows.items()))
+
+
+def pool_series(path, opp):
+    rows = []
+    for k, sc in pool_scores(path).items():
         p = sum(sc[o]['points'] for o in opp.split(',') if o in sc)
         g = sum(sc[o]['games'] for o in opp.split(',') if o in sc)
         if g:
-            rows[r['iter']] = (r['iter'], p, g)
-    return sorted(rows.values())
+            rows.append((k, p, g))
+    return rows
+
+
+def newest_after_perfect(path, opp, min_games=MIN_PERFECT_GAMES):
+    """The pool series against opp up to and including the first iteration in which the learner won every game against
+    it (at least min_games games), then, from the next iteration on, against the newest version (vN) that iteration's
+    pool games played. Returns (rows against opp [(k, points, games)], rows after the switch [(k, points, games,
+    opponent)], the switch iteration or None)."""
+    before, after, switch = [], [], None
+    for k, sc in pool_scores(path).items():
+        if switch is None:
+            p, g = sc.get(opp, {}).get('points', 0), sc.get(opp, {}).get('games', 0)
+            if g:
+                before.append((k, p, g))
+                if g >= min_games and p == g:
+                    switch = k
+            continue
+        vs = [o for o in sc if re.fullmatch(r'v\d+', o) and sc[o].get('games')]
+        if vs:
+            o = max(vs, key=lambda o: int(o[1:]))
+            after.append((k, sc[o]['points'], sc[o]['games'], o))
+    return before, after, switch
+
+
+def pool_status(path, opp='v0', min_games=MIN_PERFECT_GAMES):
+    """The status sentence for scripts/rl_chart_sync.sh: pooled score against opp, and after the switch
+    (newest_after_perfect) the pooled score against the newest version with the latest iteration's game."""
+    before, after, switch = newest_after_perfect(path, opp, min_games)
+    if not before:
+        return ''
+    p, n = sum(r[1] for r in before), sum(r[2] for r in before)
+    s = f"Pool games against {opp}, iterations {before[0][0]}–{before[-1][0]}: {p:g}/{n} = {p / n:.2f}"
+    if switch is None:
+        return s
+    g = before[-1][2]
+    s += f"; the learner won all {g} at iteration {switch}, so the chart now compares against the newest pool version"
+    if after:
+        P, N = sum(r[1] for r in after), sum(r[2] for r in after)
+        k, pk, gk, o = after[-1]
+        s += (f": iterations {after[0][0]}–{k} {P:g}/{N} = {P / N:.2f} (iteration {k} against {o}: {pk:g}/{gk})")
+    return s
 
 
 def gate_series(path, mode):
@@ -47,25 +100,39 @@ def gate_series(path, mode):
     return sorted(rows.values())
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('progress'); ap.add_argument('--out', required=True); ap.add_argument('--opp', default='v0')
     ap.add_argument('--gates'); ap.add_argument('--gate-mode', default='anchor-zdb')
     ap.add_argument('--gate-label', default=None)
     ap.add_argument('--title', default=None); ap.add_argument('--mark', action='append', default=[])
     ap.add_argument('--pool-label', default=None); ap.add_argument('--xlabel', default='learner version (iteration)')
-    a = ap.parse_args()
-    series = [(a.pool_label or f'vs {a.opp} (pool games)', pool_series(a.progress, a.opp), 0.0)]
+    ap.add_argument('--newest-after-perfect', action='store_true')
+    ap.add_argument('--newest-label', default='vs the newest pool version (pool games)')
+    a = ap.parse_args(argv)
+    pool_label = a.pool_label or f'vs {a.opp} (pool games)'
+    # series: (name, rows [(k, points, games, opponent or None)], x offset, colour slot)
+    if a.newest_after_perfect:
+        if ',' in a.opp:
+            raise SystemExit('--newest-after-perfect takes one --opp')
+        before, after, switch = newest_after_perfect(a.progress, a.opp)
+        series = [(pool_label, [r + (None,) for r in before], 0.0, 0), (a.newest_label, after, 0.0, 2)]
+        if switch is not None:
+            a.mark.append(f'{switch + 0.5}:{a.opp} 100% at {switch}; then the newest version')
+    else:
+        series = [(pool_label, [r + (None,) for r in pool_series(a.progress, a.opp)], 0.0, 0)]
     if a.gates:
-        series.append((a.gate_label or f'{a.gate_mode} gate', gate_series(a.gates, a.gate_mode), 0.12))
+        series.append((a.gate_label or f'{a.gate_mode} gate',
+                       [r + (None,) for r in gate_series(a.gates, a.gate_mode)], 0.12, 1))
     series = [s for s in series if s[1]]
     if not series:
         raise SystemExit('nothing to plot')
 
-    W, H = 720, 380
-    L, R, T, B = 64, 24, 84, 56
+    W, L, R, B = 720, 64, 24, 56
+    T = 84 + 18 * (len(series) - 1)       # one legend row per series
+    H = T + 240 + B
     pw, ph = W - L - R, H - T - B
-    kmax = max(r[0] for _, rows, _ in series for r in rows) + 1
+    kmax = max(r[0] for _, rows, _, _ in series for r in rows) + 1
     X = lambda k: L + pw * k / kmax
     Y = lambda v: T + ph * (1 - v)
     title = a.title or 'Learner score by version'
@@ -88,12 +155,11 @@ def main():
          f'<text class="t" x="{L}" y="24">{title}</text>',
          f'<text class="st" x="{L}" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>']
     # legend (always present for 2+ series; text in ink, the swatch carries identity)
-    lx = L
-    for i, (name, rows, _) in enumerate(series):
+    for j, (name, rows, _, c) in enumerate(series):
         tp, tg = sum(r[1] for r in rows), sum(r[2] for r in rows)
         label = f'{name}: pooled {tp:g}/{tg} = {tp / tg:.2f}'
-        o.append(f'<circle class="dot{i}" cx="{lx + 5}" cy="62" r="5"/><text class="lg" x="{lx + 15}" y="66">{label}</text>')
-        lx += 30 + 6.6 * len(label)
+        y = 62 + 18 * j
+        o.append(f'<circle class="dot{c}" cx="{L + 5}" cy="{y}" r="5"/><text class="lg" x="{L + 15}" y="{y + 4}">{label}</text>')
     for v in (0, .25, .5, .75, 1):
         o.append(f'<line class="gl" x1="{L}" x2="{L + pw}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/>')
         o.append(f'<text class="ax" x="{L - 8}" y="{Y(v) + 4:.1f}" text-anchor="end">{v:.2f}</text>')
@@ -109,17 +175,17 @@ def main():
         x = X(float(k))
         o.append(f'<line class="mk" x1="{x:.1f}" x2="{x:.1f}" y1="{T}" y2="{T + ph}"/>')
         o.append(f'<text class="ax" x="{x + 4:.1f}" y="{T + 12}">{txt}</text>')
-    for i, (name, rows, dx) in enumerate(series):
-        o.append(f'<polyline class="ln{i}" points="' + ' '.join(f'{X(k + dx):.1f},{Y(p / g):.1f}' for k, p, g in rows) + '"/>')
-        for k, p, g in rows:
+    for name, rows, dx, c in series:
+        o.append(f'<polyline class="ln{c}" points="' + ' '.join(f'{X(r[0] + dx):.1f},{Y(r[1] / r[2]):.1f}' for r in rows) + '"/>')
+        for k, p, g, opp in rows:
             lo, hi = wilson(p / g, g)
             x = X(k + dx)
-            o.append(f'<g><title>v{k} {name}: {p:g}/{g} = {p / g:.2f} (95% {lo:.2f}-{hi:.2f})</title>'
-                     f'<line class="wh{i}" x1="{x:.1f}" x2="{x:.1f}" y1="{Y(lo):.1f}" y2="{Y(hi):.1f}"/>'
-                     f'<circle class="dot{i}" cx="{x:.1f}" cy="{Y(p / g):.1f}" r="5"/></g>')
+            o.append(f'<g><title>v{k} {f"vs {opp}" if opp else name}: {p:g}/{g} = {p / g:.2f} (95% {lo:.2f}-{hi:.2f})</title>'
+                     f'<line class="wh{c}" x1="{x:.1f}" x2="{x:.1f}" y1="{Y(lo):.1f}" y2="{Y(hi):.1f}"/>'
+                     f'<circle class="dot{c}" cx="{x:.1f}" cy="{Y(p / g):.1f}" r="5"/></g>')
     o.append('</svg>')
     open(a.out, 'w').write('\n'.join(o) + '\n')
-    print(f'wrote {a.out}: ' + '; '.join(f'{n} {len(r)} points' for n, r, _ in series))
+    print(f'wrote {a.out}: ' + '; '.join(f'{n} {len(r)} points' for n, r, _, _ in series))
 
 
 if __name__ == '__main__':
