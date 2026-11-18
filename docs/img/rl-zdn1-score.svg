@@ -7,7 +7,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <rect width="720" height="398" fill="var(--surface)"/>
 <text class="t" x="64" y="24">rl-zdn1: learner vs its start net (zdn2) and vs zdb</text>
 <text class="st" x="64" y="43">Score (win 1, draw 0.5) with Wilson 95% interval; hover a point for its numbers.</text>
-<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 203/350 = 0.58</text>
+<circle class="dot0" cx="69" cy="62" r="5"/><text class="lg" x="79" y="66">vs the start net v0 (pool games): pooled 205/356 = 0.58</text>
 <circle class="dot1" cx="69" cy="80" r="5"/><text class="lg" x="79" y="84">vs zdpc00 = zdb (32-game gate): pooled 0/288 = 0.00</text>
 <line class="gl" x1="64" x2="696" y1="342.0" y2="342.0"/>
 <text class="ax" x="56" y="346.0" text-anchor="end">0.00</text>
@@ -38,7 +38,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <text class="ax" x="696.0" y="360" text-anchor="middle">28</text>
 <text class="ax" x="380.0" y="384" text-anchor="middle">learner version (iteration)</text>
 <text class="ax" transform="translate(16 222.0) rotate(-90)" text-anchor="middle">score</text>
-<polyline class="ln0" points="86.6,235.8 109.1,208.2 131.7,194.3 154.3,194.3 176.9,182.0 199.4,208.7 222.0,153.4 244.6,239.1 267.1,242.0 289.7,204.9 312.3,132.0 334.9,142.0 357.4,102.0 380.0,142.0 402.6,142.0 425.1,182.0 447.7,262.0 470.3,262.0 492.9,162.0 515.4,302.0 538.0,252.0 560.6,132.0 583.1,182.0 605.7,182.0 628.3,222.0 650.9,222.0"/>
+<polyline class="ln0" points="86.6,235.8 109.1,208.2 131.7,194.3 154.3,194.3 176.9,182.0 199.4,208.7 222.0,153.4 244.6,239.1 267.1,242.0 289.7,204.9 312.3,132.0 334.9,142.0 357.4,102.0 380.0,142.0 402.6,142.0 425.1,182.0 447.7,262.0 470.3,262.0 492.9,162.0 515.4,302.0 538.0,252.0 560.6,132.0 583.1,182.0 605.7,182.0 628.3,222.0 650.9,222.0 673.4,262.0"/>
 <g><title>v1 vs the start net v0 (pool games): 23/52 = 0.44 (95% 0.32-0.58)</title><line class="wh0" x1="86.6" x2="86.6" y1="266.2" y2="203.6"/><circle class="dot0" cx="86.6" cy="235.8" r="5"/></g>
 <g><title>v2 vs the start net v0 (pool games): 29/52 = 0.56 (95% 0.42-0.68)</title><line class="wh0" x1="109.1" x2="109.1" y1="240.4" y2="177.8"/><circle class="dot0" cx="109.1" cy="208.2" r="5"/></g>
 <g><title>v3 vs the start net v0 (pool games): 16/26 = 0.62 (95% 0.43-0.78)</title><line class="wh0" x1="131.7" x2="131.7" y1="239.9" y2="155.8"/><circle class="dot0" cx="131.7" cy="194.3" r="5"/></g>
@@ -65,6 +65,7 @@ svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--grid:#e4e3df;--s0:#2a78d6;-
 <g><title>v24 vs the start net v0 (pool games): 4/6 = 0.67 (95% 0.30-0.90)</title><line class="wh0" x1="605.7" x2="605.7" y1="270.0" y2="125.2"/><circle class="dot0" cx="605.7" cy="182.0" r="5"/></g>
 <g><title>v25 vs the start net v0 (pool games): 3/6 = 0.50 (95% 0.19-0.81)</title><line class="wh0" x1="628.3" x2="628.3" y1="297.0" y2="147.0"/><circle class="dot0" cx="628.3" cy="222.0" r="5"/></g>
 <g><title>v26 vs the start net v0 (pool games): 3/6 = 0.50 (95% 0.19-0.81)</title><line class="wh0" x1="650.9" x2="650.9" y1="297.0" y2="147.0"/><circle class="dot0" cx="650.9" cy="222.0" r="5"/></g>
+<g><title>v27 vs the start net v0 (pool games): 2/6 = 0.33 (95% 0.10-0.70)</title><line class="wh0" x1="673.4" x2="673.4" y1="318.8" y2="174.0"/><circle class="dot0" cx="673.4" cy="262.0" r="5"/></g>
 <polyline class="ln1" points="134.4,342.0 202.1,342.0 269.9,342.0 337.6,342.0 405.3,342.0 473.0,342.0 540.7,342.0 608.4,342.0 676.1,342.0"/>
 <g><title>v3 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="134.4" x2="134.4" y1="342.0" y2="316.3"/><circle class="dot1" cx="134.4" cy="342.0" r="5"/></g>
 <g><title>v6 vs zdpc00 = zdb (32-game gate): 0/32 = 0.00 (95% 0.00-0.11)</title><line class="wh1" x1="202.1" x2="202.1" y1="342.0" y2="316.3"/><circle class="dot1" cx="202.1" cy="342.0" r="5"/></g>
